@@ -183,14 +183,14 @@ const TitleShot: React.FC = () => {
         {embers.map((e, i) => <circle key={i} cx={e.x} cy={e.y} r={2.5} fill="#ffb347" opacity={e.o * 0.8} />)}
       </svg>
       <div style={{ textAlign: "center", color: "#f6e6c8" }}>
-        <div style={{ fontFamily: serif, fontSize: 40, letterSpacing: 12, color: "#e3a64a", opacity: a(0) }}>FRIDAY</div>
-        <div style={{ fontFamily: amiri, fontSize: 150, color: "#ffcf7a", direction: "rtl", lineHeight: 1.3, opacity: a(6), textShadow: "0 0 40px rgba(255,140,40,0.5)" }}>أصحاب الأخدود</div>
-        <div style={{ fontFamily: serif, fontSize: 70, letterSpacing: 4, opacity: a(12) }}>The People of the Trench</div>
-        <div style={{ fontFamily: amiri, fontSize: 46, direction: "rtl", marginTop: 34, opacity: a(30) }}>﴿قُتِلَ أَصْحَابُ الْأُخْدُودِ﴾</div>
-        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 32, fontStyle: "italic", opacity: a(36), maxWidth: 1300 }}>“Cursed were the people of the ditch (the story of the Boy and the King).”</div>
-        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 26, color: "#bfa98a", opacity: a(36), marginTop: 6 }}>al-Burūj 85:4 — translation: Hilali &amp; Muhsin Khan (Tanzil.net)</div>
+        <div style={{ fontFamily: serif, fontSize: 40, letterSpacing: 12, color: "#e3a64a", opacity: a(25) }}>FRIDAY · NOVEMBER 13</div>
+        <div style={{ fontFamily: amiri, fontSize: 150, color: "#ffcf7a", direction: "rtl", lineHeight: 1.3, opacity: a(132), textShadow: "0 0 40px rgba(255,140,40,0.5)" }}>أصحاب الأخدود</div>
+        <div style={{ fontFamily: serif, fontSize: 70, letterSpacing: 4, opacity: a(142) }}>The People of the Trench</div>
+        <div style={{ fontFamily: amiri, fontSize: 46, direction: "rtl", marginTop: 34, opacity: a(238) }}>﴿قُتِلَ أَصْحَابُ الْأُخْدُودِ﴾</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 32, fontStyle: "italic", opacity: a(250), maxWidth: 1300 }}>“Cursed were the people of the ditch (the story of the Boy and the King).”</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 26, color: "#bfa98a", opacity: a(250), marginTop: 6 }}>al-Burūj 85:4 — translation: Hilali &amp; Muhsin Khan (Tanzil.net)</div>
       </div>
-      <div style={{ position: "absolute", bottom: 40, width: "100%", textAlign: "center", fontFamily: serif, fontSize: 26, color: "#bfa98a", opacity: a(40) }}>
+      <div style={{ position: "absolute", bottom: 40, width: "100%", textAlign: "center", fontFamily: serif, fontSize: 26, color: "#bfa98a", opacity: a(270) }}>
         Source: Ibn Kathīr, al-Bidāya wa al-Nihāya (ed. al-Turkī), 3/23–29
       </div>
     </AbsoluteFill>
@@ -229,9 +229,15 @@ const SHOTS: { from: number; len: number; el: React.ReactNode; cap?: string }[] 
   { from: 0, len: 160, el: <KingShot />, cap: "A king who asked: “Do you have a lord other than me?”" },
   { from: 150, len: 160, el: <BoyShot />, cap: "A boy who answered: “My Lord and your Lord is Allah.”" },
   { from: 300, len: 130, el: <FireShot />, cap: "And a people who chose faith over fire." },
-  { from: 420, len: 110, el: <TitleShot /> },
+  { from: 420, len: 485, el: <TitleShot /> },
 ];
-export const TRAILER_LENGTH = 530;
+export const TRAILER_LENGTH = 905;
+
+const FadeToBlack: React.FC<{ from: number }> = ({ from }) => {
+  const frame = useCurrentFrame();
+  const o = interpolate(frame, [from, from + 28], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return <AbsoluteFill style={{ backgroundColor: "#000", opacity: o }} />;
+};
 
 // Sound design (CC0 sound effects, no music). Volumes ramp so the narration always sits on top.
 const sfx = (f: string) => staticFile(`trailer/sfx/${f}.mp3`);
@@ -247,9 +253,9 @@ const SoundDesign: React.FC = () => (
       <Html5Audio src={sfx("horror-heartbeat-34")} volume={ramp([0, 30, 300, 320], [0, 0.14, 0.14, 0])} />
     </Sequence>
     {/* the trench at night: roaring fire, night air and wind */}
-    <Sequence from={295} durationInFrames={235}>
-      <Html5Audio src={sfx("backlog-adapt-fire-burning")} loop volume={ramp([0, 20, 150, 235], [0, 0.28, 0.22, 0])} />
-      <Html5Audio src={sfx("distant-bonfire-fire-crackling-01")} loop volume={ramp([0, 20, 150, 235], [0, 0.25, 0.18, 0])} />
+    <Sequence from={295} durationInFrames={610}>
+      <Html5Audio src={sfx("backlog-adapt-fire-burning")} loop volume={ramp([0, 20, 150, 330, 365, 545, 610], [0, 0.28, 0.2, 0.12, 0.04, 0.04, 0])} />
+      <Html5Audio src={sfx("distant-bonfire-fire-crackling-01")} loop volume={ramp([0, 20, 150, 330, 365, 545, 610], [0, 0.25, 0.16, 0.1, 0.03, 0.03, 0])} />
       <Html5Audio src={sfx("night-ambience-01")} volume={ramp([0, 20, 200, 235], [0, 0.09, 0.09, 0])} />
       <Html5Audio src={sfx("horror-wind-whisper-04")} volume={ramp([0, 20, 140, 180], [0, 0.09, 0.09, 0])} />
     </Sequence>
@@ -258,7 +264,7 @@ const SoundDesign: React.FC = () => (
     <Sequence from={300} durationInFrames={30}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.45} /></Sequence>
     <Sequence from={419} durationInFrames={45}><Html5Audio src={sfx("fire-electric-whoosh-flame-36")} volume={ramp([0, 3, 25, 45], [0, 0.3, 0.15, 0])} /></Sequence>
     {/* title hit */}
-    <Sequence from={422}>
+    <Sequence from={553}>
       <Html5Audio src={sfx("cinematic-boom-01")} volume={0.32} />
     </Sequence>
   </>
@@ -275,6 +281,9 @@ export const TrenchTrailer: React.FC = () => (
       </Sequence>
     ))}
     <Sequence from={8}><Html5Audio src={staticFile("trailer/vo.m4a")} /></Sequence>
+    {/* Muhamed's own recitation of al-Burūj 85:4 */}
+    <Sequence from={665}><Html5Audio src={staticFile("trailer/recitation-85-4.m4a")} /></Sequence>
+    <FadeToBlack from={875} />
     <SoundDesign />
   </AbsoluteFill>
 );
