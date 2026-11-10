@@ -1,0 +1,239 @@
+import React from "react";
+import { AbsoluteFill, Html5Audio, Sequence, interpolate, random, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
+import { Person, STAND, SIT, Pose, Outfit, blend } from "./Rig";
+import { amiri, serif } from "../fonts";
+
+// Trailer — next week's episode: The People of the Trench (Aṣḥāb al-Ukhdūd).
+// Source: al-Bidāya wa al-Nihāya (ed. al-Turkī) 3/23–29, the hadith of Ṣuhayb (Aḥmad, Muslim).
+// Faceless characters; the trench is shown only as fire and glow, never anyone in it.
+
+const W = 1920;
+const H = 1080;
+type Cam = { x: number; y: number; zoom: number };
+
+const Layer: React.FC<{ d: number; cam: Cam; children: React.ReactNode }> = ({ d, cam, children }) => {
+  const s = 1 + (cam.zoom - 1) * d;
+  return (
+    <AbsoluteFill style={{ transform: `translate(${-cam.x * d}px, ${-cam.y * d}px) scale(${s})`, transformOrigin: "50% 58%" }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} style={{ overflow: "visible" }}>{children}</svg>
+    </AbsoluteFill>
+  );
+};
+
+const KING: Outfit = { skin: "#a8724f", robe: "#3d1d4f", robeShade: "#2a1238", crown: true, cape: "#7a1420" };
+const GUARD: Outfit = { skin: "#8d5a3b", robe: "#3b3026", robeShade: "#251d17", wrap: "#5a1a14", spear: true, shield: "#5a3a20" };
+const BOY: Outfit = { skin: "#b07a56", robe: "#efe6d2", robeShade: "#cfc3a8", wrap: "#f6f0e2" };
+const FOLK = (i: number): Outfit => ({
+  skin: ["#8d5a3b", "#a06b48", "#7a4b30", "#b07a56"][i % 4],
+  robe: ["#4a3a2e", "#5b4636", "#3d342c", "#64503c"][i % 4],
+  robeShade: "#2a211b",
+  wrap: ["#7a6a55", "#3a2e26", "#8a7a62", undefined][i % 4],
+});
+
+const Torch: React.FC<{ x: number; y: number; frame: number; seed: number }> = ({ x, y, frame, seed }) => {
+  const f = 1 + 0.12 * Math.sin(frame * 0.5 + seed) + 0.06 * Math.sin(frame * 1.3 + seed);
+  return (
+    <g>
+      <defs>
+        <radialGradient id={`tg${seed}`}>
+          <stop offset="0" stopColor="#ffb347" stopOpacity={0.35} />
+          <stop offset="1" stopColor="#ffb347" stopOpacity={0} />
+        </radialGradient>
+      </defs>
+      <circle cx={x} cy={y - 30} r={170 * f} fill={`url(#tg${seed})`} />
+      <rect x={x - 6} y={y - 20} width={12} height={60} fill="#3a2416" />
+      <path d={`M ${x - 14} ${y - 20} Q ${x} ${y - 70 * f} ${x + 14} ${y - 20} Z`} fill="#ffb347" />
+      <path d={`M ${x - 7} ${y - 20} Q ${x} ${y - 45 * f} ${x + 7} ${y - 20} Z`} fill="#fff1b8" />
+    </g>
+  );
+};
+
+const Palace: React.FC<{ cam: Cam; frame: number }> = ({ cam, frame }) => (
+  <>
+    <Layer d={0.25} cam={cam}>
+      <rect x={-400} y={-200} width={2800} height={1400} fill="#24152e" />
+      {new Array(7).fill(0).map((_, i) => (
+        <path key={i} d={`M ${-140 + i * 340} 820 L ${-140 + i * 340} 360 Q ${30 + i * 340} 200 ${200 + i * 340} 360 L ${200 + i * 340} 820 Z`} fill="#1a0f22" />
+      ))}
+    </Layer>
+    <Layer d={0.55} cam={cam}>
+      {new Array(6).fill(0).map((_, i) => (
+        <g key={i}>
+          <rect x={-200 + i * 460} y={160} width={90} height={700} fill="#3a2440" />
+          <rect x={-215 + i * 460} y={150} width={120} height={30} fill="#4a3050" />
+        </g>
+      ))}
+      {[0, 1, 2, 3].map((i) => <Torch key={i} x={40 + i * 620} y={430} frame={frame} seed={i * 2} />)}
+    </Layer>
+    <Layer d={1} cam={cam}>
+      <rect x={-800} y={840} width={3600} height={500} fill="#3b2a30" />
+      <path d="M -800 840 L 2800 840" stroke="#5a4048" strokeWidth={6} />
+      <rect x={760} y={760} width={400} height={90} fill="#4a3038" />
+      <rect x={720} y={830} width={480} height={30} fill="#5a3a44" />
+    </Layer>
+  </>
+);
+
+// Shot 1 — the king on his throne leans forward and demands an answer.
+const KingShot: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const cam: Cam = { x: 0, y: interpolate(frame, [0, durationInFrames], [0, -30]), zoom: interpolate(frame, [0, durationInFrames], [1.0, 1.25], { easing: Easing.inOut(Easing.sin) }) };
+  const t = interpolate(frame, [40, 70], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const king = blend(SIT, { ...SIT, lean: 10, head: 6, armRU: -100, armRL: -20 }, t);
+  return (
+    <AbsoluteFill style={{ backgroundColor: "#120a16" }}>
+      <Palace cam={cam} frame={frame} />
+      <Layer d={1} cam={cam}>
+        {/* throne */}
+        <path d="M 880 760 L 880 520 Q 960 470 1040 520 L 1040 760 Z" fill="#c9952e" />
+        <path d="M 900 750 L 900 540 Q 960 505 1020 540 L 1020 750 Z" fill="#7a1420" />
+        <rect x={860} y={690} width={200} height={40} fill="#b0801f" />
+        <g transform="translate(940 800) scale(0.9)"><Person pose={king} outfit={KING} /></g>
+        <g transform="translate(700 845) scale(0.82)"><Person pose={STAND} outfit={GUARD} /></g>
+        <g transform="translate(1230 845) scale(0.82)"><Person pose={STAND} outfit={GUARD} flip /></g>
+      </Layer>
+    </AbsoluteFill>
+  );
+};
+
+// Shot 2 — the boy stands calm before the court, finger raised to the sky.
+const BoyShot: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const cam: Cam = { x: interpolate(frame, [0, durationInFrames], [-40, 30]), y: 0, zoom: interpolate(frame, [0, durationInFrames], [1.1, 1.32], { easing: Easing.inOut(Easing.sin) }) };
+  const raise = interpolate(frame, [50, 80], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const boy = blend(STAND, { ...STAND, armRU: -172, armRL: -4, head: -10 }, raise);
+  const glow = 0.5 + 0.5 * raise;
+  return (
+    <AbsoluteFill style={{ backgroundColor: "#120a16" }}>
+      <Palace cam={cam} frame={frame} />
+      <Layer d={1} cam={cam}>
+        <path d={`M 880 -100 L 1040 -100 L 1180 850 L 740 850 Z`} fill="#fff1c9" opacity={0.12 * glow} />
+        <ellipse cx={960} cy={845} rx={170} ry={26} fill="#fff1c9" opacity={0.25 * glow} />
+        <g transform="translate(960 850) scale(0.62)"><Person pose={boy} outfit={BOY} /></g>
+        {[-1, 1].map((side) =>
+          [0, 1, 2].map((k) => (
+            <g key={`${side}${k}`} transform={`translate(${960 + side * (330 + k * 150)} ${855 + k * 6}) scale(0.78)`} opacity={0.92}>
+              <Person pose={{ ...STAND, head: side * -6 }} outfit={k === 0 ? GUARD : FOLK(k + (side > 0 ? 2 : 0))} flip={side > 0} />
+            </g>
+          ))
+        )}
+      </Layer>
+    </AbsoluteFill>
+  );
+};
+
+// Shot 3 — night; a crowd stands firm before the glowing trench.
+const FireShot: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const cam: Cam = { x: interpolate(frame, [0, durationInFrames], [30, -30]), y: 0, zoom: interpolate(frame, [0, durationInFrames], [1.0, 1.18]) };
+  const embers = new Array(80).fill(0).map((_, i) => {
+    const life = 90;
+    const age = (frame + i * 13) % life;
+    return { x: 200 + random(`ex${i}`) * 1520 + Math.sin((age + i) * 0.1) * 20, y: 640 - age * 4.5, o: 1 - age / life, r: 2 + random(`er${i}`) * 3 };
+  });
+  return (
+    <AbsoluteFill style={{ background: "linear-gradient(#0d0710 0%, #3a0f12 45%, #a3341a 64%, #2a0d0a 66%)" }}>
+      <Layer d={0.2} cam={cam}>
+        <path d="M -400 600 L 0 520 L 300 580 L 700 500 L 1100 570 L 1500 510 L 1900 580 L 2400 520 L 2400 700 L -400 700 Z" fill="#1c0a0e" />
+      </Layer>
+      <Layer d={0.55} cam={cam}>
+        <rect x={-600} y={640} width={3200} height={600} fill="#1a0b0b" />
+        {/* the trench: a long band of fire, glow only */}
+        <rect x={-300} y={660} width={2500} height={30} fill="#ff7a1a" />
+        {new Array(70).fill(0).map((_, i) => {
+          const h = 40 + 35 * Math.abs(Math.sin(frame * 0.35 + i * 1.7)) + random(`fh${i}`) * 30;
+          const x = -300 + i * 36;
+          return <path key={i} d={`M ${x} 672 Q ${x + 18} ${672 - h} ${x + 36} 672 Z`} fill={i % 3 ? "#ffb347" : "#ff6a1a"} opacity={0.9} />;
+        })}
+        <rect x={-300} y={560} width={2500} height={140} fill="#ff8a2a" opacity={0.18} />
+        {embers.map((e, i) => <circle key={i} cx={e.x} cy={e.y} r={e.r} fill="#ffcf7a" opacity={e.o} />)}
+      </Layer>
+      <Layer d={1} cam={cam}>
+        {new Array(13).fill(0).map((_, i) => {
+          const row = i < 6 ? 0 : 1;
+          const x = row === 0 ? 260 + i * 270 : 140 + (i - 6) * 270;
+          const sway = Math.sin(frame * 0.05 + i) * 2;
+          const pose: Pose = i === 8 ? { ...STAND, armRU: -170, armRL: -4, head: -8 } : { ...STAND, head: sway };
+          return (
+            <g key={i} transform={`translate(${x} ${row === 0 ? 900 : 1030}) scale(${row === 0 ? 0.62 : 0.78})`}>
+              <Person pose={pose} outfit={FOLK(i)} />
+            </g>
+          );
+        })}
+      </Layer>
+      <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 60%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.6) 100%)" }} />
+    </AbsoluteFill>
+  );
+};
+
+// Shot 4 — title card.
+const TitleShot: React.FC = () => {
+  const frame = useCurrentFrame();
+  const a = (s: number) => interpolate(frame, [s, s + 15], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const embers = new Array(50).fill(0).map((_, i) => {
+    const age = (frame + i * 11) % 80;
+    return { x: random(`tx${i}`) * W, y: H - age * 9, o: 1 - age / 80 };
+  });
+  return (
+    <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 85%, #4a160c 0%, #120708 60%, #060304 100%)", alignItems: "center", justifyContent: "center" }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} style={{ position: "absolute" }}>
+        {embers.map((e, i) => <circle key={i} cx={e.x} cy={e.y} r={2.5} fill="#ffb347" opacity={e.o * 0.8} />)}
+      </svg>
+      <div style={{ textAlign: "center", color: "#f6e6c8" }}>
+        <div style={{ fontFamily: serif, fontSize: 40, letterSpacing: 12, color: "#e3a64a", opacity: a(0) }}>NEXT WEEK</div>
+        <div style={{ fontFamily: amiri, fontSize: 150, color: "#ffcf7a", direction: "rtl", lineHeight: 1.3, opacity: a(6), textShadow: "0 0 40px rgba(255,140,40,0.5)" }}>أصحاب الأخدود</div>
+        <div style={{ fontFamily: serif, fontSize: 70, letterSpacing: 4, opacity: a(12) }}>The People of the Trench</div>
+        <div style={{ fontFamily: amiri, fontSize: 46, direction: "rtl", marginTop: 34, opacity: a(30) }}>﴿قُتِلَ أَصْحَابُ الْأُخْدُودِ﴾</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 32, fontStyle: "italic", opacity: a(36) }}>“Cursed were the people of the ditch” — al-Burūj 85:4</div>
+      </div>
+      <div style={{ position: "absolute", bottom: 40, width: "100%", textAlign: "center", fontFamily: serif, fontSize: 26, color: "#bfa98a", opacity: a(40) }}>
+        Source: Ibn Kathīr, al-Bidāya wa al-Nihāya (ed. al-Turkī), 3/23–29
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const FADE = 10;
+const Fade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const o = interpolate(frame, [0, FADE, durationInFrames - FADE, durationInFrames], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
+};
+
+const Caption: React.FC<{ text: string }> = ({ text }) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const o = interpolate(frame, [6, 16, durationInFrames - 14, durationInFrames - 4], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <div style={{ position: "absolute", bottom: 26, width: "100%", display: "flex", justifyContent: "center", opacity: o }}>
+      <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 40, color: "#fff7e6", background: "rgba(10,6,4,0.5)", padding: "8px 24px", borderRadius: 10 }}>{text}</div>
+    </div>
+  );
+};
+
+// Shot boundaries follow the narration (frames at 30 fps; narration starts at frame 8).
+const SHOTS: { from: number; len: number; el: React.ReactNode; cap?: string }[] = [
+  { from: 0, len: 160, el: <KingShot />, cap: "A king who asked: “Do you have a lord other than me?”" },
+  { from: 150, len: 160, el: <BoyShot />, cap: "A boy who answered: “My Lord and your Lord is Allah.”" },
+  { from: 300, len: 130, el: <FireShot />, cap: "And a people who chose faith over fire." },
+  { from: 420, len: 110, el: <TitleShot /> },
+];
+export const TRAILER_LENGTH = 530;
+
+export const TrenchTrailer: React.FC = () => (
+  <AbsoluteFill style={{ backgroundColor: "#000" }}>
+    {SHOTS.map((s, i) => (
+      <Sequence key={i} from={s.from} durationInFrames={s.len}>
+        <Fade>
+          {s.el}
+          {s.cap ? <Caption text={s.cap} /> : null}
+        </Fade>
+      </Sequence>
+    ))}
+    <Sequence from={8}><Html5Audio src={staticFile("trailer/vo.m4a")} /></Sequence>
+  </AbsoluteFill>
+);

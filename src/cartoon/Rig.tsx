@@ -19,6 +19,8 @@ export type Pose = {
 
 export const STAND: Pose = { bob: 0, lean: 0, head: 0, armLU: 8, armLL: -6, armRU: -8, armRL: -6, legLU: 2, legLL: 0, legRU: -2, legRL: 0 };
 
+export const SIT: Pose = { bob: 0, lean: 0, head: 0, armLU: -20, armLL: -40, armRU: -25, armRL: -45, legLU: -82, legLL: 82, legRU: -88, legRL: 86 };
+
 export const walkPose = (phase: number, energy = 1): Pose => {
   const s = Math.sin(phase);
   const c = Math.cos(phase);
@@ -116,7 +118,7 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean }> = 
 };
 
 // Cartoon war elephant ~420px tall at scale 1, feet at (0,0), facing left.
-export const Elephant: React.FC<{ phase: number; earFlap: number }> = ({ phase, earFlap }) => {
+export const Elephant: React.FC<{ phase: number; earFlap: number; rider?: React.ReactNode }> = ({ phase, earFlap, rider }) => {
   const skin = "#8a7f7a";
   const shade = "#6f6560";
   const leg = (dx: number, off: number, col: string) => {
@@ -144,10 +146,11 @@ export const Elephant: React.FC<{ phase: number; earFlap: number }> = ({ phase, 
         {/* blanket + howdah */}
         <path d="M -80 -330 Q 30 -360 140 -330 L 130 -230 Q 30 -210 -70 -230 Z" fill="#8f2a1c" />
         <path d="M -80 -330 Q 30 -360 140 -330" stroke="#e3b341" strokeWidth={8} fill="none" />
-        <rect x={-30} y={-420} width={120} height={80} rx={10} fill="#6b3b1f" />
-        <path d="M -40 -420 L 30 -470 L 100 -420 Z" fill="#8f2a1c" />
-        <line x1={30} y1={-470} x2={30} y2={-560} stroke="#3a2416" strokeWidth={6} />
-        <path d={`M 30 -560 Q ${70 + Math.sin(phase * 1.3) * 6} ${-552 + Math.sin(phase) * 4} 110 -540 L 30 -520 Z`} fill="#b3261e" />
+        {/* low saddle with a banner pole; the rider (if any) sits on it */}
+        <path d="M -10 -352 Q 40 -372 110 -352 L 104 -330 Q 40 -346 -4 -330 Z" fill="#e3b341" />
+        <line x1={100} y1={-350} x2={100} y2={-520} stroke="#3a2416" strokeWidth={6} />
+        <path d={`M 100 -520 Q ${140 + Math.sin(phase * 1.3) * 6} ${-512 + Math.sin(phase) * 4} 180 -500 L 100 -480 Z`} fill="#b3261e" />
+        {rider ? <g transform="translate(40 -222)">{rider}</g> : null}
         {/* head, ear, trunk, tusk */}
         <circle cx={-160} cy={-250} r={86} fill={skin} />
         <path d={`M -150 -300 Q ${-60 - earFlap * 30} -320 ${-70 - earFlap * 25} -230 Q -90 -160 -150 -190 Z`} fill={shade} />

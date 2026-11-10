@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Html5Audio, Sequence, interpolate, random, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
-import { Person, Elephant, walkPose, blend, STAND, Pose, Outfit } from "./Rig";
+import { Person, Elephant, walkPose, blend, STAND, SIT, Pose, Outfit } from "./Rig";
 import { amiri, serif } from "../fonts";
 
 // 2.5D cartoon: flat painted layers placed at different depths, filmed by a moving camera,
@@ -66,13 +66,13 @@ export const ArmyMarch: React.FC = () => {
   const phase = frame * 0.2;
   // Abraha raises his arm and points ahead toward Makkah partway through.
   const pointT = interpolate(frame, [170, 195, 300, 325], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const walk = walkPose(phase);
-  const point: Pose = { ...walk, armRU: -125, armRL: -10, head: -8 };
-  const abraha = blend(walk, point, pointT);
+  const ride: Pose = { ...SIT, bob: -Math.abs(Math.cos(phase * 0.8)) * 4 };
+  const point: Pose = { ...ride, armRU: -115, armRL: -10, head: -6 };
+  const abraha = blend(ride, point, pointT);
   const sunY = interpolate(frame, [0, durationInFrames], [600, 640]);
 
   const soldiers = new Array(10).fill(0).map((_, i) => ({
-    x: armyX + 640 + (i % 5) * 150 + (i >= 5 ? 70 : 0),
+    x: armyX + 330 + (i % 5) * 150 + (i >= 5 ? 70 : 0),
     back: i >= 5,
     phase: phase + i * 0.9,
     i,
@@ -102,10 +102,7 @@ export const ArmyMarch: React.FC = () => {
           </g>
         ))}
         <g transform={`translate(${armyX} 840) scale(0.95)`}>
-          <Elephant phase={phase * 0.8} earFlap={(Math.sin(phase * 0.6) + 1) / 2} />
-        </g>
-        <g transform={`translate(${armyX + 360} 860) scale(1.05)`}>
-          <Person pose={abraha} outfit={ABRAHA} flip />
+          <Elephant phase={phase * 0.8} earFlap={(Math.sin(phase * 0.6) + 1) / 2} rider={<g transform="scale(0.85)"><Person pose={abraha} outfit={ABRAHA} flip /></g>} />
         </g>
         {soldiers.filter((s) => !s.back).map((s) => (
           <g key={s.i} transform={`translate(${s.x} 875) scale(0.95)`}>
@@ -143,12 +140,12 @@ export const MakkahNight: React.FC = () => {
     zoom: interpolate(frame, [0, durationInFrames], [1.0, 1.28], { easing: Easing.inOut(Easing.sin) }),
   };
   const torches = interpolate(frame, [150, 230], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const walkerX = 380 + frame * 1.7;
+  const walkerX = 420 + frame * 1.2;
   const stopT = interpolate(frame, [140, 165], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const watcherWalk = walkPose(frame * 0.2, 1 - stopT);
   const pointUp: Pose = { ...STAND, armRU: -150, armRL: -15, head: -18, lean: -4 };
   const watcher = blend(watcherWalk, pointUp, interpolate(frame, [175, 200], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }));
-  const watcherX = 1330 + Math.min(frame, 150) * 1.1;
+  const watcherX = 1290 + Math.min(frame, 150) * 0.8;
   const stars = new Array(90).fill(0).map((_, i) => ({ x: random(`sx${i}`) * 2400 - 240, y: random(`sy${i}`) * 520, r: 1 + random(`sr${i}`) * 2 }));
 
   return (
@@ -173,7 +170,7 @@ export const MakkahNight: React.FC = () => {
       <Layer d={0.85} cam={cam}>
         <rect x={-600} y={850} width={3200} height={500} fill="#8a7560" />
         {/* the Ka'bah */}
-        <g transform="translate(960 900)">
+        <g transform="translate(960 905) scale(1.9)">
           <rect x={-90} y={-150} width={180} height={150} fill="#141414" />
           <rect x={-90} y={-112} width={180} height={14} fill="#c9a24a" />
           <path d="M 90 -150 L 130 -175 L 130 -25 L 90 0 Z" fill="#0b0b0b" />
@@ -181,10 +178,10 @@ export const MakkahNight: React.FC = () => {
         </g>
       </Layer>
       <Layer d={1} cam={cam}>
-        <g transform={`translate(${walkerX} 930) scale(0.95)`}>
+        <g transform={`translate(${walkerX} 935) scale(0.48)`}>
           <Person pose={walkPose(frame * 0.2)} outfit={{ skin: "#9a6646", robe: "#e7dcc6", robeShade: "#bfb29a", wrap: "#f2ece0" }} />
         </g>
-        <g transform={`translate(${watcherX} 950) scale(1.02)`}>
+        <g transform={`translate(${watcherX} 945) scale(0.5)`}>
           <Person pose={watcher} outfit={{ skin: "#8d5a3b", robe: "#cdbb98", robeShade: "#a7966f", wrap: "#7b5a3a" }} />
         </g>
         {new Array(5).fill(0).map((_, i) => (
