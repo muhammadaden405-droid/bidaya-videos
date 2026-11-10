@@ -5,6 +5,7 @@ import { SilhouetteScene } from "./styles/Silhouette";
 import { ParchmentScene } from "./styles/Parchment";
 import { Desert3DScene } from "./styles/Desert3D";
 import { Sample, SAMPLE_LENGTH } from "./Sample";
+import { Cartoon25D, CARTOON_LENGTH } from "./cartoon/Scenes";
 
 // Pipeline test card: confirms GitHub rendering, fonts and motion work.
 export const TitleTest: React.FC = () => {
@@ -70,6 +71,7 @@ export const MyComposition = () => (
     <Composition id="TitleTest" component={TitleTest} durationInFrames={150} fps={30} width={1920} height={1080} />
     <Composition id="StyleCompare" component={StyleCompare} durationInFrames={SCENE * 2} fps={30} width={1920} height={1080} />
     <Composition id="Silhouette" component={SilhouetteScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
+    <Composition id="Cartoon25D" component={Cartoon25D} durationInFrames={CARTOON_LENGTH} fps={30} width={1920} height={1080} />
     <Composition id="Sample" component={Sample} durationInFrames={SAMPLE_LENGTH} fps={30} width={1920} height={1080} />
     <Composition id="Mix3D" component={Mix3D} durationInFrames={SCENE * 2} fps={30} width={1920} height={1080} />
     <Composition id="Desert3D" component={Desert3DScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
