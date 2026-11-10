@@ -1,0 +1,1 @@
+Sound effects in this folder are from the SFXMint CC0 library (https://huggingface.co/datasets/flreey/sfxmint-cc0-sound-effects), released under CC0 1.0: free for any use, no attribution required. They are AI-generated (Stable Audio).

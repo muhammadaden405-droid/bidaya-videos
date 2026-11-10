@@ -183,7 +183,7 @@ const TitleShot: React.FC = () => {
         {embers.map((e, i) => <circle key={i} cx={e.x} cy={e.y} r={2.5} fill="#ffb347" opacity={e.o * 0.8} />)}
       </svg>
       <div style={{ textAlign: "center", color: "#f6e6c8" }}>
-        <div style={{ fontFamily: serif, fontSize: 40, letterSpacing: 12, color: "#e3a64a", opacity: a(0) }}>NEXT WEEK</div>
+        <div style={{ fontFamily: serif, fontSize: 40, letterSpacing: 12, color: "#e3a64a", opacity: a(0) }}>FRIDAY</div>
         <div style={{ fontFamily: amiri, fontSize: 150, color: "#ffcf7a", direction: "rtl", lineHeight: 1.3, opacity: a(6), textShadow: "0 0 40px rgba(255,140,40,0.5)" }}>أصحاب الأخدود</div>
         <div style={{ fontFamily: serif, fontSize: 70, letterSpacing: 4, opacity: a(12) }}>The People of the Trench</div>
         <div style={{ fontFamily: amiri, fontSize: 46, direction: "rtl", marginTop: 34, opacity: a(30) }}>﴿قُتِلَ أَصْحَابُ الْأُخْدُودِ﴾</div>
@@ -224,6 +224,33 @@ const SHOTS: { from: number; len: number; el: React.ReactNode; cap?: string }[] 
 ];
 export const TRAILER_LENGTH = 530;
 
+// Sound design (CC0 sound effects, no music). Volumes ramp so the narration always sits on top.
+const sfx = (f: string) => staticFile(`trailer/sfx/${f}.mp3`);
+const ramp = (pts: number[], vals: number[]) => (f: number) =>
+  interpolate(f, pts, vals, { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+
+const SoundDesign: React.FC = () => (
+  <>
+    {/* palace: torches crackling and the hush of a stone hall (king + boy shots) */}
+    <Sequence from={0} durationInFrames={320}>
+      <Html5Audio src={sfx("gentle-fire-crackling-01")} loop volume={ramp([0, 20, 290, 320], [0, 0.35, 0.35, 0])} />
+      <Html5Audio src={sfx("cave-ambience-01")} loop volume={ramp([0, 20, 290, 320], [0, 0.18, 0.18, 0])} />
+      <Html5Audio src={sfx("horror-heartbeat-34")} volume={ramp([0, 30, 300, 320], [0, 0.3, 0.3, 0])} />
+    </Sequence>
+    {/* the trench at night: roaring fire, night air and wind */}
+    <Sequence from={295} durationInFrames={235}>
+      <Html5Audio src={sfx("backlog-adapt-fire-burning")} loop volume={ramp([0, 20, 150, 235], [0, 0.75, 0.6, 0])} />
+      <Html5Audio src={sfx("distant-bonfire-fire-crackling-01")} loop volume={ramp([0, 20, 150, 235], [0, 0.7, 0.5, 0])} />
+      <Html5Audio src={sfx("night-ambience-01")} volume={ramp([0, 20, 200, 235], [0, 0.2, 0.2, 0])} />
+      <Html5Audio src={sfx("horror-wind-whisper-04")} volume={ramp([0, 20, 140, 180], [0, 0.22, 0.22, 0])} />
+    </Sequence>
+    {/* title hit */}
+    <Sequence from={422}>
+      <Html5Audio src={sfx("cinematic-boom-01")} volume={0.6} />
+    </Sequence>
+  </>
+);
+
 export const TrenchTrailer: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: "#000" }}>
     {SHOTS.map((s, i) => (
@@ -235,5 +262,6 @@ export const TrenchTrailer: React.FC = () => (
       </Sequence>
     ))}
     <Sequence from={8}><Html5Audio src={staticFile("trailer/vo.m4a")} /></Sequence>
+    <SoundDesign />
   </AbsoluteFill>
 );
