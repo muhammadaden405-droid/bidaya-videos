@@ -20,11 +20,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx remotion render ${{ inputs.composition }} out/${{ inputs.composition }}.mp4 --concurrency=4
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.composition }}
-          path: out/${{ inputs.composition }}.mp4
-          retention-days: 14
       # Also publish the MP4 (split into <90 MB parts) to a per-render branch,
       # so it can be fetched with plain git.
       - name: Publish render to branch
