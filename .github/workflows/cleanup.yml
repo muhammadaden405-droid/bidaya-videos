@@ -1,0 +1,14 @@
+name: Clean up renders
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          for b in $(git ls-remote --heads origin 'render/*' | awk '{print $2}'); do
+            git push -q origin --delete "$b" && echo "deleted $b"
+          done

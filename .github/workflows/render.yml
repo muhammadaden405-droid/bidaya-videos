@@ -18,6 +18,11 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Remove previous render branches (keeps the repo small)
+        run: |
+          for b in $(git ls-remote --heads origin 'render/*' | awk '{print $2}'); do
+            git push -q origin --delete "$b" || true
+          done
       - run: npm ci
       - run: npx remotion render ${{ inputs.composition }} out/${{ inputs.composition }}.mp4 --concurrency=4
       # Also publish the MP4 (split into <90 MB parts) to a per-render branch,
