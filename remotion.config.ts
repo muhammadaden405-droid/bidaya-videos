@@ -11,3 +11,6 @@ Config.setRspack(true);
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
 Config.setDefaultPremountInSeconds(2);
+
+// 3D scenes render with WebGL; render machines (GitHub Actions) have no GPU, so use the software renderer.
+Config.setChromiumOpenGlRenderer("swangle");

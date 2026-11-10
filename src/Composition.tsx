@@ -3,6 +3,7 @@ import { Composition, AbsoluteFill, Sequence, interpolate, spring, useCurrentFra
 import { amiri, serif } from "./fonts";
 import { SilhouetteScene } from "./styles/Silhouette";
 import { ParchmentScene } from "./styles/Parchment";
+import { Desert3DScene } from "./styles/Desert3D";
 
 // Pipeline test card: confirms GitHub rendering, fonts and motion work.
 export const TitleTest: React.FC = () => {
@@ -49,11 +50,27 @@ export const StyleCompare: React.FC = () => (
   </AbsoluteFill>
 );
 
+// Mixed-style test: a 3D story scene followed by a parchment map moment.
+export const Mix3D: React.FC = () => (
+  <AbsoluteFill>
+    <Sequence durationInFrames={SCENE}>
+      <Desert3DScene />
+      <Label text="3D story scene" />
+    </Sequence>
+    <Sequence from={SCENE} durationInFrames={SCENE}>
+      <ParchmentScene />
+      <Label text="Parchment map moment" />
+    </Sequence>
+  </AbsoluteFill>
+);
+
 export const MyComposition = () => (
   <>
     <Composition id="TitleTest" component={TitleTest} durationInFrames={150} fps={30} width={1920} height={1080} />
     <Composition id="StyleCompare" component={StyleCompare} durationInFrames={SCENE * 2} fps={30} width={1920} height={1080} />
     <Composition id="Silhouette" component={SilhouetteScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
+    <Composition id="Mix3D" component={Mix3D} durationInFrames={SCENE * 2} fps={30} width={1920} height={1080} />
+    <Composition id="Desert3D" component={Desert3DScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
     <Composition id="Parchment" component={ParchmentScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
   </>
 );
