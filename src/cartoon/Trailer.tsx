@@ -187,7 +187,8 @@ const TitleShot: React.FC = () => {
         <div style={{ fontFamily: amiri, fontSize: 150, color: "#ffcf7a", direction: "rtl", lineHeight: 1.3, opacity: a(6), textShadow: "0 0 40px rgba(255,140,40,0.5)" }}>أصحاب الأخدود</div>
         <div style={{ fontFamily: serif, fontSize: 70, letterSpacing: 4, opacity: a(12) }}>The People of the Trench</div>
         <div style={{ fontFamily: amiri, fontSize: 46, direction: "rtl", marginTop: 34, opacity: a(30) }}>﴿قُتِلَ أَصْحَابُ الْأُخْدُودِ﴾</div>
-        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 32, fontStyle: "italic", opacity: a(36) }}>“Cursed were the people of the ditch” — al-Burūj 85:4</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 32, fontStyle: "italic", opacity: a(36), maxWidth: 1300 }}>“Cursed were the people of the ditch (the story of the Boy and the King).”</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 26, color: "#bfa98a", opacity: a(36), marginTop: 6 }}>al-Burūj 85:4 — translation: Hilali &amp; Muhsin Khan (Tanzil.net)</div>
       </div>
       <div style={{ position: "absolute", bottom: 40, width: "100%", textAlign: "center", fontFamily: serif, fontSize: 26, color: "#bfa98a", opacity: a(40) }}>
         Source: Ibn Kathīr, al-Bidāya wa al-Nihāya (ed. al-Turkī), 3/23–29
@@ -197,11 +198,19 @@ const TitleShot: React.FC = () => {
 };
 
 const FADE = 10;
-const Fade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Whip-pan transition: the camera swings out of one shot (motion blur + push) and into the next.
+const Fade: React.FC<{ children: React.ReactNode; first?: boolean; last?: boolean }> = ({ children, first, last }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
-  const o = interpolate(frame, [0, FADE, durationInFrames - FADE, durationInFrames], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
+  const ease = Easing.inOut(Easing.cubic);
+  const inT = first ? 1 : interpolate(frame, [0, FADE], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: ease });
+  const outT = last ? 0 : interpolate(frame, [durationInFrames - FADE, durationInFrames], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: ease });
+  const x = (1 - inT) * 900 - outT * 900;
+  const blur = (1 - inT) * 28 + outT * 28;
+  const scale = 1 + (1 - inT) * 0.08 + outT * 0.08;
+  const o = first ? 1 : Math.min(1, inT * 1.6);
+  const oOut = last ? 1 : 1 - Math.max(0, outT - 0.4) / 0.6;
+  return <AbsoluteFill style={{ opacity: o * oOut, transform: `translateX(${x}px) scale(${scale})`, filter: blur > 0.5 ? `blur(${blur}px)` : undefined }}>{children}</AbsoluteFill>;
 };
 
 const Caption: React.FC<{ text: string }> = ({ text }) => {
@@ -233,20 +242,24 @@ const SoundDesign: React.FC = () => (
   <>
     {/* palace: torches crackling and the hush of a stone hall (king + boy shots) */}
     <Sequence from={0} durationInFrames={320}>
-      <Html5Audio src={sfx("gentle-fire-crackling-01")} loop volume={ramp([0, 20, 290, 320], [0, 0.35, 0.35, 0])} />
-      <Html5Audio src={sfx("cave-ambience-01")} loop volume={ramp([0, 20, 290, 320], [0, 0.18, 0.18, 0])} />
-      <Html5Audio src={sfx("horror-heartbeat-34")} volume={ramp([0, 30, 300, 320], [0, 0.3, 0.3, 0])} />
+      <Html5Audio src={sfx("gentle-fire-crackling-01")} loop volume={ramp([0, 20, 290, 320], [0, 0.14, 0.14, 0])} />
+      <Html5Audio src={sfx("cave-ambience-01")} loop volume={ramp([0, 20, 290, 320], [0, 0.07, 0.07, 0])} />
+      <Html5Audio src={sfx("horror-heartbeat-34")} volume={ramp([0, 30, 300, 320], [0, 0.14, 0.14, 0])} />
     </Sequence>
     {/* the trench at night: roaring fire, night air and wind */}
     <Sequence from={295} durationInFrames={235}>
-      <Html5Audio src={sfx("backlog-adapt-fire-burning")} loop volume={ramp([0, 20, 150, 235], [0, 0.75, 0.6, 0])} />
-      <Html5Audio src={sfx("distant-bonfire-fire-crackling-01")} loop volume={ramp([0, 20, 150, 235], [0, 0.7, 0.5, 0])} />
-      <Html5Audio src={sfx("night-ambience-01")} volume={ramp([0, 20, 200, 235], [0, 0.2, 0.2, 0])} />
-      <Html5Audio src={sfx("horror-wind-whisper-04")} volume={ramp([0, 20, 140, 180], [0, 0.22, 0.22, 0])} />
+      <Html5Audio src={sfx("backlog-adapt-fire-burning")} loop volume={ramp([0, 20, 150, 235], [0, 0.28, 0.22, 0])} />
+      <Html5Audio src={sfx("distant-bonfire-fire-crackling-01")} loop volume={ramp([0, 20, 150, 235], [0, 0.25, 0.18, 0])} />
+      <Html5Audio src={sfx("night-ambience-01")} volume={ramp([0, 20, 200, 235], [0, 0.09, 0.09, 0])} />
+      <Html5Audio src={sfx("horror-wind-whisper-04")} volume={ramp([0, 20, 140, 180], [0, 0.09, 0.09, 0])} />
     </Sequence>
+    {/* whooshes on each camera whip (peak ~5 frames after start = middle of the transition) */}
+    <Sequence from={150} durationInFrames={30}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.45} /></Sequence>
+    <Sequence from={300} durationInFrames={30}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.45} /></Sequence>
+    <Sequence from={419} durationInFrames={45}><Html5Audio src={sfx("fire-electric-whoosh-flame-36")} volume={ramp([0, 3, 25, 45], [0, 0.3, 0.15, 0])} /></Sequence>
     {/* title hit */}
     <Sequence from={422}>
-      <Html5Audio src={sfx("cinematic-boom-01")} volume={0.6} />
+      <Html5Audio src={sfx("cinematic-boom-01")} volume={0.32} />
     </Sequence>
   </>
 );
@@ -255,7 +268,7 @@ export const TrenchTrailer: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: "#000" }}>
     {SHOTS.map((s, i) => (
       <Sequence key={i} from={s.from} durationInFrames={s.len}>
-        <Fade>
+        <Fade first={i === 0} last={i === SHOTS.length - 1}>
           {s.el}
           {s.cap ? <Caption text={s.cap} /> : null}
         </Fade>
