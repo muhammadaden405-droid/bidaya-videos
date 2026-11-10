@@ -27,7 +27,7 @@ const InkElephant: React.FC<{ step: number }> = ({ step }) => {
   );
 };
 
-export const ParchmentScene: React.FC = () => {
+export const ParchmentScene: React.FC<{ showTitle?: boolean }> = ({ showTitle = true }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
 
@@ -129,7 +129,7 @@ export const ParchmentScene: React.FC = () => {
         <div style={{ fontFamily: amiri, fontSize: 48, direction: "rtl" }}>مكة</div>
         <div style={{ fontFamily: serif, fontSize: 34, fontStyle: "italic" }}>Makkah</div>
       </div>
-      <div style={{ position: "absolute", top: 60, width: "100%", textAlign: "center", color: INK, opacity: labelIn(0) }}>
+      <div style={{ position: "absolute", top: 60, width: "100%", textAlign: "center", color: INK, opacity: showTitle ? labelIn(0) : 0 }}>
         <div style={{ fontFamily: amiri, fontSize: 76, direction: "rtl" }}>عام الفيل</div>
         <div style={{ fontFamily: serif, fontSize: 44, letterSpacing: 3 }}>The Year of the Elephant</div>
       </div>
