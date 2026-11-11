@@ -29,6 +29,23 @@ CUES = {
     ("Caesar", "and he didn't stop until", "fade", {}, ["But I will write"]),
     ("Armada", "And the Negus of Abyssinia answered", "fade", {}, []),
   ],
+  2: [
+    ("Landing", "Seventy thousand", "cut", {}, ["Their commander"]),
+    ("AbrahaSpot", "And in his army", "cut", {}, []),
+    ("SeaRide2", "Dhū Nuwās came out", "fade", {}, ["He turned his horse"]),
+    ("Throne2", "Aryāṭ took Yemen", "fade", {}, []),
+    ("Split", "Then Abraha rose", "fade", {}, ["As the two sides"]),
+    ("Duel2", "Aryāṭ was tall", "cut", {}, ["Aryāṭ was tall", "Abraha was short", "And behind Abraha", "Aryāṭ raised his spear", "and struck"]),
+  ],
+  3: [
+    ("Wound", "The spear missed", "flash", {}, ["From that day"]),
+    ("Charge", "Then ʿAtwada charged", "cut", {}, [0, "Aryāṭ's whole army"]),
+    ("Negus2", "But when the Negus heard", "fade", {}, ["he was furious"]),
+    ("SoilAndLetter", "Abraha did something", "fade", {}, ["He filled a leather bag", "and sent it"]),
+    ("LetterRead", "O King", "fade", {"lines": 6}, []),
+    ("Negus2", "The Negus was satisfied", "fade", {"pleased": True}, []),
+    ("Ambition", "Abraha had survived", "fade", {}, []),
+  ],
 }
 
 BED = lambda src, v, loop=True: (src, 0, v, None, 15, 20, loop)
@@ -43,6 +60,18 @@ SFX = {
   "Trench": [HIT("fire-electric-whoosh-flame-36", 0, 0.6), BED("backlog-adapt-fire-burning", 0.35), BED("distant-bonfire-fire-crackling-01", 0.3), HIT("crowd-groan-01", "b0+20", 0.18)],
   "Escape": [BED("own-hooves", 0.5), BED("blizzard-wind-01", 0.15), BED("night-ambience-01", 0.12)],
   "Caesar": [BED("daily-20260923-hushed-crowd-walla-short", 0.08), BED("gentle-fire-crackling-01", 0.08), HIT("footsteps-stone-01", 0, 0.2), HIT("scroll-unroll-01", "b0", 0.35), HIT("sack-drop-01", "b0+8", 0.2)],
+  "Landing": [BED("ocean-ships", 0.35), BED("marching-footsteps-01", 0.22), ("chainmail-01", "b0", 0.25, None, 0, 0, False)],
+  "AbrahaSpot": [BED("blizzard-wind-01", 0.15), HIT("own-air-swell", 0, 0.3), HIT("own-impact", "end-24", 0.35)],
+  "SeaRide2": [("angry-crowd-01", 0, 0.35, "b0", 0, 15, True), HIT("own-impact", 2, 0.5), ("own-hooves", "b0", 0.45, None, 0, 40, True), BED("flood-water-rush-01", 0.3), HIT("water-swirl-36", "end-60", 0.5)],
+  "Throne2": [BED("daily-20260923-hushed-crowd-walla-short", 0.1), BED("gentle-fire-crackling-01", 0.1)],
+  "Split": [BED("marching-footsteps-01", 0.18), BED("blizzard-wind-01", 0.12), ("own-hooves", "b0", 0.3, 130, 10, 30, True)],
+  "Duel2": [BED("blizzard-wind-01", 0.2), HIT("chainmail-01", "b1", 0.25), HIT("steel-spike-scrape-01", "b3", 0.45), HIT("own-air-swell", "b4-44", 0.5), HIT("own-impact", "b4", 0.8)],
+  "Wound": [HIT("own-impact", 0, 0.8), HIT("body-fall-01", 6, 0.3), BED("blizzard-wind-01", 0.15), HIT("own-air-swell", "b0-40", 0.35), HIT("own-impact", "b0", 0.5)],
+  "Charge": [HIT("arrow-flyby-01", "b0", 0.5), HIT("body-fall-01", "b0+26", 0.6), HIT("own-impact", "b0+14", 0.5), ("marching-footsteps-01", "b1", 0.25, None, 10, 30, True), HIT("crowd-ooh-01", "b1+10", 0.2)],
+  "Negus2": [BED("daily-20260923-hushed-crowd-walla-short", 0.1), BED("gentle-fire-crackling-01", 0.1), HIT("own-impact", "b0+10", 0.45)],
+  "SoilAndLetter": [BED("blizzard-wind-01", 0.12), ("sand-pour-01", "b0", 0.4, "b1", 5, 10, True), HIT("sack-drop-01", "b1-6", 0.35), ("own-hooves", "b1", 0.45, None, 10, 20, True)],
+  "LetterRead": [("marker-writing-01", 0, 0.25, None, 5, 15, True), BED("gentle-fire-crackling-01", 0.14), HIT("paper-fabric-crumple-36", 0, 0.2)],
+  "Ambition": [BED("gentle-fire-crackling-01", 0.1), HIT("own-air-swell", "end-60", 0.45), BED("blizzard-wind-01", 0.08)],
   "Armada": [BED("ocean-ships", 0.5), ("rowing-oar-stroke-01", 0, 0.25, None, 10, 20, True), BED("blizzard-wind-01", 0.1), HIT("own-air-swell", "end-50", 0.45)],
 }
 # the "again" drop gets its impact (TurnTest is shared, so add it by mode)

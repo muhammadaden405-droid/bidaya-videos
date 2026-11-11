@@ -2,6 +2,8 @@ import React from "react";
 import { AbsoluteFill, Html5Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { sans, amiri } from "../fonts";
 import { P1_SCENES } from "./p1";
+import { P2_SCENES } from "./p2";
+import { P3_SCENES } from "./p3";
 import { Recitation, EndCard } from "../ep1/s3";
 import { Grain } from "../ep1/kit";
 import TL from "./timeline.json";
@@ -13,7 +15,7 @@ type Sfx = { src: string; from: number; len?: number; vol: number; fadeIn?: numb
 type Cap = { from: number; to: number; words: { t: number; w: string }[] };
 const T = TL as unknown as { total: number; scenes: Cue[]; audio: { src: string; from: number; vol?: number }[]; sfx: Sfx[]; captions: Cap[] };
 export const EP1V2_LENGTH = Math.max(30, T.total);
-const SCENES: Record<string, React.FC<any>> = { ...(P1_SCENES as any), Recitation, EndCard };
+const SCENES: Record<string, React.FC<any>> = { ...(P1_SCENES as any), ...(P2_SCENES as any), ...(P3_SCENES as any), Recitation, EndCard };
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const Trans: React.FC<{ kind?: Cue["trans"]; children: React.ReactNode }> = ({ kind = "fade", children }) => {
@@ -36,7 +38,7 @@ const Captions: React.FC = () => {
   if (!cap) return null;
   const pop = interpolate(frame, [cap.from, cap.from + 5], [0.85, 1], clamp);
   return (
-    <div style={{ position: "absolute", width: "100%", display: "flex", justifyContent: "center", ...(v ? { top: "64%" } : { bottom: 70 }) }}>
+    <div style={{ position: "absolute", width: "100%", display: "flex", justifyContent: "center", ...(v ? { top: "76%" } : { bottom: 70 }) }}>
       <div style={{ fontFamily: `"${sans}", "${amiri}"`, fontWeight: 800, fontSize: v ? 70 : 48, lineHeight: 1.18, color: "#ffffff", textAlign: "center", maxWidth: v ? 940 : 1500, transform: `scale(${pop})`, WebkitTextStroke: v ? "3px #000" : "2px #000", paintOrder: "stroke fill", textShadow: "0 4px 10px rgba(0,0,0,0.8)" } as React.CSSProperties}>
         {cap.words.map((w, i) => {
           const on = frame >= w.t;
