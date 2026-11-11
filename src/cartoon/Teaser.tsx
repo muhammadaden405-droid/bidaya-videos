@@ -83,7 +83,7 @@ const Title: React.FC<{ vertical?: boolean }> = ({ vertical: v }) => {
 const Sound: React.FC = () => (
   <>
     {/* our own synthesized heartbeat — races into the montage, dies at the bow, returns under the date */}
-    <Html5Audio src={sfx("own-heartbeat-track")} volume={0.95} />
+    <Html5Audio src={sfx("own-heartbeat-track")} volume={0.75} />
     <Sequence from={0} durationInFrames={262}><Html5Audio src={sfx("tension-drone-01")} loop volume={ramp([0, 20, 200, 262], [0, 0.22, 0.32, 0])} /></Sequence>
     <Sequence from={20} durationInFrames={105}><Html5Audio src={sfx("gentle-fire-crackling-01")} volume={ramp([0, 10, 95, 105], [0, 0.1, 0.1, 0])} /></Sequence>
     <Sequence from={K.king[0] + 8}><Html5Audio src={staticFile("trailer/drama/q_king.m4a")} /></Sequence>
@@ -91,17 +91,17 @@ const Sound: React.FC = () => (
     {/* montage hits */}
     <Sequence from={K.m1[0] - 61}><Html5Audio src={sfx("transition-riser-01")} volume={0.45} /></Sequence>
     <Sequence from={K.m1[0] - 4}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.6} /></Sequence>
-    <Sequence from={K.m1[0]}><Html5Audio src={sfx("own-braam")} volume={0.75} /></Sequence>
-    <Sequence from={K.m1[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.55} /></Sequence>
+    <Sequence from={K.m1[0]}><Html5Audio src={sfx("own-braam")} volume={0.5} /></Sequence>
+    <Sequence from={K.m1[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.4} /></Sequence>
     <Sequence from={K.m2[0] - 4}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.6} /></Sequence>
-    <Sequence from={K.m2[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.6} /></Sequence>
+    <Sequence from={K.m2[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.4} /></Sequence>
     <Sequence from={K.m2[0]} durationInFrames={K.m2[1]}><Html5Audio src={sfx("blizzard-wind-01")} volume={0.35} /></Sequence>
     <Sequence from={K.m3[0] - 4}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.5} /></Sequence>
     <Sequence from={K.m3[0]} durationInFrames={K.m3[1]}><Html5Audio src={sfx("horror-creak-17")} volume={0.6} /></Sequence>
     {/* cut to black on the release: braam + sub, then dead silence */}
-    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("own-braam")} volume={0.9} /></Sequence>
-    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("own-subdrop")} volume={0.8} /></Sequence>
-    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("reveal-impact-01")} volume={0.9} /></Sequence>
+    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("own-braam")} volume={0.6} /></Sequence>
+    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("own-subdrop")} volume={0.55} /></Sequence>
+    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("reveal-impact-01")} volume={0.6} /></Sequence>
 
     {/* the boy */}
     <Sequence from={K.boy[0]} durationInFrames={K.boy[1]}><Html5Audio src={sfx("cave-ambience-01")} volume={ramp([0, 15, 90, 104], [0, 0.08, 0.08, 0])} /></Sequence>
@@ -120,10 +120,10 @@ const Sound: React.FC = () => (
     <Sequence from={K.title} durationInFrames={TITLE.slam}><Html5Audio src={sfx("tension-drone-01")} volume={ramp([0, 20, TITLE.slam - 10, TITLE.slam], [0, 0.3, 0.4, 0])} /></Sequence>
     <Sequence from={K.title + TITLE.date - 18}><Html5Audio src={staticFile("trailer/drama/seg9.m4a")} /></Sequence>
     <Sequence from={K.title + TITLE.slam - 48}><Html5Audio src={sfx("own-reverse-swell")} volume={0.7} /></Sequence>
-    <Sequence from={K.title + TITLE.slam - 4}><Html5Audio src={staticFile("trailer/drama/seg10.m4a")} /></Sequence>
-    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("own-braam")} volume={1} /></Sequence>
-    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.7} /></Sequence>
-    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("reveal-impact-01")} volume={0.9} /></Sequence>
+    <Sequence from={K.title + TITLE.slam + 12}><Html5Audio src={staticFile("trailer/drama/seg10.m4a")} volume={1.25} /></Sequence>
+    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("own-braam")} volume={ramp([0, 10, 30, 90], [0.6, 0.45, 0.15, 0.1])} /></Sequence>
+    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("cinematic-boom-01")} volume={ramp([0, 10, 30], [0.45, 0.3, 0.08])} /></Sequence>
+    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("reveal-impact-01")} volume={0.6} /></Sequence>
     <Sequence from={K.title + TITLE.verse}><Html5Audio src={staticFile("trailer/recitation-85-4.m4a")} /></Sequence>
   </>
 );
