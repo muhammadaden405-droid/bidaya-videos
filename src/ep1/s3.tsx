@@ -265,7 +265,7 @@ export const Recitation: React.FC<{ b?: number[] }> = ({ b }) => {
   starts.forEach((s, i) => { if (frame >= s) v = i; });
   const since = frame - starts[v];
   const end = v < 4 ? starts[v + 1] : dur;
-  const o = iv(frame, [starts[v], starts[v] + 10, end - 8, end], [0, 1, 1, v < 4 ? 0 : 1]);
+  const o = iv(frame, [starts[v], starts[v] + 10, Math.max(starts[v] + 11, end - 8), Math.max(starts[v] + 12, end)], [0, 1, 1, v < 4 ? 0 : 1]);
   const cam = moveCam(p, { x: 0, y: 0, zoom: 1.05 }, { x: 0, y: -20, zoom: 1.2 });
   const V = useVertical();
   return (

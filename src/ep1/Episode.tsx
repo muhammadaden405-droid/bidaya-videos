@@ -91,7 +91,8 @@ const Captions: React.FC<{ vertical?: boolean }> = ({ vertical }) => {
   const frame = useCurrentFrame();
   const cap = T.captions.find((c) => frame >= c.from && frame < c.to);
   if (!cap) return null;
-  const o = interpolate(frame, [cap.from, cap.from + 4, cap.to - 4, cap.to], [0, 1, 1, 0], clamp);
+  const fd = Math.max(0, Math.min(4, Math.floor((cap.to - cap.from) / 2) - 1));
+  const o = fd > 0 ? interpolate(frame, [cap.from, cap.from + fd, cap.to - fd, cap.to], [0, 1, 1, 0], clamp) : 1;
   return (
     <>
     {vertical ? null : <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 240, background: "linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.42))", opacity: o }} />}

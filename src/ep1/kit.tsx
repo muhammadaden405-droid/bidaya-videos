@@ -9,8 +9,12 @@ export const W = 1920;
 export const H = 1080;
 export type Cam = { x: number; y: number; zoom: number };
 export const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-export const iv = (f: number, a: number[], b: number[], ease?: (t: number) => number) =>
-  interpolate(f, a, b, ease ? { ...clamp, easing: ease } : clamp);
+// interpolate that never throws on beat-derived ranges that touch or cross (keeps them increasing)
+export const iv = (f: number, a: number[], b: number[], ease?: (t: number) => number) => {
+  const r = a.slice();
+  for (let i = 1; i < r.length; i++) if (!(r[i] > r[i - 1])) r[i] = r[i - 1] + 0.01;
+  return interpolate(f, r, b, ease ? { ...clamp, easing: ease } : clamp);
+};
 export const ease = Easing.inOut(Easing.sin);
 
 // frame, duration, and progress 0..1 of the current shot
