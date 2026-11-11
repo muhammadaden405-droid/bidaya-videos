@@ -8,6 +8,7 @@ import { Sample, SAMPLE_LENGTH } from "./Sample";
 import { Cartoon25D, CARTOON_LENGTH } from "./cartoon/Scenes";
 import { TrenchTrailer, TrenchTrailerVertical, TRAILER_LENGTH } from "./cartoon/Trailer";
 import { DramaTrailer, DramaTrailerVertical, DRAMA_LENGTH } from "./cartoon/DramaTrailer";
+import { Teaser, TeaserVertical, TEASER_LENGTH } from "./cartoon/Teaser";
 
 // Pipeline test card: confirms GitHub rendering, fonts and motion work.
 export const TitleTest: React.FC = () => {
@@ -73,6 +74,8 @@ export const MyComposition = () => (
     <Composition id="TitleTest" component={TitleTest} durationInFrames={150} fps={30} width={1920} height={1080} />
     <Composition id="StyleCompare" component={StyleCompare} durationInFrames={SCENE * 2} fps={30} width={1920} height={1080} />
     <Composition id="Silhouette" component={SilhouetteScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
+    <Composition id="Teaser" component={Teaser} durationInFrames={TEASER_LENGTH} fps={30} width={1920} height={1080} />
+    <Composition id="TeaserVertical" component={TeaserVertical} durationInFrames={TEASER_LENGTH} fps={30} width={1080} height={1920} />
     <Composition id="DramaTrailer" component={DramaTrailer} durationInFrames={DRAMA_LENGTH} fps={30} width={1920} height={1080} />
     <Composition id="DramaTrailerVertical" component={DramaTrailerVertical} durationInFrames={DRAMA_LENGTH} fps={30} width={1080} height={1920} />
     <Composition id="TrenchTrailerVertical" component={TrenchTrailerVertical} durationInFrames={TRAILER_LENGTH} fps={30} width={1080} height={1920} />

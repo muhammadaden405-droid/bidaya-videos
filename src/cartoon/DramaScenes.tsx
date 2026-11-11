@@ -145,36 +145,55 @@ export const CounselShot: React.FC = () => {
   );
 };
 
-// The king draws his bow before the gathered people — seen from behind; cut to black before the release.
+// The king draws his bow before the gathered people — side view; cut to black before the release.
+// The bow sits exactly in his front hand and the string in his drawing hand (positions follow the rig).
 export const BowShot: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
-  const draw = interpolate(frame, [10, durationInFrames - 20], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const cam: Cam = { x: 0, y: interpolate(frame, [0, durationInFrames], [0, -40]), zoom: interpolate(frame, [0, durationInFrames], [1.0, 1.45], { easing: Easing.in(Easing.cubic) }) };
-  const pull = draw * 70;
-  const tremble = draw > 0.85 ? Math.sin(frame * 2.3) * 2 : 0;
+  const draw = interpolate(frame, [6, durationInFrames - 12], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const cam: Cam = { x: 0, y: 0, zoom: interpolate(frame, [0, durationInFrames], [1.05, 1.35], { easing: Easing.in(Easing.cubic) }) };
+  const tremble = draw > 0.85 ? Math.sin(frame * 2.3) * 1.5 : 0;
+  // Rig geometry (Person, unflipped, faces +x): shoulders at y=-196, upper arm 52, lower arm 48.
+  const rad = (d: number) => (d * Math.PI) / 180;
+  const limbVec = (deg: number, len: number) => [-len * Math.sin(rad(deg)), len * Math.cos(rad(deg))];
+  // front (near) arm straight out: upper -90, lower 0 -> hand at (106, -196)
+  const fe = limbVec(-90, 52);
+  const frontHand = [6 + fe[0] + limbVec(-90, 48)[0], -196 + fe[1] + limbVec(-90, 48)[1]];
+  // drawing (far) arm: upper -90, elbow folds back as the string is pulled
+  const bend = 175 * draw;
+  const be = limbVec(-90, 52);
+  const bl = limbVec(-90 + bend, 48);
+  const backHand = [-4 + be[0] + bl[0], -196 + be[1] + bl[1]];
+  const bx = frontHand[0] + tremble;
+  const by = frontHand[1];
+  const top = [bx, by - 120];
+  const bot = [bx, by + 120];
+  const sx = Math.min(backHand[0], bx - 6);
+  const sy = by;
+  const pose: Pose = { ...STAND, armRU: -90, armRL: 0, armLU: -90, armLL: bend, head: 0, lean: -2 };
   return (
     <AbsoluteFill style={{ background: "linear-gradient(#2b1d34 0%, #6b3b45 55%, #b8704a 80%)" }}>
       <Layer d={0.2} cam={cam}><path d="M -400 700 L 300 620 L 800 680 L 1300 610 L 2300 700 L 2300 1300 L -400 1300 Z" fill="#3b2232" /></Layer>
       <Layer d={0.55} cam={cam}>
         <rect x={-600} y={700} width={3200} height={600} fill="#4a2a24" />
-        {/* the gathered people in the distance */}
-        {new Array(30).fill(0).map((_, i) => (
-          <g key={i} transform={`translate(${80 + i * 62 + (i % 2) * 20} ${720 + (i % 3) * 14}) scale(0.26)`} opacity={0.85}>
-            <Person pose={{ ...STAND, head: Math.sin(frame * 0.05 + i) * 3 }} outfit={FOLK(i)} />
+        {/* the gathered people in the distance, on the side he is aiming toward */}
+        {new Array(20).fill(0).map((_, i) => (
+          <g key={i} transform={`translate(${1050 + i * 48 + (i % 2) * 18} ${720 + (i % 3) * 14}) scale(0.26)`} opacity={0.85}>
+            <Person pose={{ ...STAND, head: Math.sin(frame * 0.05 + i) * 3 }} outfit={FOLK(i)} flip />
           </g>
         ))}
       </Layer>
       <Layer d={1} cam={cam}>
-        {/* the king from behind, bow raised toward the distance */}
-        <g transform={`translate(960 1120) scale(1.5)`}>
-          <Person pose={{ ...STAND, armRU: -100, armRL: -5, armLU: -80 + draw * 10, armLL: -60, head: -4 }} outfit={KING} />
-          <g transform={`translate(${-40 + tremble} -330)`}>
-            <path d={`M 0 -120 Q ${-60 - pull * 0.4} 0 0 120`} stroke="#3a2416" strokeWidth={9} fill="none" />
-            <path d={`M 0 -120 L ${-pull} 0 L 0 120`} stroke="#e8dcc2" strokeWidth={2.5} fill="none" />
-            <line x1={-pull} y1={0} x2={170 - pull} y2={0} stroke="#5a3a22" strokeWidth={5} />
-            <path d={`M ${170 - pull} -9 L ${200 - pull} 0 L ${170 - pull} 9 Z`} fill="#c9c4b8" />
-          </g>
+        <g transform="translate(560 1000) scale(1.45)">
+          <Person pose={pose} outfit={KING} />
+          {/* bow: arc through the front hand, bulging forward */}
+          <path d={`M ${top[0]} ${top[1]} Q ${bx + 55 + draw * 25} ${by} ${bot[0]} ${bot[1]}`} stroke="#3a2416" strokeWidth={8} fill="none" strokeLinecap="round" />
+          {/* string from both tips to the drawing hand */}
+          <path d={`M ${top[0]} ${top[1]} L ${sx} ${sy} L ${bot[0]} ${bot[1]}`} stroke="#e8dcc2" strokeWidth={2.2} fill="none" />
+          {/* arrow resting on the bow, nocked on the string */}
+          <line x1={sx} y1={sy} x2={sx + 165} y2={sy} stroke="#5a3a22" strokeWidth={4.5} />
+          <path d={`M ${sx + 165} ${sy - 8} L ${sx + 192} ${sy} L ${sx + 165} ${sy + 8} Z`} fill="#c9c4b8" />
+          <path d={`M ${sx} ${sy} l -14 -9 M ${sx} ${sy} l -14 9`} stroke="#8f2a1c" strokeWidth={4} />
         </g>
       </Layer>
       <AbsoluteFill style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.7) 100%)" }} />
