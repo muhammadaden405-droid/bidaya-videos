@@ -7,11 +7,11 @@ import { amiri, serif } from "../fonts";
 // Source: al-Bidāya wa al-Nihāya (ed. al-Turkī) 3/23–29, the hadith of Ṣuhayb (Aḥmad, Muslim).
 // Faceless characters; the trench is shown only as fire and glow, never anyone in it.
 
-const W = 1920;
-const H = 1080;
-type Cam = { x: number; y: number; zoom: number };
+export const W = 1920;
+export const H = 1080;
+export type Cam = { x: number; y: number; zoom: number };
 
-const Layer: React.FC<{ d: number; cam: Cam; children: React.ReactNode }> = ({ d, cam, children }) => {
+export const Layer: React.FC<{ d: number; cam: Cam; children: React.ReactNode }> = ({ d, cam, children }) => {
   const s = 1 + (cam.zoom - 1) * d;
   return (
     <AbsoluteFill style={{ transform: `translate(${-cam.x * d}px, ${-cam.y * d}px) scale(${s})`, transformOrigin: "50% 58%" }}>
@@ -20,17 +20,17 @@ const Layer: React.FC<{ d: number; cam: Cam; children: React.ReactNode }> = ({ d
   );
 };
 
-const KING: Outfit = { skin: "#a8724f", robe: "#3d1d4f", robeShade: "#2a1238", crown: true, cape: "#7a1420" };
-const GUARD: Outfit = { skin: "#8d5a3b", robe: "#3b3026", robeShade: "#251d17", wrap: "#5a1a14", spear: true, shield: "#5a3a20" };
-const BOY: Outfit = { skin: "#b07a56", robe: "#efe6d2", robeShade: "#cfc3a8", wrap: "#f6f0e2" };
-const FOLK = (i: number): Outfit => ({
+export const KING: Outfit = { skin: "#a8724f", robe: "#3d1d4f", robeShade: "#2a1238", crown: true, cape: "#7a1420" };
+export const GUARD: Outfit = { skin: "#8d5a3b", robe: "#3b3026", robeShade: "#251d17", wrap: "#5a1a14", spear: true, shield: "#5a3a20" };
+export const BOY: Outfit = { skin: "#b07a56", robe: "#efe6d2", robeShade: "#cfc3a8", wrap: "#f6f0e2" };
+export const FOLK = (i: number): Outfit => ({
   skin: ["#8d5a3b", "#a06b48", "#7a4b30", "#b07a56"][i % 4],
   robe: ["#4a3a2e", "#5b4636", "#3d342c", "#64503c"][i % 4],
   robeShade: "#2a211b",
   wrap: ["#7a6a55", "#3a2e26", "#8a7a62", undefined][i % 4],
 });
 
-const Torch: React.FC<{ x: number; y: number; frame: number; seed: number }> = ({ x, y, frame, seed }) => {
+export const Torch: React.FC<{ x: number; y: number; frame: number; seed: number }> = ({ x, y, frame, seed }) => {
   const f = 1 + 0.12 * Math.sin(frame * 0.5 + seed) + 0.06 * Math.sin(frame * 1.3 + seed);
   return (
     <g>
@@ -48,7 +48,7 @@ const Torch: React.FC<{ x: number; y: number; frame: number; seed: number }> = (
   );
 };
 
-const Palace: React.FC<{ cam: Cam; frame: number }> = ({ cam, frame }) => (
+export const Palace: React.FC<{ cam: Cam; frame: number }> = ({ cam, frame }) => (
   <>
     <Layer d={0.25} cam={cam}>
       <rect x={-400} y={-200} width={2800} height={1400} fill="#24152e" />
@@ -75,7 +75,7 @@ const Palace: React.FC<{ cam: Cam; frame: number }> = ({ cam, frame }) => (
 );
 
 // Shot 1 — the king on his throne leans forward and demands an answer.
-const KingShot: React.FC = () => {
+export const KingShot: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const cam: Cam = { x: 0, y: interpolate(frame, [0, durationInFrames], [0, -30]), zoom: interpolate(frame, [0, durationInFrames], [1.0, 1.25], { easing: Easing.inOut(Easing.sin) }) };
@@ -98,7 +98,7 @@ const KingShot: React.FC = () => {
 };
 
 // Shot 2 — the boy stands calm before the court, finger raised to the sky.
-const BoyShot: React.FC = () => {
+export const BoyShot: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const cam: Cam = { x: interpolate(frame, [0, durationInFrames], [-40, 30]), y: 0, zoom: interpolate(frame, [0, durationInFrames], [1.1, 1.32], { easing: Easing.inOut(Easing.sin) }) };
@@ -125,7 +125,7 @@ const BoyShot: React.FC = () => {
 };
 
 // Shot 3 — night; a crowd stands firm before the glowing trench.
-const FireShot: React.FC = () => {
+export const FireShot: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const cam: Cam = { x: interpolate(frame, [0, durationInFrames], [30, -30]), y: 0, zoom: interpolate(frame, [0, durationInFrames], [1.0, 1.18]) };
@@ -199,7 +199,7 @@ const TitleShot: React.FC = () => {
 
 const FADE = 10;
 // Whip-pan transition: the camera swings out of one shot (motion blur + push) and into the next.
-const Fade: React.FC<{ children: React.ReactNode; first?: boolean; last?: boolean }> = ({ children, first, last }) => {
+export const Fade: React.FC<{ children: React.ReactNode; first?: boolean; last?: boolean }> = ({ children, first, last }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const ease = Easing.inOut(Easing.cubic);
@@ -233,15 +233,15 @@ const SHOTS: { from: number; len: number; el: React.ReactNode; cap?: string }[] 
 ];
 export const TRAILER_LENGTH = 905;
 
-const FadeToBlack: React.FC<{ from: number }> = ({ from }) => {
+export const FadeToBlack: React.FC<{ from: number }> = ({ from }) => {
   const frame = useCurrentFrame();
   const o = interpolate(frame, [from, from + 28], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return <AbsoluteFill style={{ backgroundColor: "#000", opacity: o }} />;
 };
 
 // Sound design (CC0 sound effects, no music). Volumes ramp so the narration always sits on top.
-const sfx = (f: string) => staticFile(`trailer/sfx/${f}.mp3`);
-const ramp = (pts: number[], vals: number[]) => (f: number) =>
+export const sfx = (f: string) => staticFile(`trailer/sfx/${f}.mp3`);
+export const ramp = (pts: number[], vals: number[]) => (f: number) =>
   interpolate(f, pts, vals, { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
 const SoundDesign: React.FC = () => (
@@ -295,7 +295,7 @@ export const TrenchTrailer: React.FC = () => (
 const VW = 1080;
 const VH = 1920;
 
-const Reframe: React.FC<{ children: React.ReactNode; focusX?: number; zoom?: number }> = ({ children, focusX = 960, zoom = 1 }) => {
+export const Reframe: React.FC<{ children: React.ReactNode; focusX?: number; zoom?: number }> = ({ children, focusX = 960, zoom = 1 }) => {
   const s = (VH / H) * zoom;
   const left = VW / 2 - focusX * s;
   return (
@@ -307,7 +307,7 @@ const Reframe: React.FC<{ children: React.ReactNode; focusX?: number; zoom?: num
   );
 };
 
-const VCaption: React.FC<{ text: string }> = ({ text }) => {
+export const VCaption: React.FC<{ text: string }> = ({ text }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const o = interpolate(frame, [6, 16, durationInFrames - 14, durationInFrames - 4], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
