@@ -26,7 +26,7 @@ CUES = {
     ("TitleReveal", "How did a war elephant", "fade", {}, ["the edge of Makkah"]),
     ("Trench", "It started years earlier", "flash", {}, ["A king named"]),
     ("Escape", "Only one man escaped", "fade", {}, []),
-    ("Caesar", "and he didn't stop until", "fade", {}, ["But I will write"]),
+    ("Caesar", "Then he didn't stop until", "fade", {}, ["But I will write"]),
     ("Armada", "And the Negus of Abyssinia answered", "fade", {}, []),
   ],
   2: [
@@ -35,7 +35,7 @@ CUES = {
     ("SeaRide2", "Dhū Nuwās came out", "fade", {}, ["He turned his horse"]),
     ("Throne2", "Aryāṭ took Yemen", "fade", {}, []),
     ("Split", "Then Abraha rose", "fade", {}, ["As the two sides"]),
-    ("Duel2", "Aryāṭ was tall", "cut", {}, ["Aryāṭ was tall", "Abraha was short", "And behind Abraha", "Aryāṭ raised his spear", "and struck"]),
+    ("Duel2", "Aryāṭ was tall", "cut", {}, ["Aryāṭ was tall", "Abraha was short", "Then behind Abraha", "Aryāṭ raised his spear", "and struck"]),
   ],
   3: [
     ("Wound", "The spear missed", "flash", {}, ["From that day", "his eyebrow", "His eye.", "His nose", "His lip"]),

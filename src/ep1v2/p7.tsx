@@ -304,7 +304,7 @@ const PAGES: [string, string][] = [
   ["The trench at Najrān and the escape", "133–135"],
   ["Dhū Nuwās and the sea; Aryāṭ", "135–136"],
   ["The duel and the split face", "137"],
-  ["The Negus's oath and the soil", "138"],
+  ["The Negus's oath and the soil", "137–138"],
   ["al-Qullays and the man from Kināna", "140–141"],
   ["The road: Dhū Nafar, Nufayl, al-Ṭāʾif", "141–142"],
   ["Abū Righāl, the camels, the envoy", "142–144"],
