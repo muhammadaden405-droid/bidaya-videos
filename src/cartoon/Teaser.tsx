@@ -3,6 +3,7 @@ import { AbsoluteFill, Html5Audio, Sequence, interpolate, random, staticFile, us
 import { KingShot, BoyShot, FireShot, Reframe, FadeToBlack, sfx, ramp } from "./Trailer";
 import { MountainShot, SeaShot, BowShot } from "./DramaScenes";
 import { amiri, serif } from "../fonts";
+import { BEATS } from "./teaserBeats";
 
 // Short teaser (~28 s): two lines of dialogue, a wordless flash montage that cuts away before
 // anything is resolved, a beat of silence, the fire, then the title, date and Muhamed's recitation.
@@ -81,43 +82,83 @@ const Title: React.FC<{ vertical?: boolean }> = ({ vertical: v }) => {
 
 const Sound: React.FC = () => (
   <>
-    {/* heartbeat from the first frame, quickening into the montage */}
-    <Sequence from={0} durationInFrames={250}><Html5Audio src={sfx("horror-heartbeat-34")} volume={ramp([0, 10, 120, 230, 250], [0, 0.3, 0.3, 0.42, 0])} playbackRate={1} /></Sequence>
-    <Sequence from={120} durationInFrames={110}><Html5Audio src={sfx("horror-heartbeat-34")} volume={ramp([0, 10, 100, 110], [0, 0.2, 0.3, 0])} playbackRate={1.6} /></Sequence>
-    <Sequence from={20} durationInFrames={105}><Html5Audio src={sfx("gentle-fire-crackling-01")} volume={ramp([0, 10, 95, 105], [0, 0.12, 0.12, 0])} /></Sequence>
+    {/* our own synthesized heartbeat — races into the montage, dies at the bow, returns under the date */}
+    <Html5Audio src={sfx("own-heartbeat-track")} volume={0.95} />
+    <Sequence from={0} durationInFrames={262}><Html5Audio src={sfx("tension-drone-01")} loop volume={ramp([0, 20, 200, 262], [0, 0.22, 0.32, 0])} /></Sequence>
+    <Sequence from={20} durationInFrames={105}><Html5Audio src={sfx("gentle-fire-crackling-01")} volume={ramp([0, 10, 95, 105], [0, 0.1, 0.1, 0])} /></Sequence>
     <Sequence from={K.king[0] + 8}><Html5Audio src={staticFile("trailer/drama/q_king.m4a")} /></Sequence>
 
     {/* montage hits */}
-    <Sequence from={K.m1[0] - 40}><Html5Audio src={sfx("transition-riser-01")} volume={0.2} /></Sequence>
-    <Sequence from={K.m1[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.42} /></Sequence>
-    <Sequence from={K.m2[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.42} /></Sequence>
-    <Sequence from={K.m2[0]} durationInFrames={K.m2[1]}><Html5Audio src={sfx("blizzard-wind-01")} volume={0.25} /></Sequence>
-    <Sequence from={K.m3[0]} durationInFrames={K.m3[1]}><Html5Audio src={sfx("horror-creak-17")} volume={0.35} /></Sequence>
-    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("impact-slam-35")} volume={0.3} /></Sequence>
+    <Sequence from={K.m1[0] - 61}><Html5Audio src={sfx("transition-riser-01")} volume={0.45} /></Sequence>
+    <Sequence from={K.m1[0] - 4}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.6} /></Sequence>
+    <Sequence from={K.m1[0]}><Html5Audio src={sfx("own-braam")} volume={0.75} /></Sequence>
+    <Sequence from={K.m1[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.55} /></Sequence>
+    <Sequence from={K.m2[0] - 4}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.6} /></Sequence>
+    <Sequence from={K.m2[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.6} /></Sequence>
+    <Sequence from={K.m2[0]} durationInFrames={K.m2[1]}><Html5Audio src={sfx("blizzard-wind-01")} volume={0.35} /></Sequence>
+    <Sequence from={K.m3[0] - 4}><Html5Audio src={sfx("short-video-whoosh-01")} volume={0.5} /></Sequence>
+    <Sequence from={K.m3[0]} durationInFrames={K.m3[1]}><Html5Audio src={sfx("horror-creak-17")} volume={0.6} /></Sequence>
+    {/* cut to black on the release: braam + sub, then dead silence */}
+    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("own-braam")} volume={0.9} /></Sequence>
+    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("own-subdrop")} volume={0.8} /></Sequence>
+    <Sequence from={K.m3[0] + K.m3[1]}><Html5Audio src={sfx("reveal-impact-01")} volume={0.9} /></Sequence>
 
-    {/* silence ... then the boy */}
-    <Sequence from={K.boy[0]} durationInFrames={K.boy[1]}><Html5Audio src={sfx("cave-ambience-01")} volume={ramp([0, 15, 90, 104], [0, 0.07, 0.07, 0])} /></Sequence>
+    {/* the boy */}
+    <Sequence from={K.boy[0]} durationInFrames={K.boy[1]}><Html5Audio src={sfx("cave-ambience-01")} volume={ramp([0, 15, 90, 104], [0, 0.08, 0.08, 0])} /></Sequence>
     <Sequence from={K.boy[0] + 14}><Html5Audio src={staticFile("trailer/drama/q_boy.m4a")} /></Sequence>
 
     {/* the fire */}
     <Sequence from={K.fire[0] - 8} durationInFrames={K.end - K.fire[0] + 8}>
-      <Html5Audio src={sfx("backlog-adapt-fire-burning")} loop volume={ramp([0, 6, 70, 200, 260, 380, 400], [0, 0.32, 0.18, 0.12, 0.03, 0.03, 0])} />
-      <Html5Audio src={sfx("distant-bonfire-fire-crackling-01")} loop volume={ramp([0, 6, 70, 200, 260, 380, 400], [0, 0.28, 0.16, 0.1, 0.02, 0.02, 0])} />
+      <Html5Audio src={sfx("backlog-adapt-fire-burning")} loop volume={ramp([0, 6, 70, 200, 260, 380, 400], [0, 0.42, 0.2, 0.12, 0.03, 0.03, 0])} />
+      <Html5Audio src={sfx("distant-bonfire-fire-crackling-01")} loop volume={ramp([0, 6, 70, 200, 260, 380, 400], [0, 0.35, 0.16, 0.1, 0.02, 0.02, 0])} />
     </Sequence>
-    <Sequence from={K.fire[0] - 8} durationInFrames={40}><Html5Audio src={sfx("fire-electric-whoosh-flame-36")} volume={ramp([0, 3, 25, 40], [0, 0.3, 0.12, 0])} /></Sequence>
+    <Sequence from={K.fire[0] - 8} durationInFrames={45}><Html5Audio src={sfx("fire-electric-whoosh-flame-36")} volume={ramp([0, 3, 25, 45], [0, 0.6, 0.25, 0])} /></Sequence>
+    <Sequence from={K.fire[0]}><Html5Audio src={sfx("own-subdrop")} volume={0.7} /></Sequence>
+    <Sequence from={K.fire[0]}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.5} /></Sequence>
 
-    {/* title: date, slam, recitation */}
+    {/* title: date over racing heartbeat, reverse swell, silence, SLAM */}
+    <Sequence from={K.title} durationInFrames={TITLE.slam}><Html5Audio src={sfx("tension-drone-01")} volume={ramp([0, 20, TITLE.slam - 10, TITLE.slam], [0, 0.3, 0.4, 0])} /></Sequence>
     <Sequence from={K.title + TITLE.date - 18}><Html5Audio src={staticFile("trailer/drama/seg9.m4a")} /></Sequence>
+    <Sequence from={K.title + TITLE.slam - 48}><Html5Audio src={sfx("own-reverse-swell")} volume={0.7} /></Sequence>
     <Sequence from={K.title + TITLE.slam - 4}><Html5Audio src={staticFile("trailer/drama/seg10.m4a")} /></Sequence>
-    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.4} /></Sequence>
+    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("own-braam")} volume={1} /></Sequence>
+    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("cinematic-boom-01")} volume={0.7} /></Sequence>
+    <Sequence from={K.title + TITLE.slam}><Html5Audio src={sfx("reveal-impact-01")} volume={0.9} /></Sequence>
     <Sequence from={K.title + TITLE.verse}><Html5Audio src={staticFile("trailer/recitation-85-4.m4a")} /></Sequence>
   </>
 );
+
+// Heartbeat made visible: each beat punches the frame in and darkens the edges.
+const HITS = [K.m1[0], K.m2[0], K.m3[0] + K.m3[1], K.fire[0], K.title + TITLE.slam];
+const Pulse: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const frame = useCurrentFrame();
+  let p = 0;
+  for (const b of BEATS) {
+    const d = frame - b;
+    if (d >= 0 && d < 12) p = Math.max(p, Math.exp(-d / 3)); // lub
+    const d2 = d - 5;
+    if (d2 >= 0 && d2 < 10) p = Math.max(p, 0.6 * Math.exp(-d2 / 3)); // dub
+  }
+  let sh = 0;
+  for (const h of HITS) {
+    const d = frame - h;
+    if (d >= 0 && d < 16) sh = Math.max(sh, 22 * Math.exp(-d / 4));
+  }
+  const sx = sh * Math.sin(frame * 7.1);
+  const sy = sh * Math.cos(frame * 5.3);
+  return (
+    <AbsoluteFill>
+      <AbsoluteFill style={{ transform: `translate(${sx}px, ${sy}px) scale(${1 + 0.022 * p + sh / 900})` }}>{children}</AbsoluteFill>
+      <AbsoluteFill style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(60,0,0,1) 100%)", opacity: 0.55 * p, pointerEvents: "none" }} />
+    </AbsoluteFill>
+  );
+};
 
 const Build: React.FC<{ vertical?: boolean }> = ({ vertical }) => {
   const V = vertical;
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
+      <Pulse>
       {/* the king — one line */}
       <Clip at={K.king[0]} len={K.king[1]} skip={40} vertical={V}><KingShot /></Clip>
       <Sequence from={K.king[0]} durationInFrames={K.king[1]}><Line text="“Do you have a lord… other than me?”" vertical={V} /></Sequence>
@@ -135,6 +176,9 @@ const Build: React.FC<{ vertical?: boolean }> = ({ vertical }) => {
       <Clip at={K.fire[0]} len={K.fire[1]} skip={30} vertical={V} flash><FireShot /></Clip>
 
       <Sequence from={K.title} durationInFrames={K.end - K.title}><Title vertical={V} /></Sequence>
+      </Pulse>
+      {/* hard white flash on the big hits */}
+      {[K.m3[0] + K.m3[1], K.title + TITLE.slam].map((h) => <Sequence key={h} from={h} durationInFrames={10}><Flash len={10} strength={0.95} /></Sequence>)}
       <FadeToBlack from={K.end - 28} />
       <Sound />
     </AbsoluteFill>
