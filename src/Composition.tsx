@@ -9,6 +9,9 @@ import { Cartoon25D, CARTOON_LENGTH } from "./cartoon/Scenes";
 import { TrenchTrailer, TrenchTrailerVertical, TRAILER_LENGTH } from "./cartoon/Trailer";
 import { DramaTrailer, DramaTrailerVertical, DRAMA_LENGTH } from "./cartoon/DramaTrailer";
 import { Teaser, TeaserVertical, TEASER_LENGTH } from "./cartoon/Teaser";
+import { Ep1Previews } from "./ep1/preview";
+import { Episode1, Ep1Part, EP1_LENGTH } from "./ep1/Episode";
+import PARTS from "../tools/ep1_parts.json";
 
 // Pipeline test card: confirms GitHub rendering, fonts and motion work.
 export const TitleTest: React.FC = () => {
@@ -85,5 +88,10 @@ export const MyComposition = () => (
     <Composition id="Mix3D" component={Mix3D} durationInFrames={SCENE * 2} fps={30} width={1920} height={1080} />
     <Composition id="Desert3D" component={Desert3DScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
     <Composition id="Parchment" component={ParchmentScene} durationInFrames={SCENE} fps={30} width={1920} height={1080} />
+    <Composition id="Episode1" component={Episode1} durationInFrames={EP1_LENGTH} fps={30} width={1920} height={1080} />
+    {(PARTS as { part: number; start: number; end: number }[]).map((p) => (
+      <Composition key={p.part} id={`Episode1-Part${p.part}`} component={Ep1Part} defaultProps={{ from: p.start }} durationInFrames={p.end - p.start} fps={30} width={1920} height={1080} />
+    ))}
+    <Ep1Previews />
   </>
 );
