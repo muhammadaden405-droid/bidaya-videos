@@ -91,3 +91,71 @@ export const Ep1Thumb: React.FC<{ line1?: string; line2?: string }> = ({ line1 =
     </AbsoluteFill>
   );
 };
+
+// 9:16 cover for the TikTok parts: same scene recomposed for the tall frame, text kept inside the 3:4 profile-grid crop.
+const VCX = 1330;
+const VCY = 1330;
+const VBIRDS = new Array(30).fill(0).map((_, i) => {
+  const c = i % 6, r = Math.floor(i / 6);
+  const jx = ((i * 97) % 60) - 30, jy = ((i * 61) % 50) - 25;
+  return { x: 540 + c * 150 + (r % 2) * 70 + jx, y: 790 + r * 60 + jy, s: 0.75 + ((i * 29) % 10) / 14, w: ((i * 7) % 10) / 10 - 0.3, dive: -18 + ((i * 11) % 28) };
+});
+const VSTONES = [[1150, 1380, 120], [1230, 1300, 110], [1060, 1240, 100], [1290, 1420, 130], [950, 1180, 90], [1180, 1150, 80]];
+const VRays: React.FC = () => (
+  <g opacity={0.5}>
+    {new Array(22).fill(0).map((_, i) => {
+      const a0 = (i / 22) * Math.PI * 2;
+      const a1 = a0 + 0.07;
+      const R = 2600;
+      return <path key={i} d={`M ${VCX} ${VCY} L ${VCX + Math.cos(a0) * R} ${VCY + Math.sin(a0) * R} L ${VCX + Math.cos(a1) * R} ${VCY + Math.sin(a1) * R} Z`} fill="url(#vray)" />;
+    })}
+  </g>
+);
+const TXT = (color: string, size: number): React.CSSProperties => ({ fontFamily: sans, fontWeight: 800, fontSize: size, lineHeight: 0.95, color, letterSpacing: -2, WebkitTextStroke: "11px #000", paintOrder: "stroke fill", textShadow: "0 10px 0 #000, 0 16px 36px rgba(0,0,0,0.85)" } as React.CSSProperties);
+
+export const Ep1ThumbV: React.FC<{ part?: number; lines?: string[] }> = ({ part = 1, lines = ["IT REFUSED", "TO MOVE"] }) => {
+  const cam: Cam = { x: 0, y: 0, zoom: 1 };
+  const size = Math.min(140, Math.floor(980 / (Math.max(...lines.map((l) => l.length)) * 0.74)));
+  return (
+    <AbsoluteFill>
+      <Sky stops={FIRE} />
+      <Layer d={0.02} cam={cam}>
+        <defs>
+          <radialGradient id="vsun"><stop offset="0%" stopColor="#fff6d8" /><stop offset="25%" stopColor="#ffd27a" stopOpacity={0.9} /><stop offset="100%" stopColor="#ff7a2a" stopOpacity={0} /></radialGradient>
+          <linearGradient id="vray" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#fff0b8" stopOpacity={0.9} /><stop offset="100%" stopColor="#fff0b8" stopOpacity={0} /></linearGradient>
+        </defs>
+        <VRays />
+        <circle cx={VCX} cy={VCY} r={560} fill="url(#vsun)" />
+      </Layer>
+      <Layer d={0.15} cam={cam}><path d={ridge("tv1", 1400, 180, 110)} fill="#5a1424" /></Layer>
+      <Layer d={0.3} cam={cam}>
+        <Defs />
+        <path d={ridge("tv2", 1470, 80, 90)} fill="#2a0912" />
+        {new Array(6).fill(0).map((_, i) => <Fig key={i} x={1120 + i * 28} y={1484 - (i % 2) * 10} s={0.4} outfit={SOLDIER(i)} prop="spear" pose={STAND} silhouette="#1a0509" />)}
+        <Kaaba2 x={1370} y={1484} s={0.78} />
+      </Layer>
+      <Layer d={0.5} cam={cam}>
+        <defs>
+          <radialGradient id="ember"><stop offset="0%" stopColor="#ffe9a0" /><stop offset="45%" stopColor="#ff7a1a" stopOpacity={0.9} /><stop offset="100%" stopColor="#ff3a00" stopOpacity={0} /></radialGradient>
+          <linearGradient id="trail" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#ff8a2a" stopOpacity={0} /><stop offset="100%" stopColor="#ffd070" stopOpacity={0.95} /></linearGradient>
+        </defs>
+        {VBIRDS.map((b, i) => <Bird key={i} {...b} />)}
+        {VSTONES.map(([x, y, l], i) => <Stone key={i} x={x} y={y} len={l} />)}
+      </Layer>
+      <Layer d={1} cam={cam}>
+        <Defs />
+        <rect x={-800} y={1600} width={3600} height={800} fill="#1e0a0c" />
+        <g transform="translate(900 1640) scale(0.95)"><Elephant2 kneel={1} ear={0.9} trunk={0.7} skin="#8a8280" driver={<Mahout />} /></g>
+      </Layer>
+      <Grade color="#ff5a1a" opacity={0.12} />
+      <Vignette s={0.7} />
+      <AbsoluteFill style={{ alignItems: "center", paddingTop: 270 }}>
+        <div style={{ fontFamily: sans, fontWeight: 800, fontSize: 52, color: "#fff", background: "#d4141c", padding: "10px 30px 12px", borderRadius: 14, border: "5px solid #000", letterSpacing: 2, boxShadow: "0 8px 0 #000" }}>PART {part}/7</div>
+        <div style={{ textAlign: "center", marginTop: 34, transform: "rotate(-2deg)" }}>
+          {lines.map((l, i) => <div key={i} style={TXT(i === 0 ? "#ffd400" : "#ffffff", size)}>{l}</div>)}
+        </div>
+      </AbsoluteFill>
+      <Img src={staticFile("logo.png")} style={{ position: "absolute", top: 120, left: 40, width: 104, opacity: 0.95, filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.6))" }} />
+    </AbsoluteFill>
+  );
+};
