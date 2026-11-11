@@ -1,7 +1,7 @@
 # Mix the episode's audio from timeline.json with numpy (same linear gains Remotion uses) to check levels.
 import json, subprocess, numpy as np, sys, functools
 R = "/home/claude/bidaya-videos/"
-SR = 24000; FPS = 30
+SR = int(__import__("os").environ.get("SR", "24000")); FPS = 30
 T = json.load(open(R + "src/ep1/timeline.json"))
 @functools.lru_cache(None)
 def load(p):
