@@ -209,6 +209,13 @@ export const Person2: React.FC<{ pose?: Pose; outfit: Outfit; flip?: boolean; sw
         <g transform={`translate(0 -262) rotate(${p.head})`}>
           <circle cx={0} cy={0} r={33} fill={skin} stroke={INK} strokeWidth={5} />
           {sil ? null : <circle cx={8} cy={-8} r={33} fill={light} opacity={0.08} />}
+          {!sil && (outfit as Outfit & { scar?: boolean }).scar ? (
+            <g>
+              <path d="M -20 -30 L -9 -12 L -13 -4 L 3 12 L 0 18 L 13 31" stroke="#4a0a0c" strokeWidth={7} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M -20 -30 L -9 -12 L -13 -4 L 3 12 L 0 18 L 13 31" stroke="#c4645a" strokeWidth={2.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              {[[-15, -22], [-10, -6], [-4, 5], [6, 22]].map(([x, y], i) => <line key={i} x1={x - 6} y1={y + 3} x2={x + 6} y2={y - 3} stroke="#4a0a0c" strokeWidth={2.5} />)}
+            </g>
+          ) : null}
           {!bald && outfit.wrap ? (
             <>
               <path d="M -36 -2 Q -38 -44 0 -46 Q 38 -44 36 -2 Q 0 -16 -36 -2 Z" fill={sil ?? outfit.wrap} stroke={INK} strokeWidth={4} />
@@ -418,3 +425,6 @@ export const Mahout: React.FC<{ silhouette?: string }> = ({ silhouette }) => (
     <Fig x={0} y={0} s={0.95} outfit={{ skin: "#6a4029", robe: "#8a2a1e", robeShade: "#4a1218", wrap: "#d8cfbd" }} pose={RIDE} flip silhouette={silhouette} prop="staff" />
   </g>
 );
+
+/** Abraha after the duel: the same outfit with the scar across his face. */
+export const scarred = (o: Outfit): Outfit => ({ ...o, scar: true } as Outfit);

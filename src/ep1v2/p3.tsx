@@ -7,6 +7,7 @@ import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, Grade, Vignette, Glow,
   Fig, Torch2, Horse2,
   ThroneSeat, THRONE_SEAT, seatY, SITC, RIDE,
+  scarred,
 } from "./kit2";
 
 // Part 3 — "The King's Oath": the wound, ʿAtwada, the army changes sides, the Negus's oath, the shaved head and the soil.
@@ -34,7 +35,7 @@ export const Wound: React.FC<{ b?: number[] }> = ({ b }) => {
         {/* the spear comes down across him (first frames), then he doubles over, both hands over his face */}
         {frame < 10 ? <line x1={1100} y1={iv(frame, [0, 8], [780, 1240])} x2={iv(frame, [0, 8], [1300, 900])} y2={iv(frame, [0, 8], [500, 1120])} stroke="#e8e0cc" strokeWidth={10} strokeLinecap="round" /> : null}
         <g transform={`translate(760 1460)`}>
-          <Fig x={0} y={0} s={1.05} sx={1.22} sy={0.84} outfit={OUT.abraha} pose={frame < 8 ? { ...STAND, armRU: -30, armRL: -50 } : { ...STAND, armRU: -160, armRL: -150, armLU: -150, armLL: -160, lean: 16, head: 22, legLU: 10, legLL: 20, legRU: -20, legRL: 30, bob: 10 }} />
+          <Fig x={0} y={0} s={1.05} sx={1.22} sy={0.84} outfit={frame < 8 ? OUT.abraha : scarred(OUT.abraha)} pose={frame < 8 ? { ...STAND, armRU: -30, armRL: -50 } : frame < 52 ? { ...STAND, armRU: -160, armRL: -150, armLU: -150, armLL: -160, lean: 16, head: 22, legLU: 10, legLL: 20, legRU: -20, legRL: 30, bob: 10 } : { ...STAND, armRU: -20, armRL: -30, armLU: 10, armLL: -20, lean: 4, head: 6 }} />
         </g>
       </Layer>
       <Grade color="#ff2a10" opacity={0.1 + 0.3 * pulse} />
@@ -76,7 +77,7 @@ export const Charge: React.FC<{ b?: number[] }> = ({ b }) => {
       </Layer>
       <Layer d={1} cam={cam}>
         <Defs /><Ground />
-        <Fig x={760} y={1460} s={1.05} sx={1.22} sy={0.84} outfit={OUT.abraha} pose={{ ...STAND, armRU: -150, armRL: -120, lean: -6, head: 10 }} />
+        <Fig x={760} y={1460} s={1.05} sx={1.22} sy={0.84} outfit={scarred(OUT.abraha)} pose={{ ...STAND, armRU: -30, armRL: -40, armLU: 10, armLL: -20, lean: -2, head: 4 }} />
         <g transform={`translate(${640 + leap * 450} ${1460 - Math.sin(leap * Math.PI) * 140})`}>
           <Fig x={0} y={0} s={1.0} outfit={OUT.servant} prop="spear" pose={blend({ ...STAND, lean: 10 }, { ...STAND, lean: -22, armRU: -110, armRL: -10, legLU: 40, legRU: -40 }, leap)} sway={frame * 0.4} />
         </g>
@@ -161,7 +162,7 @@ export const SoilAndLetter: React.FC<{ b?: number[] }> = ({ b }) => {
       <Layer d={1} cam={cam}>
         <Defs />
         <Ground color="#c98f52" />
-        <Fig x={930} y={1460} s={1.0} sx={1.22} sy={0.84} outfit={bald ? OUT.abrahaBald : OUT.abraha} bald={bald} pose={frame < bagAt ? { ...STAND, armRU: -160, armRL: -150, head: 10 } : { ...STAND, lean: 18, head: 20, armRU: -70, armRL: -40, legLU: -30, legLL: 60, legRU: -40, legRL: 70, bob: 22 }} />
+        <Fig x={930} y={1460} s={1.0} sx={1.22} sy={0.84} outfit={scarred(bald ? OUT.abrahaBald : OUT.abraha)} bald={bald} pose={frame < bagAt ? { ...STAND, armRU: -160, armRL: -150, head: 10 } : { ...STAND, lean: 18, head: 20, armRU: -70, armRL: -40, legLU: -30, legLL: 60, legRU: -40, legRL: 70, bob: 22 }} />
         {frame >= bagAt ? (
           <g transform="translate(1090 1460)">
             <path d="M -60 0 Q -70 -90 -22 -106 L 22 -106 Q 70 -90 60 0 Z" fill="#7a4a26" stroke="#1b100c" strokeWidth={5} />
@@ -219,7 +220,7 @@ export const Ambition: React.FC = () => {
         <Defs />
         <rect x={-800} y={1440} width={3600} height={800} fill="#3a2018" />
         <ThroneSeat x={960} floor={1440} s={1} />
-        <Fig seat="chair" x={960} y={seatY(1440 - THRONE_SEAT, 0.95, 0.86)} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={{ ...SITC, armRU: -40, armRL: -60, head: Math.sin(frame * 0.02) * 2 }} />
+        <Fig seat="chair" x={960} y={seatY(1440 - THRONE_SEAT, 0.95, 0.86)} s={0.95} sx={1.2} sy={0.86} outfit={scarred(OUT.abrahaKing)} pose={{ ...SITC, armRU: -40, armRL: -60, head: Math.sin(frame * 0.02) * 2 }} />
       </Layer>
       <AbsoluteFill style={{ background: "radial-gradient(ellipse 35% 45% at 50% 60%, rgba(0,0,0,0) 30%, rgba(5,0,0,0.85) 100%)", opacity: iv(p, [0.3, 0.9], [0, 1]) }} />
       <Grade color="#ff3a10" opacity={0.14} />

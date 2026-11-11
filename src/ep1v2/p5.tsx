@@ -7,6 +7,7 @@ import {
   Fig, Elephant2, Horse2, Kaaba2,
   RIDE,
   Mahout,
+  scarred,
 } from "./kit2";
 
 // Part 5 — "The Road to Makkah": the Arabs rise, Dhū Nafar, Nufayl, al-Ṭāʾif, Abū Righāl, the camels, Makkah alone.
@@ -72,7 +73,7 @@ export const Plead: React.FC<{ b?: number[]; green?: boolean; chained?: boolean 
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-1400} y={1440} width={4800} height={1200} fill={green ? "#8a9a5a" : "#a8724e"} />
-        <Fig x={720} y={1460} s={1} sx={1.2} sy={0.84} outfit={OUT.abrahaKing} pose={blend({ ...STAND, armRU: -20, armRL: -60 }, { ...STAND, armRU: -95, armRL: -10, head: -4 }, spare)} />
+        <Fig x={720} y={1460} s={1} sx={1.2} sy={0.84} outfit={scarred(OUT.abrahaKing)} pose={blend({ ...STAND, armRU: -20, armRL: -60 }, { ...STAND, armRU: -95, armRL: -10, head: -4 }, spare)} />
         <Fig x={1180} y={1460} s={1} outfit={OUT.prisoner} flip pose={kneel} />
         {chained ? <path d={`M 1150 ${1380 - plead * 30} q -24 34 0 56 q 24 24 -12 46`} stroke="#9a9aa4" strokeWidth={7} fill="none" /> : null}
         {[0, 1].map((i) => <Fig key={i} x={1420 + i * 150} y={1460} s={0.95} outfit={SOLDIER(i)} prop="spear" flip />)}
@@ -127,7 +128,7 @@ export const Thaqif: React.FC<{ b?: number[] }> = ({ b }) => {
         <rect x={-1400} y={1440} width={4800} height={1200} fill="#a8a86a" />
         <g transform="translate(1440 1460)"><rect x={-130} y={-220} width={260} height={220} fill="#d8ccb2" stroke="#1b100c" strokeWidth={5} /><path d="M -150 -220 L 0 -296 L 150 -220 Z" fill="#b8a888" stroke="#1b100c" strokeWidth={5} /><rect x={-32} y={-120} width={64} height={120} fill="#3a2e22" /></g>
         {new Array(5).fill(0).map((_, i) => <Fig key={i} x={1000 + i * 90} y={1470} s={0.8} outfit={ARAB(i + 1)} flip pose={blend(STAND, { ...STAND, lean: 24, head: 20 }, bow)} />)}
-        <Fig x={560} y={1470} s={0.85} sx={1.2} sy={0.84} outfit={OUT.abrahaKing} pose={STAND} />
+        <Fig x={560} y={1470} s={0.85} sx={1.2} sy={0.84} outfit={scarred(OUT.abrahaKing)} pose={STAND} />
         {new Array(4).fill(0).map((_, i) => <Fig key={i} x={180 + i * 110} y={1470} s={0.8} outfit={SOLDIER(i)} prop="spear" />)}
       </Layer>
       <Vignette s={0.45} />

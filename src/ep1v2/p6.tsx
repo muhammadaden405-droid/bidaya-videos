@@ -7,6 +7,7 @@ import {
   Fig, Elephant2, Horse2, Kaaba2, Torch2,
   RIDE,
   ThroneSeat, THRONE_SEAT, seatY, SITC, SITG,
+  scarred,
 } from "./kit2";
 
 // Part 6 — "The Lord of the Camels": the envoy, the answer at the Kaʿbah, the camp, the tent, the night prayer.
@@ -124,7 +125,7 @@ export const Tent: React.FC<{ b?: number[]; focus?: [number, F][] }> = ({ b, foc
         <path d="M 520 1460 L 1400 1460 L 1500 1600 L 420 1600 Z" fill="#8f1f1a" stroke="#1b100c" strokeWidth={4} />
         <path d="M 560 1480 L 1360 1480 L 1430 1580 L 490 1580 Z" fill="none" stroke="#e3b341" strokeWidth={7} />
         <ThroneSeat x={960} floor={1440} s={1} />
-        <Fig seat={down === 0 ? "chair" : down >= 1 ? "ground" : undefined} x={ax} y={ay} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={abrahaPose} />
+        <Fig seat={down === 0 ? "chair" : down >= 1 ? "ground" : undefined} x={ax} y={ay} s={0.95} sx={1.2} sy={0.86} outfit={scarred(OUT.abrahaKing)} pose={abrahaPose} />
         <Fig seat={sit >= 1 ? "ground" : undefined} x={cx} y={cy} s={1.0} outfit={OUT.chief} flip pose={chiefPose} />
         <Fig x={1560} y={1470} s={0.85} outfit={ARAB(4)} flip pose={{ ...STAND, head: 4 }} />
         {[-1, 1].map((sd) => <Fig key={sd} x={960 + sd * 620} y={1450} s={0.9} outfit={SOLDIER(sd > 0 ? 1 : 0)} prop="spear" flip={sd > 0} />)}

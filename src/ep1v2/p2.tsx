@@ -23,9 +23,8 @@ export const Landing: React.FC<{ b?: number[] }> = ({ b }) => {
   const { vertical } = useView();
   const aAt = at(b, 0, dur, 0.45);
   const close = frame >= aAt;
-  const cam = close
-    ? lerpCam((frame - aAt) / Math.max(1, dur - aAt), aim(vertical, 1080, 1260, 1.7), aim(vertical, 1080, 1230, 1.85))
-    : lerpCam(frame / Math.max(1, aAt), { x: -120, y: 40, zoom: 1.0 }, { x: 0, y: 0, zoom: 1.1 });
+  void close;
+  const cam = lerpCam(frame / Math.max(1, dur), aim(vertical, vertical ? 900 : 960, 1250, 1.0), aim(vertical, 1060, 1250, vertical ? 1.5 : 1.4), ease);
   return (
     <AbsoluteFill>
       <Sky stops={SKIES.day} />
@@ -43,10 +42,11 @@ export const Landing: React.FC<{ b?: number[] }> = ({ b }) => {
         <Defs />
         <rect x={-1400} y={1450} width={4800} height={1200} fill="#dcc08a" />
         {new Array(16).fill(0).map((_, i) => {
-          const x = -200 + i * 140 + ((frame * 1.4) % 140);
-          return <Fig key={i} x={x} y={1440 + (i % 3) * 30} s={0.62} outfit={SOLDIER(i)} prop="spear" pose={walkPose(frame * 0.18 + i)} />;
+          if (i === 9) return null;
+          const x = -500 + i * 150 + frame * 1.2;
+          return <Fig key={i} x={x} y={1470 + (i % 2) * 24} s={0.85} outfit={SOLDIER(i)} prop="spear" pose={walkPose(frame * 0.16 + i)} />;
         })}
-        <Fig x={1080} y={1470} s={1.0} sy={1.05} outfit={OUT.aryat} prop="spear" flip pose={{ ...STAND, armRU: -20, armRL: -10, head: -4 }} sway={frame * 0.1} />
+        <Fig x={1060} y={1480} s={0.85} sy={1.05} outfit={OUT.aryat} prop="spear" flip pose={{ ...STAND, armRU: -20, armRL: -10, head: -4 }} sway={frame * 0.1} />
       </Layer>
       <Layer d={1.3} cam={cam}><Dust n={30} color="#ffffff" y0={1000} y1={1600} drift={0.6} opacity={0.3} /></Layer>
       <Vignette s={0.45} />
@@ -58,7 +58,7 @@ export const Landing: React.FC<{ b?: number[] }> = ({ b }) => {
 export const AbrahaSpot: React.FC = () => {
   const { frame, p } = useShot();
   const { vertical } = useView();
-  const cam = lerpCam(p, aim(vertical, 960, 1250, 1.0), aim(vertical, 960, 1270, vertical ? 1.9 : 1.7), easeOut);
+  const cam = lerpCam(p, aim(vertical, 960, 1260, 1.25), aim(vertical, 960, 1270, vertical ? 1.7 : 1.6), easeOut);
   const spot = iv(p, [0.1, 0.5], [0, 1], ease);
   return (
     <AbsoluteFill>

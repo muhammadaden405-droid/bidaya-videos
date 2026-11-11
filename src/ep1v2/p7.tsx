@@ -8,6 +8,7 @@ import {
   Fig, Elephant2, Kaaba2,
   Mahout,
   seatY, SITG,
+  scarred,
 } from "./kit2";
 
 // Part 7 — "The Birds": the whisper, the refusals, the birds, the rout, Abraha's end, the year of the birth, the end of al-Qullays.
@@ -188,7 +189,7 @@ export const Litter2: React.FC = () => {
         {[0, 1, 2, 3].map((i) => <Fig key={i} x={x + [-130, -50, 130, 210][i]} y={1490 + (i % 2) * 10} s={0.8} outfit={SOLDIER(i, false)} pose={{ ...walkPose(frame * 0.12 + i, 0.5), armRU: -172, armRL: 0, armLU: -172, armLL: 0 }} />)}
         <rect x={x - 190} y={1300} width={440} height={20} fill="#5a3a22" stroke="#1b100c" strokeWidth={3} />
         <path d={`M ${x - 150} 1300 L ${x + 210} 1300 L ${x + 210} 1268 L ${x - 150} 1268 Z`} fill="#8f2a1c" stroke="#1b100c" strokeWidth={3} />
-        <g transform={`translate(${x + 215} 1236) rotate(-90)`}><Fig x={0} y={0} s={0.82} sx={0.86} sy={1.2} outfit={OUT.abrahaKing} pose={{ ...STAND, armRU: -10, armLU: 10 }} /></g>
+        <g transform={`translate(${x + 215} 1236) rotate(-90)`}><Fig x={0} y={0} s={0.82} sx={0.86} sy={1.2} outfit={scarred(OUT.abrahaKing)} pose={{ ...STAND, armRU: -10, armLU: 10 }} /></g>
       </Layer>
       <Grade color="#ff5a3a" opacity={0.15} />
       <Vignette s={0.7} />

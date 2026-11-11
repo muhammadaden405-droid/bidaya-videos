@@ -6,6 +6,7 @@ import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, Grade, Vignette, Glow, Stars, Embers,
   Fig, Torch2, Elephant2,
   ThroneSeat, THRONE_SEAT, seatY, SITC, SITG,
+  scarred,
 } from "./kit2";
 
 // Part 4 — "The Church": al-Qullays, forced labour, the treasures, the man from Kināna, the vow, the elephant.
@@ -202,7 +203,7 @@ export const Vow: React.FC<{ b?: number[] }> = ({ b }) => {
         <Defs />
         <rect x={-800} y={1440} width={3600} height={800} fill="#3a2018" />
         <ThroneSeat x={960} floor={1440} s={1} />
-        <Fig seat={fist > 0.5 ? undefined : "chair"} x={960} y={fist > 0.5 ? 1440 : seatY(1440 - THRONE_SEAT, 0.95, 0.86)} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={fist > 0.5 ? { ...STAND, armRU: -155, armRL: -40, lean: 4, head: 6 } : SITC} />
+        <Fig seat={fist > 0.5 ? undefined : "chair"} x={960} y={fist > 0.5 ? 1440 : seatY(1440 - THRONE_SEAT, 0.95, 0.86)} s={0.95} sx={1.2} sy={0.86} outfit={scarred(OUT.abrahaKing)} pose={fist > 0.5 ? { ...STAND, armRU: -155, armRL: -40, lean: 4, head: 6 } : SITC} />
         <Fig x={1300} y={1450} s={0.85} outfit={ARAB(1)} flip pose={{ ...STAND, lean: 16, head: 16 }} />
       </Layer>
       <Grade color="#ff3010" opacity={0.08 + fist * 0.14} />

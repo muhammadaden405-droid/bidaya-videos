@@ -66,7 +66,7 @@ CUES = {
     ("MakkahAlone", "Quraysh knew they could not", "fade", {}, []),
   ],
   6: [
-    ("Envoy", "Abraha sent a messenger", "cut", {}, ["Tell their chief", "ʿAbd al-Muṭṭalib answered"]),
+    ("Envoy", "Abraha sent a messenger", "cut", {}, ["Ḥunāṭa found", "ʿAbd al-Muṭṭalib answered"]),
     ("Camp", "He went to Abraha's camp", "fade", {}, ["Through Unays"]),
     ("Tent", "ʿAbd al-Muṭṭalib was the most handsome", "fade", {"focus": [("two", "What do you want"), ("chief", "I want the king"), ("abraha", "Abraha stared"), ("chief", "ʿAbd al-Muṭṭalib said"), ("abraha", "It will not be protected"), ("chief", "That is your affair"), ("two", "And Abraha gave him back")]}, ["so he stepped down", "sat beside him"]),
     ("RingPrayer", "That night", "fade", {}, ["Then he led Quraysh"]),
@@ -138,7 +138,38 @@ SFX = {
 }
 # the "again" drop gets its impact (TurnTest is shared, so add it by mode)
 MODE_SFX = {("TurnTest", "again"): [HIT("own-impact", "b0+8", 0.75), HIT("own-rumble", "b0+8", 0.5)]}
-CLIFF = ("own-impact", 0.6)
+CLIFF = None  # parts end on silence, not a boom
+
+# Sound pass 2: no more "booms" across the rhythm. Heavy physical moments get real thuds, blows get a
+# sharp impact, everything else that used the synthetic boom/rumble loses it; beatings are irregular hits.
+THUD = [HIT("body-fall-01", 0, 0.8), HIT("sack-drop-01", 2, 0.55)]
+BLOW = [HIT("arrow-impact-01", 0, 0.6)]
+DROPS = {("KneelWide", "b0+8"), ("Whisper2", "b1+8"), ("Refusals", "b3+18"), ("TurnTest", "b0+8")}
+BLOWS = {("Duel2", "b4"), ("Wound", 0), ("Charge", "b0+14")}
+def _shift(at, d):
+    if isinstance(at, int): return at + d
+    m = re.match(r"(b\d|end)([+-]\d+)?", at); return f"{m.group(1)}{int(m.group(2) or 0) + d:+d}"
+def _pass2(name, cues):
+    out = []
+    for c in cues:
+        src, at = c[0], c[1]
+        if src == "own-impact":
+            if (name, at) in DROPS: out += [(t[0], _shift(at, t[1]), t[2], None, 0, 0, False) for t in THUD]
+            elif (name, at) in BLOWS: out += [(t[0], _shift(at, t[1]), t[2], None, 0, 0, False) for t in BLOW]
+            continue
+        if src == "own-rumble":
+            if (name, at) in DROPS: out.append((src, at, 0.2, None, 0, 0, False))
+            continue
+        if src == "own-wings": out.append(("blizzard-wind-01", at, 0.2, c[3], 30, 30, True)); continue
+        if src == "impact-slam-35" and c[6]:  # looping beat → four irregular blows
+            out += [("impact-slam-35", o, 0.3, None, 0, 0, False) for o in (8, 27, 52, 66)]; continue
+        if src == "animal-bird-03" and name == "Birds2": out.append((src, at, 0.16, c[3], 30, 30, True)); continue
+        if src == "own-stones" and name == "Birds2": out.append((src, at, 0.28, c[3], 15, 30, True)); continue
+        out.append(c)
+    return out
+SFX = {k: _pass2(k, v) for k, v in SFX.items()}
+MODE_SFX = {k: _pass2(k[0], v) for k, v in MODE_SFX.items()}
+SFX["Birds2"].append(BED("blizzard-wind-01", 0.2))
 LEVEL = 0.6
 
 def main(only=None):
@@ -209,7 +240,7 @@ def main(only=None):
                 a0 = fr(times[grp[0]]); a1 = fr(times[i + 1]) if i + 1 < len(sw) else fr(dur)
                 caps.append({"from": a0, "to": max(a1, a0 + 12), "words": [{"t": fr(times[k]), "w": sw[k]} for k in grp]})
                 grp = []
-        if pi <= 6:
+        if pi <= 6 and CLIFF:
             sfx.append({"src": CLIFF[0], "from": fr(dur) - 2, "vol": round(CLIFF[1] * base.gain(CLIFF[0]) * LEVEL, 4)})
         parts.append({"part": pi, "start": b0, "end": part_end})
         print(f"part {pi}: align {ratio:.2f}  {b0/FPS:6.1f}s -> {part_end/FPS:6.1f}s")
