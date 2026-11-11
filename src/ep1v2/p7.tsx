@@ -1,23 +1,25 @@
 import React from "react";
 import { AbsoluteFill, random } from "remotion";
-import { STAND, SIT, walkPose } from "../cartoon/Rig";
+import { STAND, walkPose } from "../cartoon/Rig";
 import { OUT, SOLDIER, ARAB } from "../ep1/kit";
 import { serif, display, amiri } from "../fonts";
 import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, easeIn, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, DustBurst, Grade, Vignette, Glow, Stars,
   Fig, Elephant2, Kaaba2,
+  Mahout,
+  seatY, SITG,
 } from "./kit2";
 
 // Part 7 — "The Birds": the whisper, the refusals, the birds, the rout, Abraha's end, the year of the birth, the end of al-Qullays.
 const at = (b: number[] | undefined, i: number, dur: number, frac: number) => (b && b[i] !== undefined ? b[i] : Math.round(dur * frac));
-const DRIVER = <g transform="scale(0.55)"><Fig x={0} y={0} outfit={SOLDIER(1, false)} pose={SIT} flip /></g>;
+const DRIVER = <Mahout />;
 
 // 7a — morning: the army lined up; Nufayl walks to the elephant, takes its ear and whispers; it kneels; he runs. b = [whisperAt, kneelAt, runAt]
 export const Whisper2: React.FC<{ b?: number[] }> = ({ b }) => {
   const { frame, dur } = useShot();
   const { vertical } = useView();
   const [wA, kA, rA] = [at(b, 0, dur, 0.35), at(b, 1, dur, 0.68), at(b, 2, dur, 0.82)];
-  const walkIn = iv(frame, [0, wA], [0, 1], ease);
+  const walkIn = iv(frame, [0, Math.max(20, wA - 24)], [0, 1]);
   const k = iv(frame, [kA - 4, kA + 10], [0, 1], easeIn);
   const run = iv(frame, [rA, dur], [0, 1]);
   const sh = shakeAt(frame, [kA + 10], 24);
@@ -186,7 +188,7 @@ export const Litter2: React.FC = () => {
         {[0, 1, 2, 3].map((i) => <Fig key={i} x={x + [-130, -50, 130, 210][i]} y={1490 + (i % 2) * 10} s={0.8} outfit={SOLDIER(i, false)} pose={{ ...walkPose(frame * 0.12 + i, 0.5), armRU: -172, armRL: 0, armLU: -172, armLL: 0 }} />)}
         <rect x={x - 190} y={1300} width={440} height={20} fill="#5a3a22" stroke="#1b100c" strokeWidth={3} />
         <path d={`M ${x - 150} 1300 L ${x + 210} 1300 L ${x + 210} 1268 L ${x - 150} 1268 Z`} fill="#8f2a1c" stroke="#1b100c" strokeWidth={3} />
-        <g transform={`translate(${x + 20} 1278) rotate(-88)`}><Fig x={0} y={0} s={0.5} outfit={OUT.abrahaKing} pose={STAND} /></g>
+        <g transform={`translate(${x + 215} 1236) rotate(-90)`}><Fig x={0} y={0} s={0.82} sx={0.86} sy={1.2} outfit={OUT.abrahaKing} pose={{ ...STAND, armRU: -10, armLU: 10 }} /></g>
       </Layer>
       <Grade color="#ff5a3a" opacity={0.15} />
       <Vignette s={0.7} />
@@ -209,9 +211,9 @@ export const Beggars2: React.FC = () => {
         <rect x={-1400} y={1460} width={4800} height={1200} fill="#c4a87a" />
         {[0, 1].map((i) => (
           <g key={i}>
-            <Fig x={880 + i * 220} y={1480} s={0.85} outfit={{ ...ARAB(i + 4), robe: "#7a6a55", robeShade: "#5a4a3a" }} pose={{ ...SIT, armRU: -80, armRL: -10, head: 14 + Math.sin(frame * 0.03 + i) * 3 }} flip={i === 1} />
-            <line x1={840 + i * 300} y1={1480} x2={866 + i * 250} y2={1300} stroke="#5a3a22" strokeWidth={6} />
-            <ellipse cx={960 + i * 60} cy={1475} rx={26} ry={9} fill="#6a4a2a" stroke="#1b100c" strokeWidth={2} />
+            <Fig seat="ground" x={820 + i * 320} y={seatY(1480, 0.85, 1, true)} s={0.85} outfit={{ ...ARAB(i + 4), robe: "#7a6a55", robeShade: "#5a4a3a" }} pose={{ ...SITG, armRU: -60, armRL: -20, head: 14 + Math.sin(frame * 0.03 + i) * 3 }} />
+            <line x1={760 + i * 320} y1={1480} x2={780 + i * 320} y2={1330} stroke="#5a3a22" strokeWidth={6} />
+            <ellipse cx={900 + i * 320} cy={1475} rx={26} ry={9} fill="#6a4a2a" stroke="#1b100c" strokeWidth={2} />
           </g>
         ))}
         {new Array(3).fill(0).map((_, i) => <Fig key={i} x={((frame * 1.2 + i * 700) % 2400) - 200} y={1500} s={0.8} outfit={ARAB(i)} pose={walkPose(frame * 0.2 + i)} />)}

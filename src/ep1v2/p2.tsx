@@ -1,10 +1,11 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
-import { STAND, SIT, walkPose, blend, Pose } from "../cartoon/Rig";
+import { STAND, walkPose, blend, Pose } from "../cartoon/Rig";
 import { OUT, SOLDIER, BLUE, ARAB } from "../ep1/kit";
 import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, easeIn, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, DustBurst, Grade, Vignette, Glow,
   Fig, Ship2, Horse2, Torch2,
+  ThroneSeat, THRONE_SEAT, seatY, SITC, RIDE,
 } from "./kit2";
 
 // Part 2 — "The Split Face": the landing, Dhū Nuwās rides into the sea, the rivals, the duel.
@@ -45,7 +46,7 @@ export const Landing: React.FC<{ b?: number[] }> = ({ b }) => {
           const x = -200 + i * 140 + ((frame * 1.4) % 140);
           return <Fig key={i} x={x} y={1440 + (i % 3) * 30} s={0.62} outfit={SOLDIER(i)} prop="spear" pose={walkPose(frame * 0.18 + i)} />;
         })}
-        <Fig x={1080} y={1470} s={1.0} sy={1.14} outfit={OUT.aryat} prop="spear" flip pose={{ ...STAND, armRU: -20, armRL: -10, head: -4 }} sway={frame * 0.1} />
+        <Fig x={1080} y={1470} s={1.0} sy={1.05} outfit={OUT.aryat} prop="spear" flip pose={{ ...STAND, armRU: -20, armRL: -10, head: -4 }} sway={frame * 0.1} />
       </Layer>
       <Layer d={1.3} cam={cam}><Dust n={30} color="#ffffff" y0={1000} y1={1600} drift={0.6} opacity={0.3} /></Layer>
       <Vignette s={0.45} />
@@ -100,7 +101,7 @@ export const SeaRide2: React.FC<{ b?: number[] }> = ({ b }) => {
         {battle ? <DustBurst x={600} y={1400} at={2} size={1.6} /> : null}
         <g opacity={gone}>
           <g transform={`translate(${x} ${1460 + sink})`}>
-            <Horse2 phase={frame * 0.38} gallop={Math.max(0.2, 1 - sink / 300)} color="#2a1e1a" rider={<g transform="translate(0 70) scale(0.9)"><Fig x={0} y={0} outfit={OUT.dhuNuwas} pose={{ ...SIT, armRU: -60, armRL: -40, lean: 8 }} sway={frame * 0.4} /></g>} />
+            <Horse2 phase={frame * 0.38} gallop={Math.max(0.2, 1 - sink / 300)} color="#2a1e1a" rider={<g transform="translate(0 104) scale(0.9)"><Fig x={0} y={0} outfit={{ ...OUT.dhuNuwas, crown: false, wrap: "#d4a23c" }} pose={{ ...RIDE, armRU: -60, armRL: -40, lean: 8 }} sway={frame * 0.4} /></g>} />
           </g>
         </g>
         <Waves y={1450} color="#3a2a40" amp={16} speed={0.1} seed={3} />
@@ -130,12 +131,8 @@ export const Throne2: React.FC = () => {
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1440} width={3600} height={800} fill="#5a3a24" />
-        <g transform="translate(960 1440)">
-          <path d="M -100 -40 L -100 -360 Q 0 -430 100 -360 L 100 -40 Z" fill="#c9a24a" stroke="#1b100c" strokeWidth={5} />
-          <path d="M -78 -50 L -78 -340 Q 0 -392 78 -340 L 78 -50 Z" fill="#1f4f7a" />
-          <rect x={-200} y={-46} width={400} height={50} fill="#4a3020" stroke="#1b100c" strokeWidth={4} />
-        </g>
-        <Fig x={960} y={1390} s={0.95} sy={1.1} outfit={{ ...OUT.aryat, crown: true, wrap: undefined }} prop="spear" pose={{ ...SIT, armRU: -30, armRL: -70, head: Math.sin(frame * 0.03) * 2 }} />
+        <ThroneSeat x={960} floor={1440} s={1} gold="#c9a24a" cloth="#1f4f7a" />
+        <Fig seat="chair" x={960} y={seatY(1440 - THRONE_SEAT, 0.95, 1.06)} s={0.95} sy={1.06} outfit={{ ...OUT.aryat, crown: true, wrap: undefined }} prop="spear" pose={{ ...SITC, armRU: -30, armRL: -70, head: Math.sin(frame * 0.03) * 2 }} />
         {[-1, 1].map((sd) => [0, 1].map((k) => <Fig key={`${sd}${k}`} x={960 + sd * (300 + k * 170)} y={1450} s={0.85} outfit={BLUE(k)} prop="spear" flip={sd > 0} />))}
       </Layer>
       <Grade color="#ffb050" opacity={0.15} />
@@ -176,7 +173,7 @@ export const Split: React.FC<{ b?: number[] }> = ({ b }) => {
         <rect x={-1400} y={1360} width={4800} height={1200} fill="#c9a46a" />
         {host(-1, SOLDIER, "#8f2a1c")}
         {host(1, BLUE, "#1f4f7a")}
-        {frame > rideAt ? <g transform={`translate(${rx} 1480) scale(0.6)`}><Horse2 phase={frame * 0.4} rider={<g transform="scale(0.9) translate(0 70)"><Fig x={0} y={0} outfit={SOLDIER(2, false)} pose={SIT} /></g>} /></g> : null}
+        {frame > rideAt ? <g transform={`translate(${rx} 1480) scale(0.6)`}><Horse2 phase={frame * 0.4} gallop={frame < rideAt + 120 ? 1 : 0} rider={<g transform="translate(0 104) scale(0.9)"><Fig x={0} y={0} outfit={SOLDIER(2, false)} pose={RIDE} /></g>} /></g> : null}
       </Layer>
       <Layer d={1.3} cam={cam}><Dust n={30} color="#f0dcae" y0={1200} y1={1600} drift={1} opacity={0.3} /></Layer>
       <Vignette s={0.45} />
@@ -219,7 +216,7 @@ export const Duel2: React.FC<{ b?: number[] }> = ({ b }) => {
         <rect x={-1400} y={1440} width={4800} height={1200} fill="#a8724e" />
         <Fig x={640 - peek * 70} y={1460} s={1.0} outfit={OUT.servant} pose={blend({ ...STAND, lean: 10, head: 10 }, { ...STAND, lean: -8, head: -8, armRU: -60 }, peek)} />
         <Fig x={760} y={1460} s={1.05} sx={1.22} sy={0.84} outfit={OUT.abraha} pose={{ ...STAND, armRU: -30, armRL: -50, head: -4 }} />
-        <Fig x={1180} y={1460} s={1.05} sy={1.16} outfit={OUT.aryat} prop="spear" flip pose={aryat} sway={frame * 0.15} />
+        <Fig x={1180} y={1460} s={1.0} sy={1.05} outfit={OUT.aryat} prop="spear" flip pose={aryat} sway={frame * 0.15} />
       </Layer>
       <Layer d={1.4} cam={cam}><Dust n={40} color="#f6dcae" y0={1100} y1={1700} drift={1.6} opacity={0.35} /></Layer>
       <Grade color="#ff8040" opacity={0.15 + raise * 0.12} />

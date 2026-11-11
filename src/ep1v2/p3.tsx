@@ -1,11 +1,12 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
-import { STAND, SIT, walkPose, blend, Pose } from "../cartoon/Rig";
+import { STAND, walkPose, blend, Pose } from "../cartoon/Rig";
 import { OUT, SOLDIER, BLUE } from "../ep1/kit";
 import { display, serif } from "../fonts";
 import {
-  Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, Grade, Vignette, Glow,
+  Cam, Layer, Defs, Sky, SKIES, iv, ease, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, Grade, Vignette, Glow,
   Fig, Torch2, Horse2,
+  ThroneSeat, THRONE_SEAT, seatY, SITC, RIDE,
 } from "./kit2";
 
 // Part 3 — "The King's Oath": the wound, ʿAtwada, the army changes sides, the Negus's oath, the shaved head and the soil.
@@ -18,11 +19,11 @@ export const Wound: React.FC<{ b?: number[] }> = ({ b }) => {
   const { frame, dur } = useShot();
   const { vertical } = useView();
   const nameAt = at(b, 0, dur, 0.55);
-  const reel = iv(frame, [0, 14], [1, 0], easeOut);
   const sh = shakeAt(frame, [0], 30);
   const c0 = lerpCam(frame / Math.max(1, dur), aim(vertical, 790, 1240, vertical ? 1.9 : 1.7), aim(vertical, 790, 1220, vertical ? 2.1 : 1.85));
   const cam = { ...c0, x: c0.x + sh.x, y: c0.y + sh.y };
   const o = iv(frame, [nameAt, nameAt + 12], [0, 1]);
+  const pulse = Math.max(iv(frame, [0, 3, 24], [1, 1, 0]), ...[1, 2, 3, 4].map((i) => (b && b[i] !== undefined ? iv(frame, [b[i], b[i] + 2, b[i] + 16], [0, 0.8, 0]) : 0)));
   return (
     <AbsoluteFill>
       <Sky stops={SKIES.dusk} />
@@ -30,12 +31,13 @@ export const Wound: React.FC<{ b?: number[] }> = ({ b }) => {
       <Layer d={0.2} cam={cam}><path d={ridge("wd", 1240, 200, 150)} fill="#4a2232" /></Layer>
       <Layer d={1} cam={cam}>
         <Defs /><Ground />
-        <g transform={`translate(760 1460) rotate(${-10 * reel})`}>
-          <Fig x={0} y={0} s={1.05} sx={1.22} sy={0.84} outfit={OUT.abraha} pose={{ ...STAND, armRU: -150, armRL: -120, lean: -10 + reel * 8, head: 14 }} />
-          <path d="M 20 -305 L -16 -240" stroke="#4a0a0c" strokeWidth={7} strokeLinecap="round" />
+        {/* the spear comes down across him (first frames), then he doubles over, both hands over his face */}
+        {frame < 10 ? <line x1={1100} y1={iv(frame, [0, 8], [780, 1240])} x2={iv(frame, [0, 8], [1300, 900])} y2={iv(frame, [0, 8], [500, 1120])} stroke="#e8e0cc" strokeWidth={10} strokeLinecap="round" /> : null}
+        <g transform={`translate(760 1460)`}>
+          <Fig x={0} y={0} s={1.05} sx={1.22} sy={0.84} outfit={OUT.abraha} pose={frame < 8 ? { ...STAND, armRU: -30, armRL: -50 } : { ...STAND, armRU: -160, armRL: -150, armLU: -150, armLL: -160, lean: 16, head: 22, legLU: 10, legLL: 20, legRU: -20, legRL: 30, bob: 10 }} />
         </g>
       </Layer>
-      <Grade color="#ff2a10" opacity={0.18 * (1 - reel) + 0.1} />
+      <Grade color="#ff2a10" opacity={0.1 + 0.3 * pulse} />
       <Vignette s={0.8} />
       <div style={{ position: "absolute", top: vertical ? "20%" : "14%", width: "100%", textAlign: "center", opacity: o }}>
         <div style={{ fontFamily: display, fontWeight: 700, fontSize: vertical ? 92 : 88, color: "#fff0d8", letterSpacing: 4, textShadow: "0 4px 30px rgba(0,0,0,0.8)" }}>ABRAHA AL-ASHRAM</div>
@@ -79,7 +81,7 @@ export const Charge: React.FC<{ b?: number[] }> = ({ b }) => {
           <Fig x={0} y={0} s={1.0} outfit={OUT.servant} prop="spear" pose={blend({ ...STAND, lean: 10 }, { ...STAND, lean: -22, armRU: -110, armRL: -10, legLU: 40, legRU: -40 }, leap)} sway={frame * 0.4} />
         </g>
         <g transform={`translate(1180 1460) rotate(${fall * 86})`} opacity={1 - iv(frame, [leapAt + 70, leapAt + 100], [0, 0.5])}>
-          <Fig x={0} y={0} s={1.05} sy={1.16} outfit={OUT.aryat} prop={fall < 0.3 ? "spear" : "none"} flip pose={{ ...STAND, armRU: -60, armRL: -10, lean: 8 }} />
+          <Fig x={0} y={0} s={1.0} sy={1.05} outfit={OUT.aryat} prop={fall < 0.3 ? "spear" : "none"} flip pose={{ ...STAND, armRU: -60, armRL: -10, lean: 8 }} />
         </g>
       </Layer>
       <Layer d={1.4} cam={cam}><Dust n={40} color="#f6dcae" y0={1100} y1={1700} drift={1.6} opacity={0.35} /></Layer>
@@ -99,7 +101,7 @@ export const Negus2: React.FC<{ b?: number[]; pleased?: boolean }> = ({ b, pleas
   const c0 = lerpCam(p, { x: 0, y: vertical ? 0 : 160, zoom: pleased ? 1.2 : 1.0 }, { x: 0, y: vertical ? -60 : 120, zoom: pleased ? 1.45 : 1.35 });
   const cam = { ...c0, x: c0.x + sh.x, y: c0.y + sh.y };
   const step = pleased ? iv(p, [0.3, 0.5], [0, 1], ease) : 0;
-  const pose: Pose = pleased ? { ...SIT, legRU: -88 + step * 30, legRL: 86 - step * 40, head: 4 } : blend(SIT, { ...STAND, armRU: -115, armRL: -20, lean: 6, head: 6 }, rise);
+  const pose: Pose = pleased ? { ...SITC, legRU: -88 + step * 30, legRL: 86 - step * 40, head: 4 } : rise > 0.5 ? { ...STAND, armRU: -115, armRL: -20, lean: 6, head: 6 } : blend(SITC, { ...STAND, armRU: -115, armRL: -20, lean: 6, head: 6 }, rise);
   return (
     <AbsoluteFill>
       <Sky stops={[[0, "#08100a"], [100, "#18241a"]]} />
@@ -112,13 +114,9 @@ export const Negus2: React.FC<{ b?: number[]; pleased?: boolean }> = ({ b, pleas
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1440} width={3600} height={800} fill="#3a3622" />
-        <g transform="translate(960 1440)">
-          <path d="M -100 -40 L -100 -360 Q 0 -430 100 -360 L 100 -40 Z" fill="#d4b04a" stroke="#1b100c" strokeWidth={5} />
-          <path d="M -78 -50 L -78 -340 Q 0 -392 78 -340 L 78 -50 Z" fill="#2f6b3a" />
-          <rect x={-200} y={-46} width={400} height={50} fill="#4a4026" stroke="#1b100c" strokeWidth={4} />
-        </g>
-        <Fig x={960} y={rise > 0.5 ? 1440 : 1394} s={0.95} outfit={OUT.negus} pose={pose} />
-        {pleased ? <g transform="translate(1010 1436)"><path d="M -44 0 Q -52 -56 -12 -64 Q 0 -76 16 -64 Q 52 -56 44 0 Z" fill="#7a4a26" stroke="#1b100c" strokeWidth={4} /></g> : null}
+        <ThroneSeat x={960} floor={1440} s={1} gold="#d4b04a" cloth="#2f6b3a" />
+        <Fig seat={rise > 0.5 ? undefined : "chair"} x={960} y={rise > 0.5 ? 1440 : seatY(1440 - THRONE_SEAT, 0.95)} s={0.95} outfit={OUT.negus} pose={pose} />
+        {pleased ? <g transform="translate(1040 1408)"><path d="M -44 0 Q -52 -56 -12 -64 Q 0 -76 16 -64 Q 52 -56 44 0 Z" fill="#7a4a26" stroke="#1b100c" strokeWidth={4} /></g> : null}
         {[-1, 1].map((sd) => [0, 1].map((k) => <Fig key={`${sd}${k}`} x={960 + sd * (310 + k * 170)} y={1450} s={0.85} outfit={{ ...SOLDIER(k), robe: "#2f6b3a", robeShade: "#1f4a28" }} prop="spear" flip={sd > 0} pose={{ ...STAND, head: rise * sd * 5 }} />))}
       </Layer>
       <Grade color={pleased ? "#ffd070" : "#ff3010"} opacity={pleased ? 0.14 : 0.08 + rise * 0.14} />
@@ -147,7 +145,7 @@ export const SoilAndLetter: React.FC<{ b?: number[] }> = ({ b }) => {
         <Layer d={1} cam={cam}>
           <Defs />
           <path d={ridge("sl3", 1460, 26, 400, -1400, 6000)} fill="#c98f52" />
-          <g transform={`translate(${x} 1470) scale(0.8)`}><Horse2 phase={frame * 0.4} rider={<g transform="translate(0 70) scale(0.9)"><Fig x={0} y={0} outfit={SOLDIER(1, false)} pose={{ ...SIT, lean: 12 }} sway={frame * 0.4} /><path d="M -40 -150 Q -60 -110 -30 -96 L 0 -110 Z" fill="#7a4a26" stroke="#1b100c" strokeWidth={4} /></g>} /></g>
+          <g transform={`translate(${x} 1470) scale(0.8)`}><Horse2 phase={frame * 0.4} rider={<g transform="translate(0 104) scale(0.9)"><Fig x={0} y={0} outfit={SOLDIER(1, false)} pose={{ ...RIDE, lean: 12 }} sway={frame * 0.4} /><path d="M -40 -150 Q -60 -110 -30 -96 L 0 -110 Z" fill="#7a4a26" stroke="#1b100c" strokeWidth={4} /></g>} /></g>
         </Layer>
         <Layer d={1.3} cam={cam}><Dust n={40} y0={1200} y1={1600} drift={-2.5} opacity={0.35} size={5} /></Layer>
         <Vignette s={0.45} />
@@ -220,11 +218,8 @@ export const Ambition: React.FC = () => {
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1440} width={3600} height={800} fill="#3a2018" />
-        <g transform="translate(960 1440)">
-          <path d="M -100 -40 L -100 -360 Q 0 -430 100 -360 L 100 -40 Z" fill="#c9952e" stroke="#1b100c" strokeWidth={5} />
-          <path d="M -78 -50 L -78 -340 Q 0 -392 78 -340 L 78 -50 Z" fill="#7a1420" />
-        </g>
-        <Fig x={960} y={1394} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={{ ...SIT, armRU: -40, armRL: -60, head: Math.sin(frame * 0.02) * 2 }} />
+        <ThroneSeat x={960} floor={1440} s={1} />
+        <Fig seat="chair" x={960} y={seatY(1440 - THRONE_SEAT, 0.95, 0.86)} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={{ ...SITC, armRU: -40, armRL: -60, head: Math.sin(frame * 0.02) * 2 }} />
       </Layer>
       <AbsoluteFill style={{ background: "radial-gradient(ellipse 35% 45% at 50% 60%, rgba(0,0,0,0) 30%, rgba(5,0,0,0.85) 100%)", opacity: iv(p, [0.3, 0.9], [0, 1]) }} />
       <Grade color="#ff3a10" opacity={0.14} />

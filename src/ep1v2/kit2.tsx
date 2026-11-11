@@ -164,7 +164,7 @@ const LimbP: React.FC<{ x: number; y: number; a1: number; a2: number; l1: number
 );
 export type Prop = "spear" | "axe" | "hook" | "staff" | "none";
 // Person2: ~300 px tall at scale 1, feet at (0,0), faces +x unless flipped.
-export const Person2: React.FC<{ pose?: Pose; outfit: Outfit; flip?: boolean; sway?: number; prop?: Prop; bald?: boolean; light?: string; silhouette?: string }> = ({ pose = STAND, outfit, flip, sway = 0, prop = "none", bald, light = "#fff", silhouette }) => {
+export const Person2: React.FC<{ pose?: Pose; outfit: Outfit; flip?: boolean; sway?: number; prop?: Prop; bald?: boolean; light?: string; silhouette?: string; seat?: "chair" | "ground" }> = ({ pose = STAND, outfit, flip, sway = 0, prop = "none", bald, light = "#fff", silhouette, seat }) => {
   const p = pose;
   const sil = silhouette;
   const skin = sil ?? outfit.skin;
@@ -197,7 +197,7 @@ export const Person2: React.FC<{ pose?: Pose; outfit: Outfit; flip?: boolean; sw
   const hem = Math.sin(sway) * 6;
   return (
     <g transform={`scale(${flip ? -1 : 1} 1)`}>
-      <ellipse cx={0} cy={4} rx={56} ry={10} fill="#000" opacity={0.22} />
+      {seat === "chair" ? null : <ellipse cx={0} cy={seat === "ground" ? -100 : 4} rx={seat === "ground" ? 70 : 56} ry={10} fill="#000" opacity={0.22} />}
       <g transform={`translate(0 ${p.bob}) rotate(${p.lean} 0 -130)`}>
         <LimbP x={-5} y={-220} a1={p.armLU} a2={p.armLL} l1={58} l2={54} w={17} color={shade} end={hand} />
         <LimbP x={-11} y={-116} a1={p.legLU} a2={p.legLL} l1={60} l2={56} w={19} color={dark} end={<ellipse cx={7} cy={4} rx={16} ry={8} fill={dark} stroke={INK} strokeWidth={3} />} />
@@ -313,7 +313,7 @@ export const Elephant2: React.FC<{ walk?: number; gait?: number; kneel?: number;
         </g>
         {/* head plate */}
         {sil ? null : <path d="M -290 -500 Q -250 -520 -215 -480 L -250 -440 Z" fill="#e3b341" stroke={INK} strokeWidth={4} />}
-        {driver ? <g transform="translate(-175 -418)">{driver}</g> : null}
+        {driver ? <g transform="translate(-178 -472)">{driver}</g> : null}
       </g>
     </g>
   );
@@ -367,7 +367,7 @@ export const Horse2: React.FC<{ phase: number; gallop?: number; color?: string; 
         <path d={`M 78 -186 Q ${96 + Math.sin(phase) * 6} -250 128 -280`} stroke={dk} strokeWidth={12} fill="none" />
         {leg(-48, 0, c)}
         {leg(74, Math.PI + 0.6, c)}
-        {rider ? <g transform="translate(-6 -160)">{rider}</g> : null}
+        {rider ? <g transform="translate(-6 -208)">{rider}</g> : null}
       </g>
     </g>
   );
@@ -390,3 +390,31 @@ export const aim = (vertical: boolean, wx: number, wy: number, zoom: number): Ca
   const oy = vertical ? 0.55 * 1920 : 420 + 0.55 * 1080;
   return { x: (wx - 960) * zoom, y: (wy - oy) * zoom, zoom };
 };
+
+// ---------- sitting & riding (placed by the HIPS so nobody floats) ----------
+// Person2's hips are 116 px above its feet origin. Chair: thighs level, shins hang. Ground: cross-legged.
+export const SITC: Pose = { bob: 0, lean: 0, head: 0, armLU: -20, armLL: -40, armRU: -25, armRL: -45, legLU: -84, legLL: 84, legRU: -88, legRL: 86 };
+export const SITG: Pose = { bob: 0, lean: 2, head: 0, armLU: -24, armLL: -56, armRU: -28, armRL: -56, legLU: -90, legLL: 168, legRU: -94, legRL: 170 };
+export const RIDE: Pose = { bob: 0, lean: 4, head: 0, armLU: -34, armLL: -40, armRU: -40, armRL: -44, legLU: -34, legLL: 36, legRU: -40, legRL: 40 };
+/** origin y for a seated figure whose hips rest on `seatTop` (chair) or on the ground at `seatTop` (ground). */
+export const seatY = (seatTop: number, s: number, sy = 1, ground = false) => seatTop + (ground ? 102 : 116) * s * sy;
+/** A throne whose seat top is at floor − 100·s, with a footstool so seated feet rest on something. */
+export const THRONE_SEAT = 100;
+export const ThroneSeat: React.FC<{ x: number; floor: number; s?: number; gold?: string; cloth?: string }> = ({ x, floor, s = 1, gold = "#c9952e", cloth = "#7a1420" }) => (
+  <g transform={`translate(${x} ${floor}) scale(${s})`}>
+    <rect x={-200} y={-30} width={400} height={30} fill="#4a3020" stroke={INK} strokeWidth={4} />
+    <path d="M -96 -100 L -96 -430 Q 0 -500 96 -430 L 96 -100 Z" fill={gold} stroke={INK} strokeWidth={5} />
+    <path d="M -74 -110 L -74 -410 Q 0 -462 74 -410 L 74 -110 Z" fill={cloth} />
+    <rect x={-120} y={-100} width={240} height={36} rx={6} fill={gold} stroke={INK} strokeWidth={5} />
+    <rect x={-112} y={-64} width={30} height={34} fill={gold} stroke={INK} strokeWidth={4} />
+    <rect x={82} y={-64} width={30} height={34} fill={gold} stroke={INK} strokeWidth={4} />
+    <rect x={60} y={-62} width={130} height={32} rx={4} fill={cloth} stroke={INK} strokeWidth={4} />
+  </g>
+);
+
+// The elephant's driver, astride its neck, hips at the slot point — at full adult size.
+export const Mahout: React.FC<{ silhouette?: string }> = ({ silhouette }) => (
+  <g transform={`translate(0 ${116 * 0.95})`}>
+    <Fig x={0} y={0} s={0.95} outfit={{ skin: "#6a4029", robe: "#8a2a1e", robeShade: "#4a1218", wrap: "#d8cfbd" }} pose={RIDE} flip silhouette={silhouette} prop="staff" />
+  </g>
+);

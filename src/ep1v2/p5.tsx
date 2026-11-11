@@ -1,15 +1,17 @@
 import React from "react";
 import { AbsoluteFill, random } from "remotion";
-import { STAND, SIT, walkPose, blend, Pose } from "../cartoon/Rig";
+import { STAND, walkPose, blend, Pose } from "../cartoon/Rig";
 import { OUT, SOLDIER, ARAB } from "../ep1/kit";
 import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, DustBurst, Grade, Vignette, Glow,
   Fig, Elephant2, Horse2, Kaaba2,
+  RIDE,
+  Mahout,
 } from "./kit2";
 
 // Part 5 — "The Road to Makkah": the Arabs rise, Dhū Nafar, Nufayl, al-Ṭāʾif, Abū Righāl, the camels, Makkah alone.
 const at = (b: number[] | undefined, i: number, dur: number, frac: number) => (b && b[i] !== undefined ? b[i] : Math.round(dur * frac));
-const DRIVER = <g transform="scale(0.55)"><Fig x={0} y={0} outfit={SOLDIER(1, false)} pose={SIT} flip /></g>;
+const DRIVER = <Mahout />;
 const camel = (x: number, y: number, s: number, ph: number, flip: boolean, color = "#8a6440") => (
   <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
     <ellipse cx={0} cy={4} rx={110} ry={11} fill="#000" opacity={0.18} />
@@ -181,7 +183,7 @@ export const Herds: React.FC = () => {
         <Defs />
         <rect x={-1400} y={1440} width={4800} height={1200} fill="#d8a870" />
         {new Array(14).fill(0).map((_, i) => camel(2300 - frame * 3.2 - (i % 7) * 170 + random(`hc${i}`) * 60, 1460 + Math.floor(i / 7) * 60, 0.6 + Math.floor(i / 7) * 0.08, frame * 0.3 + i, true, ["#8a6440", "#7a5634", "#9a7048"][i % 3]))}
-        {[0, 1, 2].map((i) => <g key={i} transform={`translate(${2650 - frame * 3.2 + i * 160} ${1480 + (i % 2) * 40}) scale(0.65)`}><Horse2 phase={frame * 0.42 + i} flip rider={<g transform="scale(0.9) translate(0 70)"><Fig x={0} y={0} outfit={SOLDIER(i, false)} pose={{ ...SIT, armRU: -120 }} /></g>} /></g>)}
+        {[0, 1, 2].map((i) => <g key={i} transform={`translate(${2650 - frame * 3.2 + i * 160} ${1480 + (i % 2) * 40}) scale(0.65)`}><Horse2 phase={frame * 0.42 + i} flip rider={<g transform="translate(0 104) scale(0.9)"><Fig x={0} y={0} outfit={SOLDIER(i, false)} pose={{ ...RIDE, armRU: -120 }} /></g>} /></g>)}
       </Layer>
       <Layer d={1.4} cam={cam}><Dust n={70} y0={1200} y1={1700} drift={-3} opacity={0.4} size={7} /></Layer>
       <Grade color="#ff9040" opacity={0.12} />

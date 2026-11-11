@@ -1,10 +1,11 @@
 import React from "react";
 import { AbsoluteFill, random } from "remotion";
-import { STAND, SIT, walkPose, blend } from "../cartoon/Rig";
+import { STAND, walkPose } from "../cartoon/Rig";
 import { OUT, SOLDIER, ARAB } from "../ep1/kit";
 import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, Grade, Vignette, Glow, Stars, Embers,
   Fig, Torch2, Elephant2,
+  ThroneSeat, THRONE_SEAT, seatY, SITC, SITG,
 } from "./kit2";
 
 // Part 4 — "The Church": al-Qullays, forced labour, the treasures, the man from Kināna, the vow, the elephant.
@@ -124,8 +125,8 @@ export const NewsByFire: React.FC<{ b?: number[] }> = ({ b }) => {
         <path d={`M 920 1440 Q 960 ${1300 - 40 * flick} 1000 1440 Z`} fill="#ffb347" />
         <path d={`M 940 1440 Q 960 ${1350 - 30 * flick} 980 1440 Z`} fill="#fff1b8" />
         <Embers n={30} x0={900} x1={1020} base={1400} speed={5} />
-        {[0, 1, 2].map((i) => <Fig key={i} x={[700, 820, 1260][i]} y={1450} s={0.8} outfit={ARAB(i)} flip={i === 2} pose={SIT} />)}
-        <Fig x={1130} y={rise > 0.5 ? 1450 : 1450} s={0.85} outfit={{ ...ARAB(3), wrap: "#7a2a1a" }} flip pose={blend(SIT, { ...STAND, armRU: -150, armRL: -20, lean: -4 }, rise)} />
+        {[0, 1, 2].map((i) => <Fig seat="ground" key={i} x={[700, 820, 1260][i]} y={seatY(1450, 0.8, 1, true)} s={0.8} outfit={ARAB(i)} flip={i === 2} pose={SITG} />)}
+        <Fig seat={rise < 0.5 ? "ground" : undefined} x={1130} y={rise < 0.5 ? seatY(1450, 0.85, 1, true) : 1450} s={0.85} outfit={{ ...ARAB(3), wrap: "#7a2a1a" }} flip pose={rise < 0.5 ? SITG : { ...STAND, armRU: -150 * Math.min(1, (rise - 0.5) * 2), armRL: -20, lean: -4 }} />
       </Layer>
       <Grade color="#ff8a3a" opacity={0.18} />
       <Vignette s={0.7} />
@@ -200,8 +201,8 @@ export const Vow: React.FC<{ b?: number[] }> = ({ b }) => {
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1440} width={3600} height={800} fill="#3a2018" />
-        <g transform="translate(960 1440)"><path d="M -100 -40 L -100 -360 Q 0 -430 100 -360 L 100 -40 Z" fill="#c9952e" stroke="#1b100c" strokeWidth={5} /><path d="M -78 -50 L -78 -340 Q 0 -392 78 -340 L 78 -50 Z" fill="#7a1420" /></g>
-        <Fig x={960} y={fist > 0.5 ? 1440 : 1394} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={blend(SIT, { ...STAND, armRU: -155, armRL: -40, lean: 4, head: 6 }, fist)} />
+        <ThroneSeat x={960} floor={1440} s={1} />
+        <Fig seat={fist > 0.5 ? undefined : "chair"} x={960} y={fist > 0.5 ? 1440 : seatY(1440 - THRONE_SEAT, 0.95, 0.86)} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={fist > 0.5 ? { ...STAND, armRU: -155, armRL: -40, lean: 4, head: 6 } : SITC} />
         <Fig x={1300} y={1450} s={0.85} outfit={ARAB(1)} flip pose={{ ...STAND, lean: 16, head: 16 }} />
       </Layer>
       <Grade color="#ff3010" opacity={0.08 + fist * 0.14} />
@@ -212,4 +213,3 @@ export const Vow: React.FC<{ b?: number[] }> = ({ b }) => {
 
 export const P4_SCENES = { ChurchRise, Treasures, NewsByFire, Sneak, Vow };
 void random;
-void SIT;

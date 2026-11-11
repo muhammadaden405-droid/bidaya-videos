@@ -38,7 +38,7 @@ CUES = {
     ("Duel2", "Aryāṭ was tall", "cut", {}, ["Aryāṭ was tall", "Abraha was short", "And behind Abraha", "Aryāṭ raised his spear", "and struck"]),
   ],
   3: [
-    ("Wound", "The spear missed", "flash", {}, ["From that day"]),
+    ("Wound", "The spear missed", "flash", {}, ["From that day", "his eyebrow", "His eye.", "His nose", "His lip"]),
     ("Charge", "Then ʿAtwada charged", "cut", {}, [0, "Aryāṭ's whole army"]),
     ("Negus2", "But when the Negus heard", "fade", {}, ["he was furious"]),
     ("SoilAndLetter", "Abraha did something", "fade", {}, ["He filled a leather bag", "and sent it"]),
@@ -56,9 +56,9 @@ CUES = {
   ],
   5: [
     ("TribesFight", "When the Arabs heard", "cut", {}, ["They were crushed", "Dhū Nafar was taken"]),
-    ("Plead", "O King, don't kill me", "cut", {}, [0, "Abraha spared him"]),
-    ("Plead", "In the land of Khathʿam", "fade", {"green": True, "chained": False}, ["Don't kill me", "So Abraha let him go"]),
-    ("Guide", "and Nufayl marched", "fade", {"guide": "nufayl"}, []),
+    ("Plead", "When Abraha was about to kill him, Dhū Nafar", "cut", {}, ["O King, don't kill me", "Abraha spared him"]),
+    ("Plead", "In the land of Khathʿam", "fade", {"green": True, "chained": False}, ["Don't kill me", "So Abraha spared him"]),
+    ("Guide", "Now Nufayl marched", "fade", {"guide": "nufayl"}, []),
     ("Thaqif", "At al-Ṭāʾif", "fade", {}, ["O King, we are your servants", "Our shrine"]),
     ("Guide", "Their guide, Abū Righāl", "fade", {"guide": "abuRighal"}, []),
     ("Stoned", "There, Abū Righāl died", "fade", {}, ["and the Arabs stoned"]),

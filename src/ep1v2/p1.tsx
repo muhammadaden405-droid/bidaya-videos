@@ -1,18 +1,19 @@
 import React from "react";
 import { AbsoluteFill, random } from "remotion";
-import { STAND, SIT } from "../cartoon/Rig";
+import { STAND } from "../cartoon/Rig";
 import { OUT, SOLDIER, ARAB } from "../ep1/kit";
 import { serif, display } from "../fonts";
 import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, easeIn, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, DustBurst, Embers, Grade, Vignette, Glow, Stars,
   Fig, Elephant2, Kaaba2, Ship2, Horse2, Torch2,
+  ThroneSeat, THRONE_SEAT, seatY, SITC, RIDE, Mahout,
 } from "./kit2";
 
 // Part 1 — "Elephants don't kneel": the cold open, the trench, the escape, Caesar, the fleet.
 // b = beat frames inside the shot (from the narration's word timings).
 const at = (b: number[] | undefined, i: number, dur: number, frac: number) => (b && b[i] !== undefined ? b[i] : Math.round(dur * frac));
 const SIL = "#1a0c14";
-const DRIVER = <g transform="scale(0.55)"><Fig x={0} y={0} outfit={SOLDIER(1, false)} pose={{ ...SIT }} flip /></g>;
+const DRIVER = <Mahout />;
 
 // 1a — "Elephants don't kneel." Silhouette of a war elephant walking across a blazing dawn sun.
 export const HookSilhouette: React.FC = () => {
@@ -29,7 +30,7 @@ export const HookSilhouette: React.FC = () => {
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1400} width={3600} height={800} fill={SIL} />
-        <g transform={`translate(${ex} 1410) scale(1.25)`}><Elephant2 walk={frame * 0.09} gait={0.8} ear={(Math.sin(frame * 0.06) + 1) / 2} silhouette={SIL} driver={<g transform="scale(0.55)"><Fig x={0} y={0} outfit={SOLDIER(1, false)} pose={SIT} flip silhouette={SIL} /></g>} /></g>
+        <g transform={`translate(${ex} 1410) scale(1.25)`}><Elephant2 walk={frame * 0.09} gait={0.8} ear={(Math.sin(frame * 0.06) + 1) / 2} silhouette={SIL} driver={<Mahout silhouette={SIL} />} /></g>
       </Layer>
       <Layer d={1.4} cam={cam}><Dust n={50} color="#ffd9a0" y0={900} y1={1600} drift={1.2} size={4} opacity={0.5} /></Layer>
       <Grade color="#ff8a3a" opacity={0.25} />
@@ -181,7 +182,7 @@ export const TitleReveal: React.FC<{ b?: number[] }> = ({ b }) => {
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1440} width={3600} height={800} fill={SIL} />
-        <g transform="translate(960 1460) scale(0.8)"><Elephant2 kneel={1} silhouette={SIL} driver={<g transform="scale(0.55)"><Fig x={0} y={0} outfit={SOLDIER(1, false)} pose={SIT} flip silhouette={SIL} /></g>} /></g>
+        <g transform="translate(960 1460) scale(0.8)"><Elephant2 kneel={1} silhouette={SIL} driver={<Mahout silhouette={SIL} />} /></g>
       </Layer>
       <Grade color="#ff7a3a" opacity={0.2} />
       <Vignette s={0.75} />
@@ -219,7 +220,7 @@ export const Trench: React.FC<{ b?: number[] }> = ({ b }) => {
         <Embers n={90} x0={-200} x1={2200} base={1300} />
         {/* the king watching from a rise */}
         <path d="M 1150 1260 Q 1300 1150 1500 1160 L 1700 1260 Z" fill="#0c0406" />
-        <Fig x={1360} y={1170} s={0.55} outfit={OUT.dhuNuwas} silhouette="#0c0406" pose={{ ...STAND, armRU: -40, armRL: -40 }} flip o={iv(frame, [kingAt, kingAt + 15], [0, 1])} />
+        <Fig x={1360} y={1170} s={0.55} outfit={{ ...OUT.dhuNuwas, crown: false, wrap: "#d4a23c" }} silhouette="#0c0406" pose={{ ...STAND, armRU: -40, armRL: -40 }} flip o={iv(frame, [kingAt, kingAt + 15], [0, 1])} />
       </Layer>
       <Layer d={1} cam={cam}>
         <rect x={-800} y={1460} width={3600} height={800} fill="#0a0305" />
@@ -246,8 +247,8 @@ export const Escape: React.FC = () => {
       <Layer d={0.5} cam={cam}><path d={ridge("es2", 1350, 90, 260, -1400, 9000)} fill="#2e3460" /></Layer>
       <Layer d={1} cam={cam}>
         <path d={ridge("es3", 1470, 40, 400, -1400, 9000)} fill="#3a3a64" />
-        {[0, 1].map((i) => <g key={i} transform={`translate(${pursuer(i)} 1480) scale(0.75)`} opacity={0.85}><Horse2 phase={frame * 0.32 + i} gallop={0.7} sil="#141634" rider={<g transform="translate(0 70) scale(0.9)"><Fig x={0} y={0} outfit={SOLDIER(i)} pose={SIT} silhouette="#141634" /></g>} /></g>)}
-        <g transform={`translate(${x} 1480) scale(0.9)`}><Horse2 phase={frame * 0.42} gallop={1.1} color="#3a2a22" rider={<g transform="translate(0 70) scale(0.9)"><Fig x={0} y={0} outfit={{ skin: "#a87650", robe: "#e9dfc8", robeShade: "#b8a888", wrap: "#f2ece0" }} pose={{ ...SIT, lean: 14, armRU: -60 }} sway={frame * 0.4} /></g>} /></g>
+        {[0, 1].map((i) => <g key={i} transform={`translate(${pursuer(i)} 1480) scale(0.75)`} opacity={0.85}><Horse2 phase={frame * 0.32 + i} gallop={0.7} sil="#141634" rider={<g transform="translate(0 104) scale(0.9)"><Fig x={0} y={0} outfit={SOLDIER(i)} pose={RIDE} silhouette="#141634" /></g>} /></g>)}
+        <g transform={`translate(${x} 1480) scale(0.9)`}><Horse2 phase={frame * 0.42} gallop={1.1} color="#3a2a22" rider={<g transform="translate(0 104) scale(0.9)"><Fig x={0} y={0} outfit={{ skin: "#a87650", robe: "#e9dfc8", robeShade: "#b8a888", wrap: "#f2ece0" }} pose={{ ...RIDE, lean: 14, armRU: -60 }} sway={frame * 0.4} /></g>} /></g>
       </Layer>
       <Layer d={1.3} cam={cam}><Dust n={50} color="#9aa0c8" y0={1300} y1={1600} drift={-3} size={5} opacity={0.35} /></Layer>
       <Grade color="#3a5ab0" opacity={0.2} />
@@ -285,11 +286,8 @@ export const Caesar: React.FC<{ b?: number[] }> = ({ b }) => {
         <rect x={-800} y={1440} width={3600} height={800} fill="#d8d0c0" />
         <rect x={-800} y={1440} width={3600} height={800} fill="#000" opacity={0.15} />
         <path d="M 760 1440 L 1160 1440 L 1120 1300 L 800 1300 Z" fill="#cfc6b4" />
-        <g transform="translate(960 1300)">
-          <path d="M -90 0 L -90 -300 Q 0 -360 90 -300 L 90 0 Z" fill="#c9a24a" stroke="#1b100c" strokeWidth={5} />
-          <path d="M -70 -10 L -70 -280 Q 0 -325 70 -280 L 70 -10 Z" fill="#5a1f4a" />
-        </g>
-        <Fig x={960} y={1260} s={0.8} outfit={{ skin: "#c99a78", robe: "#f2ece0", robeShade: "#cfc3a8", crown: true, cape: "#6a1f5a" }} pose={sealing ? { ...SIT, armRU: -80, armRL: -30 } : { ...SIT, armRU: -100, armRL: -10, head: 4 }} />
+        <ThroneSeat x={960} floor={1300} s={0.85} gold="#c9a24a" cloth="#5a1f4a" />
+        <Fig seat="chair" x={960} y={seatY(1300 - THRONE_SEAT * 0.85, 0.8)} s={0.8} outfit={{ skin: "#c99a78", robe: "#f2ece0", robeShade: "#cfc3a8", crown: true, cape: "#6a1f5a" }} pose={sealing ? { ...SITC, armRU: -80, armRL: -30 } : { ...SITC, armRU: -100, armRL: -10, head: 4 }} />
         <Fig x={1150} y={1450} s={0.85} outfit={{ skin: "#a87650", robe: "#e9dfc8", robeShade: "#b8a888", wrap: "#f2ece0" }} flip pose={{ ...STAND, legLU: -60, legLL: 100, legRU: -70, legRL: 110, bob: 70, lean: -10, head: -14, armRU: -70, armRL: -40 }} />
         {sealing ? (
           <g transform="translate(960 1180)">

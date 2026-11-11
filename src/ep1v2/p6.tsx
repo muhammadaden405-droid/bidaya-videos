@@ -1,10 +1,12 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
-import { STAND, SIT, walkPose, blend, Pose } from "../cartoon/Rig";
+import { STAND, walkPose, blend, Pose } from "../cartoon/Rig";
 import { OUT, SOLDIER, ARAB } from "../ep1/kit";
 import {
   Cam, Layer, Defs, Sky, SKIES, iv, ease, useShot, useView, lerpCam, aim, ridge, Grade, Vignette, Glow, Stars,
   Fig, Elephant2, Horse2, Kaaba2, Torch2,
+  RIDE,
+  ThroneSeat, THRONE_SEAT, seatY, SITC, SITG,
 } from "./kit2";
 
 // Part 6 — "The Lord of the Camels": the envoy, the answer at the Kaʿbah, the camp, the tent, the night prayer.
@@ -37,10 +39,10 @@ export const Envoy: React.FC<{ b?: number[] }> = ({ b }) => {
         <ellipse cx={900} cy={1480} rx={900} ry={130} fill="#e6dcc8" />
         <rect x={-1400} y={1480} width={4800} height={1200} fill="#cdbb98" />
         <Kaaba2 x={760} y={1470} s={2.4} />
-        <Fig x={1180} y={1490} s={0.62} outfit={OUT.chief} flip pose={blend(STAND, { ...STAND, armRU: -160, armRL: -10, head: -14 }, gesture)} />
+        <Fig x={1180} y={1490} s={0.62} outfit={OUT.chief} pose={blend(STAND, { ...STAND, armRU: -160, armRL: -10, head: -14 }, gesture)} />
         {riding
-          ? <g transform={`translate(${rx} 1500) scale(0.55)`}><Horse2 phase={frame * 0.4} flip rider={<g transform="translate(0 70) scale(0.9)"><Fig x={0} y={0} outfit={OUT.envoy} pose={SIT} /></g>} /></g>
-          : <Fig x={1420} y={1490} s={0.62} outfit={OUT.envoy} pose={{ ...STAND, armRU: frame < answerAt ? -70 : -8, armRL: -20 }} />}
+          ? <g transform={`translate(${rx} 1500) scale(0.55)`}><Horse2 phase={frame * 0.4} flip rider={<g transform="translate(0 104) scale(0.9)"><Fig x={0} y={0} outfit={OUT.envoy} pose={RIDE} /></g>} /></g>
+          : <Fig x={1420} y={1490} s={0.62} outfit={OUT.envoy} flip pose={{ ...STAND, armRU: frame < answerAt ? -70 : -8, armRL: -20 }} />}
       </Layer>
       <Vignette s={0.4} />
     </AbsoluteFill>
@@ -65,8 +67,8 @@ export const Camp: React.FC<{ b?: number[] }> = ({ b }) => {
         <rect x={-1400} y={1440} width={4800} height={1200} fill="#2a2430" />
         {tent(380, 1460, 1.15, "#6a4a3a")}
         <Torch2 x={620} y={1400} seed={1} />
-        <Fig x={400} y={1470} s={0.85} outfit={OUT.prisoner} pose={{ ...SIT, head: 6 }} />
-        <path d="M 380 1400 q -20 30 0 50" stroke="#9a9aa4" strokeWidth={6} fill="none" />
+        <Fig seat="ground" x={400} y={seatY(1470, 0.85, 1, true)} s={0.85} outfit={OUT.prisoner} pose={{ ...SITG, head: 6 }} />
+        <path d="M 386 1386 q -20 30 0 50" stroke="#9a9aa4" strokeWidth={6} fill="none" />
         <Fig x={760} y={1470} s={0.85} outfit={OUT.chief} flip pose={{ ...STAND, armRU: -60, armRL: -40 }} />
         {[0, 1].map((i) => <Fig key={i} x={900 + i * 100} y={1470} s={0.75} outfit={ARAB(i + 1)} flip />)}
         <g transform="translate(1680 1470) scale(0.95)"><Elephant2 walk={frame * 0.04} ear={(Math.sin(frame * 0.05) + 1) / 2} skin="#5a5058" /></g>
@@ -87,13 +89,14 @@ export const Tent: React.FC<{ b?: number[]; focus?: [number, F][] }> = ({ b, foc
   const { vertical } = useView();
   const downAt = at(b, 0, dur, 0.2);
   const seatedAt = at(b, 1, dur, 0.32);
-  const walkIn = iv(frame, [0, Math.max(30, downAt - 10)], [0, 1], ease);
-  const down = iv(frame, [downAt, downAt + 45], [0, 1], ease);
-  const sit = iv(frame, [seatedAt, seatedAt + 20], [0, 1], ease);
+  const walkEnd = Math.max(30, Math.min(90, downAt - 10));
+  const walkIn = iv(frame, [0, walkEnd], [0, 1]);
+  const down = iv(frame, [downAt, downAt + 50], [0, 1]);
+  const sit = iv(frame, [seatedAt, seatedAt + 14], [0, 1]);
   let f: F = "wide";
   for (const [fr, v] of focus ?? []) if (frame >= fr) f = v;
   const ax = 960 - 170 * down;
-  const ay = 1394 + 116 * down;
+  const ay = down === 0 ? seatY(1440 - THRONE_SEAT, 0.95, 0.86) : down < 1 ? 1440 + 90 * down : seatY(1530, 0.95, 0.86, true);
   const cx = 1720 - 560 * walkIn;
   const T: Record<F, Cam> = {
     wide: aim(vertical, vertical ? 1100 : 1020, 1250, vertical ? 1.0 : 1.0),
@@ -103,8 +106,9 @@ export const Tent: React.FC<{ b?: number[]; focus?: [number, F][] }> = ({ b, foc
   };
   const t = T[f];
   const cam: Cam = { x: t.x + Math.sin(frame * 0.01) * 8, y: t.y, zoom: t.zoom * (1 + p * 0.04) };
-  const abrahaPose: Pose = down > 0 && down < 1 ? walkPose(frame * 0.2) : SIT;
-  const chiefPose: Pose = walkIn < 1 ? walkPose(frame * 0.2) : blend(STAND, SIT, sit);
+  const abrahaPose: Pose = down === 0 ? SITC : down < 1 ? walkPose(frame * 0.22) : SITG;
+  const chiefPose: Pose = walkIn < 1 ? walkPose(frame * 0.22) : sit < 1 ? STAND : SITG;
+  const cy = sit < 1 ? 1530 : seatY(1530, 1.0, 1, true);
   return (
     <AbsoluteFill>
       <Sky stops={[[0, "#2a0f0a"], [100, "#3a1810"]]} />
@@ -119,9 +123,9 @@ export const Tent: React.FC<{ b?: number[]; focus?: [number, F][] }> = ({ b, foc
         <rect x={-1400} y={1440} width={4800} height={1200} fill="#5a2a1e" />
         <path d="M 520 1460 L 1400 1460 L 1500 1600 L 420 1600 Z" fill="#8f1f1a" stroke="#1b100c" strokeWidth={4} />
         <path d="M 560 1480 L 1360 1480 L 1430 1580 L 490 1580 Z" fill="none" stroke="#e3b341" strokeWidth={7} />
-        <g transform="translate(960 1440)"><path d="M -90 -40 L -90 -340 Q 0 -410 90 -340 L 90 -40 Z" fill="#c9952e" stroke="#1b100c" strokeWidth={5} /><path d="M -70 -50 L -70 -320 Q 0 -372 70 -320 L 70 -50 Z" fill="#7a1420" /></g>
-        <Fig x={ax} y={ay} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={abrahaPose} />
-        <Fig x={cx} y={1530 - sit * 40} s={1.0} outfit={OUT.chief} flip pose={chiefPose} />
+        <ThroneSeat x={960} floor={1440} s={1} />
+        <Fig seat={down === 0 ? "chair" : down >= 1 ? "ground" : undefined} x={ax} y={ay} s={0.95} sx={1.2} sy={0.86} outfit={OUT.abrahaKing} pose={abrahaPose} />
+        <Fig seat={sit >= 1 ? "ground" : undefined} x={cx} y={cy} s={1.0} outfit={OUT.chief} flip pose={chiefPose} />
         <Fig x={1560} y={1470} s={0.85} outfit={ARAB(4)} flip pose={{ ...STAND, head: 4 }} />
         {[-1, 1].map((sd) => <Fig key={sd} x={960 + sd * 620} y={1450} s={0.9} outfit={SOLDIER(sd > 0 ? 1 : 0)} prop="spear" flip={sd > 0} />)}
       </Layer>
