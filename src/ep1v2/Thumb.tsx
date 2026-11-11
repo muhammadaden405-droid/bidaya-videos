@@ -149,9 +149,9 @@ export const Ep1ThumbV: React.FC<{ part?: number; lines?: string[] }> = ({ part 
       </Layer>
       <Grade color="#ff5a1a" opacity={0.12} />
       <Vignette s={0.7} />
-      <AbsoluteFill style={{ alignItems: "center", paddingTop: 270 }}>
-        <div style={{ fontFamily: sans, fontWeight: 800, fontSize: 52, color: "#fff", background: "#d4141c", padding: "10px 30px 12px", borderRadius: 14, border: "5px solid #000", letterSpacing: 2, boxShadow: "0 8px 0 #000" }}>PART {part}/7</div>
-        <div style={{ textAlign: "center", marginTop: 34, transform: "rotate(-2deg)" }}>
+      <AbsoluteFill style={{ alignItems: "center", paddingTop: 250 }}>
+        <div style={{ fontFamily: sans, fontWeight: 800, fontSize: 118, lineHeight: 1, color: "#fff", background: "#e0141c", padding: "18px 56px 24px", borderRadius: 26, border: "9px solid #000", letterSpacing: 2, boxShadow: "0 14px 0 #000, 0 20px 40px rgba(0,0,0,0.7)", WebkitTextStroke: "4px #000", paintOrder: "stroke fill" } as React.CSSProperties}>PART {part}</div>
+        <div style={{ textAlign: "center", marginTop: 50, transform: "rotate(-2deg)" }}>
           {lines.map((l, i) => <div key={i} style={TXT(i === 0 ? "#ffd400" : "#ffffff", size)}>{l}</div>)}
         </div>
       </AbsoluteFill>
