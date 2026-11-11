@@ -287,3 +287,87 @@ export const TrenchTrailer: React.FC = () => (
     <SoundDesign />
   </AbsoluteFill>
 );
+
+// ───────────────────────── Vertical 9:16 version (Shorts / TikTok / Reels) ─────────────────────────
+// The landscape scenes are re-framed: each 16:9 scene is scaled up to fill the 1920px height and
+// cropped around its subject, with larger captions and a re-laid-out title card.
+
+const VW = 1080;
+const VH = 1920;
+
+const Reframe: React.FC<{ children: React.ReactNode; focusX?: number; zoom?: number }> = ({ children, focusX = 960, zoom = 1 }) => {
+  const s = (VH / H) * zoom;
+  const left = VW / 2 - focusX * s;
+  return (
+    <AbsoluteFill style={{ backgroundColor: "#000", overflow: "hidden" }}>
+      <div style={{ position: "absolute", width: W, height: H, left, top: (VH - H * s) / 2, transform: `scale(${s})`, transformOrigin: "0 0" }}>
+        {children}
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const VCaption: React.FC<{ text: string }> = ({ text }) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const o = interpolate(frame, [6, 16, durationInFrames - 14, durationInFrames - 4], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const y = interpolate(frame, [6, 20], [16, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <div style={{ position: "absolute", top: 210, width: "100%", display: "flex", justifyContent: "center", opacity: o, transform: `translateY(${y}px)` }}>
+      <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 60, lineHeight: 1.25, color: "#fff7e6", background: "rgba(10,6,4,0.55)", padding: "18px 34px", borderRadius: 18, maxWidth: 940, textAlign: "center", textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}>
+        {text}
+      </div>
+    </div>
+  );
+};
+
+const VTitleShot: React.FC = () => {
+  const frame = useCurrentFrame();
+  const a = (s: number) => interpolate(frame, [s, s + 15], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const embers = new Array(70).fill(0).map((_, i) => {
+    const age = (frame + i * 11) % 110;
+    return { x: random(`vx${i}`) * VW, y: VH - age * 17, o: 1 - age / 110 };
+  });
+  return (
+    <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 90%, #4a160c 0%, #120708 55%, #060304 100%)", alignItems: "center", justifyContent: "center" }}>
+      <svg viewBox={`0 0 ${VW} ${VH}`} width={VW} height={VH} style={{ position: "absolute" }}>
+        {embers.map((e, i) => <circle key={i} cx={e.x} cy={e.y} r={3.5} fill="#ffb347" opacity={e.o * 0.8} />)}
+      </svg>
+      <div style={{ textAlign: "center", color: "#f6e6c8", width: 960 }}>
+        <div style={{ fontFamily: serif, fontSize: 50, letterSpacing: 10, color: "#e3a64a", opacity: a(25) }}>FRIDAY · NOVEMBER 13</div>
+        <div style={{ fontFamily: amiri, fontSize: 150, color: "#ffcf7a", direction: "rtl", whiteSpace: "nowrap", lineHeight: 1.35, marginTop: 30, opacity: a(132), textShadow: "0 0 50px rgba(255,140,40,0.55)" }}>أصحاب الأخدود</div>
+        <div style={{ fontFamily: serif, fontSize: 92, lineHeight: 1.1, letterSpacing: 3, opacity: a(142) }}>The People<br />of the Trench</div>
+        <div style={{ fontFamily: amiri, fontSize: 70, direction: "rtl", marginTop: 90, opacity: a(238) }}>﴿قُتِلَ أَصْحَابُ الْأُخْدُودِ﴾</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 46, lineHeight: 1.3, fontStyle: "italic", opacity: a(250), marginTop: 14 }}>“Cursed were the people of the ditch (the story of the Boy and the King).”</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 34, color: "#bfa98a", opacity: a(250), marginTop: 14 }}>al-Burūj 85:4 — Hilali &amp; Muhsin Khan (Tanzil.net)</div>
+      </div>
+      <div style={{ position: "absolute", bottom: 150, width: "100%", textAlign: "center", fontFamily: serif, fontSize: 32, color: "#bfa98a", opacity: a(270) }}>
+        Source: Ibn Kathīr, al-Bidāya wa al-Nihāya 3/23–29
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const VSHOTS: { from: number; len: number; el: React.ReactNode; cap?: string }[] = [
+  { from: 0, len: 160, el: <Reframe focusX={960} zoom={1.05}><KingShot /></Reframe>, cap: "A king who asked: “Do you have a lord other than me?”" },
+  { from: 150, len: 160, el: <Reframe focusX={960} zoom={1.05}><BoyShot /></Reframe>, cap: "A boy who answered: “My Lord and your Lord is Allah.”" },
+  { from: 300, len: 130, el: <Reframe focusX={900}><FireShot /></Reframe>, cap: "And a people who chose faith over fire." },
+  { from: 420, len: 485, el: <VTitleShot /> },
+];
+
+export const TrenchTrailerVertical: React.FC = () => (
+  <AbsoluteFill style={{ backgroundColor: "#000" }}>
+    {VSHOTS.map((s, i) => (
+      <Sequence key={i} from={s.from} durationInFrames={s.len}>
+        <Fade first={i === 0} last={i === VSHOTS.length - 1}>
+          {s.el}
+          {s.cap ? <VCaption text={s.cap} /> : null}
+        </Fade>
+      </Sequence>
+    ))}
+    <Sequence from={8}><Html5Audio src={staticFile("trailer/vo.m4a")} /></Sequence>
+    <Sequence from={665}><Html5Audio src={staticFile("trailer/recitation-85-4.m4a")} /></Sequence>
+    <FadeToBlack from={875} />
+    <SoundDesign />
+  </AbsoluteFill>
+);
