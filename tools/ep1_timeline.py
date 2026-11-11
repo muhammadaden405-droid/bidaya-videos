@@ -10,10 +10,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FPS = 30
-ROTATE = 80           # rotate-your-phone card
+ROTATE = 0            # no rotate card: the episode opens straight on the hook
 GAP = 24              # breath between parts
 END = 300             # end card
-REC_VERSES = [0.0, 6.8, 12.8, 19.3, 27.25]  # verse starts inside the cleaned recitation (s)
+REC_VERSES = [0.0, 7.4, 13.35, 20.0, 27.8]  # verse starts inside the cleaned recitation (s)
 
 def norm(w):
     w = unicodedata.normalize("NFKD", w)
@@ -79,7 +79,7 @@ def align(script_words, wh):
 # (scene, anchor phrase, transition, props, [beat phrases or ints])
 CUES = [
   [  # part 1
-    ("ColdOpen", "The biggest animal", "black", {}, ["Still… it knelt"]),
+    ("ColdOpen", "The biggest animal", "cut", {}, ["Still… it knelt"]),
     ("MapScene", "To understand why", "fade", {}, ["Before Islam", "attacked the Christians", "One man escaped", "The emperor wrote", "And the Negus answered"]),
     ("Fleet", "with seventy thousand soldiers", "fade", {}, []),
     ("AbrahaIntro", "Among them was a man", "cut", {}, []),
@@ -200,7 +200,7 @@ def main():
     pub = ROOT / "public" / "ep1"
     t = ROTATE
     scenes, audio, sfx, caps, parts = [], [], [], [], []
-    scenes.append({"scene": "RotateCard", "from": 0, "len": ROTATE, "trans": "cut"})
+    if ROTATE: scenes.append({"scene": "RotateCard", "from": 0, "len": ROTATE, "trans": "cut"})
     report = []
     for pi, txt in enumerate(texts):
         if pi == 5:  # the recitation goes before the closing part

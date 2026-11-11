@@ -65,12 +65,13 @@ export const Grade: React.FC<{ color: string; opacity: number; mode?: React.CSSP
 // subtle animated film grain
 export const Grain: React.FC<{ opacity?: number }> = ({ opacity = 0.06 }) => {
   const frame = useCurrentFrame();
+  const { width, height } = useVideoConfig();
   const seed = frame % 8;
   return (
     <AbsoluteFill style={{ opacity, mixBlendMode: "overlay", pointerEvents: "none" }}>
-      <svg width={W} height={H}>
+      <svg width={width} height={height}>
         <filter id={`gr${seed}`}><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves={2} seed={seed} /><feColorMatrix type="saturate" values="0" /></filter>
-        <rect width={W} height={H} filter={`url(#gr${seed})`} />
+        <rect width={width} height={height} filter={`url(#gr${seed})`} />
       </svg>
     </AbsoluteFill>
   );
@@ -434,3 +435,21 @@ export const Throne: React.FC<{ x: number; y: number; s?: number; gold?: string;
 export const Title: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({ children, style }) => (
   <div style={{ position: "absolute", width: "100%", textAlign: "center", ...style }}>{children}</div>
 );
+
+// In a vertical (9:16) render, shows a 16:9 stage scaled to cover the frame (centered, sides cropped).
+export const useVertical = () => {
+  const { width, height } = useVideoConfig();
+  return height > width;
+};
+export const Stage: React.FC<{ children: React.ReactNode; focusX?: number }> = ({ children, focusX = 960 }) => {
+  const { width, height } = useVideoConfig();
+  if (height <= width) return <>{children}</>;
+  const s = height / H;
+  return (
+    <AbsoluteFill style={{ overflow: "hidden" }}>
+      <div style={{ position: "absolute", width: W, height: H, left: width / 2 - focusX * s, top: 0, transform: `scale(${s})`, transformOrigin: "0 0" }}>
+        <AbsoluteFill>{children}</AbsoluteFill>
+      </div>
+    </AbsoluteFill>
+  );
+};

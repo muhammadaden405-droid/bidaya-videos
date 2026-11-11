@@ -4,7 +4,7 @@ import { STAND, SIT, walkPose, Pose } from "../cartoon/Rig";
 import { amiri, serif } from "../fonts";
 import {
   Cam, Layer, iv, ease, useShot, moveCam, ridge, dunes, Vignette, Grain, Rays, Dust, SKY, Stars, Sun, Clouds,
-  OUT, SOLDIER, ARAB, Figure, KElephant, Grade, Kaaba, Town, Bird,
+  OUT, SOLDIER, ARAB, Figure, KElephant, Grade, Kaaba, Town, Bird, Stage, useVertical,
 } from "./kit";
 
 // Scenes for TikTok part 5: the elephant kneels, the birds, the aftermath, the recitation, the end.
@@ -267,21 +267,24 @@ export const Recitation: React.FC<{ b?: number[] }> = ({ b }) => {
   const end = v < 4 ? starts[v + 1] : dur;
   const o = iv(frame, [starts[v], starts[v] + 10, end - 8, end], [0, 1, 1, v < 4 ? 0 : 1]);
   const cam = moveCam(p, { x: 0, y: 0, zoom: 1.05 }, { x: 0, y: -20, zoom: 1.2 });
+  const V = useVertical();
   return (
     <AbsoluteFill style={{ background: SKY.night }}>
+      <Stage>
       <Layer d={0.02} cam={cam}><Stars n={180} /></Layer>
       <Layer d={0.15} cam={cam}><path d={ridge("rc", 760, 220, 120)} fill="#151a36" /></Layer>
       <Layer d={1} cam={cam}>
         <ellipse cx={960} cy={1010} rx={900} ry={120} fill="#2a2a40" />
         <Kaaba x={880} y={1000} s={1.6} night glow={0.5} />
       </Layer>
+      </Stage>
       <AbsoluteFill style={{ background: "linear-gradient(rgba(5,6,16,0.55), rgba(5,6,16,0.2) 70%, rgba(5,6,16,0.6))" }} />
-      <div style={{ position: "absolute", top: 170, width: "100%", textAlign: "center", opacity: o, transform: `translateY(${iv(since, [0, 14], [14, 0], ease)}px)` }}>
-        <div style={{ fontFamily: amiri, fontSize: 96, color: "#ffe2a0", direction: "rtl", lineHeight: 1.6, textShadow: "0 0 40px rgba(255,190,90,0.35)" }}>{VERSES[v][0]}</div>
-        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 44, color: "#f6ecd8", fontStyle: "italic", margin: "18px auto 0", maxWidth: 1400, lineHeight: 1.3 }}>“{VERSES[v][1]}”</div>
+      <div style={{ position: "absolute", top: V ? 380 : 170, width: "100%", textAlign: "center", opacity: o, transform: `translateY(${iv(since, [0, 14], [14, 0], ease)}px)` }}>
+        <div style={{ fontFamily: amiri, fontSize: V ? 92 : 96, color: "#ffe2a0", direction: "rtl", lineHeight: 1.6, padding: V ? "0 50px" : 0, textShadow: "0 0 40px rgba(255,190,90,0.35)" }}>{VERSES[v][0]}</div>
+        <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: V ? 54 : 44, color: "#f6ecd8", fontStyle: "italic", margin: "18px auto 0", maxWidth: V ? 920 : 1400, lineHeight: 1.3 }}>“{VERSES[v][1]}”</div>
         <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 30, color: "#bfa98a", marginTop: 16, letterSpacing: 2 }}>Sūrat al-Fīl 105:{v + 1}</div>
       </div>
-      <div style={{ position: "absolute", bottom: 40, width: "100%", textAlign: "center", fontFamily: serif, fontSize: 24, color: "#8f8270" }}>Translation: Hilali &amp; Muhsin Khan (Tanzil.net)</div>
+      <div style={{ position: "absolute", ...(V ? { top: 1060 } : { bottom: 40 }), width: "100%", textAlign: "center", fontFamily: serif, fontSize: V ? 30 : 24, color: "#8f8270" }}>Translation: Hilali &amp; Muhsin Khan (Tanzil.net)</div>
       <Vignette strength={0.6} />
     </AbsoluteFill>
   );
@@ -348,11 +351,12 @@ const PAGES: [string, string][] = [
 ];
 export const EndCard: React.FC = () => {
   const { frame } = useShot();
+  const V = useVertical();
   return (
     <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 40%, #f3e6c6 0%, #e2cfa2 70%, #c9b07e 100%)", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ width: 1100, color: "#3a2414", opacity: iv(frame, [0, 15], [0, 1]) }}>
+      <div style={{ width: V ? 940 : 1100, color: "#3a2414", opacity: iv(frame, [0, 15], [0, 1]), zoom: V ? 0.95 : 1 }}>
         <div style={{ fontFamily: serif, fontSize: 26, letterSpacing: 8, textAlign: "center", color: "#7a5a3a" }}>WHERE TO FIND IT</div>
-        <div style={{ fontFamily: serif, fontSize: 78, textAlign: "center", lineHeight: 1.1 }}>al-Bidāya wa al-Nihāya</div>
+        <div style={{ fontFamily: serif, fontSize: V ? 72 : 78, textAlign: "center", lineHeight: 1.1 }}>al-Bidāya wa al-Nihāya</div>
         <div style={{ fontFamily: serif, fontSize: 32, textAlign: "center", fontStyle: "italic", color: "#5a3a20", marginBottom: 30 }}>Ibn Kathīr · edited by al-Turkī · volume 3</div>
         {PAGES.map(([t, pg], i) => (
           <div key={i} style={{ display: "flex", fontFamily: `"${serif}", "${amiri}"`, fontSize: 34, lineHeight: 1.55, opacity: iv(frame, [10 + i * 4, 22 + i * 4], [0, 1]) }}>

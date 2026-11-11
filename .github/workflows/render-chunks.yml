@@ -23,9 +23,9 @@ jobs:
       - id: p
         run: echo "idx=$(python3 -c "import json;print(json.dumps(list(range(int('${{ inputs.chunks }}')))))")" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
-      - name: Remove previous render branches (keeps the repo small)
+      - name: Remove this composition's previous render branches (keeps the repo small)
         run: |
-          for b in $(git ls-remote --heads origin 'render/*' | awk '{print $2}'); do
+          for b in $(git ls-remote --heads origin 'render/*' | awk '{print $2}' | grep -E "^refs/heads/render/${{ inputs.composition }}-[0-9]+(-c[0-9]+)?$|^refs/heads/render/[A-Za-z0-9]+-[0-9]+$"); do
             git push -q origin --delete "$b" || true
           done
   render:
