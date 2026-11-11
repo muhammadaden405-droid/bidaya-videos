@@ -46,6 +46,44 @@ CUES = {
     ("Negus2", "The Negus was satisfied", "fade", {"pleased": True}, []),
     ("Ambition", "Abraha had survived", "fade", {}, []),
   ],
+  4: [
+    ("ChurchRise", "In Ṣanʿāʾ, Abraha built", "cut", {}, ["He forced the people"]),
+    ("Treasures", "He hauled marble", "fade", {}, []),
+    ("LetterRead", "Then he wrote to the Negus", "fade", {"lines": 5}, []),
+    ("NewsByFire", "The Arabs heard about", "fade", {}, ["And one man from the tribe"]),
+    ("Sneak", "He travelled to", "fade", {}, ["slipped into", "and went home"]),
+    ("Vow", "Who did this", "cut", {}, ["Abraha swore", "And he took the elephant"]),
+  ],
+  5: [
+    ("TribesFight", "When the Arabs heard", "cut", {}, ["They were crushed", "Dhū Nafar was taken"]),
+    ("Plead", "O King, don't kill me", "cut", {}, [0, "Abraha spared him"]),
+    ("Plead", "In the land of Khathʿam", "fade", {"green": True, "chained": False}, ["Don't kill me", "So Abraha let him go"]),
+    ("Guide", "and Nufayl marched", "fade", {"guide": "nufayl"}, []),
+    ("Thaqif", "At al-Ṭāʾif", "fade", {}, ["O King, we are your servants", "Our shrine"]),
+    ("Guide", "Their guide, Abū Righāl", "fade", {"guide": "abuRighal"}, []),
+    ("Stoned", "There, Abū Righāl died", "fade", {}, ["and the Arabs stoned"]),
+    ("Herds", "Abraha's horsemen raided", "fade", {}, []),
+    ("MakkahAlone", "Quraysh knew they could not", "fade", {}, []),
+  ],
+  6: [
+    ("Envoy", "Abraha sent a messenger", "cut", {}, ["Tell their chief", "ʿAbd al-Muṭṭalib answered"]),
+    ("Camp", "He went to Abraha's camp", "fade", {}, ["Through Unays"]),
+    ("Tent", "ʿAbd al-Muṭṭalib was the most handsome", "fade", {"focus": [("two", "What do you want"), ("chief", "I want the king"), ("abraha", "Abraha stared"), ("chief", "ʿAbd al-Muṭṭalib said"), ("abraha", "It will not be protected"), ("chief", "That is your affair"), ("two", "And Abraha gave him back")]}, ["so he stepped down", "sat beside him"]),
+    ("RingPrayer", "That night", "fade", {}, ["Then he led Quraysh"]),
+  ],
+  7: [
+    ("Whisper2", "In the morning", "cut", {}, ["took hold of its ear", "And the elephant knelt", "Nufayl ran"]),
+    ("Refusals", "They beat it", "cut", {}, ["Toward Yemen", "Toward Syria", "Toward the east", "Toward Makkah"]),
+    ("Birds2", "Then Allah sent birds", "flash", {}, ["Every man they struck"]),
+    ("Rout", "The army fled", "fade", {}, ["They died at every"]),
+    ("Litter2", "Abraha himself was struck", "fade", {}, []),
+    ("Beggars2", "Years later", "fade", {}, []),
+    ("Light", "And in that same year", "fade", {"mode": "dawn"}, []),
+    ("Light", "This was not a victory", "fade", {"mode": "house"}, []),
+  ],
+  8: [
+    ("Torn", "As for al-Qullays", "fade", {}, ["And the Kaʿbah still stands"]),
+  ],
 }
 
 BED = lambda src, v, loop=True: (src, 0, v, None, 15, 20, loop)
@@ -72,6 +110,30 @@ SFX = {
   "SoilAndLetter": [BED("blizzard-wind-01", 0.12), ("sand-pour-01", "b0", 0.4, "b1", 5, 10, True), HIT("sack-drop-01", "b1-6", 0.35), ("own-hooves", "b1", 0.45, None, 10, 20, True)],
   "LetterRead": [("marker-writing-01", 0, 0.25, None, 5, 15, True), BED("gentle-fire-crackling-01", 0.14), HIT("paper-fabric-crumple-36", 0, 0.2)],
   "Ambition": [BED("gentle-fire-crackling-01", 0.1), HIT("own-air-swell", "end-60", 0.45), BED("blizzard-wind-01", 0.08)],
+  "ChurchRise": [BED("busy-market-crowd-murmur-walla-01", 0.07), ("hammer-01", "b0", 0.18, None, 10, 20, True), ("chisel-01", "b0+20", 0.16, None, 10, 20, True), HIT("own-air-swell", "b0-40", 0.3)],
+  "Treasures": [BED("daily-20260923-hushed-crowd-walla-short", 0.05), HIT("own-air-swell", 0, 0.25)],
+  "NewsByFire": [BED("night-ambience-01", 0.25), BED("gentle-fire-crackling-01", 0.25), HIT("own-impact", "b0", 0.35)],
+  "Sneak": [BED("night-ambience-01", 0.3), BED("grasshopper-01", 0.08), ("footsteps-stone-01", 0, 0.18, "b0", 5, 10, True), HIT("door-creak-01", "b0", 0.35), ("footsteps-stone-01", "b1", 0.3, None, 5, 30, True)],
+  "Vow": [BED("gentle-fire-crackling-01", 0.1), HIT("own-impact", "b0", 0.5), ("angry-crowd-01", "b0+10", 0.12, "b1", 20, 20, True), HIT("own-air-swell", "b1-44", 0.45), HIT("own-elephant-rumble", "b1+6", 0.6), HIT("own-rumble", "b1+6", 0.45)],
+  "TribesFight": [BED("angry-crowd-01", 0.3), HIT("own-impact", "b0", 0.6), HIT("chainmail-01", "b0+8", 0.3), HIT("crowd-groan-01", "b0+20", 0.25), HIT("chainmail-01", "b1", 0.35)],
+  "Plead": [BED("blizzard-wind-01", 0.1), HIT("chainmail-01", 0, 0.25)],
+  "Guide": [BED("marching-footsteps-01", 0.2), BED("blizzard-wind-01", 0.1), HIT("own-elephant-rumble", 20, 0.25)],
+  "Thaqif": [BED("animal-bird-03", 0.1), BED("blizzard-wind-01", 0.06), BED("marching-footsteps-01", 0.08)],
+  "Stoned": [BED("blizzard-wind-01", 0.16), ("own-stones", "b0", 0.18, None, 20, 20, True)],
+  "Herds": [BED("own-hooves", 0.4), BED("camel-grumble-01", 0.25), BED("angry-crowd-01", 0.1)],
+  "MakkahAlone": [BED("blizzard-wind-01", 0.22), HIT("own-air-swell", "end-60", 0.4), HIT("own-rumble", 10, 0.3)],
+  "Envoy": [("own-hooves", 0, 0.3, "b0", 10, 15, True), BED("busy-market-crowd-murmur-walla-01", 0.05), BED("blizzard-wind-01", 0.06)],
+  "Camp": [BED("night-ambience-01", 0.25), BED("gentle-fire-crackling-01", 0.14), HIT("chainmail-01", 20, 0.15), HIT("own-elephant-rumble", "b0", 0.3)],
+  "Tent": [BED("daily-20260923-hushed-crowd-walla-short", 0.07), BED("gentle-fire-crackling-01", 0.08), ("footsteps-stone-01", 0, 0.22, 70, 5, 10, True)],
+  "RingPrayer": [BED("night-ambience-01", 0.3), BED("grasshopper-01", 0.1), BED("gentle-fire-crackling-01", 0.1), ("footsteps-sand-01", "b0", 0.25, None, 10, 30, True), HIT("own-air-swell", "end-60", 0.35)],
+  "Whisper2": [BED("blizzard-wind-01", 0.1), BED("daily-20260923-hushed-crowd-walla-short", 0.06), HIT("own-air-swell", "b1-44", 0.35), HIT("own-impact", "b1+8", 0.7), HIT("own-elephant-rumble", "b1+10", 0.5), ("footsteps-sand-01", "b2", 0.35, None, 0, 20, True)],
+  "Refusals": [("angry-crowd-01", 0, 0.25, "b0", 10, 10, True), ("impact-slam-35", 4, 0.45, "b0", 0, 0, True), HIT("own-elephant-rumble", 10, 0.45), ("marching-footsteps-01", "b0", 0.2, "b3", 5, 10, True), HIT("own-impact", "b3+18", 0.75), HIT("own-rumble", "b3+18", 0.5)],
+  "Birds2": [("own-wings", 0, 0.6, None, 40, 30, True), ("animal-bird-03", 0, 0.3, None, 30, 30, True), HIT("own-rumble", 20, 0.35), ("own-stones", "b0", 0.55, None, 10, 30, True), HIT("crowd-groan-01", "b0+20", 0.3), ("angry-crowd-01", "b0+40", 0.18, None, 20, 20, True)],
+  "Rout": [("angry-crowd-01", 0, 0.28, "b0", 10, 20, True), BED("own-wings", 0.22), ("marching-footsteps-01", 0, 0.25, "b0", 5, 20, True), HIT("body-fall-01", 40, 0.35), ("blizzard-wind-01", "b0", 0.2, None, 20, 20, True)],
+  "Litter2": [BED("blizzard-wind-01", 0.15), BED("footsteps-sand-01", 0.18)],
+  "Beggars2": [BED("busy-market-crowd-murmur-walla-01", 0.12)],
+  "Light": [BED("night-ambience-01", 0.12), ("animal-bird-03", "end-150", 0.15, None, 40, 20, True)],
+  "Torn": [("chisel-01", 0, 0.18, "b0", 10, 15, True), ("hammer-01", 15, 0.14, "b0", 10, 15, True), HIT("rock-crumbling-01", 30, 0.3), HIT("own-air-swell", "b0-48", 0.3), ("blizzard-wind-01", "b0", 0.08, None, 30, 40, True)],
   "Armada": [BED("ocean-ships", 0.5), ("rowing-oar-stroke-01", 0, 0.25, None, 10, 20, True), BED("blizzard-wind-01", 0.1), HIT("own-air-swell", "end-50", 0.45)],
 }
 # the "again" drop gets its impact (TurnTest is shared, so add it by mode)
@@ -122,6 +184,8 @@ def main(only=None):
             b = [bt if isinstance(bt, int) else fr(times[find(bt, idx[ci])]) - st for bt in beats]
             pr = dict(props)
             if b: pr["b"] = b
+            if "focus" in pr:
+                pr["focus"] = [[fr(times[find(ph, idx[ci])]) - st, v] for v, ph in pr["focus"]]
             scenes.append({"scene": name, "from": st, "len": ln, "trans": trans, "props": pr})
             for s in SFX.get(name, []) + MODE_SFX.get((name, props.get("mode")), []):
                 src, a, v, ln2, fi, fo, loop = s
@@ -151,7 +215,7 @@ def main(only=None):
         print(f"part {pi}: align {ratio:.2f}  {b0/FPS:6.1f}s -> {part_end/FPS:6.1f}s")
         t = part_end
     if not only or "8" in only.split(","):
-        scenes.append({"scene": "EndCard", "from": t, "len": END, "trans": "fade"})
+        scenes.append({"scene": "EndCard2", "from": t, "len": END, "trans": "fade"})
         parts[-1]["end"] = t + END  # part 7 on TikTok includes the recitation, closing and sources
         t += END
     caps.sort(key=lambda c: c["from"])

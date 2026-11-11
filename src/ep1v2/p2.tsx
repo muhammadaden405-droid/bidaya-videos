@@ -3,7 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { STAND, SIT, walkPose, blend, Pose } from "../cartoon/Rig";
 import { OUT, SOLDIER, BLUE, ARAB } from "../ep1/kit";
 import {
-  Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, easeIn, useShot, useView, lerpCam, shakeAt, ridge, Dust, DustBurst, Grade, Vignette, Glow,
+  Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, easeIn, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, DustBurst, Grade, Vignette, Glow,
   Fig, Ship2, Horse2, Torch2,
 } from "./kit2";
 
@@ -23,7 +23,7 @@ export const Landing: React.FC<{ b?: number[] }> = ({ b }) => {
   const aAt = at(b, 0, dur, 0.45);
   const close = frame >= aAt;
   const cam = close
-    ? lerpCam((frame - aAt) / Math.max(1, dur - aAt), vertical ? { x: 120, y: -40, zoom: 1.7 } : { x: 120, y: -40, zoom: 1.6 }, vertical ? { x: 110, y: -80, zoom: 1.85 } : { x: 110, y: -70, zoom: 1.75 })
+    ? lerpCam((frame - aAt) / Math.max(1, dur - aAt), aim(vertical, 1080, 1260, 1.7), aim(vertical, 1080, 1230, 1.85))
     : lerpCam(frame / Math.max(1, aAt), { x: -120, y: 40, zoom: 1.0 }, { x: 0, y: 0, zoom: 1.1 });
   return (
     <AbsoluteFill>
@@ -57,7 +57,7 @@ export const Landing: React.FC<{ b?: number[] }> = ({ b }) => {
 export const AbrahaSpot: React.FC = () => {
   const { frame, p } = useShot();
   const { vertical } = useView();
-  const cam = lerpCam(p, { x: 0, y: 0, zoom: 1.0 }, vertical ? { x: 0, y: -60, zoom: 1.9 } : { x: 0, y: -60, zoom: 1.7 }, easeOut);
+  const cam = lerpCam(p, aim(vertical, 960, 1250, 1.0), aim(vertical, 960, 1270, vertical ? 1.9 : 1.7), easeOut);
   const spot = iv(p, [0.1, 0.5], [0, 1], ease);
   return (
     <AbsoluteFill>
@@ -196,8 +196,8 @@ export const Duel2: React.FC<{ b?: number[] }> = ({ b }) => {
   const peek = iv(frame, [aS, aS + 20], [0, 1], ease);
   // shots: Aryāṭ low-angle, Abraha, the hidden servant, then both as the spear rises
   const shots: [number, Cam, Cam][] = vertical
-    ? [[aA, { x: 230, y: -160, zoom: 1.8 }, { x: 230, y: -200, zoom: 1.95 }], [aB, { x: -200, y: -60, zoom: 1.9 }, { x: -200, y: -80, zoom: 2.0 }], [aS, { x: -360, y: -40, zoom: 1.9 }, { x: -340, y: -60, zoom: 2.0 }], [aR, { x: 0, y: -120, zoom: 1.25 }, { x: 0, y: -160, zoom: 1.4 }]]
-    : [[aA, { x: 220, y: -120, zoom: 1.6 }, { x: 220, y: -150, zoom: 1.7 }], [aB, { x: -200, y: -40, zoom: 1.7 }, { x: -200, y: -60, zoom: 1.8 }], [aS, { x: -320, y: -20, zoom: 1.7 }, { x: -300, y: -40, zoom: 1.8 }], [aR, { x: 0, y: -60, zoom: 1.2 }, { x: 0, y: -100, zoom: 1.35 }]];
+    ? [[aA, aim(true, 1180, 1200, 1.7), aim(true, 1180, 1170, 1.85)], [aB, aim(true, 760, 1290, 1.8), aim(true, 760, 1280, 1.95)], [aS, aim(true, 620, 1270, 1.8), aim(true, 640, 1260, 1.95)], [aR, aim(true, 1000, 1230, 1.15), aim(true, 1040, 1180, 1.3)]]
+    : [[aA, aim(false, 1180, 1220, 1.5), aim(false, 1180, 1190, 1.65)], [aB, aim(false, 760, 1300, 1.6), aim(false, 760, 1290, 1.75)], [aS, aim(false, 660, 1290, 1.6), aim(false, 680, 1280, 1.75)], [aR, aim(false, 970, 1260, 1.15), aim(false, 970, 1230, 1.3)]];
   let cam: Cam = { x: 0, y: 0, zoom: 1.0 };
   for (let i = 0; i < shots.length; i++) {
     const [st, c0, c1] = shots[i];

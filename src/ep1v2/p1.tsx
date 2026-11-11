@@ -4,7 +4,7 @@ import { STAND, SIT } from "../cartoon/Rig";
 import { OUT, SOLDIER, ARAB } from "../ep1/kit";
 import { serif, display } from "../fonts";
 import {
-  Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, easeIn, useShot, useView, lerpCam, shakeAt, ridge, Dust, DustBurst, Embers, Grade, Vignette, Glow, Stars,
+  Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, easeIn, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, DustBurst, Embers, Grade, Vignette, Glow, Stars,
   Fig, Elephant2, Kaaba2, Ship2, Horse2, Torch2,
 } from "./kit2";
 
@@ -78,7 +78,7 @@ export const Beating: React.FC<{ b?: number[]; mode?: "axes" | "hooks" }> = ({ b
   const period = 16;
   const hits = new Array(8).fill(0).map((_, i) => 6 + i * period).filter((h) => h < dur);
   const sh = shakeAt(frame, hits, 10);
-  const target = mode === "axes" ? (vertical ? { x: -400, y: -40, zoom: 1.8 } : { x: -300, y: -60, zoom: 1.6 }) : (vertical ? { x: -40, y: 80, zoom: 1.9 } : { x: 0, y: 60, zoom: 1.6 });
+  const target = mode === "axes" ? aim(vertical, 560, 1230, vertical ? 1.7 : 1.5) : aim(vertical, 960, 1300, vertical ? 1.7 : 1.5);
   const c0 = lerpCam(p, { ...target, zoom: target.zoom * 0.94 }, target);
   const cam = { ...c0, x: c0.x + sh.x, y: c0.y + sh.y };
   const flinch = hits.reduce((m, h) => Math.max(m, frame >= h && frame < h + 10 ? Math.exp(-(frame - h) / 4) : 0), 0);
@@ -263,7 +263,7 @@ export const Caesar: React.FC<{ b?: number[] }> = ({ b }) => {
   const sealAt = at(b, 0, dur, 0.6);
   const sealing = frame >= sealAt;
   const cam = sealing
-    ? lerpCam((frame - sealAt) / Math.max(1, dur - sealAt), { x: 0, y: vertical ? 160 : 260, zoom: 2.2 }, { x: 0, y: vertical ? 140 : 250, zoom: 2.4 })
+    ? lerpCam((frame - sealAt) / Math.max(1, dur - sealAt), aim(vertical, 960, 1260, 2.0), aim(vertical, 960, 1250, 2.2))
     : lerpCam(frame / Math.max(1, sealAt), vertical ? { x: 0, y: 40, zoom: 1.0 } : { x: 0, y: 200, zoom: 1.0 }, vertical ? { x: 60, y: -40, zoom: 1.3 } : { x: 60, y: 230, zoom: 1.2 });
   const pillar = (x: number) => (
     <g key={x}>

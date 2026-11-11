@@ -4,7 +4,7 @@ import { STAND, SIT, walkPose, blend, Pose } from "../cartoon/Rig";
 import { OUT, SOLDIER, BLUE } from "../ep1/kit";
 import { display, serif } from "../fonts";
 import {
-  Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, useShot, useView, lerpCam, shakeAt, ridge, Dust, Grade, Vignette, Glow,
+  Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, useShot, useView, lerpCam, aim, shakeAt, ridge, Dust, Grade, Vignette, Glow,
   Fig, Torch2, Horse2,
 } from "./kit2";
 
@@ -20,7 +20,7 @@ export const Wound: React.FC<{ b?: number[] }> = ({ b }) => {
   const nameAt = at(b, 0, dur, 0.55);
   const reel = iv(frame, [0, 14], [1, 0], easeOut);
   const sh = shakeAt(frame, [0], 30);
-  const c0 = lerpCam(frame / Math.max(1, dur), vertical ? { x: -200, y: -160, zoom: 2.2 } : { x: -200, y: -140, zoom: 2.0 }, vertical ? { x: -200, y: -170, zoom: 2.35 } : { x: -200, y: -150, zoom: 2.1 });
+  const c0 = lerpCam(frame / Math.max(1, dur), aim(vertical, 790, 1240, vertical ? 1.9 : 1.7), aim(vertical, 790, 1220, vertical ? 2.1 : 1.85));
   const cam = { ...c0, x: c0.x + sh.x, y: c0.y + sh.y };
   const o = iv(frame, [nameAt, nameAt + 12], [0, 1]);
   return (
@@ -56,8 +56,8 @@ export const Charge: React.FC<{ b?: number[] }> = ({ b }) => {
   const join = iv(frame, [joinAt, joinAt + 50], [0, 1], ease);
   const sh = shakeAt(frame, [leapAt + 12], 20);
   const c0 = frame < joinAt
-    ? lerpCam((frame - leapAt) / Math.max(1, joinAt - leapAt), vertical ? { x: 0, y: -60, zoom: 1.5 } : { x: 0, y: -60, zoom: 1.4 }, vertical ? { x: 160, y: -40, zoom: 1.6 } : { x: 120, y: -40, zoom: 1.5 })
-    : lerpCam(join, vertical ? { x: 160, y: -40, zoom: 1.6 } : { x: 120, y: -40, zoom: 1.5 }, vertical ? { x: 400, y: 60, zoom: 1.1 } : { x: 0, y: 60, zoom: 1.0 });
+    ? lerpCam((frame - leapAt) / Math.max(1, joinAt - leapAt), aim(vertical, 900, 1280, vertical ? 1.3 : 1.35), aim(vertical, 1020, 1290, vertical ? 1.4 : 1.45))
+    : lerpCam(join, aim(vertical, 1020, 1290, vertical ? 1.4 : 1.45), aim(vertical, vertical ? 1400 : 960, 1300, vertical ? 1.1 : 1.0));
   const cam = { ...c0, x: c0.x + sh.x, y: c0.y + sh.y };
   return (
     <AbsoluteFill>
@@ -154,7 +154,7 @@ export const SoilAndLetter: React.FC<{ b?: number[] }> = ({ b }) => {
       </AbsoluteFill>
     );
   }
-  const cam = lerpCam(frame / Math.max(1, rideAt), vertical ? { x: 40, y: -120, zoom: 2.0 } : { x: 40, y: -120, zoom: 1.8 }, vertical ? { x: 60, y: -60, zoom: 2.1 } : { x: 60, y: -60, zoom: 1.9 });
+  const cam = lerpCam(frame / Math.max(1, rideAt), aim(vertical, 990, 1250, vertical ? 1.7 : 1.6), aim(vertical, 1010, 1310, vertical ? 1.85 : 1.75));
   const pour = (frame % 36) / 36;
   return (
     <AbsoluteFill>

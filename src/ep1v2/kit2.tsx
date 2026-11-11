@@ -384,3 +384,9 @@ export const Torch2: React.FC<{ x: number; y: number; seed: number; s?: number }
     </g>
   );
 };
+
+// Camera that puts world point (wx, wy) at the centre of the frame at the given zoom.
+export const aim = (vertical: boolean, wx: number, wy: number, zoom: number): Cam => {
+  const oy = vertical ? 0.55 * 1920 : 420 + 0.55 * 1080;
+  return { x: (wx - 960) * zoom, y: (wy - oy) * zoom, zoom };
+};

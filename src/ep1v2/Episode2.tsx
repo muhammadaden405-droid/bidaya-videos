@@ -4,7 +4,11 @@ import { sans, amiri } from "../fonts";
 import { P1_SCENES } from "./p1";
 import { P2_SCENES } from "./p2";
 import { P3_SCENES } from "./p3";
-import { Recitation, EndCard } from "../ep1/s3";
+import { P4_SCENES } from "./p4";
+import { P5_SCENES } from "./p5";
+import { P6_SCENES } from "./p6";
+import { P7_SCENES } from "./p7";
+import { Recitation } from "../ep1/s3";
 import { Grain } from "../ep1/kit";
 import TL from "./timeline.json";
 
@@ -15,7 +19,7 @@ type Sfx = { src: string; from: number; len?: number; vol: number; fadeIn?: numb
 type Cap = { from: number; to: number; words: { t: number; w: string }[] };
 const T = TL as unknown as { total: number; scenes: Cue[]; audio: { src: string; from: number; vol?: number }[]; sfx: Sfx[]; captions: Cap[] };
 export const EP1V2_LENGTH = Math.max(30, T.total);
-const SCENES: Record<string, React.FC<any>> = { ...(P1_SCENES as any), ...(P2_SCENES as any), ...(P3_SCENES as any), Recitation, EndCard };
+const SCENES: Record<string, React.FC<any>> = { ...(P1_SCENES as any), ...(P2_SCENES as any), ...(P3_SCENES as any), ...(P4_SCENES as any), ...(P5_SCENES as any), ...(P6_SCENES as any), ...(P7_SCENES as any), Recitation };
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const Trans: React.FC<{ kind?: Cue["trans"]; children: React.ReactNode }> = ({ kind = "fade", children }) => {
