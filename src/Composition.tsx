@@ -10,6 +10,8 @@ import { TrenchTrailer, TrenchTrailerVertical, TRAILER_LENGTH } from "./cartoon/
 import { DramaTrailer, DramaTrailerVertical, DRAMA_LENGTH } from "./cartoon/DramaTrailer";
 import { Teaser, TeaserVertical, TEASER_LENGTH } from "./cartoon/Teaser";
 import { Ep1Previews } from "./ep1/preview";
+import { RigTest } from "./ep1v2/test";
+import { Ep1v2, EP1V2_LENGTH } from "./ep1v2/Episode2";
 import { Episode1, Episode1Vertical, Ep1Part, EP1_LENGTH } from "./ep1/Episode";
 import PARTS from "../tools/ep1_parts.json";
 
@@ -93,6 +95,10 @@ export const MyComposition = () => (
     {(PARTS as { part: number; start: number; end: number }[]).map((p) => (
       <Composition key={p.part} id={`Episode1-Part${p.part}`} component={Ep1Part} defaultProps={{ from: p.start }} durationInFrames={p.end - p.start} fps={30} width={1920} height={1080} />
     ))}
+    <Composition id="Ep1v2" component={Ep1v2} durationInFrames={EP1V2_LENGTH} fps={30} width={1920} height={1080} />
+    <Composition id="Ep1v2Vertical" component={Ep1v2} durationInFrames={EP1V2_LENGTH} fps={30} width={1080} height={1920} />
+    <Composition id="RigTest" component={RigTest} durationInFrames={150} fps={30} width={1920} height={1080} />
+    <Composition id="RigTestV" component={RigTest} durationInFrames={150} fps={30} width={1080} height={1920} />
     <Ep1Previews />
   </>
 );

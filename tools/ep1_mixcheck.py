@@ -2,7 +2,7 @@
 import json, subprocess, numpy as np, sys, functools
 R = "/home/claude/bidaya-videos/"
 SR = int(__import__("os").environ.get("SR", "24000")); FPS = 30
-T = json.load(open(R + "src/ep1/timeline.json"))
+T = json.load(open(R + __import__("os").environ.get("TL", "src/ep1/timeline.json")))
 @functools.lru_cache(None)
 def load(p):
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", p, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True).stdout
