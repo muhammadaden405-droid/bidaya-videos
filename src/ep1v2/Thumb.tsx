@@ -77,7 +77,7 @@ export const Ep1Thumb: React.FC<{ line1?: string; line2?: string }> = ({ line1 =
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1430} width={3600} height={800} fill="#1e0a0c" />
-        <g transform="translate(600 1462) scale(1.15)"><Elephant2 kneel={1} ear={0.9} trunk={0.7} skin="#8a8280" driver={<Mahout />} /></g>
+        <g transform="translate(470 1462) scale(-1.15 1.15)"><Elephant2 kneel={1} ear={0.9} trunk={0.7} skin="#8a8280" driver={<Mahout />} /></g>
       </Layer>
       <Grade color="#ff5a1a" opacity={0.12} />
       <Vignette s={0.7} />
@@ -145,7 +145,7 @@ export const Ep1ThumbV: React.FC<{ part?: number; lines?: string[] }> = ({ part 
       <Layer d={1} cam={cam}>
         <Defs />
         <rect x={-800} y={1600} width={3600} height={800} fill="#1e0a0c" />
-        <g transform="translate(900 1640) scale(0.95)"><Elephant2 kneel={1} ear={0.9} trunk={0.7} skin="#8a8280" driver={<Mahout />} /></g>
+        <g transform="translate(700 1640) scale(-0.95 0.95)"><Elephant2 kneel={1} ear={0.9} trunk={0.7} skin="#8a8280" driver={<Mahout />} /></g>
       </Layer>
       <Grade color="#ff5a1a" opacity={0.12} />
       <Vignette s={0.7} />
