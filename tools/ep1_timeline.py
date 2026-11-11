@@ -39,6 +39,14 @@ def words_of(txt):
     return [w for w in re.split(r"\s+", txt.replace("—", " — ").replace("…", "… ")) if w and w not in ("—",)]
 
 def whisper(path):
+    cache = Path(str(path) + ".words.json")
+    if cache.exists() and cache.stat().st_mtime > Path(path).stat().st_mtime:
+        d = json.load(open(cache)); return [tuple(w) for w in d["w"]], d["dur"]
+    ws, dur = _whisper(path)
+    json.dump({"w": ws, "dur": dur}, open(cache, "w"))
+    return ws, dur
+
+def _whisper(path):
     from faster_whisper import WhisperModel
     import numpy as np
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", "16000", "-f", "f32le", "-"], capture_output=True).stdout
@@ -169,7 +177,23 @@ SFX = {
   "Recitation": [BED("night-ambience-01", 0.05)],
   "Ruins": [("chisel-01", 0, 0.18, "b0", 10, 15, True), ("hammer-01", 15, 0.14, "b0", 10, 15, True), ("rock-crumbling-01", 30, 0.3, None, 0, 0, False), ("own-air-swell", "b0-48", 0.3, None, 0, 0, False), ("blizzard-wind-01", "b0", 0.08, None, 30, 40, True)],
 }
-CLIFF = ("own-impact", 0.5)  # sting at the end of each TikTok part
+CLIFF = ("own-impact", 0.5)
+
+# Every effect file is levelled to the same active loudness, so a `vol` means the same thing for
+# every sound; LEVEL then sets how far under the narration the whole effects layer sits.
+LEVEL = 0.6
+_gain = {}
+def gain(src):
+    if src not in _gain:
+        import numpy as np
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(ROOT / "public/trailer/sfx" / (src + ".mp3")), "-ac", "1", "-ar", "16000", "-f", "f32le", "-"], capture_output=True).stdout
+        x = np.frombuffer(raw, np.float32)
+        w = 1600
+        r = np.array([np.sqrt(np.mean(x[i:i + w] ** 2)) for i in range(0, len(x) - w, w)] or [1e-3])
+        act = r[r > r.max() * 0.1]
+        rms = float(np.sqrt(np.mean(act ** 2))) if len(act) else 1e-3
+        _gain[src] = min(4.0, 0.1 / max(rms, 1e-4))   # 0.1 RMS = -20 dBFS
+    return _gain[src]  # sting at the end of each TikTok part
 
 def main():
     texts = script_parts()
@@ -185,7 +209,7 @@ def main():
             audio.append({"src": "ep1/recitation-105.m4a", "from": start})
             scenes.append({"scene": "Recitation", "from": t, "len": int((rec_len + 1.2) * FPS), "trans": "fade", "props": {"b": [int(v * FPS) + 10 for v in REC_VERSES]}})
             for s in SFX["Recitation"]:
-                sfx.append({"src": s[0], "from": t, "len": int((rec_len + 1.2) * FPS), "vol": s[2], "fadeIn": 20, "fadeOut": 20, "loop": True})
+                sfx.append({"src": s[0], "from": t, "len": int((rec_len + 1.2) * FPS), "vol": round(s[2] * gain(s[0]) * LEVEL, 4), "fadeIn": 20, "fadeOut": 20, "loop": True})
             t = start + int((rec_len + 1.0) * FPS)
         f = pub / f"p{pi + 1}.m4a"
         ws, dur = whisper(f)
@@ -235,10 +259,11 @@ def main():
                     m = re.match(r"(b(\d)|end)([+-]\d+)?", x)
                     o = int(m.group(3) or 0)
                     return (b[int(m.group(2))] if m.group(2) else ln) + o
+                if any(isinstance(x, str) and x.startswith("b") and int(x[1]) >= len(b) for x in (a, ln2)): continue
                 off = resolve(a)
                 L = (resolve(ln2) - off) if isinstance(ln2, str) else (ln2 if ln2 else ln - off)
                 if L <= 0: continue
-                sfx.append({"src": src, "from": st + off, "len": L, "vol": v, "fadeIn": fi, "fadeOut": fo, "loop": loop})
+                sfx.append({"src": src, "from": st + off, "len": L, "vol": round(v * gain(src) * LEVEL, 4), "fadeIn": fi, "fadeOut": fo, "loop": loop})
         # captions: sentence-ish groups of ≤ 7 words
         grp = []
         for i, w in enumerate(sw):
@@ -250,7 +275,7 @@ def main():
                 caps.append({"from": a0, "to": max(a1, a0 + 20), "words": [{"t": fr(times[k]), "w": sw[k]} for k in grp]})
                 grp = []
         if pi < 4:
-            sfx.append({"src": CLIFF[0], "from": fr(dur) - 2, "vol": CLIFF[1]})
+            sfx.append({"src": CLIFF[0], "from": fr(dur) - 2, "vol": round(CLIFF[1] * gain(CLIFF[0]) * LEVEL, 4)})
             parts.append({"part": pi + 1, "start": base - 6 if pi else 0, "end": part_end})
         t = part_end
     parts.append({"part": 5, "start": parts[-1]["end"], "end": t + END})

@@ -1,0 +1,60 @@
+name: Render video in chunks
+on:
+  workflow_dispatch:
+    inputs:
+      composition:
+        description: "Composition id to render"
+        required: true
+      frames:
+        description: "Total frames of the composition"
+        required: true
+      chunks:
+        description: "Number of parallel chunks (max 12)"
+        required: true
+        default: "8"
+permissions:
+  contents: write
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      idx: ${{ steps.p.outputs.idx }}
+    steps:
+      - id: p
+        run: echo "idx=$(python3 -c "import json;print(json.dumps(list(range(int('${{ inputs.chunks }}')))))")" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+      - name: Remove previous render branches (keeps the repo small)
+        run: |
+          for b in $(git ls-remote --heads origin 'render/*' | awk '{print $2}'); do
+            git push -q origin --delete "$b" || true
+          done
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        i: ${{ fromJson(needs.plan.outputs.idx) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Render chunk (video only; the audio is mixed separately)
+        run: |
+          N=${{ inputs.frames }}; C=${{ inputs.chunks }}; I=${{ matrix.i }}
+          A=$(( N * I / C )); B=$(( N * (I + 1) / C - 1 ))
+          npx remotion render ${{ inputs.composition }} out/chunk.mp4 --frames=$A-$B --muted --concurrency=4
+      - name: Publish chunk to branch
+        run: |
+          BR="render/${{ inputs.composition }}-${{ github.run_id }}-c${{ matrix.i }}"
+          mkdir pub && cd pub
+          split -b 90m -d ../out/chunk.mp4 chunk.mp4.part
+          git init -q -b "$BR"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -qm "Render chunk ${{ matrix.i }}"
+          git push -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "HEAD:refs/heads/$BR"

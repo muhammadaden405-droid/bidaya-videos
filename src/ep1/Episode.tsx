@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Html5Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Html5Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { amiri, serif } from "../fonts";
 import * as S1 from "./s1";
 import * as S2 from "./s2";
@@ -40,6 +40,8 @@ const Captions: React.FC = () => {
   if (!cap) return null;
   const o = interpolate(frame, [cap.from, cap.from + 4, cap.to - 4, cap.to], [0, 1, 1, 0], clamp);
   return (
+    <>
+    <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 240, background: "linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.42))", opacity: o }} />
     <div style={{ position: "absolute", bottom: 64, width: "100%", display: "flex", justifyContent: "center", opacity: o }}>
       <div style={{ fontFamily: `"${serif}", "${amiri}"`, fontSize: 50, color: "#fff7e6", textAlign: "center", maxWidth: 1500, lineHeight: 1.25, textShadow: "0 2px 4px rgba(0,0,0,0.9), 0 0 24px rgba(0,0,0,0.7)" }}>
         {cap.words.map((w, i) => {
@@ -49,10 +51,11 @@ const Captions: React.FC = () => {
         })}
       </div>
     </div>
+    </>
   );
 };
 
-const Watermark: React.FC = () => <Img src={staticFile("logo.png")} style={{ position: "absolute", top: 28, right: 32, width: 104, opacity: 0.9, filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.5))" }} />;
+const Watermark: React.FC = () => useCurrentFrame() < 80 ? null : <Img src={staticFile("logo.png")} style={{ position: "absolute", top: 28, right: 32, width: 104, opacity: 0.9, filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.5))" }} />;
 
 const vol = (s: Sfx) => (f: number) => {
   const len = s.len ?? 99999;
@@ -62,7 +65,7 @@ const vol = (s: Sfx) => (f: number) => {
 };
 
 export const Episode1: React.FC = () => {
-  const { durationInFrames } = useVideoConfig();
+  const durationInFrames = T.total;
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
       {T.scenes.map((c, i) => {
