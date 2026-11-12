@@ -1,5 +1,7 @@
+import { Ep2, EP2_READY } from "./ep2/Episode";
 import React from "react";
 import { Composition, AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { Ep2Trailer15, TRAILER15_LENGTH } from "./ep2/Trailer15";
 import { amiri, serif } from "./fonts";
 import { SilhouetteScene } from "./styles/Silhouette";
 import { ParchmentScene } from "./styles/Parchment";
@@ -105,6 +107,9 @@ export const MyComposition = () => (
     <Composition id="Ep1Thumb" component={Ep1Thumb} durationInFrames={1} fps={30} width={1920} height={1080} />
     <Composition id="Ep1ThumbV" component={Ep1ThumbV} durationInFrames={1} fps={30} width={1080} height={1920} />
     <Composition id="RigTest" component={RigTest} durationInFrames={150} fps={30} width={1920} height={1080} />
+    <Composition id="Ep2Trailer15" component={Ep2Trailer15} durationInFrames={TRAILER15_LENGTH} fps={30} width={1080} height={1920} />
+    <Composition id="Ep2" component={Ep2} durationInFrames={EP2_READY} fps={30} width={1920} height={1080} />
+    <Composition id="Ep2Vertical" component={Ep2} durationInFrames={EP2_READY} fps={30} width={1080} height={1920} />
     <Composition id="RigTestV" component={RigTest} durationInFrames={150} fps={30} width={1080} height={1920} />
     <Ep1Previews />
   </>

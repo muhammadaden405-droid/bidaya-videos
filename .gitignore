@@ -6,3 +6,6 @@ dist
 # Ignore the output video from Git but not videos you import into src/.
 out
 public/ep1/*.words.json
+
+# Episode 2 per-line voice clips are rebuilt locally; the mixed track public/ep2/voice.mp3 is what renders use
+public/ep2/vo/*.wav

@@ -57,6 +57,15 @@ export type Outfit = {
   spear?: boolean;
   shield?: string;
   cape?: string;
+  // ── main-character extras (Episode 2 on): main characters must read clearly apart from the crowd ──
+  royal?: boolean; // jewelled crown, gold trim, fur collar, gold belt
+  beard?: string; // beard colour
+  longBeard?: boolean;
+  hood?: string; // hooded cloak colour (covers the head)
+  runes?: string; // glowing symbols on the robe hem
+  staff?: string; // gnarled staff held in the near hand; value = orb glow colour
+  sash?: string; // diagonal sash across the chest
+  aura?: string; // soft light around the figure
 };
 
 const Limb: React.FC<{ x: number; y: number; a1: number; a2: number; l1: number; l2: number; w: number; color: string; hand?: string; foot?: string; children?: React.ReactNode }> = ({ x, y, a1, a2, l1, l2, w, color, hand, foot, children }) => (
@@ -71,13 +80,43 @@ const Limb: React.FC<{ x: number; y: number; a1: number; a2: number; l1: number;
   </g>
 );
 
+export type Mood = "neutral" | "smile" | "frown" | "tight" | "shock" | "sneer";
+
+// Mouth only, no eyes (owner's rule from Episode 2 on). `open` 0..1 drives lip-sync; `mood` shows emotion when silent.
+const Mouth: React.FC<{ open: number; mood: Mood }> = ({ open, mood }) => {
+  const ink = "#3a1a14";
+  if (mood === "shock") return <ellipse cx={14} cy={14} rx={4.5} ry={5.5} fill="#2a1210" />;
+  if (open > 0.08) {
+    const ry = 1.2 + open * 4.2;
+    return (
+      <g>
+        <ellipse cx={14} cy={14} rx={5.2 - open * 0.8} ry={ry} fill="#2a1210" />
+        {ry > 3.6 ? <ellipse cx={14} cy={14 + ry * 0.5} rx={2.8} ry={ry * 0.28} fill="#8a3a32" /> : null}
+      </g>
+    );
+  }
+  const d =
+    mood === "smile" ? "M 8 12.5 Q 14 17.5 20 12.5" :
+    mood === "frown" ? "M 8 16.5 Q 14 11 20 16.5" :
+    mood === "tight" ? "M 9.5 14 L 18.5 14" :
+    mood === "sneer" ? "M 8 15.5 Q 13 14.5 20 10.5" :
+    "M 8.5 14 Q 14 15.2 19.5 14";
+  return <path d={d} stroke={ink} strokeWidth={mood === "tight" ? 2.8 : 2.2} fill="none" strokeLinecap="round" />;
+};
+
 // A person ~260px tall at scale 1, feet at (0,0).
-export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean }> = ({ pose, outfit, flip }) => {
+export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mouth?: number; mood?: Mood; noShadow?: boolean }> = ({ pose, outfit, flip, mouth, mood, noShadow }) => {
   const p = pose;
   const dark = "#2b1d18";
   return (
     <g transform={`scale(${flip ? -1 : 1} 1)`}>
-      <ellipse cx={0} cy={4} rx={46} ry={9} fill="#000" opacity={0.18} />
+      {outfit.aura ? (
+        <g style={{ filter: "blur(18px)" }}>
+          <ellipse cx={0} cy={-140} rx={92} ry={150} fill={outfit.aura} opacity={0.28} />
+          <ellipse cx={0} cy={-150} rx={60} ry={110} fill={outfit.aura} opacity={0.22} />
+        </g>
+      ) : null}
+      {noShadow ? null : <ellipse cx={0} cy={4} rx={46} ry={9} fill="#000" opacity={0.18} />}
       <g transform={`translate(0 ${p.bob}) rotate(${p.lean} 0 -120)`}>
         {/* far arm */}
         <Limb x={-4} y={-196} a1={p.armLU} a2={p.armLL} l1={52} l2={48} w={15} color={outfit.robeShade} hand={outfit.skin} />
@@ -85,25 +124,78 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean }> = 
         <Limb x={-10} y={-104} a1={p.legLU} a2={p.legLL} l1={54} l2={50} w={17} color={dark} foot={dark} />
         <Limb x={10} y={-104} a1={p.legRU} a2={p.legRL} l1={54} l2={50} w={17} color={dark} foot={dark} />
         {outfit.cape ? <path d="M -30 -200 Q -60 -120 -48 -70 L 26 -80 L 30 -200 Z" fill={outfit.cape} /> : null}
+        {outfit.hood ? <path d="M -34 -214 Q -70 -120 -52 -40 L 34 -46 Q 44 -140 30 -214 Z" fill={outfit.hood} /> : null}
         {/* robe */}
         <path d="M -30 -206 Q 0 -216 30 -206 L 40 -66 Q 0 -56 -40 -66 Z" fill={outfit.robe} />
         <path d="M -30 -206 Q -14 -210 0 -212 L -4 -64 Q -24 -62 -40 -66 Z" fill={outfit.robeShade} opacity={0.5} />
         <rect x={-34} y={-142} width={68} height={10} rx={4} fill={outfit.robeShade} />
-        {/* head (faceless) */}
+        {outfit.royal ? (
+          <g>
+            <path d="M 2 -210 L 8 -62" stroke="#e3b341" strokeWidth={6} />
+            <path d="M -40 -68 Q 0 -58 40 -68" stroke="#e3b341" strokeWidth={6} fill="none" />
+            <rect x={-35} y={-143} width={70} height={11} rx={4} fill="#e3b341" />
+            <circle cx={4} cy={-137.5} r={5} fill="#b3261e" stroke="#fff1b8" strokeWidth={1.5} />
+          </g>
+        ) : null}
+        {outfit.sash ? <path d="M -28 -206 L -18 -206 L 36 -110 L 26 -104 Z" fill={outfit.sash} /> : null}
+        {outfit.runes ? (
+          <g fill="none" stroke={outfit.runes} strokeWidth={2.4} opacity={0.9}>
+            <path d="M -30 -80 l 6 -10 l 6 10 z" />
+            <circle cx={-6} cy={-84} r={5} />
+            <path d="M 10 -90 l 0 12 M 4 -84 l 12 0" />
+            <path d="M 24 -88 q 6 6 0 12" />
+          </g>
+        ) : null}
+        {outfit.royal && outfit.cape ? <path d="M -36 -214 Q 0 -196 36 -214 Q 30 -196 0 -190 Q -30 -196 -36 -214 Z" fill="#f2ede2" stroke="#d6cdb9" strokeWidth={2} /> : null}
+        {/* head */}
         <g transform={`translate(0 -232) rotate(${p.head})`}>
           <circle cx={0} cy={0} r={30} fill={outfit.skin} />
           {outfit.wrap ? (
             <>
               <path d="M -32 -2 Q -34 -38 0 -40 Q 34 -38 32 -2 Q 0 -14 -32 -2 Z" fill={outfit.wrap} />
-              <path d="M 26 -6 Q 40 20 30 46 L 22 44 Q 28 20 18 0 Z" fill={outfit.wrap} />
+              {/* with a mouth on the face side, the wrap tail hangs at the back of the head */}
+              <path d="M 26 -6 Q 40 20 30 46 L 22 44 Q 28 20 18 0 Z" fill={outfit.wrap} transform={mouth !== undefined || mood ? "scale(-1 1)" : undefined} />
             </>
           ) : null}
-          {outfit.crown ? (
+          {outfit.beard ? (
+            outfit.longBeard ? (
+              <path d="M -2 12 Q 8 22 26 14 Q 30 40 18 66 Q 12 80 6 92 Q 0 70 -8 52 Q -14 30 -2 12 Z" fill={outfit.beard} />
+            ) : (
+              <path d="M -4 10 Q 10 24 28 12 Q 28 30 14 40 Q 2 44 -6 32 Q -10 20 -4 10 Z" fill={outfit.beard} />
+            )
+          ) : null}
+          {outfit.hood ? (
+            <>
+              <path d="M -40 30 Q -46 -36 0 -46 Q 40 -42 38 -10 Q 30 -18 14 -20 Q -12 -16 -18 30 Z" fill={outfit.hood} />
+              <path d="M 38 -10 Q 34 -24 14 -22 Q 26 -12 30 2 Z" fill="#000" opacity={0.35} />
+            </>
+          ) : null}
+          {outfit.royal ? (
+            <g>
+              <path d="M -27 -24 L -30 -60 L -16 -44 L -6 -70 L 6 -44 L 18 -70 L 26 -44 L 32 -60 L 29 -24 Z" fill="#e8b93a" stroke="#9b6d12" strokeWidth={3} strokeLinejoin="round" />
+              <rect x={-29} y={-30} width={59} height={10} rx={3} fill="#c9952e" stroke="#9b6d12" strokeWidth={2} />
+              <circle cx={0} cy={-25} r={4.5} fill="#b3261e" />
+              <circle cx={-16} cy={-25} r={3.2} fill="#2f6fd0" />
+              <circle cx={16} cy={-25} r={3.2} fill="#2f6fd0" />
+              {[-30, -6, 18, 32].map((x, i) => <circle key={i} cx={x} cy={[-60, -70, -70, -60][i]} r={3.4} fill="#fff1b8" />)}
+            </g>
+          ) : null}
+          {outfit.crown && !outfit.royal ? (
             <path d="M -26 -26 L -26 -50 L -14 -38 L 0 -56 L 14 -38 L 26 -50 L 26 -26 Z" fill="#e3b341" stroke="#9b6d12" strokeWidth={3} />
           ) : null}
+          {mouth !== undefined || mood ? <Mouth open={mouth ?? 0} mood={mood ?? "neutral"} /> : null}
         </g>
         {/* near arm, optionally holding a spear */}
         <Limb x={6} y={-196} a1={p.armRU} a2={p.armRL} l1={52} l2={48} w={16} color={outfit.robe} hand={outfit.skin}>
+          {outfit.staff ? (
+            <g transform={`rotate(${-(p.armRU + p.armRL)})`}>
+              <path d="M 0 70 Q 4 0 -3 -80 Q 6 -150 -2 -190" stroke="#3b2a1e" strokeWidth={7} fill="none" strokeLinecap="round" />
+              <path d="M -2 -190 Q -16 -200 -8 -214 M -2 -190 Q 14 -198 8 -214" stroke="#3b2a1e" strokeWidth={5} fill="none" strokeLinecap="round" />
+              <circle cx={0} cy={-206} r={30} fill={outfit.staff} opacity={0.22} />
+              <circle cx={0} cy={-206} r={11} fill={outfit.staff} />
+              <circle cx={-3} cy={-209} r={4} fill="#ffffff" opacity={0.7} />
+            </g>
+          ) : null}
           {outfit.spear ? (
             <g transform={`rotate(${-(p.armRU + p.armRL)})`}>
               <line x1={0} y1={70} x2={0} y2={-200} stroke="#5a3a22" strokeWidth={6} strokeLinecap="round" />
@@ -111,6 +203,12 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean }> = 
             </g>
           ) : null}
         </Limb>
+        {outfit.beard && outfit.longBeard ? (
+          <g transform={`translate(0 -232) rotate(${p.head})`}>
+            <path d="M -2 12 Q 8 22 26 14 Q 30 40 18 66 Q 12 80 6 92 Q 0 70 -8 52 Q -14 30 -2 12 Z" fill={outfit.beard} />
+            {mouth !== undefined || mood ? <Mouth open={mouth ?? 0} mood={mood ?? "neutral"} /> : null}
+          </g>
+        ) : null}
         {outfit.shield ? <ellipse cx={-30} cy={-150} rx={30} ry={38} fill={outfit.shield} stroke="#3a2416" strokeWidth={5} /> : null}
       </g>
     </g>
