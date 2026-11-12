@@ -129,14 +129,14 @@ export const Beast: React.FC = () => {
     ? { ...STAND, lean: 6, armRU: -60 + 40 * iv(frame, [threw, threw + 8], [0, 1]), armRL: -20 }
     : { ...STAND, lean: 10 * pick, head: 12 * pick - 4 * hold, armRU: 30 * pick - 130 * hold, armRL: -10 - 30 * hold, armLU: -10 * m, armLL: -30 * m };
   const cam = shook(shotCam(frame, [
-    { at: 0, a: aim(vertical, 1150, 1050, 1.0), b: aim(vertical, 1250, 1030, 1.18) },
+    { at: 0, a: aim(vertical, 1100, 1080, 1.0), b: aim(vertical, 1180, 1090, 1.18) },
     { at: L("N11"), a: aim(vertical, 900, 1080, 1.25), b: aim(vertical, 860, 1060, 1.45) },
     { at: b1, a: aim(vertical, 770, 940, 2.1), b: aim(vertical, 770, 934, 2.3) },
-    { at: b1 + 95, a: aim(vertical, 1380, 1000, 1.25), b: aim(vertical, 1400, 990, 1.4) },
+    { at: b1 + 95, a: aim(vertical, 1250, 1120, 1.25), b: aim(vertical, 1300, 1110, 1.4) },
     { at: b1 + 150, a: aim(vertical, 770, 940, 2.2), b: aim(vertical, 770, 934, 2.35) },
     { at: n12, a: aim(vertical, 800, 1220, 2.2), b: aim(vertical, 800, 1160, 2.0) },
     { at: b2, a: aim(vertical, 780, 930, 1.9), b: aim(vertical, 780, 924, 2.1) },
-    { at: b2 + 100, a: aim(vertical, 1380, 1000, 1.3), b: aim(vertical, 1420, 990, 1.5) },
+    { at: b2 + 100, a: aim(vertical, 1250, 1120, 1.3), b: aim(vertical, 1320, 1110, 1.5) },
     { at: b2 + 170, a: aim(vertical, 780, 930, 2.1), b: aim(vertical, 780, 920, 2.35) },
     { at: n13, a: aim(vertical, 1050, 1060, 1.1), b: aim(vertical, 1150, 1050, 1.2) },
     { at: n14, a: aim(vertical, 1000, 1100, 1.15), b: aim(vertical, 1060, 1100, 1.25) },
@@ -147,13 +147,13 @@ export const Beast: React.FC = () => {
     <AbsoluteFill>
       <RoadBg cam={cam} sky="day" sunX={520} sunY={640} />
       <Layer d={1} cam={cam}>
-        {/* the beast: only a huge dark shape in the dust, so its kind is never clear */}
-        <g transform={`translate(1560 ${FLOOR + 10 + fall * 250}) rotate(${fall * 9}) scale(${breath} ${breath * (1 - fall * 0.35)})`} style={{ filter: "blur(7px)" }}>
-          <path d="M -430 0 Q -480 -380 -180 -500 Q 40 -600 250 -470 Q 480 -350 450 0 Z" fill="#1a120c" />
-          <path d="M -470 0 Q -430 -250 -330 -300 Q -250 -480 -60 -520 Q 30 -620 170 -540 Q 360 -520 420 -330 Q 520 -200 500 0 Z" fill="#1a120c" opacity={0.85} />
+        {/* the beast stays off camera: only its huge shadow lies across the road, and drops when it falls */}
+        <g style={{ filter: "blur(16px)" }} opacity={0.62 * (1 - fall * 0.75)}>
+          <path d={`M ${1080 + fall * 420} ${FLOOR - 16} Q ${1500 + fall * 300} ${FLOOR - 70 + fall * 50} 4200 ${FLOOR - 40} L 4200 2800 L ${420 + fall * 700} 2800 Z`} fill="#150c07" />
+          <path d={`M ${1250 + fall * 500} ${FLOOR - 10} Q ${1340 + fall * 500} ${560 + fall * 700 + (breath - 1) * 900} ${1900 + fall * 300} ${420 + fall * 800} L 4200 ${340 + fall * 900} L 4200 ${FLOOR - 10} Z`} fill="#150c07" opacity={0.55} />
         </g>
         <Dust n={46} y0={820} y1={1400} opacity={0.6} seed="bst" color="#b8956a" size={5} />
-        <DustBurst x={1500} y={FLOOR} at={fell + 4} size={3.2} />
+        <DustBurst x={1780} y={FLOOR} at={fell + 4} size={3.4} />
         {[0, 1, 2, 3].map((i) => <Actor key={i} x={300 - i * 110 + pass * (900 + i * 60)} y={FLOOR + (i % 2) * 16} s={1.9} outfit={FOLK(i + 1)} pose={pass > 0 ? walkPose(frame * 0.34 + i, 0.9) : { ...STAND, lean: -5, head: -8 }} mood={pass > 0 ? "smile" : "shock"} />)}
         <Actor x={bx} y={FLOOR} s={1.9} outfit={BOY_MAIN} pose={boyPose} mouth={m} mood={frame > fell ? "smile" : "neutral"} />
         {/* the stone */}
