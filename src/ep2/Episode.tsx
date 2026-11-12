@@ -1,13 +1,19 @@
 import React from "react";
-import { AbsoluteFill, Html5Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Freeze, Html5Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { sans, amiri, serif, display } from "../fonts";
 import { Grain } from "../ep1/kit";
 import { Abs, V, lf, wf } from "./kit";
 import { ColdOpen, ThroneRoom, Road, ShadowSlap, Home, MonkTalk, Blocked } from "./p1";
+import { Court, HutTalk, Beast, Healing, CompanionComes, Door, LampOut, Alone } from "./p2";
+import { Climb, Summit, KingToSea, Sea, Plain, Bow, ArrowShot, CrowdCry, KingTold, Trench, KingFire, Mother, Echoes } from "./p3";
+import HOOKS from "./hooks.json";
 
 // Episode 2 — The People of the Trench. One timeline, two films (16:9 and 9:16), cut to the locked voice track.
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-type SceneCue = { C: React.FC; from: number; to: number; fade?: boolean };
+type Amb = "hall" | "road" | "wind" | "sea" | "fire" | "night";
+type SceneCue = { C: React.FC<any>; from: number; to: number; fade?: boolean; props?: Record<string, unknown>; amb?: Amb };
+const G = 8; // a part starts a few frames before its first line
+const cue = (C: React.FC<any>, from: number, to: number, props?: Record<string, unknown>, amb?: Amb): SceneCue => ({ C, from, to, props, amb });
 const SCENES: SceneCue[] = [
   { C: ColdOpen, from: 0, to: lf("N02") - 5 },
   { C: ThroneRoom, from: lf("N02") - 5, to: lf("N04"), fade: true },
@@ -16,9 +22,56 @@ const SCENES: SceneCue[] = [
   { C: Home, from: lf("N06"), to: lf("N07") },
   { C: MonkTalk, from: lf("N07"), to: lf("N08") - 3 },
   { C: Blocked, from: lf("N08") - 3, to: lf("N10") },
+  // Part 2
+  cue(Beast, lf("N10"), lf("N15"), undefined, "road"),
+  cue(HutTalk, lf("N15"), lf("N16"), undefined, "road"),
+  cue(Healing, lf("N16"), lf("N18"), undefined, "road"),
+  cue(CompanionComes, lf("N18"), lf("N21"), undefined, "road"),
+  cue(Court, lf("N21"), lf("N23") - G, { other: "companion", enter: true, seated: true, endOnKing: wf("N21", "question") - 24 }, "hall"),
+  // Part 3
+  cue(Court, lf("N23") - G, lf("N29"), { other: "companion", seated: true, holdKing: "K3" }, "hall"),
+  cue(Door, lf("N29"), lf("N30"), undefined, "hall"),
+  cue(Court, lf("N30"), lf("N34"), { other: "boy", enter: true }, "hall"),
+  cue(Door, lf("N34"), lf("M2_echo"), undefined, "hall"),
+  cue(HutTalk, lf("M2_echo"), lf("N35"), { echo: "M2_echo" }),
+  cue(Court, lf("N35"), lf("N36"), { other: "monk", otherMood: "tight" }, "hall"),
+  cue(LampOut, lf("N36"), lf("N37"), { victim: "monk", line: "N36", word: "killed" }),
+  cue(Court, lf("N37"), lf("N38"), { other: "companion", otherMood: "tight" }, "hall"),
+  cue(LampOut, lf("N38"), lf("N39"), { victim: "companion", line: "N38", word: "killed" }),
+  cue(Alone, lf("N39"), lf("N42") - G, undefined, "hall"),
+  // Part 4
+  cue(Court, lf("N42") - G, lf("N45"), { other: "boy", guards: 3, guardsAt: "N44" }, "hall"),
+  cue(Climb, lf("N45"), lf("N46"), undefined, "wind"),
+  cue(Summit, lf("N46"), lf("N49"), undefined, "wind"),
+  cue(Court, lf("N49"), lf("N52"), { other: "boy", enter: true, kingMood: "shock" }, "hall"),
+  cue(KingToSea, lf("N52"), lf("N54") - G, undefined, "hall"),
+  // Part 5
+  cue(Court, lf("N54") - G, lf("N55"), { other: "boy", guards: 3 }, "hall"),
+  cue(Sea, lf("N55"), lf("N58"), undefined, "sea"),
+  cue(Court, lf("N58"), lf("N61"), { other: "boy", enter: true, kingMood: "frown" }, "hall"),
+  cue(Court, lf("N61"), lf("N66") - G, { other: "boy", closer: "B10", leanAt: "N64", kingMood: "frown" }, "hall"),
+  // Part 6
+  cue(Court, lf("N66") - G, lf("N67"), { other: "boy" }, "hall"),
+  cue(Plain, lf("N67"), lf("N69")),
+  cue(Bow, lf("N69"), lf("crowd_murmur")),
+  cue(ArrowShot, lf("crowd_murmur"), lf("N73")),
+  cue(CrowdCry, lf("N73"), lf("NC")),
+  cue(KingTold, lf("NC"), lf("N78") - G, undefined, "hall"),
+  // Part 7
+  cue(Trench, lf("N78") - G, lf("N79"), { mode: "dig" }, "fire"),
+  cue(KingFire, lf("N79"), lf("N80"), undefined, "fire"),
+  cue(Trench, lf("N80"), lf("N81"), { mode: "edge" }, "fire"),
+  cue(Mother, lf("N81"), lf("N84"), undefined, "fire"),
+  cue(Echoes, lf("N84"), V.total, undefined, "night"),
 ];
-/** frames animated so far (grows as parts are built) */
+/** frames animated so far */
 export const EP2_READY = SCENES[SCENES.length - 1].to;
+/** TikTok parts: [first frame, last frame) of each part in the episode */
+const PS = [0, lf("N10"), lf("N23") - G, lf("N42") - G, lf("N54") - G, lf("N66") - G, lf("N78") - G, EP2_READY];
+export const EP2_PARTS = [1, 2, 3, 4, 5, 6, 7].map((n) => {
+  const h = (HOOKS as Record<string, { frames: number; text: string }>)[String(n)];
+  return { n, start: PS[n - 1], end: PS[n], hook: h ? h.frames : 0, text: h ? h.text : "" };
+});
 
 type Sfx = { src: string; from: number; len?: number; vol: number; fadeIn?: number; fadeOut?: number; loop?: boolean };
 const lib = (n: string) => `trailer/sfx/${n}.mp3`;
@@ -50,6 +103,30 @@ const SFX: Sfx[] = [
   { src: lib("monster-01"), from: blocked + 10, len: 90, vol: 0.1, fadeIn: 10, fadeOut: 40 },
   { src: lib("blizzard-wind-01"), from: lf("N10") - 150, len: 150, vol: 0.22, fadeIn: 110, fadeOut: 14 },
 ];
+const AMB: Record<Amb, [string, number]> = { hall: ["gentle-fire-crackling-01", 0.1], road: ["animal-bird-03", 0.1], wind: ["blizzard-wind-01", 0.2], sea: ["ocean-ships", 0.22], fire: ["backlog-adapt-fire-burning", 0.16], night: ["night-ambience-01", 0.14] };
+const one = (n: string, from: number, v: number, len = 90, fadeOut = 20): Sfx => ({ src: lib(n), from, len, vol: v, fadeOut });
+const FIRST2 = lf("N10");
+for (const c of SCENES) {
+  if (c.from < FIRST2) continue;
+  SFX.push(whoosh(c.from, 0.16));
+  if (c.amb) SFX.push({ src: lib(AMB[c.amb][0]), from: c.from, len: c.to - c.from, vol: AMB[c.amb][1], fadeIn: 10, fadeOut: 10, loop: true });
+}
+SFX.push(
+  { src: lib("monster-01"), from: lf("N10"), len: 220, vol: 0.13, fadeIn: 10, fadeOut: 60 },
+  one("body-fall-01", wf("N13", "fell") + 4, 0.5), one("sand-pour-01", wf("N13", "fell") + 12, 0.22, 120, 40),
+  one("own-air-swell", lf("N17"), 0.14, 150, 60),
+  one("stone-door-grind-02", lf("N29") + 10, 0.3, 50), one("stone-door-grind-02", lf("N34") + 10, 0.3, 50),
+  one("horror-wind-whisper-04", wf("N36", "killed") - 2, 0.22, 34, 12), one("horror-wind-whisper-04", wf("N38", "killed") - 2, 0.22, 34, 12),
+  { src: lib("own-rumble"), from: lf("N47"), len: 190, vol: 0.45, fadeIn: 6, fadeOut: 50 },
+  one("rock-crumbling-01", lf("N47") + 6, 0.35, 120, 40), one("own-stones", lf("N48"), 0.3, 110, 40),
+  { src: lib("rowing-oar-stroke-01"), from: lf("N55"), len: 170, vol: 0.24, fadeOut: 30, loop: true },
+  one("flood-water-rush-01", wf("N57", "turned"), 0.4, 100, 40), one("water-swirl-36", wf("N57", "turned") + 22, 0.25, 100, 40),
+  { src: lib("marching-footsteps-01"), from: lf("N67"), len: 110, vol: 0.24, fadeOut: 30 },
+  one("horror-creak-17", wf("N69", "bow") - 8, 0.3, 50), { src: lib("horror-heartbeat-34"), from: lf("K13") - 10, len: lf("N71") - lf("K13") + 30, vol: 0.2, fadeIn: 10, fadeOut: 10, loop: true },
+  one("arrow-flyby-01", wf("N71", "shot"), 0.5, 40),
+  { src: lib("shovel-digging-earth-01"), from: lf("N78"), len: 150, vol: 0.24, fadeOut: 30 },
+);
+for (const e of PS.slice(2)) SFX.push({ src: lib("own-air-swell"), from: e - 130, len: 130, vol: 0.13, fadeIn: 100, fadeOut: 10 });
 const vol = (s: Sfx) => (f: number) => {
   const len = s.len ?? 99999;
   return s.vol * (s.fadeIn ? Math.min(1, f / s.fadeIn) : 1) * (s.fadeOut ? Math.min(1, Math.max(0, (len - f) / s.fadeOut)) : 1);
@@ -107,22 +184,53 @@ const FadeIn: React.FC<{ on?: boolean; children: React.ReactNode }> = ({ on, chi
   return <AbsoluteFill style={{ opacity: on ? interpolate(f, [0, 10], [0, 1], clamp) : 1 }}>{children}</AbsoluteFill>;
 };
 
-export const Ep2: React.FC = () => (
+export const Ep2: React.FC<{ muted?: boolean; bare?: boolean }> = ({ muted, bare }) => (
   <AbsoluteFill style={{ backgroundColor: "#000" }}>
     {SCENES.map((c, i) => (
       <Sequence key={i} from={c.from} durationInFrames={Math.max(1, c.to - c.from)}>
-        <Abs.Provider value={c.from}><FadeIn on={c.fade}><c.C /></FadeIn></Abs.Provider>
+        <Abs.Provider value={c.from}><FadeIn on={c.fade}><c.C {...(c.props ?? {})} /></FadeIn></Abs.Provider>
       </Sequence>
     ))}
     <Grain opacity={0.05} />
-    <Overlays />
-    <Captions />
+    {bare ? null : <Overlays />}
+    {bare ? null : <Captions />}
     <Watermark />
-    <Html5Audio src={staticFile("ep2/voice.mp3")} />
-    {SFX.filter((s) => (s.len ?? 1) > 0).map((s, i) => (
+    {muted ? null : <Html5Audio src={staticFile("ep2/voice.mp3")} />}
+    {muted ? null : SFX.filter((s) => (s.len ?? 1) > 0).map((s, i) => (
       <Sequence key={`s${i}`} from={Math.max(0, s.from)} durationInFrames={Math.max(1, s.len ?? 60)}>
         <Html5Audio src={staticFile(s.src)} volume={vol(s)} loop={s.loop} />
       </Sequence>
     ))}
   </AbsoluteFill>
 );
+
+/** A TikTok part: the spoken hook over the part's first frame (text on screen from frame 1), then the part itself. */
+export const Ep2Part: React.FC<{ n: number }> = ({ n }) => {
+  const p = EP2_PARTS[n - 1];
+  const frame = useCurrentFrame();
+  const { width, height } = useVideoConfig();
+  const v = height > width;
+  return (
+    <AbsoluteFill style={{ backgroundColor: "#000" }}>
+      {p.hook ? (
+        <Sequence durationInFrames={p.hook}>
+          <AbsoluteFill style={{ transform: `scale(${1.04 + frame * 0.0012})` }}><Freeze frame={p.start + 4}><Ep2 muted bare /></Freeze></AbsoluteFill>
+          <AbsoluteFill style={{ backgroundColor: "rgba(0,0,0,0.35)" }} />
+          <div style={{ position: "absolute", top: v ? "30%" : "34%", width: "100%", display: "flex", justifyContent: "center" }}>
+            <div style={{ fontFamily: `"${sans}"`, fontWeight: 800, fontSize: v ? 74 : 60, lineHeight: 1.2, color: "#fff", textAlign: "center", maxWidth: v ? 940 : 1500, textShadow: "0 3px 0 #000, 0 0 16px rgba(0,0,0,0.9), 0 0 4px #000" }}>{p.text}</div>
+          </div>
+          <Html5Audio src={staticFile(`ep2/hooks/H${n}.wav`)} />
+        </Sequence>
+      ) : null}
+      <Sequence from={p.hook}><Sequence from={-p.start}><Ep2 /></Sequence></Sequence>
+    </AbsoluteFill>
+  );
+};
+
+/** The six TikTok hooks back to back (one small render; they are cut onto the parts afterwards). */
+const HK = EP2_PARTS.filter((p) => p.hook);
+export const EP2_HOOKS_LENGTH = HK.reduce((a, p) => a + p.hook, 0);
+export const Ep2Hooks: React.FC = () => {
+  let at = 0;
+  return <AbsoluteFill>{HK.map((p) => { const f = at; at += p.hook; return <Sequence key={p.n} from={f} durationInFrames={p.hook}><Ep2Part n={p.n} /></Sequence>; })}</AbsoluteFill>;
+};

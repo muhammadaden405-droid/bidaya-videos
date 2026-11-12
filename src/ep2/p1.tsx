@@ -9,21 +9,21 @@ import {
 } from "./kit";
 
 // Episode 2 — cold open and Part 1 ("Two teachers"). Every beat is placed on the spoken word it belongs to.
-const FLOOR = 1340;
-const useL = () => {
+export const FLOOR = 1340;
+export const useL = () => {
   const from = useContext(Abs);
   return { L: (id: string, off = 0) => lf(id, off) - from, Wd: (id: string, w: string, n = 0) => wf(id, w, n) - from, End: (id: string) => le(id) - from };
 };
-type Shot = { at: number; a: Cam; b?: Cam };
+export type Shot = { at: number; a: Cam; b?: Cam };
 /** hard cuts between shots; each shot drifts slowly from a to b so the frame never sits still */
-const shotCam = (frame: number, shots: Shot[], end: number): Cam => {
+export const shotCam = (frame: number, shots: Shot[], end: number): Cam => {
   let i = 0;
   for (let k = 0; k < shots.length; k++) if (frame >= shots[k].at) i = k;
   const s = shots[i];
   const nxt = i + 1 < shots.length ? shots[i + 1].at : end;
   return s.b ? lerpCam((frame - s.at) / Math.max(1, nxt - s.at), s.a, s.b, (t) => t) : s.a;
 };
-const shook = (cam: Cam, frame: number, hits: number[], amp = 14): Cam => {
+export const shook = (cam: Cam, frame: number, hits: number[], amp = 14): Cam => {
   const s = shakeAt(frame, hits, amp);
   return { ...cam, x: cam.x + s.x, y: cam.y + s.y };
 };
@@ -78,7 +78,7 @@ export const ColdOpen: React.FC = () => {
 };
 
 // ───────── The palace: the king, his sorcerer, and the boy who is sent ─────────
-const Hall: React.FC<{ cam: Cam }> = ({ cam }) => (
+export const Hall: React.FC<{ cam: Cam }> = ({ cam }) => (
   <>
     <AbsoluteFill style={{ background: "linear-gradient(#1a0f1c 0%, #3a2030 55%, #54303a 100%)" }} />
     <Layer d={0.5} cam={cam}>
@@ -133,7 +133,7 @@ export const ThroneRoom: React.FC = () => {
 };
 
 // ───────── The road, the monk's dwelling, and "day after day" ─────────
-const RoadBg: React.FC<{ cam: Cam; sky?: keyof typeof SKIES; sunX?: number; sunY?: number }> = ({ cam, sky = "dawn", sunX = 1420, sunY = 900 }) => (
+export const RoadBg: React.FC<{ cam: Cam; sky?: keyof typeof SKIES; sunX?: number; sunY?: number }> = ({ cam, sky = "dawn", sunX = 1420, sunY = 900 }) => (
   <>
     <Sky stops={SKIES[sky]} />
     <Layer d={0.05} cam={cam}><Defs /><Glow x={sunX} y={sunY} r={460} o={0.75} /><circle cx={sunX} cy={sunY} r={54} fill="#fff3cf" /></Layer>
@@ -150,7 +150,7 @@ const RoadBg: React.FC<{ cam: Cam; sky?: keyof typeof SKIES; sunX?: number; sunY
     </Layer>
   </>
 );
-const Hut: React.FC<{ x: number }> = ({ x }) => (
+export const Hut: React.FC<{ x: number }> = ({ x }) => (
   <g transform={`translate(${x} ${FLOOR - 8})`}>
     <path d="M -190 0 L -190 -210 Q 0 -400 190 -210 L 190 0 Z" fill="#c9a877" stroke="#2b1d18" strokeWidth={6} />
     <path d="M -190 -210 Q 0 -400 190 -210" fill="none" stroke="#a88758" strokeWidth={14} />
@@ -201,7 +201,7 @@ export const Road: React.FC = () => {
 };
 
 // ───────── The beatings, shown only as shadows on a wall ─────────
-const WallShadows: React.FC<{ cam: Cam; hit: number; big: Outfit; wall: [string, string]; torchX: number }> = ({ cam, hit, big, wall, torchX }) => {
+export const WallShadows: React.FC<{ cam: Cam; hit: number; big: Outfit; wall: [string, string]; torchX: number }> = ({ cam, hit, big, wall, torchX }) => {
   const { frame } = useShot();
   const raise = iv(frame, [hit - 16, hit - 4, hit, hit + 3, hit + 26], [0, 1, 1, 0.25, 0.1], ease);
   const flinch = iv(frame, [hit, hit + 3, hit + 22], [0, 1, 0.45], easeOut);

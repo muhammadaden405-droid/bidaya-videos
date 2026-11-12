@@ -13,7 +13,7 @@ export const KING_MAIN: Outfit = {
   beard: "#2a1a12",
 };
 
-// The old sorcerer: hooded black-violet cloak, long white beard, pale grey skin, faint symbols on the robe, gnarled staff; sneers. (Owner: keep the magic subtle, no bright green glow or smoke.)
+// The old sorcerer: hooded black-violet cloak, long white beard, pale grey skin, gnarled staff; sneers. (Owner: plain robe, no symbols; no bright green glow or smoke.)
 export const SORCERER_MAIN: Outfit = {
   skin: "#8f7f72",
   robe: "#1f1828",
@@ -21,7 +21,6 @@ export const SORCERER_MAIN: Outfit = {
   hood: "#171020",
   beard: "#d9d4cb",
   longBeard: true,
-  runes: "#6f7f74",
 };
 
 // The boy: pure white with a teal sash and a soft warm light around him; the only bright figure in any crowd.
