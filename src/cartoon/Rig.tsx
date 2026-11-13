@@ -66,6 +66,8 @@ export type Outfit = {
   staff?: string; // gnarled staff held in the near hand; value = orb glow colour
   sash?: string; // diagonal sash across the chest
   aura?: string; // soft light around the figure
+  glasses?: boolean; // dark glasses (a blind man, until he is healed)
+  spots?: number; // diseased skin, 0..1 (fades as he is healed)
 };
 
 const Limb: React.FC<{ x: number; y: number; a1: number; a2: number; l1: number; l2: number; w: number; color: string; hand?: string; foot?: string; children?: React.ReactNode }> = ({ x, y, a1, a2, l1, l2, w, color, hand, foot, children }) => (
@@ -105,7 +107,7 @@ const Mouth: React.FC<{ open: number; mood: Mood }> = ({ open, mood }) => {
 };
 
 // A person ~260px tall at scale 1, feet at (0,0).
-export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mouth?: number; mood?: Mood; noShadow?: boolean }> = ({ pose, outfit, flip, mouth, mood, noShadow }) => {
+export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mouth?: number; mood?: Mood; noShadow?: boolean; hold?: React.ReactNode }> = ({ pose, outfit, flip, mouth, mood, noShadow, hold }) => {
   const p = pose;
   const dark = "#2b1d18";
   return (
@@ -170,6 +172,17 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
               <path d="M 38 -10 Q 34 -24 14 -22 Q 26 -12 30 2 Z" fill="#000" opacity={0.35} />
             </>
           ) : null}
+          {outfit.spots ? (
+            <g fill="#7a2f2a" opacity={outfit.spots}>
+              <ellipse cx={14} cy={-8} rx={8} ry={6} /><ellipse cx={2} cy={8} rx={6} ry={5} /><ellipse cx={20} cy={10} rx={5} ry={6} /><ellipse cx={-6} cy={-12} rx={5} ry={4} /><ellipse cx={8} cy={20} rx={4} ry={3} />
+            </g>
+          ) : null}
+          {outfit.glasses ? (
+            <g>
+              <rect x={-28} y={-12} width={56} height={5} fill="#14100e" />
+              <ellipse cx={8} cy={-8} rx={11} ry={9} fill="#14100e" /><ellipse cx={26} cy={-8} rx={7} ry={9} fill="#14100e" />
+            </g>
+          ) : null}
           {outfit.royal ? (
             <g>
               <path d="M -27 -24 L -30 -60 L -16 -44 L -6 -70 L 6 -44 L 18 -70 L 26 -44 L 32 -60 L 29 -24 Z" fill="#e8b93a" stroke="#9b6d12" strokeWidth={3} strokeLinejoin="round" />
@@ -187,6 +200,8 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
         </g>
         {/* near arm, optionally holding a spear */}
         <Limb x={6} y={-196} a1={p.armRU} a2={p.armRL} l1={52} l2={48} w={16} color={outfit.robe} hand={outfit.skin}>
+          {/* anything held in the near hand, kept upright */}
+          {hold ? <g transform={`rotate(${-(p.armRU + p.armRL)})`}>{hold}</g> : null}
           {outfit.staff ? (
             <g transform={`rotate(${-(p.armRU + p.armRL)})`}>
               <path d="M 0 70 Q 4 0 -3 -80 Q 6 -150 -2 -190" stroke="#3b2a1e" strokeWidth={7} fill="none" strokeLinecap="round" />

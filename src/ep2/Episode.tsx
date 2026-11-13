@@ -4,7 +4,7 @@ import { sans, amiri, serif, display } from "../fonts";
 import { Grain } from "../ep1/kit";
 import { Abs, V, lf, wf } from "./kit";
 import { ColdOpen, ThroneRoom, Road, ShadowSlap, Home, MonkTalk, Blocked } from "./p1";
-import { Court, HutTalk, Beast, Healing, CompanionComes, Door, LampOut, Alone } from "./p2";
+import { Court, HutTalk, Beast, Healing, CompanionComes, Door, Execution, Alone } from "./p2";
 import { Climb, Summit, KingToSea, Sea, Plain, Bow, ArrowShot, CrowdCry, KingTold, Trench, KingFire, Mother, Echoes } from "./p3";
 import HOOKS from "./hooks.json";
 
@@ -35,9 +35,9 @@ const SCENES: SceneCue[] = [
   cue(Door, lf("N34"), lf("M2_echo"), undefined, "hall"),
   cue(HutTalk, lf("M2_echo"), lf("N35"), { echo: "M2_echo" }),
   cue(Court, lf("N35"), lf("N36"), { other: "monk", otherMood: "tight" }, "hall"),
-  cue(LampOut, lf("N36"), lf("N37"), { victim: "monk", line: "N36", word: "killed" }),
+  cue(Execution, lf("N36"), lf("N37"), { victim: "monk", line: "N36", word: "killed" }),
   cue(Court, lf("N37"), lf("N38"), { other: "companion", otherMood: "tight" }, "hall"),
-  cue(LampOut, lf("N38"), lf("N39"), { victim: "companion", line: "N38", word: "killed" }),
+  cue(Execution, lf("N38"), lf("N39"), { victim: "companion", line: "N38", word: "killed" }),
   cue(Alone, lf("N39"), lf("N42") - G, undefined, "hall"),
   // Part 4
   cue(Court, lf("N42") - G, lf("N45"), { other: "boy", guards: 3, guardsAt: "N44" }, "hall"),
@@ -116,7 +116,17 @@ SFX.push(
   one("body-fall-01", wf("N13", "fell") + 4, 0.5), one("sand-pour-01", wf("N13", "fell") + 12, 0.22, 120, 40),
   one("own-air-swell", lf("N17"), 0.14, 150, 60),
   one("stone-door-grind-02", lf("N29") + 10, 0.3, 50), one("stone-door-grind-02", lf("N34") + 10, 0.3, 50),
-  one("horror-wind-whisper-04", wf("N36", "killed") - 2, 0.22, 34, 12), one("horror-wind-whisper-04", wf("N38", "killed") - 2, 0.22, 34, 12),
+  // the two killings (shadows on the wall): the blade is drawn, it falls, a body drops
+  ...["N36", "N38"].flatMap((id) => { const k = wf(id, "killed") + 4; return [one("steel-spike-scrape-01", k - 36, 0.3, 34, 10), { ...whoosh(k, 0.45) }, one("body-fall-01", k + 3, 0.6, 60), one("horror-wind-whisper-04", k + 20, 0.2, 50, 30)]; }),
+  // more life around the action
+  ...SCENES.filter((c) => c.props && (c.props as { enter?: boolean }).enter).map((c) => ({ src: lib("footsteps-stone-01"), from: c.from, len: 54, vol: 0.22, fadeOut: 10 })),
+  one("chainmail-01", lf("N44"), 0.25, 70, 20), { src: lib("marching-footsteps-01"), from: lf("N44"), len: 60, vol: 0.2, fadeOut: 15 },
+  { src: lib("footsteps-sand-01"), from: lf("N18"), len: 110, vol: 0.22, fadeOut: 12, loop: true }, one("sack-drop-01", lf("N18") + 112, 0.3, 40),
+  whoosh(wf("N13", "threw") + 5, 0.35), one("iron-gate-01", lf("N29") + 44, 0.3, 50), one("iron-gate-01", lf("N34") + 44, 0.3, 50),
+  { src: lib("water-stream-39"), from: wf("N57", "every") - 6, len: lf("N58") - wf("N57", "every") + 6, vol: 0.25, fadeIn: 8, fadeOut: 12 },
+  { src: lib("daily-20260923-hushed-crowd-walla-short"), from: lf("N67"), len: lf("K13") - lf("N67"), vol: 0.07, fadeIn: 20, fadeOut: 20, loop: true },
+  one("rope-release-01", wf("N71", "shot"), 0.4, 30), one("arrow-impact-01", wf("N72", "struck"), 0.35, 30), one("crowd-ooh-01", wf("N72", "struck") + 4, 0.28, 70, 30),
+  one("fire-electric-whoosh-flame-36", lf("N78") - 8, 0.3, 50), one("own-air-swell", wf("N85", "people") - 6, 0.18, 120, 50),
   { src: lib("own-rumble"), from: lf("N47"), len: 190, vol: 0.45, fadeIn: 6, fadeOut: 50 },
   one("rock-crumbling-01", lf("N47") + 6, 0.35, 120, 40), one("own-stones", lf("N48"), 0.3, 110, 40),
   { src: lib("rowing-oar-stroke-01"), from: lf("N55"), len: 170, vol: 0.24, fadeOut: 30, loop: true },

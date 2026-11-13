@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { AbsoluteFill } from "remotion";
-import { STAND, SIT, walkPose, blend, Pose, Outfit } from "../cartoon/Rig";
+import { STAND, SIT, blend, Pose, Outfit } from "../cartoon/Rig";
 import { FOLK } from "../cartoon/Trailer";
 import { KING_MAIN, SORCERER_MAIN, BOY_MAIN, MONK_MAIN, SHADOW, SHADOW_SORCERER } from "./cast";
 import {
-  Abs, Actor, sitY, useMouth, lf, le, wf,
+  Abs, Actor, sitY, useMouth, walkBy, lf, le, wf,
   Cam, Layer, Defs, Sky, SKIES, iv, ease, easeOut, useShot, useView, lerpCam, aim, ridge, Dust, Grade, Vignette, Glow, Torch2, ThroneSeat, SITG, shakeAt,
 } from "./kit";
 
@@ -123,7 +123,7 @@ export const ThroneRoom: React.FC = () => {
         <g transform="translate(2520 0) scale(-1 1)"><ThroneSeat x={1260} floor={FLOOR} s={1.1} /></g>
         <Actor seat="chair" x={1260} y={sitY(FLOOR - 110, 2)} s={2} outfit={KING_MAIN} pose={kingPose} flip mood="tight" />
         <Actor x={910} y={FLOOR} s={2} outfit={SORCERER_MAIN} pose={sorcPose} mood="sneer" />
-        {frame >= n3 ? <Actor x={360 + walkT * 230} y={FLOOR} s={1.7} outfit={BOY_MAIN} pose={walking ? walkPose(frame * 0.34, 0.9) : { ...STAND, head: -6 }} mood="neutral" /> : null}
+        {frame >= n3 ? <Actor x={360 + walkT * 230} y={FLOOR} s={1.7} outfit={BOY_MAIN} pose={walking ? walkBy(360 + walkT * 230, 1.7) : { ...STAND, head: -6 }} mood="neutral" /> : null}
       </Layer>
       <Layer d={1.25} cam={cam} blur={3}><rect x={-240} y={380} width={150} height={1300} fill="#170d16" /><rect x={2010} y={380} width={150} height={1300} fill="#170d16" /></Layer>
       <Grade color="#ff9a4a" opacity={0.16} />
@@ -175,7 +175,7 @@ export const Road: React.FC = () => {
   const sit = iv(frame, [stop + 4, stop + 22], [0, 1], ease);
   const bx = 330 + walkT * 520;
   const s = 1.8;
-  const boyPose = sit > 0 ? blend(STAND, { ...SITG, head: -4 }, sit) : walkPose(frame * 0.36, 0.5 + 0.5 * (1 - walkT * 0.6));
+  const boyPose = sit > 0 ? blend(STAND, { ...SITG, head: -4 }, sit) : walkBy(bx, 1.8);
   const monkTalk = 0.25 + 0.25 * Math.sin(frame * 0.9) * Math.sin(frame * 0.23);
   const shots: Shot[] = [
     { at: 0, a: aim(vertical, 660, 1120, 1.0), b: aim(vertical, 960, 1140, 1.22) },
@@ -183,7 +183,7 @@ export const Road: React.FC = () => {
   ];
   for (let d = 0; d < 6; d++) shots.push({ at: every + d * DAY, a: aim(vertical, 1010, 1160, [1.25, 1.6, 1.4, 1.75, 1.3, 1.6][d]), b: aim(vertical, 1020, 1160, [1.32, 1.68, 1.48, 1.84, 1.38, 1.68][d]) });
   const cam = shotCam(frame, shots, dur);
-  const flash = day >= 0 ? iv((frame - every) % DAY, [0, 1, 5], [0.7, 0.5, 0]) : 0;
+  const flash = 0; // no flashes: every cut in the film is a plain cut
   return (
     <AbsoluteFill>
       <RoadBg cam={cam} sky={sky} sunX={sunX} sunY={sunY} />
@@ -314,7 +314,7 @@ export const MonkTalk: React.FC = () => {
         <Actor seat="ground" x={1170} y={sitY(FLOOR, s, true)} s={s} outfit={MONK_MAIN} flip mouth={m} mood="smile"
           pose={{ ...SITG, head: 3 + Math.sin(frame * 0.07) * 2, lean: 3, armRU: -28 - 62 * finger, armRL: -56 - 60 * finger }} />
         <Actor seat="ground" x={860} y={sitY(FLOOR, s * 0.9, true)} s={s * 0.9} outfit={BOY_MAIN} mouth={boyTalk} mood={telling ? "frown" : frame > say1 ? "smile" : "neutral"}
-          pose={{ ...SITG, head: telling ? 6 : -5, armRU: telling ? -50 - 20 * Math.sin(frame * 0.3) : -28, armRL: telling ? -80 : -56 }} />
+          pose={{ ...SITG, head: telling ? 6 : -5, armRU: telling ? -44 - 8 * Math.sin(frame * 0.08) : -28, armRL: telling ? -80 : -56 }} />
       </Layer>
       <Layer d={1} cam={cam}><Dust n={20} y0={900} y1={1400} opacity={0.3} seed="mk" /></Layer>
       <Vignette s={0.4} />
@@ -334,7 +334,7 @@ export const Blocked: React.FC = () => {
   const sweep = iv(frame, [blocked - 14, blocked + 30], [0, 1], easeOut);
   const edge = 2700 - sweep * 1900;
   const recoil = iv(frame, [blocked - 4, blocked + 8], [0, 1], easeOut);
-  const boyPose: Pose = stopped ? { ...STAND, lean: -7 * recoil, head: -16 * recoil, armRU: -30 * recoil, armRL: -70 * recoil, armLU: -20 * recoil, armLL: -50 * recoil } : walkPose(frame * 0.36, 0.9);
+  const boyPose: Pose = stopped ? { ...STAND, lean: -7 * recoil, head: -16 * recoil, armRU: -30 * recoil, armRL: -70 * recoil, armLU: -20 * recoil, armLL: -50 * recoil } : walkBy(520 + walkT * 360, 1.9);
   const cam = shook(shotCam(frame, [
     { at: 0, a: aim(vertical, 700, 1120, 1.12), b: aim(vertical, 860, 1130, 1.3) },
     { at: blocked, a: aim(vertical, 980, 1060, 1.25), b: aim(vertical, 1040, 1000, 1.05) },

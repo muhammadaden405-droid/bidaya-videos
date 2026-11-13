@@ -1,6 +1,6 @@
 {
  "note": "Episode 2 voice track, second pass: one clean 48 kHz clip per line (no breaths, pauses capped). start = seconds in the listening track (YouTube order, before the recitation). words = word timings inside each clip, for captions and lip-sync. crowd_murmur starts right after the king's words; crowd_cry starts right after 'And the people cried out:'. Hooks H2-H7 open TikTok parts 2-7.",
- "total": 440.93,
+ "total": 446.38,
  "timeline": [
   {
    "id": "S1",
@@ -2216,119 +2216,119 @@
    "id": "B3",
    "kind": "C",
    "start": 128.377,
-   "dur": 8.455,
+   "dur": 7.805,
    "who": "The boy",
    "text": "I don't heal anyone. Only Allah heals. If you believe in Allah, I will pray to Him, and He will heal you.",
    "words": [
     [
      "i",
-     0.047,
-     0.297
+     0.0,
+     0.192
     ],
     [
      "don't",
-     0.297,
-     0.657
+     0.192,
+     0.532
     ],
     [
      "heal",
-     0.657,
-     0.917
+     0.532,
+     0.712
     ],
     [
      "anyone",
-     0.917,
-     1.397
+     0.712,
+     1.232
     ],
     [
      "only",
-     2.157,
-     2.459
+     1.919,
+     2.219
     ],
     [
      "allah",
-     2.459,
-     2.859
+     2.219,
+     2.579
     ],
     [
      "heals",
-     2.859,
-     3.279
+     2.579,
+     3.079
     ],
     [
      "if",
-     4.174,
-     4.316
+     3.734,
+     3.876
     ],
     [
      "you",
-     4.316,
-     4.496
+     3.876,
+     4.076
     ],
     [
      "believe",
-     4.496,
-     4.776
+     4.076,
+     4.376
     ],
     [
      "in",
-     4.776,
-     4.976
+     4.376,
+     4.616
     ],
     [
      "allah",
-     4.976,
-     5.236
+     4.616,
+     4.916
     ],
     [
      "i",
-     5.781,
-     5.928
+     5.458,
+     5.638
     ],
     [
      "will",
-     5.928,
-     6.088
+     5.638,
+     5.798
     ],
     [
      "pray",
-     6.088,
-     6.368
+     5.798,
+     5.978
     ],
     [
      "to",
-     6.368,
-     6.588
+     5.978,
+     6.138
     ],
     [
      "him",
-     6.588,
-     6.848
+     6.138,
+     6.318
     ],
     [
      "and",
-     7.298,
-     7.465
+     6.693,
+     6.83
     ],
     [
      "he",
-     7.465,
-     7.705
+     6.83,
+     7.07
     ],
     [
      "will",
-     7.705,
-     7.885
+     7.07,
+     7.25
     ],
     [
      "heal",
-     7.885,
-     8.085
+     7.25,
+     7.47
     ],
     [
      "you",
-     8.105,
-     8.455
+     7.47,
+     7.75
     ]
    ],
    "file": "B3.wav"
@@ -2336,7 +2336,7 @@
   {
    "id": "N20",
    "kind": "N",
-   "start": 137.032,
+   "start": 136.382,
    "dur": 4.424,
    "who": "Narrator",
    "text": "The man believed. The boy prayed. And Allah gave him back his sight.",
@@ -2412,7 +2412,7 @@
   {
    "id": "N21",
    "kind": "N",
-   "start": 141.456,
+   "start": 140.806,
    "dur": 7.05,
    "who": "Narrator",
    "text": "But then the man went back to the king, and sat beside him, just as he always had. And the king had one question for him.",
@@ -2553,7 +2553,7 @@
   {
    "id": "N23",
    "kind": "N",
-   "start": 149.056,
+   "start": 148.406,
    "dur": 0.927,
    "who": "Narrator",
    "text": "The king asked him:",
@@ -2584,7 +2584,7 @@
   {
    "id": "K1",
    "kind": "C",
-   "start": 150.083,
+   "start": 149.433,
    "dur": 1.812,
    "who": "The king",
    "text": "Who gave you back your sight?",
@@ -2625,7 +2625,7 @@
   {
    "id": "N24",
    "kind": "N",
-   "start": 152.095,
+   "start": 151.445,
    "dur": 0.412,
    "who": "Narrator",
    "text": "He said:",
@@ -2646,7 +2646,7 @@
   {
    "id": "C2",
    "kind": "C",
-   "start": 152.607,
+   "start": 151.957,
    "dur": 0.587,
    "who": "The companion",
    "text": "My Lord.",
@@ -2667,7 +2667,7 @@
   {
    "id": "N25",
    "kind": "N",
-   "start": 153.394,
+   "start": 152.744,
    "dur": 0.557,
    "who": "Narrator",
    "text": "The king said:",
@@ -2693,7 +2693,7 @@
   {
    "id": "K2",
    "kind": "C",
-   "start": 154.051,
+   "start": 153.401,
    "dur": 0.612,
    "who": "The king",
    "text": "Me?",
@@ -2709,7 +2709,7 @@
   {
    "id": "N26",
    "kind": "N",
-   "start": 154.863,
+   "start": 154.213,
    "dur": 0.502,
    "who": "Narrator",
    "text": "He answered:",
@@ -2730,7 +2730,7 @@
   {
    "id": "C3",
    "kind": "C",
-   "start": 155.465,
+   "start": 154.815,
    "dur": 3.688,
    "who": "The companion",
    "text": "No. My Lord, and your Lord, is Allah.",
@@ -2781,7 +2781,7 @@
   {
    "id": "N27",
    "kind": "N",
-   "start": 159.353,
+   "start": 158.703,
    "dur": 0.787,
    "who": "Narrator",
    "text": "The king asked:",
@@ -2807,7 +2807,7 @@
   {
    "id": "K3",
    "kind": "C",
-   "start": 160.24,
+   "start": 159.59,
    "dur": 3.749,
    "who": "The king",
    "text": "You have a lord other than me?",
@@ -2853,7 +2853,7 @@
   {
    "id": "N28",
    "kind": "N",
-   "start": 164.889,
+   "start": 164.239,
    "dur": 0.457,
    "who": "Narrator",
    "text": "And he said:",
@@ -2879,7 +2879,7 @@
   {
    "id": "C4",
    "kind": "C",
-   "start": 165.446,
+   "start": 164.796,
    "dur": 3.938,
    "who": "The companion",
    "text": "Yes. My Lord and your Lord is Allah.",
@@ -2930,7 +2930,7 @@
   {
    "id": "N29",
    "kind": "N",
-   "start": 169.584,
+   "start": 168.934,
    "dur": 3.554,
    "who": "Narrator",
    "text": "The king kept torturing him… until he led them to the boy.",
@@ -3001,7 +3001,7 @@
   {
    "id": "N30",
    "kind": "N",
-   "start": 173.138,
+   "start": 172.488,
    "dur": 2.894,
    "who": "Narrator",
    "text": "The boy was brought in. The king said to him:",
@@ -3062,7 +3062,7 @@
   {
    "id": "K4",
    "kind": "C",
-   "start": 176.132,
+   "start": 175.482,
    "dur": 9.765,
    "who": "The king",
    "text": "My son, has your magic become so great that you heal the blind, and the leper, and all these illnesses?",
@@ -3173,7 +3173,7 @@
   {
    "id": "N31",
    "kind": "N",
-   "start": 186.097,
+   "start": 185.447,
    "dur": 3.357,
    "who": "Narrator",
    "text": "The king thought it was the very magic he had sent him to learn.",
@@ -3254,7 +3254,7 @@
   {
    "id": "N32",
    "kind": "N",
-   "start": 189.454,
+   "start": 188.804,
    "dur": 1.147,
    "who": "Narrator",
    "text": "The boy said:",
@@ -3280,45 +3280,45 @@
   {
    "id": "B4",
    "kind": "C",
-   "start": 190.701,
-   "dur": 3.244,
+   "start": 190.051,
+   "dur": 3.829,
    "who": "The boy",
    "text": "I don't heal anyone. Only Allah heals.",
    "words": [
     [
      "i",
      0.0,
-     0.152
+     0.247
     ],
     [
      "don't",
-     0.152,
-     0.452
+     0.247,
+     0.687
     ],
     [
      "heal",
-     0.452,
-     0.692
+     0.687,
+     0.947
     ],
     [
      "anyone",
-     0.692,
-     1.252
+     1.087,
+     1.687
     ],
     [
      "only",
-     1.879,
-     2.119
+     2.319,
+     2.639
     ],
     [
      "allah",
-     2.119,
-     2.519
+     2.639,
+     3.059
     ],
     [
      "heals",
-     2.519,
-     2.919
+     3.059,
+     3.539
     ]
    ],
    "file": "B4.wav"
@@ -3326,7 +3326,7 @@
   {
    "id": "N33",
    "kind": "N",
-   "start": 194.145,
+   "start": 194.08,
    "dur": 3.259,
    "who": "Narrator",
    "text": "And when the king pressed him, the boy gave the very same answer:",
@@ -3402,7 +3402,7 @@
   {
    "id": "B5",
    "kind": "C",
-   "start": 197.504,
+   "start": 197.439,
    "dur": 2.876,
    "who": "The boy",
    "text": "My Lord and your Lord is Allah.",
@@ -3448,7 +3448,7 @@
   {
    "id": "N34",
    "kind": "N",
-   "start": 200.58,
+   "start": 200.515,
    "dur": 4.609,
    "who": "Narrator",
    "text": "So the king took him and tortured him too… until he led them to the monk.",
@@ -3539,14 +3539,14 @@
   {
    "id": "M2_echo",
    "kind": "ECHO",
-   "start": 205.389,
+   "start": 205.324,
    "dur": 6.413,
    "file": "M2_echo.wav"
   },
   {
    "id": "N35",
    "kind": "N",
-   "start": 211.202,
+   "start": 211.137,
    "dur": 2.529,
    "who": "Narrator",
    "text": "The monk was brought. The king said to him:",
@@ -3602,7 +3602,7 @@
   {
    "id": "K5",
    "kind": "C",
-   "start": 213.831,
+   "start": 213.766,
    "dur": 2.177,
    "who": "The king",
    "text": "Turn back from your religion.",
@@ -3638,7 +3638,7 @@
   {
    "id": "N36",
    "kind": "N",
-   "start": 216.208,
+   "start": 216.143,
    "dur": 2.444,
    "who": "Narrator",
    "text": "He refused. And he was killed.",
@@ -3679,7 +3679,7 @@
   {
    "id": "N37",
    "kind": "N",
-   "start": 218.652,
+   "start": 220.187,
    "dur": 2.082,
    "who": "Narrator",
    "text": "Then the king said to his companion:",
@@ -3725,7 +3725,7 @@
   {
    "id": "K6",
    "kind": "C",
-   "start": 220.834,
+   "start": 222.369,
    "dur": 2.487,
    "who": "The king",
    "text": "Turn back from your religion.",
@@ -3761,7 +3761,7 @@
   {
    "id": "N38",
    "kind": "N",
-   "start": 223.521,
+   "start": 225.056,
    "dur": 3.054,
    "who": "Narrator",
    "text": "He refused. And he was killed too.",
@@ -3807,7 +3807,7 @@
   {
    "id": "N39",
    "kind": "N",
-   "start": 226.575,
+   "start": 229.71,
    "dur": 2.552,
    "who": "Narrator",
    "text": "Now only one of them was left.",
@@ -3853,7 +3853,7 @@
   {
    "id": "N40",
    "kind": "N",
-   "start": 229.127,
+   "start": 232.262,
    "dur": 0.672,
    "who": "Narrator",
    "text": "The boy.",
@@ -3874,7 +3874,7 @@
   {
    "id": "N42",
    "kind": "N",
-   "start": 230.349,
+   "start": 233.484,
    "dur": 1.377,
    "who": "Narrator",
    "text": "The king said to the boy:",
@@ -3915,7 +3915,7 @@
   {
    "id": "K7",
    "kind": "C",
-   "start": 231.826,
+   "start": 234.961,
    "dur": 1.947,
    "who": "The king",
    "text": "Turn back from your religion.",
@@ -3951,7 +3951,7 @@
   {
    "id": "N43",
    "kind": "N",
-   "start": 233.973,
+   "start": 237.108,
    "dur": 1.179,
    "who": "Narrator",
    "text": "The boy refused.",
@@ -3977,7 +3977,7 @@
   {
    "id": "N44",
    "kind": "N",
-   "start": 235.153,
+   "start": 238.288,
    "dur": 3.486,
    "who": "Narrator",
    "text": "So the king sent him off with a group of his men. He told them:",
@@ -4063,7 +4063,7 @@
   {
    "id": "K8",
    "kind": "C",
-   "start": 238.739,
+   "start": 241.874,
    "dur": 8.817,
    "who": "The king",
    "text": "Take him to that mountain. When you reach the top, if he turns back from his religion, let him be. If not, throw him off.",
@@ -4199,7 +4199,7 @@
   {
    "id": "N45",
    "kind": "N",
-   "start": 247.756,
+   "start": 250.891,
    "dur": 3.144,
    "who": "Narrator",
    "text": "They climbed, higher and higher, until they reached the top.",
@@ -4260,7 +4260,7 @@
   {
    "id": "N46",
    "kind": "N",
-   "start": 250.9,
+   "start": 254.035,
    "dur": 0.987,
    "who": "Narrator",
    "text": "And the boy said:",
@@ -4291,7 +4291,7 @@
   {
    "id": "B6",
    "kind": "C",
-   "start": 251.987,
+   "start": 255.122,
    "dur": 3.976,
    "who": "The boy",
    "text": "O Allah, deal with them for me, however You will.",
@@ -4352,7 +4352,7 @@
   {
    "id": "N47",
    "kind": "N",
-   "start": 256.163,
+   "start": 259.298,
    "dur": 1.262,
    "who": "Narrator",
    "text": "The mountain shook.",
@@ -4378,7 +4378,7 @@
   {
    "id": "N48",
    "kind": "N",
-   "start": 257.425,
+   "start": 260.56,
    "dur": 3.199,
    "who": "Narrator",
    "text": "And the men tumbled down from it. Every one of them.",
@@ -4444,7 +4444,7 @@
   {
    "id": "N49",
    "kind": "N",
-   "start": 260.624,
+   "start": 263.759,
    "dur": 4.044,
    "who": "Narrator",
    "text": "And the boy came walking back… until he stood in front of the king.",
@@ -4525,7 +4525,7 @@
   {
    "id": "N50",
    "kind": "N",
-   "start": 264.668,
+   "start": 267.803,
    "dur": 1.172,
    "who": "Narrator",
    "text": "The king asked:",
@@ -4551,7 +4551,7 @@
   {
    "id": "K9",
    "kind": "C",
-   "start": 265.94,
+   "start": 269.075,
    "dur": 2.152,
    "who": "The king",
    "text": "What happened to the men who were with you?",
@@ -4607,7 +4607,7 @@
   {
    "id": "N51",
    "kind": "N",
-   "start": 268.292,
+   "start": 271.427,
    "dur": 0.832,
    "who": "Narrator",
    "text": "The boy said:",
@@ -4633,7 +4633,7 @@
   {
    "id": "B7",
    "kind": "C",
-   "start": 269.224,
+   "start": 272.359,
    "dur": 1.852,
    "who": "The boy",
    "text": "Allah dealt with them for me.",
@@ -4674,7 +4674,7 @@
   {
    "id": "N52",
    "kind": "N",
-   "start": 271.276,
+   "start": 274.411,
    "dur": 3.569,
    "who": "Narrator",
    "text": "So the king tried again. This time… he sent him out to sea.",
@@ -4750,7 +4750,7 @@
   {
    "id": "N54",
    "kind": "N",
-   "start": 275.395,
+   "start": 278.53,
    "dur": 2.874,
    "who": "Narrator",
    "text": "The king sent him off with another group of men, and said:",
@@ -4821,7 +4821,7 @@
   {
    "id": "K10",
    "kind": "C",
-   "start": 278.369,
+   "start": 281.504,
    "dur": 8.882,
    "who": "The king",
    "text": "Take him out in a small boat. When you reach the middle of the sea, if he turns back from his religion, let him be. If not, drown him.",
@@ -4977,7 +4977,7 @@
   {
    "id": "N55",
    "kind": "N",
-   "start": 287.451,
+   "start": 290.586,
    "dur": 2.724,
    "who": "Narrator",
    "text": "They took him out, far into the deep sea.",
@@ -5033,7 +5033,7 @@
   {
    "id": "N56",
    "kind": "N",
-   "start": 290.175,
+   "start": 293.31,
    "dur": 1.367,
    "who": "Narrator",
    "text": "And again the boy said:",
@@ -5069,7 +5069,7 @@
   {
    "id": "B8",
    "kind": "C",
-   "start": 291.642,
+   "start": 294.777,
    "dur": 3.511,
    "who": "The boy",
    "text": "O Allah, deal with them for me, however You will.",
@@ -5130,7 +5130,7 @@
   {
    "id": "N57",
    "kind": "N",
-   "start": 295.353,
+   "start": 298.488,
    "dur": 4.281,
    "who": "Narrator",
    "text": "The boat turned over… and they drowned. Every one of them.",
@@ -5196,7 +5196,7 @@
   {
    "id": "N58",
    "kind": "N",
-   "start": 299.634,
+   "start": 302.769,
    "dur": 2.804,
    "who": "Narrator",
    "text": "And once again, the boy came back to the king.",
@@ -5257,7 +5257,7 @@
   {
    "id": "N59",
    "kind": "N",
-   "start": 302.718,
+   "start": 305.853,
    "dur": 0.832,
    "who": "Narrator",
    "text": "The king asked:",
@@ -5283,7 +5283,7 @@
   {
    "id": "K11",
    "kind": "C",
-   "start": 303.65,
+   "start": 306.785,
    "dur": 2.062,
    "who": "The king",
    "text": "What happened to the men who were with you?",
@@ -5339,7 +5339,7 @@
   {
    "id": "N60",
    "kind": "N",
-   "start": 305.912,
+   "start": 309.047,
    "dur": 0.762,
    "who": "Narrator",
    "text": "And the boy said:",
@@ -5370,7 +5370,7 @@
   {
    "id": "B9",
    "kind": "C",
-   "start": 306.774,
+   "start": 309.909,
    "dur": 1.799,
    "who": "The boy",
    "text": "Allah dealt with them for me.",
@@ -5411,7 +5411,7 @@
   {
    "id": "N61",
    "kind": "N",
-   "start": 308.773,
+   "start": 311.908,
    "dur": 4.784,
    "who": "Narrator",
    "text": "Twice the king's men had died. Twice the boy had walked back alive.",
@@ -5487,7 +5487,7 @@
   {
    "id": "N62",
    "kind": "N",
-   "start": 313.557,
+   "start": 316.692,
    "dur": 2.717,
    "who": "Narrator",
    "text": "Then the boy said something the king never expected.",
@@ -5543,7 +5543,7 @@
   {
    "id": "N63",
    "kind": "N",
-   "start": 316.274,
+   "start": 319.409,
    "dur": 0.742,
    "who": "Narrator",
    "text": "He said:",
@@ -5564,7 +5564,7 @@
   {
    "id": "B10",
    "kind": "C",
-   "start": 317.116,
+   "start": 320.251,
    "dur": 6.995,
    "who": "The boy",
    "text": "You will not kill me until you do what I tell you. If you do it, you will kill me. If you don't, you never can.",
@@ -5705,7 +5705,7 @@
   {
    "id": "N64",
    "kind": "N",
-   "start": 324.311,
+   "start": 327.446,
    "dur": 0.747,
    "who": "Narrator",
    "text": "The king asked:",
@@ -5731,7 +5731,7 @@
   {
    "id": "K12",
    "kind": "C",
-   "start": 325.158,
+   "start": 328.293,
    "dur": 1.207,
    "who": "The king",
    "text": "And what is that?",
@@ -5762,7 +5762,7 @@
   {
    "id": "N66",
    "kind": "N",
-   "start": 326.915,
+   "start": 330.05,
    "dur": 0.832,
    "who": "Narrator",
    "text": "The boy said:",
@@ -5788,7 +5788,7 @@
   {
    "id": "B11",
    "kind": "C",
-   "start": 327.847,
+   "start": 330.982,
    "dur": 13.951,
    "who": "The boy",
    "text": "Gather all the people on one open plain. Tie me to the trunk of a tree. Then take an arrow from my own quiver, and say: In the name of Allah, the Lord of the boy. If you do that, you will kill me.",
@@ -6019,7 +6019,7 @@
   {
    "id": "N67",
    "kind": "N",
-   "start": 341.998,
+   "start": 345.133,
    "dur": 1.292,
    "who": "Narrator",
    "text": "So the king did it.",
@@ -6055,7 +6055,7 @@
   {
    "id": "N68",
    "kind": "N",
-   "start": 343.29,
+   "start": 346.425,
    "dur": 4.904,
    "who": "Narrator",
    "text": "The people were gathered on one plain. The boy was tied to the trunk of a tree.",
@@ -6151,7 +6151,7 @@
   {
    "id": "N69",
    "kind": "N",
-   "start": 348.194,
+   "start": 351.329,
    "dur": 5.136,
    "who": "Narrator",
    "text": "The king took an arrow from the boy's quiver, set it in the middle of the bow… and said:",
@@ -6257,7 +6257,7 @@
   {
    "id": "K13",
    "kind": "C",
-   "start": 353.43,
+   "start": 356.565,
    "dur": 3.099,
    "who": "The king",
    "text": "In the name of Allah, the Lord of the boy.",
@@ -6318,7 +6318,7 @@
   {
    "id": "N70",
    "kind": "N",
-   "start": 357.379,
+   "start": 360.514,
    "dur": 1.467,
    "who": "Narrator",
    "text": "In front of all the people.",
@@ -6359,14 +6359,14 @@
   {
    "id": "crowd_murmur",
    "kind": "MURMUR",
-   "start": 356.629,
+   "start": 359.764,
    "dur": 2.417,
    "file": "crowd_murmur.wav"
   },
   {
    "id": "N71",
    "kind": "N",
-   "start": 358.846,
+   "start": 361.981,
    "dur": 1.167,
    "who": "Narrator",
    "text": "Then he shot.",
@@ -6392,7 +6392,7 @@
   {
    "id": "N72",
    "kind": "N",
-   "start": 360.293,
+   "start": 363.428,
    "dur": 5.861,
    "who": "Narrator",
    "text": "The arrow struck him on the temple. The boy put his hand where it had struck… and he died.",
@@ -6498,7 +6498,7 @@
   {
    "id": "N73",
    "kind": "N",
-   "start": 367.154,
+   "start": 370.289,
    "dur": 1.287,
    "who": "Narrator",
    "text": "And the people cried out:",
@@ -6534,14 +6534,14 @@
   {
    "id": "crowd_cry",
    "kind": "CROWD",
-   "start": 368.501,
+   "start": 371.636,
    "dur": 11.05,
    "file": "crowd_cry.wav"
   },
   {
    "id": "NC",
    "kind": "N",
-   "start": 378.801,
+   "start": 381.936,
    "dur": 7.84,
    "who": "Narrator",
    "text": "Someone came to the king and said: \"Do you see what you were afraid of? By Allah, it has come down on you. All the people have believed.\"",
@@ -6692,7 +6692,7 @@
   {
    "id": "N75",
    "kind": "N",
-   "start": 386.641,
+   "start": 389.776,
    "dur": 3.809,
    "who": "Narrator",
    "text": "The king had killed the boy. But he had lost the people.",
@@ -6763,7 +6763,7 @@
   {
    "id": "N76",
    "kind": "N",
-   "start": 390.45,
+   "start": 393.585,
    "dur": 1.367,
    "who": "Narrator",
    "text": "So the king gave an order…",
@@ -6804,7 +6804,7 @@
   {
    "id": "N78",
    "kind": "N",
-   "start": 392.367,
+   "start": 395.502,
    "dur": 5.341,
    "who": "Narrator",
    "text": "Trenches were dug at the mouths of the roads. And fires were lit inside them.",
@@ -6890,7 +6890,7 @@
   {
    "id": "N79",
    "kind": "N",
-   "start": 397.708,
+   "start": 400.843,
    "dur": 1.367,
    "who": "Narrator",
    "text": "Then the king said:",
@@ -6921,7 +6921,7 @@
   {
    "id": "K14",
    "kind": "C",
-   "start": 399.175,
+   "start": 402.31,
    "dur": 5.723,
    "who": "The king",
    "text": "Whoever turns back from his religion, let him go. Whoever doesn't, throw him in.",
@@ -7002,7 +7002,7 @@
   {
    "id": "N80",
    "kind": "N",
-   "start": 405.098,
+   "start": 408.233,
    "dur": 4.424,
    "who": "Narrator",
    "text": "And the believers went forward, one after another, pressing toward it.",
@@ -7068,7 +7068,7 @@
   {
    "id": "N81",
    "kind": "N",
-   "start": 409.522,
+   "start": 412.657,
    "dur": 4.536,
    "who": "Narrator",
    "text": "A woman came, holding her baby son, a child she was still nursing.",
@@ -7144,7 +7144,7 @@
   {
    "id": "N82",
    "kind": "N",
-   "start": 414.058,
+   "start": 417.193,
    "dur": 2.427,
    "who": "Narrator",
    "text": "But she seemed to hold back from the fire.",
@@ -7200,7 +7200,7 @@
   {
    "id": "NB",
    "kind": "N",
-   "start": 416.485,
+   "start": 419.62,
    "dur": 6.303,
    "who": "Narrator",
    "text": "Then her baby spoke. He said: \"Be patient, mother. You are on the truth.\"",
@@ -7281,7 +7281,7 @@
   {
    "id": "N84",
    "kind": "N",
-   "start": 423.788,
+   "start": 426.923,
    "dur": 1.987,
    "who": "Narrator",
    "text": "The king had asked one question:",
@@ -7322,97 +7322,122 @@
   {
    "id": "K3_echo",
    "kind": "ECHO",
-   "start": 425.975,
+   "start": 429.11,
    "dur": 5.288,
    "file": "K3_echo.wav"
   },
   {
    "id": "N85",
    "kind": "N",
-   "start": 430.663,
-   "dur": 5.208,
+   "start": 433.798,
+   "dur": 7.52,
    "who": "Narrator",
-   "text": "A man who had been blind. A monk. A boy. Not one of them turned back.",
+   "text": "A man who had been blind. A monk. A boy. And then the people themselves. Not one of them turned back.",
    "words": [
     [
      "a",
      0.0,
-     0.122
+     0.177
     ],
     [
      "man",
-     0.122,
-     0.322
+     0.177,
+     0.397
     ],
     [
      "who",
-     0.322,
-     0.522
+     0.397,
+     0.617
     ],
     [
      "had",
-     0.522,
-     0.602
+     0.617,
+     0.737
     ],
     [
      "been",
-     0.602,
-     0.762
+     0.737,
+     0.897
     ],
     [
      "blind",
-     0.762,
-     1.162
+     0.897,
+     1.237
     ],
     [
      "a",
-     1.824,
-     1.864
+     1.939,
+     1.939
     ],
     [
      "monk",
-     1.864,
-     2.124
+     1.939,
+     2.179
     ],
     [
      "a",
-     2.761,
-     2.861
+     2.781,
+     2.821
     ],
     [
      "boy",
-     2.861,
-     3.161
+     2.821,
+     3.101
+    ],
+    [
+     "and",
+     3.823,
+     3.923
+    ],
+    [
+     "then",
+     3.923,
+     4.123
+    ],
+    [
+     "the",
+     4.123,
+     4.283
+    ],
+    [
+     "people",
+     4.283,
+     4.603
+    ],
+    [
+     "themselves",
+     4.603,
+     5.143
     ],
     [
      "not",
-     3.746,
-     3.893
+     5.808,
+     6.055
     ],
     [
      "one",
-     3.893,
-     4.213
+     6.135,
+     6.495
     ],
     [
      "of",
-     4.213,
-     4.313
+     6.495,
+     6.615
     ],
     [
      "them",
-     4.313,
-     4.473
+     6.615,
+     6.795
     ],
     [
      "turned",
-     4.473,
-     4.793
+     6.915,
+     7.075
     ],
     [
      "back",
-     4.793,
-     5.073
+     7.075,
+     7.395
     ]
    ],
    "file": "N85.wav"
@@ -7420,7 +7445,7 @@
   {
    "id": "B5_echo",
    "kind": "ECHO",
-   "start": 436.071,
+   "start": 441.518,
    "dur": 4.36,
    "file": "B5_echo.wav"
   }
