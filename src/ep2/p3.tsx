@@ -504,10 +504,17 @@ export const Mother: React.FC = () => {
       <TrenchBg cam={cam} />
       <Layer d={1} cam={cam}>
         <Defs />
-        {/* the mother: a long dress to the ground and a head covering that falls over her shoulders */}
-        <g transform={`translate(${x} ${FLOOR + 40}) scale(1.95)`}><path d="M -32 -176 L 32 -176 L 60 2 L -60 2 Z" fill="#120a06" /></g>
-        <Actor x={x} y={FLOOR + 40} s={1.95} outfit={{ ...SHADOW, wrap: "#120a06" }} pose={walkT < 1 ? { ...walkBy(x, 1.95, 0.5), armRU: 12, armRL: -92, armLU: 16, armLL: -96 } : { ...STAND, lean: -4 * back, head: 16 * bow, armRU: 12, armRL: -92, armLU: 16, armLL: -96 }} />
-        <g transform={`translate(${x} ${FLOOR + 40}) scale(1.95)`}><path d="M -35 -238 Q -38 -276 0 -278 Q 38 -276 35 -238 Q 46 -206 52 -150 Q 20 -164 -8 -160 Q -34 -158 -52 -150 Q -46 -206 -35 -238 Z" fill="#120a06" /><path d="M 6 -262 Q 34 -258 32 -226 Q 30 -208 22 -204 Q 30 -232 6 -262 Z" fill="#2a1612" /></g>
+        {/* the mother, drawn whole and facing the fire: an abaya down to the ground, a hijab that frames her face and falls over her shoulders */}
+        <g transform={`translate(${x} ${FLOOR + 40 + (walkT < 1 ? Math.sin(frame * 0.38) * 4 : 0)}) scale(1.95) rotate(${-4 * back})`}>
+          <path d="M -26 -206 Q 0 -216 26 -206 Q 40 -100 50 0 L -60 0 Q -52 -110 -26 -206 Z" fill="#150c08" />
+          <path d={`M 34 0 q 12 -9 22 0 Z`} fill="#0c0705" />
+          <g transform={`rotate(${16 * bow} 4 -214)`}>
+            <path d="M -28 -250 Q -30 -284 4 -284 Q 38 -284 37 -250 Q 37 -236 31 -224 Q 44 -200 46 -168 Q 10 -182 -42 -166 Q -42 -214 -28 -250 Z" fill="#24150f" />
+            <ellipse cx={19} cy={-247} rx={13} ry={18} fill="#8a583f" />
+            <path d="M 21 -238 q 5 2 9 0" stroke="#2b1410" strokeWidth={2.2} fill="none" strokeLinecap="round" />
+          </g>
+          <path d="M 4 -196 Q 0 -150 34 -146" stroke="#24150f" strokeWidth={22} fill="none" strokeLinecap="round" />
+        </g>
         {/* the baby in her arms, lit softly by the glow; the narrator speaks his words, so his mouth stays still */}
         <g transform={`translate(${x + 52} ${FLOOR + 40 - 300})`}>
           {close ? <Glow x={0} y={0} r={150} o={0.5} /> : null}
