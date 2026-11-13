@@ -3,7 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { STAND, SIT, blend, Pose, Outfit, Mood } from "../cartoon/Rig";
 import { FOLK, GUARD } from "../cartoon/Trailer";
 import { KING_MAIN, BOY_MAIN, MONK_MAIN, COMPANION_MAIN, SHADOW } from "./cast";
-import { Abs, Actor, sitY, useMouth, useTalk, walkBy, Cane, Sword, Stone, V, Cam, Layer, Defs, iv, ease, easeOut, useShot, useView, aim, Dust, DustBurst, Grade, Vignette, Glow, Torch2, ThroneSeat, SITG } from "./kit";
+import { Abs, Actor, sitY, useMouth, useTalk, walkBy, Cane, Sword, Stone, Gift, HandSpots, V, Cam, Layer, Defs, iv, ease, easeOut, useShot, useView, aim, Dust, DustBurst, Grade, Vignette, Glow, Torch2, ThroneSeat, SITG } from "./kit";
 import { FLOOR, useL, Shot, shotCam, shook, Hall, RoadBg, Hut } from "./p1";
 
 // Episode 2 — Parts 2 and 3, plus the two building blocks the rest of the episode reuses:
@@ -19,8 +19,8 @@ const OX = 880;
 
 export const Court: React.FC<{
   other?: Who; seated?: boolean; enter?: boolean; guards?: number; guardsAt?: string; dark?: number; kingMood?: Mood; otherMood?: Mood;
-  leanAt?: string; closer?: string; holdKing?: string; endOnKing?: number; fire?: number;
-}> = ({ other, seated, enter, guards = 0, guardsAt, dark = 0, kingMood = "tight", otherMood = "neutral", leanAt, closer, holdKing, endOnKing, fire = 0 }) => {
+  leanAt?: string; closer?: string; holdKing?: string; endOnKing?: number; fire?: number; shockUntilSpeaks?: boolean;
+}> = ({ other, seated, enter, guards = 0, guardsAt, dark = 0, kingMood = "tight", otherMood = "neutral", leanAt, closer, holdKing, endOnKing, fire = 0, shockUntilSpeaks }) => {
   const { frame, dur } = useShot();
   const { vertical } = useView();
   const from = useContext(Abs);
@@ -66,7 +66,7 @@ export const Court: React.FC<{
       <Hall cam={cam} />
       <Layer d={1} cam={cam}>
         <g transform={`translate(${2 * KX} 0) scale(-1 1)`}><ThroneSeat x={KX} floor={FLOOR} s={1.1} /></g>
-        <Actor seat="chair" x={KX} y={sitY(FLOOR - 110, 2)} s={2} outfit={KING_MAIN} pose={kingPose} flip mouth={km} mood={kingMood} />
+        <Actor seat="chair" x={KX} y={sitY(FLOOR - 110, 2)} s={2} outfit={KING_MAIN} pose={kingPose} flip mouth={km} mood={shockUntilSpeaks ? (kIds.length && frame >= V.lines[kIds[0]].f0 - from - 2 ? "frown" : "shock") : kingMood} />
         {new Array(gShow).fill(0).map((_, i) => {
           const gt = guardsAt ? iv(frame, [L(guardsAt) + i * 6, L(guardsAt) + 46 + i * 6], [0, 1], easeOut) : 1;
           const gx = ox - 170 - i * 140 - (1 - gt) * 760;
@@ -210,7 +210,7 @@ export const Healing: React.FC = () => {
         <Glow x={830} y={1000} r={380} o={0.3 + 0.3 * t} />
         <Actor x={830} y={FLOOR} s={1.9} outfit={BOY_MAIN} pose={{ ...STAND, armRU: -52, armRL: -36, armLU: -40, armLL: -36, head: -4 }} mood="smile" />
         {k === 0 && t >= 0.5 ? <line x1={1090} y1={FLOOR - 8} x2={1290} y2={FLOOR - 4} stroke="#5a3a22" strokeWidth={11} strokeLinecap="round" /> : null}
-        {sick ? <Actor x={1190} y={FLOOR} s={2} outfit={sick} pose={poses[k]} flip mood={t > 0.7 ? "smile" : "frown"} hold={k === 0 && t < 0.5 ? <Cane /> : undefined} /> : null}
+        {sick ? <Actor x={1190} y={FLOOR} s={2} outfit={sick} pose={poses[k]} flip mood={t > 0.7 ? "smile" : "frown"} hold={k === 0 && t < 0.5 ? <Cane /> : k === 1 ? <HandSpots o={1 - t} /> : undefined} /> : null}
       </Layer>
       <Layer d={1} cam={cam}><Dust n={24} y0={900} y1={1400} opacity={0.35} seed="hl" /></Layer>
       <Vignette s={0.4} />
@@ -250,8 +250,12 @@ export const CompanionComes: React.FC = () => {
       <Layer d={1} cam={cam}>
         <Defs />
         {healed > 0 ? <Glow x={1180} y={940} r={420} o={0.5 * healed} /> : null}
-        {[0, 1].map((i) => <g key={i} transform={`translate(${cx + 330 + i * 150} ${FLOOR})`}><rect x={-56} y={-84} width={112} height={84} rx={8} fill="#7a4a22" stroke="#2b1d18" strokeWidth={5} /><rect x={-56} y={-84} width={112} height={26} rx={8} fill="#c9952e" stroke="#2b1d18" strokeWidth={5} /></g>)}
-        <Actor x={cx + 190} y={FLOOR} s={1.9} outfit={FOLK(3)} pose={walking ? walkBy(cx + 190, 1.9, 0.6) : { ...STAND, armRU: -40 * (1 - healed), armRL: -30 }} flip />
+        {/* two servants walk behind him, each carrying a wrapped gift */}
+        {[0, 1].map((i) => {
+          const sx = cx + 210 + i * 250;
+          return <Actor key={i} x={sx} y={FLOOR} s={1.9} outfit={FOLK(3 + i * 4)} flip hold={<Gift c={i ? "#1f6f5c" : "#9b1b26"} />}
+            pose={walking ? { ...walkBy(sx, 1.9, 0.6), armRU: -46, armRL: -62 } : { ...STAND, armRU: -46, armRL: -62 }} />;
+        })}
         {!blind ? <line x1={cx - 150} y1={FLOOR - 6} x2={cx + 60} y2={FLOOR - 2} stroke="#5a3a22" strokeWidth={11} strokeLinecap="round" /> : null}
         <Actor x={cx} y={FLOOR} s={2} outfit={{ ...COMPANION_MAIN, glasses: blind }} flip mouth={cm} mood={healed > 0.5 ? "shock" : "tight"} hold={blind ? <Cane /> : undefined}
           pose={walking ? { ...walkBy(cx, 2, 0.6), armRU: -40 - tap, armRL: -28 } : { ...STAND, head: (1 - healed) * 8 + look, armRU: (-40 - tap) * (1 - healed) - 8 * ct, armRL: -28 * (1 - healed), armLU: -50 * healed, armLL: -60 * healed }} />

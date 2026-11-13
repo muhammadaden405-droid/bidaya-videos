@@ -44,12 +44,12 @@ const SCENES: SceneCue[] = [
   cue(Court, lf("N42") - G, lf("N45"), { other: "boy", guards: 3, guardsAt: "N44" }, "hall"),
   cue(Climb, lf("N45"), lf("N46"), undefined, "wind"),
   cue(Summit, lf("N46"), lf("N49"), undefined, "wind"),
-  cue(Court, lf("N49"), lf("N52"), { other: "boy", enter: true, kingMood: "shock" }, "hall"),
+  cue(Court, lf("N49"), lf("N52"), { other: "boy", enter: true, shockUntilSpeaks: true }, "hall"),
   cue(KingToSea, lf("N52"), lf("N54") - G, undefined, "hall"),
   // Part 5
   cue(Court, lf("N54") - G, lf("N55"), { other: "boy", guards: 3 }, "hall"),
   cue(Sea, lf("N55"), lf("N58"), undefined, "sea"),
-  cue(Court, lf("N58"), lf("N61"), { other: "boy", enter: true, kingMood: "frown" }, "hall"),
+  cue(Court, lf("N58"), lf("N61"), { other: "boy", enter: true, shockUntilSpeaks: true }, "hall"),
   // (this scene runs on through the start of Part 6 without a cut)
   cue(Court, lf("N61"), lf("N67"), { other: "boy", closer: "B10", leanAt: "N64", kingMood: "frown" }, "hall"),
   cue(Plain, lf("N67"), lf("N69")),
@@ -196,6 +196,20 @@ const Watermark: React.FC = () => {
   const v = height > width;
   return <Img src={staticFile("logo.png")} style={{ position: "absolute", top: v ? 150 : 28, right: 32, width: v ? 120 : 100, opacity: 0.9, filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.5))" }} />;
 };
+/** The handle drifts slowly across the picture all the way through, so a clipped piece still carries it.
+ * It stays in the middle band (clear of captions, the logo and the title), and moves below the verses during the recitation. */
+const MovingMark: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { width, height } = useVideoConfig();
+  const v = height > width;
+  if (frame >= V.total + REC_START + REC_LEN) return null;
+  const rec = frame >= V.total;
+  const tx = 0.5 + 0.5 * Math.sin(frame * 0.0041 + 1.3);
+  const ty = 0.5 + 0.5 * Math.sin(frame * 0.0067);
+  const x = (v ? 0.06 : 0.05) + tx * (v ? 0.5 : 0.68);
+  const y = rec ? 0.74 + ty * 0.14 : (v ? 0.2 : 0.2) + ty * (v ? 0.4 : 0.36);
+  return <div style={{ position: "absolute", left: x * width, top: y * height, fontFamily: serif, fontSize: v ? 40 : 36, letterSpacing: 2, color: "#fff", opacity: 0.3, textShadow: "0 1px 3px rgba(0,0,0,0.6)", pointerEvents: "none" }}>@bidayah.nihayah</div>;
+};
 const FadeIn: React.FC<{ on?: boolean; children: React.ReactNode }> = ({ on, children }) => {
   const f = useCurrentFrame();
   return <AbsoluteFill style={{ opacity: on ? interpolate(f, [0, 10], [0, 1], clamp) : 1 }}>{children}</AbsoluteFill>;
@@ -212,6 +226,7 @@ export const Ep2: React.FC<{ muted?: boolean; bare?: boolean }> = ({ muted, bare
     {bare ? null : <Overlays />}
     {bare ? null : <Captions />}
     <Watermark />
+    {bare ? null : <MovingMark />}
     {muted ? null : <Html5Audio src={staticFile("ep2/voice.mp3")} />}
     {muted ? null : <Sequence from={V.total + REC_START}><Html5Audio src={staticFile("ep2/recitation.m4a")} /></Sequence>}
     {muted ? null : SFX.filter((s) => (s.len ?? 1) > 0).map((s, i) => (

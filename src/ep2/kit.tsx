@@ -72,3 +72,11 @@ export const Sword: React.FC<{ color?: string }> = ({ color = "#120a06" }) => (<
 export const Stone: React.FC = () => <circle cx={0} cy={6} r={9} fill="#6b6257" stroke="#2b1d18" strokeWidth={2.5} />;
 /** feet origin for a figure whose hips rest on a seat top (chair) or on the ground (cross-legged) */
 export const sitY = (seatTop: number, s: number, ground = false) => seatTop + (ground ? 92 : 104) * s;
+export const Gift: React.FC<{ c?: string }> = ({ c = "#9b1b26" }) => (
+  <g transform="translate(14 -6)">
+    <rect x={-24} y={-22} width={48} height={40} rx={4} fill={c} stroke="#2b1d18" strokeWidth={3} />
+    <rect x={-4} y={-22} width={8} height={40} fill="#e3b341" /><rect x={-24} y={-6} width={48} height={8} fill="#e3b341" />
+    <path d="M 0 -22 Q -16 -40 -18 -24 Q -10 -20 0 -22 Q 16 -40 18 -24 Q 10 -20 0 -22 Z" fill="#e3b341" stroke="#2b1d18" strokeWidth={2} />
+  </g>
+);
+export const HandSpots: React.FC<{ o: number }> = ({ o }) => <g fill="#7a2f2a" opacity={o}><circle cx={-3} cy={3} r={3.2} /><circle cx={4} cy={7} r={2.6} /></g>;

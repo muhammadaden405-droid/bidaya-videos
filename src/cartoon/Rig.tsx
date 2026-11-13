@@ -87,7 +87,6 @@ export type Mood = "neutral" | "smile" | "frown" | "tight" | "shock" | "sneer";
 // Mouth only, no eyes (owner's rule from Episode 2 on). `open` 0..1 drives lip-sync; `mood` shows emotion when silent.
 const Mouth: React.FC<{ open: number; mood: Mood }> = ({ open, mood }) => {
   const ink = "#3a1a14";
-  if (mood === "shock") return <ellipse cx={14} cy={14} rx={4.5} ry={5.5} fill="#2a1210" />;
   if (open > 0.08) {
     const ry = 1.2 + open * 4.2;
     return (
@@ -97,6 +96,7 @@ const Mouth: React.FC<{ open: number; mood: Mood }> = ({ open, mood }) => {
       </g>
     );
   }
+  if (mood === "shock") return <ellipse cx={14} cy={14} rx={4.5} ry={5.5} fill="#2a1210" />;
   const d =
     mood === "smile" ? "M 8 12.5 Q 14 17.5 20 12.5" :
     mood === "frown" ? "M 8 16.5 Q 14 11 20 16.5" :
@@ -159,13 +159,6 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
               <path d="M 26 -6 Q 40 20 30 46 L 22 44 Q 28 20 18 0 Z" fill={outfit.wrap} transform={mouth !== undefined || mood ? "scale(-1 1)" : undefined} />
             </>
           ) : null}
-          {outfit.beard ? (
-            outfit.longBeard ? (
-              <path d="M -2 12 Q 8 22 26 14 Q 30 40 18 66 Q 12 80 6 92 Q 0 70 -8 52 Q -14 30 -2 12 Z" fill={outfit.beard} />
-            ) : (
-              <path d="M -4 10 Q 10 24 28 12 Q 28 30 14 40 Q 2 44 -6 32 Q -10 20 -4 10 Z" fill={outfit.beard} />
-            )
-          ) : null}
           {outfit.hood ? (
             <>
               <path d="M -40 30 Q -46 -36 0 -46 Q 40 -42 38 -10 Q 30 -18 14 -20 Q -12 -16 -18 30 Z" fill={outfit.hood} />
@@ -174,7 +167,7 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
           ) : null}
           {outfit.spots ? (
             <g fill="#7a2f2a" opacity={outfit.spots}>
-              <ellipse cx={14} cy={-8} rx={8} ry={6} /><ellipse cx={2} cy={8} rx={6} ry={5} /><ellipse cx={20} cy={10} rx={5} ry={6} /><ellipse cx={-6} cy={-12} rx={5} ry={4} /><ellipse cx={8} cy={20} rx={4} ry={3} />
+              <ellipse cx={16} cy={5} rx={6} ry={4} /><ellipse cx={4} cy={12} rx={6} ry={5} /><ellipse cx={20} cy={16} rx={4} ry={5} /><ellipse cx={-8} cy={8} rx={4} ry={4} /><ellipse cx={10} cy={22} rx={4} ry={3} />
             </g>
           ) : null}
           {outfit.glasses ? (
@@ -220,7 +213,12 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
         </Limb>
         {outfit.beard ? (
           <g transform={`translate(0 -232) rotate(${p.head})`}>
-            <path d={outfit.longBeard ? "M -2 12 Q 8 22 26 14 Q 30 40 18 66 Q 12 80 6 92 Q 0 70 -8 52 Q -14 30 -2 12 Z" : "M -4 10 Q 10 24 28 12 Q 28 30 14 40 Q 2 44 -6 32 Q -10 20 -4 10 Z"} fill={outfit.beard} />
+            {outfit.longBeard ? (
+              // a long beard hangs straight down under the chin, whatever the tilt of the head or body
+              <g transform={`rotate(${-(p.head + p.lean)} 12 14)`}><path d="M -4 10 Q 10 22 28 12 Q 30 40 22 66 Q 17 82 12 96 Q 7 82 2 66 Q -6 40 -4 10 Z" fill={outfit.beard} /></g>
+            ) : (
+              <path d="M -4 10 Q 10 24 28 12 Q 28 30 14 40 Q 2 44 -6 32 Q -10 20 -4 10 Z" fill={outfit.beard} />
+            )}
             {mouth !== undefined || mood ? <Mouth open={mouth ?? 0} mood={mood ?? "neutral"} /> : null}
           </g>
         ) : null}

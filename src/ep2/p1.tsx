@@ -63,7 +63,6 @@ export const ColdOpen: React.FC = () => {
         <path d="M 760 1262 L 880 1232 L 900 1262 Z" fill="#1f1828" stroke="#2b1d18" strokeWidth={5} />
         <g transform="translate(912 1250)">
           <path d="M -34 12 Q -40 -14 -6 -16 L 34 -12 Q 58 -8 58 4 Q 58 12 40 12 Z" fill="#8f7f72" stroke="#2b1d18" strokeWidth={5} strokeLinejoin="round" />
-          {[4, 20, 36].map((x, i) => <path key={i} d={`M ${x} -11 L ${x + 6} 10`} stroke="#2b1d18" strokeWidth={3} />)}
         </g>
         {/* oil lamp and flame */}
         <path d="M 1000 1264 Q 1090 1196 1180 1264 Z" fill="#7a4a22" stroke="#2b1d18" strokeWidth={5} />

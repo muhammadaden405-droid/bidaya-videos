@@ -393,7 +393,7 @@ export const KingTold: React.FC = () => {
       <Layer d={1} cam={cam}>
         <g transform="translate(2520 0) scale(-1 1)"><ThroneSeat x={1260} floor={FLOOR} s={1.1} /></g>
         <Actor seat="chair" x={1260} y={sitY(FLOOR - 110, 2)} s={2} outfit={KING_MAIN} pose={{ ...SIT, lean: -4, head: 8 }} flip mood="frown" />
-        <Actor x={380 + run * 520} y={FLOOR} s={2} outfit={FOLK(6)} pose={run < 1 ? walkBy(380 + run * 520, 2, 1) : { ...STAND, lean: 8, head: 4, armRU: -46, armRL: -40 }} mouth={talk} mood="shock" />
+        <Actor x={380 + run * 520} y={FLOOR} s={2} outfit={FOLK(6)} pose={run < 1 ? walkBy(380 + run * 520, 2, 1) : { ...STAND, lean: 8, head: 4, armRU: -46, armRL: -40 }} mouth={talk} mood={run < 1 ? "shock" : "frown"} />
       </Layer>
       <Grade color="#ff7a2a" opacity={0.16 + fire * 0.3 * flick} />
       <Vignette s={0.6 + 0.15 * fire} />
@@ -504,13 +504,15 @@ export const Mother: React.FC = () => {
       <TrenchBg cam={cam} />
       <Layer d={1} cam={cam}>
         <Defs />
+        {/* the mother: a long dress to the ground and a head covering that falls over her shoulders */}
+        <g transform={`translate(${x} ${FLOOR + 40}) scale(1.95)`}><path d="M -32 -176 L 32 -176 L 60 2 L -60 2 Z" fill="#120a06" /></g>
         <Actor x={x} y={FLOOR + 40} s={1.95} outfit={{ ...SHADOW, wrap: "#120a06" }} pose={walkT < 1 ? { ...walkBy(x, 1.95, 0.5), armRU: 12, armRL: -92, armLU: 16, armLL: -96 } : { ...STAND, lean: -4 * back, head: 16 * bow, armRU: 12, armRL: -92, armLU: 16, armLL: -96 }} />
+        <g transform={`translate(${x} ${FLOOR + 40}) scale(1.95)`}><path d="M -35 -238 Q -38 -276 0 -278 Q 38 -276 35 -238 Q 46 -206 52 -150 Q 20 -164 -8 -160 Q -34 -158 -52 -150 Q -46 -206 -35 -238 Z" fill="#120a06" /><path d="M 6 -262 Q 34 -258 32 -226 Q 30 -208 22 -204 Q 30 -232 6 -262 Z" fill="#2a1612" /></g>
         {/* the baby in her arms, lit softly by the glow; the narrator speaks his words, so his mouth stays still */}
         <g transform={`translate(${x + 52} ${FLOOR + 40 - 300})`}>
           {close ? <Glow x={0} y={0} r={150} o={0.5} /> : null}
           <ellipse cx={0} cy={18} rx={50} ry={30} fill={close ? "#e9dcc0" : "#120a06"} stroke="#120a06" strokeWidth={4} />
           <circle cx={30} cy={-6} r={21} fill={close ? "#c99a78" : "#120a06"} stroke="#120a06" strokeWidth={4} />
-          {close ? <path d="M 34 2 q 6 3 11 0" stroke="#2b1d18" strokeWidth={2.4} fill="none" strokeLinecap="round" /> : null}
         </g>
       </Layer>
       <Grade color="#ff5a1a" opacity={0.1} />
