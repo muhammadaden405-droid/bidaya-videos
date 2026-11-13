@@ -252,7 +252,7 @@ export const CompanionComes: React.FC = () => {
         {healed > 0 ? <Glow x={1180} y={940} r={420} o={0.5 * healed} /> : null}
         {/* two servants walk behind him, each carrying a wrapped gift */}
         {[0, 1].map((i) => {
-          const sx = cx + 210 + i * 250;
+          const sx = cx + 330 + i * 250;
           return <Actor key={i} x={sx} y={FLOOR} s={1.9} outfit={FOLK(3 + i * 4)} flip hold={<Gift c={i ? "#1f6f5c" : "#9b1b26"} />}
             pose={walking ? { ...walkBy(sx, 1.9, 0.6), armRU: -46, armRL: -62 } : { ...STAND, armRU: -46, armRL: -62 }} />;
         })}
