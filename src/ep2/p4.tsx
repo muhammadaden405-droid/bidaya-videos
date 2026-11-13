@@ -81,7 +81,7 @@ export const EndCard: React.FC = () => {
       <Img src={staticFile("logo.png")} style={{ width: v ? 210 : 170, marginBottom: 26 }} />
       <div style={{ fontFamily: display, fontWeight: 700, fontSize: v ? 58 : 60, letterSpacing: 4, color: "#3a2a1a", textAlign: "center" }}>THE PEOPLE OF THE TRENCH</div>
       <div style={{ fontFamily: serif, fontSize: v ? 40 : 38, lineHeight: 1.4, color: "#4a3824", textAlign: "center", marginTop: 26 }}>
-        Source: al-Bidāya wa al-Nihāya, Ibn Kathīr<br />vol. 2, pp. 153–155 (ʿAlī Shīrī edition)
+        Source: al-Bidāya wa al-Nihāya, Ibn Kathīr<br />vol. 2, pp. 153–155
       </div>
       <div style={{ fontFamily: serif, fontSize: v ? 34 : 32, lineHeight: 1.4, color: "#5a4630", textAlign: "center", marginTop: 14 }}>
         The hadith of Ṣuhayb, from the Prophet ﷺ:<br />Musnad Aḥmad and Ṣaḥīḥ Muslim
