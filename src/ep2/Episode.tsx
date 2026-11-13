@@ -49,9 +49,8 @@ const SCENES: SceneCue[] = [
   cue(Court, lf("N54") - G, lf("N55"), { other: "boy", guards: 3 }, "hall"),
   cue(Sea, lf("N55"), lf("N58"), undefined, "sea"),
   cue(Court, lf("N58"), lf("N61"), { other: "boy", enter: true, kingMood: "frown" }, "hall"),
-  cue(Court, lf("N61"), lf("N66") - G, { other: "boy", closer: "B10", leanAt: "N64", kingMood: "frown" }, "hall"),
-  // Part 6
-  cue(Court, lf("N66") - G, lf("N67"), { other: "boy" }, "hall"),
+  // (this scene runs on through the start of Part 6 without a cut)
+  cue(Court, lf("N61"), lf("N67"), { other: "boy", closer: "B10", leanAt: "N64", kingMood: "frown" }, "hall"),
   cue(Plain, lf("N67"), lf("N69")),
   cue(Bow, lf("N69"), lf("crowd_murmur")),
   cue(ArrowShot, lf("crowd_murmur"), lf("N73")),

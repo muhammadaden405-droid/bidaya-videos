@@ -16,10 +16,13 @@ export const le = (id: string) => V.lines[id].f1;
 /** frame where a word of a line is spoken (first match, or nth) */
 export const wf = (id: string, word: string, nth = 0) => {
   const l = V.lines[id];
-  let k = 0;
-  for (const c of V.caps) {
-    if (c.from < l.f0 - 2 || c.from > l.f1) continue;
-    for (const w of c.words) if (w.w.toLowerCase().replace(/[^a-z']/g, "").startsWith(word) && k++ === nth) return w.t;
+  const clean = (w: string) => w.toLowerCase().replace(/[^a-z']/g, "");
+  for (const exact of [true, false]) {
+    let k = 0;
+    for (const c of V.caps) {
+      if (c.from < l.f0 - 2 || c.from > l.f1) continue;
+      for (const w of c.words) if ((exact ? clean(w.w) === word : clean(w.w).startsWith(word)) && k++ === nth) return w.t;
+    }
   }
   return l.f0;
 };

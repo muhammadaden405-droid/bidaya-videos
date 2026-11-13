@@ -1,6 +1,6 @@
 {
  "note": "Episode 2 voice track, second pass: one clean 48 kHz clip per line (no breaths, pauses capped). start = seconds in the listening track (YouTube order, before the recitation). words = word timings inside each clip, for captions and lip-sync. crowd_murmur starts right after the king's words; crowd_cry starts right after 'And the people cried out:'. Hooks H2-H7 open TikTok parts 2-7.",
- "total": 446.38,
+ "total": 445.62,
  "timeline": [
   {
    "id": "S1",
@@ -7330,114 +7330,99 @@
    "id": "N85",
    "kind": "N",
    "start": 433.798,
-   "dur": 7.52,
+   "dur": 6.76,
    "who": "Narrator",
-   "text": "A man who had been blind. A monk. A boy. And then the people themselves. Not one of them turned back.",
+   "text": "A man who had been blind. A monk. A boy. And then the people themselves. They kept firm.",
    "words": [
     [
      "a",
      0.0,
-     0.177
+     0.147
     ],
     [
      "man",
-     0.177,
-     0.397
+     0.147,
+     0.387
     ],
     [
      "who",
-     0.397,
-     0.617
+     0.387,
+     0.647
     ],
     [
      "had",
-     0.617,
-     0.737
+     0.647,
+     0.747
     ],
     [
      "been",
-     0.737,
-     0.897
+     0.747,
+     0.907
     ],
     [
      "blind",
-     0.897,
-     1.237
+     0.907,
+     1.327
     ],
     [
      "a",
-     1.939,
-     1.939
+     2.054,
+     2.074
     ],
     [
      "monk",
-     1.939,
-     2.179
+     2.074,
+     2.334
     ],
     [
      "a",
-     2.781,
-     2.821
+     2.976,
+     2.996
     ],
     [
      "boy",
-     2.821,
-     3.101
+     2.996,
+     3.316
     ],
     [
      "and",
-     3.823,
-     3.923
+     3.856,
+     3.993
     ],
     [
      "then",
-     3.923,
-     4.123
+     3.993,
+     4.213
     ],
     [
      "the",
-     4.123,
-     4.283
+     4.213,
+     4.433
     ],
     [
      "people",
-     4.283,
-     4.603
+     4.433,
+     4.793
     ],
     [
      "themselves",
-     4.603,
-     5.143
+     4.793,
+     5.373
     ],
     [
-     "not",
-     5.808,
-     6.055
+     "they",
+     5.913,
+     6.07
     ],
     [
-     "one",
-     6.135,
-     6.495
+     "kept",
+     6.07,
+     6.27
     ],
     [
-     "of",
-     6.495,
-     6.615
-    ],
-    [
-     "them",
-     6.615,
-     6.795
-    ],
-    [
-     "turned",
-     6.915,
-     7.075
-    ],
-    [
-     "back",
-     7.075,
-     7.395
+     "firm",
+     6.27,
+     6.61
     ]
    ],
    "file": "N85.wav"
@@ -7445,7 +7430,7 @@
   {
    "id": "B5_echo",
    "kind": "ECHO",
-   "start": 441.518,
+   "start": 440.758,
    "dur": 4.36,
    "file": "B5_echo.wav"
   }

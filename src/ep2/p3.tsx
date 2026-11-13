@@ -402,7 +402,7 @@ export const KingTold: React.FC = () => {
 };
 
 // ───────── Part 7: the trench (firelight and silhouettes only) ─────────
-const TrenchBg: React.FC<{ cam: Cam }> = ({ cam }) => {
+const TrenchBg: React.FC<{ cam: Cam; fire?: number }> = ({ cam, fire = 1 }) => {
   const { frame } = useShot();
   const f = 1 + 0.08 * Math.sin(frame * 0.4);
   return (
@@ -412,11 +412,12 @@ const TrenchBg: React.FC<{ cam: Cam }> = ({ cam }) => {
       <Layer d={1} cam={cam}>
         <Defs />
         <path d={`M -1400 ${FLOOR - 10} L 3400 ${FLOOR - 10} L 3400 2800 L -1400 2800 Z`} fill="#170b08" />
-        <Glow x={1350} y={FLOOR + 40} r={760 * f} id="glowR" o={0.9} />
-        <Glow x={1350} y={FLOOR + 30} r={380 * f} id="glowO" o={0.9} />
-        <path d={`M 950 ${FLOOR + 6} L 1900 ${FLOOR + 6} L 2300 ${FLOOR + 130} L 800 ${FLOOR + 130} Z`} fill="#ff8a2a" opacity={0.85} />
+        <Glow x={1350} y={FLOOR + 40} r={760 * f} id="glowR" o={0.9 * fire} />
+        <Glow x={1350} y={FLOOR + 30} r={380 * f} id="glowO" o={0.9 * fire} />
+        <path d={`M 950 ${FLOOR + 6} L 1900 ${FLOOR + 6} L 2300 ${FLOOR + 130} L 800 ${FLOOR + 130} Z`} fill="#070302" />
+        <path d={`M 950 ${FLOOR + 6} L 1900 ${FLOOR + 6} L 2300 ${FLOOR + 130} L 800 ${FLOOR + 130} Z`} fill="#ff8a2a" opacity={0.85 * fire} />
         <path d={`M 800 ${FLOOR + 130} L 2300 ${FLOOR + 130} L 2400 ${FLOOR + 190} L 720 ${FLOOR + 190} Z`} fill="#170b08" />
-        <Embers n={50} x0={900} x1={1900} base={FLOOR + 60} seed="tr" />
+        {fire > 0.5 ? <Embers n={50} x0={900} x1={1900} base={FLOOR + 60} seed="tr" /> : null}
       </Layer>
     </>
   );
@@ -424,13 +425,20 @@ const TrenchBg: React.FC<{ cam: Cam }> = ({ cam }) => {
 export const Trench: React.FC<{ mode: "dig" | "edge" }> = ({ mode }) => {
   const { frame, dur, p } = useShot();
   const { vertical } = useView();
-  const cam = shotCam(frame, [{ at: 0, a: aim(vertical, 1100, 1040, 0.95), b: aim(vertical, 1180, 1060, 1.2) }, { at: Math.round(dur * 0.55), a: aim(vertical, mode === "dig" ? 1300 : 760, 1090, 1.5), b: aim(vertical, mode === "dig" ? 1320 : 800, 1090, 1.7) }], dur);
+  const { Wd } = useL();
+  const lit = mode === "dig" ? iv(frame, [Wd("N78", "fires") - 6, Wd("N78", "fires") + 22], [0, 1], ease) : 1;
+  const cam = shotCam(frame, [{ at: 0, a: aim(vertical, 1000, 1040, 0.95), b: aim(vertical, 1080, 1060, 1.15) }, { at: mode === "dig" ? Wd("N78", "fires") - 6 : Math.round(dur * 0.55), a: aim(vertical, mode === "dig" ? 1300 : 760, 1090, 1.4), b: aim(vertical, mode === "dig" ? 1320 : 800, 1090, 1.65) }], dur);
   return (
     <AbsoluteFill>
-      <TrenchBg cam={cam} />
+      <TrenchBg cam={cam} fire={lit} />
+      {mode === "dig" ? <AbsoluteFill style={{ backgroundColor: "#1a1020", opacity: 0.35 * (1 - lit) }} /> : null}
       <Layer d={1} cam={cam}>
         {mode === "dig"
-          ? [0, 1, 2, 3].map((i) => <Actor key={i} x={860 + i * 250} y={FLOOR + (i % 2) * 30} s={1.6} outfit={SHADOW} flip={i % 2 === 0} pose={{ ...STAND, lean: 16 + 8 * Math.sin(frame * 0.16 + i), armRU: -34 + 26 * Math.sin(frame * 0.16 + i), armRL: -30, armLU: -20 + 20 * Math.sin(frame * 0.16 + i), armLL: -50 }} hold={<Shovel />} />)
+          ? [0, 1, 2, 3].map((i) => (
+            // the diggers stand on the ground beside the trench, feet planted; only their arms and shovels move
+            <Actor key={i} x={300 + i * 240} y={FLOOR + (i % 2) * 26} s={1.6} outfit={SHADOW} o={1 - lit} flip={i % 2 === 1}
+              pose={{ ...STAND, lean: 14, armRU: -30 + 22 * Math.sin(frame * 0.16 + i), armRL: -34, armLU: -18 + 16 * Math.sin(frame * 0.16 + i), armLL: -50 }} hold={<Shovel />} />
+          ))
           : (
             <>
               {/* the king and his men sit at its edge, watching (al-Burūj 85:6–7) */}

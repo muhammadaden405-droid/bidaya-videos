@@ -218,9 +218,9 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
             </g>
           ) : null}
         </Limb>
-        {outfit.beard && outfit.longBeard ? (
+        {outfit.beard ? (
           <g transform={`translate(0 -232) rotate(${p.head})`}>
-            <path d="M -2 12 Q 8 22 26 14 Q 30 40 18 66 Q 12 80 6 92 Q 0 70 -8 52 Q -14 30 -2 12 Z" fill={outfit.beard} />
+            <path d={outfit.longBeard ? "M -2 12 Q 8 22 26 14 Q 30 40 18 66 Q 12 80 6 92 Q 0 70 -8 52 Q -14 30 -2 12 Z" : "M -4 10 Q 10 24 28 12 Q 28 30 14 40 Q 2 44 -6 32 Q -10 20 -4 10 Z"} fill={outfit.beard} />
             {mouth !== undefined || mood ? <Mouth open={mouth ?? 0} mood={mood ?? "neutral"} /> : null}
           </g>
         ) : null}
