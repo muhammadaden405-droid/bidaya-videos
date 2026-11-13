@@ -1,4 +1,4 @@
-import { Ep2, Ep2Part, Ep2Hooks, EP2_READY, EP2_PARTS, EP2_HOOKS_LENGTH } from "./ep2/Episode";
+import { Ep2, Ep2Part, Ep2Hooks, Ep2Outro, EP2_READY, EP2_PARTS, EP2_HOOKS_LENGTH, EP2_OUTRO_LEN } from "./ep2/Episode";
 import React from "react";
 import { Composition, AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Ep2Trailer15, TRAILER15_LENGTH } from "./ep2/Trailer15";
@@ -110,6 +110,8 @@ export const MyComposition = () => (
     <Composition id="Ep2Trailer15" component={Ep2Trailer15} durationInFrames={TRAILER15_LENGTH} fps={30} width={1080} height={1920} />
     <Composition id="Ep2" component={Ep2} durationInFrames={EP2_READY} fps={30} width={1920} height={1080} />
     <Composition id="Ep2Vertical" component={Ep2} durationInFrames={EP2_READY} fps={30} width={1080} height={1920} />
+    <Composition id="Ep2Outro" component={Ep2Outro} durationInFrames={EP2_OUTRO_LEN} fps={30} width={1920} height={1080} />
+    <Composition id="Ep2OutroVertical" component={Ep2Outro} durationInFrames={EP2_OUTRO_LEN} fps={30} width={1080} height={1920} />
     <Composition id="Ep2Hooks" component={Ep2Hooks} durationInFrames={EP2_HOOKS_LENGTH} fps={30} width={1080} height={1920} />
     {EP2_PARTS.map((p) => (
       <Composition key={p.n} id={`Ep2-Part${p.n}`} component={Ep2Part} defaultProps={{ n: p.n }} durationInFrames={p.hook + p.end - p.start} fps={30} width={1080} height={1920} />

@@ -199,7 +199,7 @@ const CrowdRows: React.FC<{ rows?: number; n?: number; y?: number; s?: number; x
   );
 };
 /** The people of the city: many rows of small figures receding up the plain. up = arms raised (0..1). */
-const Mass: React.FC<{ x0?: number; x1?: number; rows?: number; per?: number; top?: number; base?: number; up?: number; gather?: number; sil?: boolean }> = ({ x0 = -400, x1 = 2300, rows = 9, per = 34, top = FLOOR - 250, base = FLOOR - 40, up = 0, gather = 1, sil }) => {
+export const Mass: React.FC<{ x0?: number; x1?: number; rows?: number; per?: number; top?: number; base?: number; up?: number; gather?: number; sil?: boolean }> = ({ x0 = -400, x1 = 2300, rows = 9, per = 34, top = FLOOR - 250, base = FLOOR - 40, up = 0, gather = 1, sil }) => {
   const { frame } = useShot();
   const tones = ["#6b5444", "#7a6250", "#5a4638", "#8a7058", "#4e3c30"];
   const skins = ["#b07a56", "#a8724f", "#c08a62", "#8d5a3b"];
@@ -402,7 +402,7 @@ export const KingTold: React.FC = () => {
 };
 
 // ───────── Part 7: the trench (firelight and silhouettes only) ─────────
-const TrenchBg: React.FC<{ cam: Cam; fire?: number }> = ({ cam, fire = 1 }) => {
+export const TrenchBg: React.FC<{ cam: Cam; fire?: number }> = ({ cam, fire = 1 }) => {
   const { frame } = useShot();
   const f = 1 + 0.08 * Math.sin(frame * 0.4);
   return (
@@ -442,7 +442,7 @@ export const Trench: React.FC<{ mode: "dig" | "edge" }> = ({ mode }) => {
           : (
             <>
               {/* the king and his men sit at its edge, watching (al-Burūj 85:6–7) */}
-              {[0, 1, 2, 3].map((i) => <Actor key={i} seat="chair" x={470 + i * 130} y={sitY(FLOOR - 96, 1.7)} s={1.7} outfit={i === 3 ? { ...SHADOW, royal: true } : SHADOW} pose={SIT} />)}
+              {[0, 1, 2, 3].map((i) => <Actor key={i} seat="chair" x={470 + i * 130} y={sitY(FLOOR - 96, 1.7)} s={1.7} outfit={SHADOW} pose={SIT} />)}
               <rect x={400} y={FLOOR - 96} width={520} height={96} fill="#120a06" />
               {/* the believers go forward, one after another; nobody is shown entering the fire */}
               {[0, 1, 2, 3, 4, 5].map((i) => {

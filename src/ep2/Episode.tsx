@@ -6,6 +6,7 @@ import { Abs, V, lf, wf } from "./kit";
 import { ColdOpen, ThroneRoom, Road, ShadowSlap, Home, MonkTalk, Blocked } from "./p1";
 import { Court, HutTalk, Beast, Healing, CompanionComes, Door, Execution, Alone } from "./p2";
 import { Climb, Summit, KingToSea, Sea, Plain, Bow, ArrowShot, CrowdCry, KingTold, Trench, KingFire, Mother, Echoes } from "./p3";
+import { Recitation, EndCard, REC_START, REC_LEN, END_LEN } from "./p4";
 import HOOKS from "./hooks.json";
 
 // Episode 2 — The People of the Trench. One timeline, two films (16:9 and 9:16), cut to the locked voice track.
@@ -62,11 +63,18 @@ const SCENES: SceneCue[] = [
   cue(Trench, lf("N80"), lf("N81"), { mode: "edge" }, "fire"),
   cue(Mother, lf("N81"), lf("N84"), undefined, "fire"),
   cue(Echoes, lf("N84"), V.total, undefined, "night"),
+  // the owner's recitation of al-Burūj 85:4–9, then the end card
+  { C: Recitation, from: V.total, to: V.total + REC_START + REC_LEN },
+  { C: EndCard, from: V.total + REC_START + REC_LEN, to: V.total + REC_START + REC_LEN + END_LEN },
 ];
+export const EP2_OUTRO_FROM = V.total;
 /** frames animated so far */
 export const EP2_READY = SCENES[SCENES.length - 1].to;
 /** TikTok parts: [first frame, last frame) of each part in the episode */
 const PS = [0, lf("N10"), lf("N23") - G, lf("N42") - G, lf("N54") - G, lf("N66") - G, lf("N78") - G, EP2_READY];
+/** just the recitation and end card (rendered on their own and joined on) */
+export const Ep2Outro: React.FC = () => <Sequence from={-EP2_OUTRO_FROM}><Ep2 muted /></Sequence>;
+export const EP2_OUTRO_LEN = REC_START + REC_LEN + END_LEN;
 export const EP2_PARTS = [1, 2, 3, 4, 5, 6, 7].map((n) => {
   const h = (HOOKS as Record<string, { frames: number; text: string }>)[String(n)];
   return { n, start: PS[n - 1], end: PS[n], hook: h ? h.frames : 0, text: h ? h.text : "" };
@@ -106,7 +114,7 @@ const AMB: Record<Amb, [string, number]> = { hall: ["gentle-fire-crackling-01", 
 const one = (n: string, from: number, v: number, len = 90, fadeOut = 20): Sfx => ({ src: lib(n), from, len, vol: v, fadeOut });
 const FIRST2 = lf("N10");
 for (const c of SCENES) {
-  if (c.from < FIRST2) continue;
+  if (c.from < FIRST2 || c.from >= V.total) continue;
   SFX.push(whoosh(c.from, 0.16));
   if (c.amb) SFX.push({ src: lib(AMB[c.amb][0]), from: c.from, len: c.to - c.from, vol: AMB[c.amb][1], fadeIn: 10, fadeOut: 10, loop: true });
 }
@@ -205,6 +213,7 @@ export const Ep2: React.FC<{ muted?: boolean; bare?: boolean }> = ({ muted, bare
     {bare ? null : <Captions />}
     <Watermark />
     {muted ? null : <Html5Audio src={staticFile("ep2/voice.mp3")} />}
+    {muted ? null : <Sequence from={V.total + REC_START}><Html5Audio src={staticFile("ep2/recitation.m4a")} /></Sequence>}
     {muted ? null : SFX.filter((s) => (s.len ?? 1) > 0).map((s, i) => (
       <Sequence key={`s${i}`} from={Math.max(0, s.from)} durationInFrames={Math.max(1, s.len ?? 60)}>
         <Html5Audio src={staticFile(s.src)} volume={vol(s)} loop={s.loop} />
