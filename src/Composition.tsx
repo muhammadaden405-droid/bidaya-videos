@@ -1,3 +1,4 @@
+import { Ep3Short, EP3_SHORTS, ep3ShortLength } from "./ep3/Shorts";
 import { Ep3Thumb, Ep3ThumbV } from "./ep3/Thumb";
 import { Ep2, Ep2Part, Ep2Hooks, Ep2Outro, EP2_READY, EP2_PARTS, EP2_HOOKS_LENGTH, EP2_OUTRO_LEN } from "./ep2/Episode";
 import React from "react";
@@ -105,6 +106,9 @@ export const MyComposition = () => (
     <Composition id="Ep1v2Vertical" component={Ep1v2} durationInFrames={EP1V2_LENGTH} fps={30} width={1080} height={1920} />
     {EP1_SHORTS.map((s) => (
       <Composition key={s.id} id={s.id} component={Ep1Short} defaultProps={{ from: s.from, to: s.to, headline: s.headline, tease: s.tease }} durationInFrames={shortLength(s)} fps={30} width={1080} height={1920} />
+    ))}
+    {EP3_SHORTS.map((s) => (
+      <Composition key={s.id} id={s.id} component={Ep3Short} defaultProps={{ from: s.from, to: s.to, headline: s.headline, tease: s.tease }} durationInFrames={ep3ShortLength(s)} fps={30} width={1080} height={1920} />
     ))}
     <Composition id="Ep3Thumb" component={Ep3Thumb} durationInFrames={1} fps={30} width={1920} height={1080} />
     <Composition id="Ep3ThumbV" component={Ep3ThumbV} durationInFrames={1} fps={30} width={1080} height={1920} />

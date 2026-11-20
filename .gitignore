@@ -9,3 +9,4 @@ public/ep1/*.words.json
 
 # Episode 2 per-line voice clips are rebuilt locally; the mixed track public/ep2/voice.mp3 is what renders use
 public/ep2/vo/*.wav
+public/ep3/render/

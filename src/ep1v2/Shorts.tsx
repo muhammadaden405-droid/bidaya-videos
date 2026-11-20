@@ -19,7 +19,7 @@ export const shortLength = (s: ShortDef) => s.to - s.from + CTA_LEN;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 // Headline pinned near the top for the whole clip: tells a scrolling viewer what they're watching.
-const Headline: React.FC<{ text: string }> = ({ text }) => {
+export const Headline: React.FC<{ text: string }> = ({ text }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = spring({ frame, fps, config: { damping: 14 } });
@@ -33,7 +33,7 @@ const Headline: React.FC<{ text: string }> = ({ text }) => {
 };
 
 // Closing card: the cliffhanger line, then a pointer to the channel name (bottom-left in Shorts and TikTok).
-const ChannelCard: React.FC<{ tease: string }> = ({ tease }) => {
+export const ChannelCard: React.FC<{ tease: string }> = ({ tease }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const a = spring({ frame, fps, config: { damping: 12 } });
