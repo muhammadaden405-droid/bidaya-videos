@@ -59,11 +59,15 @@ export const useTalk = (...ids: string[]) => {
 /** a walk cycle driven by distance travelled, so feet never step on the spot */
 export const walkBy = (x: number, s = 2, energy = 0.9) => walkPose(x * (3.1 / (60 * s)), energy);
 
+/** Owner's rule: only the bald man is bald. Anyone without a wrap, hood or hair gets hair (beard colour, else dark brown). */
+const HAIRS = ["#2a1c12", "#3b2716", "#1e1510", "#4a3320"];
+export const withHair = (o: Outfit): Outfit =>
+  o.wrap || o.hood || o.hair || o.shine !== undefined ? o : { ...o, hair: o.beard ?? HAIRS[(o.robe ?? "").length + (o.robe ?? "").charCodeAt(2) % 4 % 4] ?? HAIRS[0], hairAmt: 1 };
 /** A Rig figure (mouth, no eyes) placed by its feet. ~260 px tall at s = 1; hips are 104·s above the feet. */
 export const Actor: React.FC<{ x: number; y: number; s?: number; pose?: Pose; outfit: Outfit; flip?: boolean; mouth?: number; mood?: Mood; o?: number; blur?: number; seat?: "ground" | "chair"; hold?: React.ReactNode }> = ({ x, y, s = 2, pose = STAND, outfit, flip, mouth, mood, o = 1, blur, seat, hold }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`} opacity={o} style={blur ? { filter: `blur(${blur}px)` } : undefined}>
     {seat === "ground" ? <ellipse cx={flip ? -14 : 14} cy={-90} rx={74} ry={10} fill="#000" opacity={0.2} /> : null}
-    <Person pose={pose} outfit={outfit} flip={flip} mouth={mouth} mood={mood} noShadow={!!seat} hold={hold} />
+    <Person pose={pose} outfit={withHair(outfit)} flip={flip} mouth={mouth} mood={mood} noShadow={!!seat} hold={hold} />
   </g>
 );
 /** things a hand can hold (drawn at the hand, in figure units) */
