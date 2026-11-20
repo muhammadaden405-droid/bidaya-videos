@@ -39,3 +39,8 @@ Weekly animated history series from Ibn Kathīr's *al-Bidāya wa al-Nihāya* (ha
 - Local fallback: `--browser-executable=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome --concurrency=2` (Remotion cannot download its own Chrome here). ~0.25–0.75 s/frame on 2 cores.
 - For small fixes, diff old vs new `timeline.json` frame by frame, re-render only the changed ranges (±30 frames) and splice them into the previous render (`/home/claude/renders/patch/splice.py`), instead of a full re-render.
 - Thumbnails: `Ep1Thumb` (16:9, props line1/line2) and `Ep1ThumbV` (9:16, prop part) in `src/ep1v2/Thumb.tsx`; render with `npx remotion still`.
+
+## Episode 3 (The Blind Man, the Leper and the Bald Man)
+- Code in `src/ep3/` (kit copied from ep2, `scenes.tsx`, `animals.tsx`, `cast.ts`). Voice beats in `public/ep3/vo/` (narrator lines split into one clip per sentence for pace), data from `tools/ep3_data.py`.
+- Owner's rule: a cut or clear camera move at least every 3 s (`cutCam` adds reframes every 84 frames).
+- Render: edit `render-request.json` on the `ep3` branch and push; `.github/workflows/render-ep3.yml` renders both films in 6 chunks each, mixes audio, cuts the 7 TikTok parts from the 9:16 film (`public/ep3/parts.json`) and publishes to `render/Ep3-*` and `render/Ep3Vertical-*` branches.

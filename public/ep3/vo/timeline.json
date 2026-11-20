@@ -1,0 +1,5139 @@
+{
+ "total": 411.816,
+ "timeline": [
+  {
+   "id": "N00",
+   "clip": "N00",
+   "base": "N00",
+   "kind": "N",
+   "who": null,
+   "start": 0,
+   "dur": 1.43,
+   "file": "N00.wav",
+   "text": "A rich man said:",
+   "words": [
+    [
+     "A",
+     0.0
+    ],
+    [
+     "rich",
+     0.38
+    ],
+    [
+     "man",
+     0.6
+    ],
+    [
+     "said,",
+     0.96
+    ]
+   ]
+  },
+  {
+   "id": "L1",
+   "clip": "L1",
+   "base": "L1",
+   "kind": "C",
+   "who": "THE LEPER",
+   "start": 1.63,
+   "dur": 6.04,
+   "file": "L1.wav",
+   "text": "I inherited all of this, from my fathers and their fathers before them.",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "inherited",
+     0.56
+    ],
+    [
+     "all",
+     1.3
+    ],
+    [
+     "of",
+     1.58
+    ],
+    [
+     "this",
+     1.76
+    ],
+    [
+     "from",
+     2.04
+    ],
+    [
+     "my",
+     3.1
+    ],
+    [
+     "fathers",
+     3.32
+    ],
+    [
+     "and",
+     3.64
+    ],
+    [
+     "their",
+     4.18
+    ],
+    [
+     "fathers",
+     4.38
+    ],
+    [
+     "before",
+     4.7
+    ],
+    [
+     "them.",
+     5.08
+    ]
+   ]
+  },
+  {
+   "id": "N01",
+   "clip": "N01",
+   "base": "N01",
+   "kind": "N",
+   "who": null,
+   "start": 7.87,
+   "dur": 1.399,
+   "file": "N01.wav",
+   "text": "He was lying.",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "was",
+     0.34
+    ],
+    [
+     "lying.",
+     0.48
+    ]
+   ]
+  },
+  {
+   "id": "N02",
+   "clip": "N02",
+   "base": "N02",
+   "kind": "N",
+   "who": null,
+   "start": 9.469,
+   "dur": 6.702,
+   "file": "N02.wav",
+   "text": "And the man standing in front of him knew it\u2026 because he was the one Allah had sent to give him all of this.",
+   "words": [
+    [
+     "and",
+     0.0
+    ],
+    [
+     "the",
+     0.34
+    ],
+    [
+     "man",
+     0.44
+    ],
+    [
+     "standing",
+     0.72
+    ],
+    [
+     "in",
+     1.14
+    ],
+    [
+     "front",
+     1.42
+    ],
+    [
+     "of",
+     1.58
+    ],
+    [
+     "him",
+     1.72
+    ],
+    [
+     "knew",
+     1.9
+    ],
+    [
+     "it,",
+     2.2
+    ],
+    [
+     "because",
+     2.82
+    ],
+    [
+     "he",
+     3.34
+    ],
+    [
+     "was",
+     3.64
+    ],
+    [
+     "the",
+     3.82
+    ],
+    [
+     "one",
+     3.96
+    ],
+    [
+     "Allah",
+     4.18
+    ],
+    [
+     "had",
+     4.6
+    ],
+    [
+     "sent",
+     4.98
+    ],
+    [
+     "to",
+     5.22
+    ],
+    [
+     "give",
+     5.48
+    ],
+    [
+     "him",
+     5.66
+    ],
+    [
+     "all",
+     5.86
+    ],
+    [
+     "of",
+     6.04
+    ],
+    [
+     "this.",
+     6.2
+    ]
+   ]
+  },
+  {
+   "id": "N03_a",
+   "clip": "N03_a",
+   "base": "N03",
+   "kind": "N",
+   "who": null,
+   "start": 16.371,
+   "dur": 3.52,
+   "file": "N03_a.wav",
+   "text": "Three men were given everything they asked for.",
+   "words": [
+    [
+     "Three",
+     0.0
+    ],
+    [
+     "men",
+     0.5
+    ],
+    [
+     "were",
+     0.88
+    ],
+    [
+     "given",
+     1.24
+    ],
+    [
+     "everything",
+     1.54
+    ],
+    [
+     "they",
+     2.14
+    ],
+    [
+     "asked",
+     2.52
+    ],
+    [
+     "for",
+     2.8
+    ]
+   ]
+  },
+  {
+   "id": "N03_b",
+   "clip": "N03_b",
+   "base": "N03",
+   "kind": "N",
+   "who": null,
+   "start": 20.091,
+   "dur": 4.596,
+   "file": "N03_b.wav",
+   "text": "Then the angel who brought it came back\u2026 to test them.",
+   "words": [
+    [
+     "then",
+     0.0
+    ],
+    [
+     "the",
+     0.7
+    ],
+    [
+     "angel",
+     1.12
+    ],
+    [
+     "who",
+     1.44
+    ],
+    [
+     "brought",
+     1.68
+    ],
+    [
+     "it",
+     1.9
+    ],
+    [
+     "came",
+     2.12
+    ],
+    [
+     "back",
+     2.4
+    ],
+    [
+     "to",
+     2.82
+    ],
+    [
+     "test",
+     3.76
+    ],
+    [
+     "them.",
+     4.12
+    ]
+   ]
+  },
+  {
+   "id": "N04",
+   "clip": "N04",
+   "base": "N04",
+   "kind": "N",
+   "who": null,
+   "start": 24.887,
+   "dur": 5.04,
+   "file": "N04.wav",
+   "text": "Long ago, among the Children of Israel, there were three men.",
+   "words": [
+    [
+     "Long",
+     0.0
+    ],
+    [
+     "ago",
+     0.5
+    ],
+    [
+     "among",
+     0.88
+    ],
+    [
+     "the",
+     1.56
+    ],
+    [
+     "children",
+     1.84
+    ],
+    [
+     "of",
+     2.1
+    ],
+    [
+     "Israel",
+     2.38
+    ],
+    [
+     "there",
+     2.72
+    ],
+    [
+     "were",
+     3.48
+    ],
+    [
+     "three",
+     3.74
+    ],
+    [
+     "men",
+     4.08
+    ]
+   ]
+  },
+  {
+   "id": "N05_a",
+   "clip": "N05_a",
+   "base": "N05",
+   "kind": "N",
+   "who": null,
+   "start": 30.127,
+   "dur": 2.22,
+   "file": "N05_a.wav",
+   "text": "One was a leper.",
+   "words": [
+    [
+     "One",
+     0.0
+    ],
+    [
+     "was",
+     0.62
+    ],
+    [
+     "a",
+     1.08
+    ],
+    [
+     "leper",
+     1.34
+    ]
+   ]
+  },
+  {
+   "id": "N05_b",
+   "clip": "N05_b",
+   "base": "N05",
+   "kind": "N",
+   "who": null,
+   "start": 32.547,
+   "dur": 1.9,
+   "file": "N05_b.wav",
+   "text": "People kept away from him.",
+   "words": [
+    [
+     "People",
+     0.0
+    ],
+    [
+     "kept",
+     0.58
+    ],
+    [
+     "away",
+     0.84
+    ],
+    [
+     "from",
+     1.1
+    ],
+    [
+     "him.",
+     1.3
+    ]
+   ]
+  },
+  {
+   "id": "N06",
+   "clip": "N06",
+   "base": "N06",
+   "kind": "N",
+   "who": null,
+   "start": 34.647,
+   "dur": 3.96,
+   "file": "N06.wav",
+   "text": "One was bald. People turned away from him.",
+   "words": [
+    [
+     "One",
+     0.0
+    ],
+    [
+     "was",
+     0.5
+    ],
+    [
+     "bald.",
+     1.04
+    ],
+    [
+     "People",
+     2.04
+    ],
+    [
+     "turned",
+     2.3
+    ],
+    [
+     "away",
+     2.56
+    ],
+    [
+     "from",
+     2.84
+    ],
+    [
+     "him.",
+     3.08
+    ]
+   ]
+  },
+  {
+   "id": "N07",
+   "clip": "N07",
+   "base": "N07",
+   "kind": "N",
+   "who": null,
+   "start": 38.807,
+   "dur": 2.316,
+   "file": "N07.wav",
+   "text": "And one was blind.",
+   "words": [
+    [
+     "and",
+     0.0
+    ],
+    [
+     "one",
+     0.3
+    ],
+    [
+     "was",
+     0.72
+    ],
+    [
+     "blind.",
+     1.46
+    ]
+   ]
+  },
+  {
+   "id": "N08",
+   "clip": "N08",
+   "base": "N08",
+   "kind": "N",
+   "who": null,
+   "start": 41.324,
+   "dur": 4.189,
+   "file": "N08.wav",
+   "text": "Allah willed to test them. So He sent them an angel.",
+   "words": [
+    [
+     "Allah",
+     0.0
+    ],
+    [
+     "willed",
+     0.5
+    ],
+    [
+     "to",
+     1.22
+    ],
+    [
+     "test",
+     1.4
+    ],
+    [
+     "them",
+     1.7
+    ],
+    [
+     "so",
+     1.98
+    ],
+    [
+     "he",
+     2.78
+    ],
+    [
+     "sent",
+     3.08
+    ],
+    [
+     "them",
+     3.32
+    ],
+    [
+     "an",
+     3.5
+    ],
+    [
+     "angel",
+     3.6
+    ]
+   ]
+  },
+  {
+   "id": "N09",
+   "clip": "N09",
+   "base": "N09",
+   "kind": "N",
+   "who": null,
+   "start": 45.713,
+   "dur": 4.125,
+   "file": "N09.wav",
+   "text": "The first man was a leper, and people kept away from him.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "first",
+     0.38
+    ],
+    [
+     "man",
+     0.6
+    ],
+    [
+     "was",
+     0.96
+    ],
+    [
+     "a",
+     1.46
+    ],
+    [
+     "leper,",
+     1.7
+    ],
+    [
+     "and",
+     2.58
+    ],
+    [
+     "people",
+     2.82
+    ],
+    [
+     "kept",
+     3.06
+    ],
+    [
+     "away",
+     3.26
+    ],
+    [
+     "from",
+     3.56
+    ],
+    [
+     "him.",
+     3.74
+    ]
+   ]
+  },
+  {
+   "id": "N10",
+   "clip": "N10",
+   "base": "N10",
+   "kind": "N",
+   "who": null,
+   "start": 50.038,
+   "dur": 5.537,
+   "file": "N10.wav",
+   "text": "One day, the angel came to him and asked him: \"What would you love most?\"",
+   "words": [
+    [
+     "One",
+     0.0
+    ],
+    [
+     "day,",
+     0.46
+    ],
+    [
+     "the",
+     1.34
+    ],
+    [
+     "angel",
+     1.44
+    ],
+    [
+     "came",
+     1.66
+    ],
+    [
+     "to",
+     2.0
+    ],
+    [
+     "him",
+     2.18
+    ],
+    [
+     "and",
+     2.38
+    ],
+    [
+     "asked",
+     2.58
+    ],
+    [
+     "him,",
+     2.84
+    ],
+    [
+     "What",
+     3.86
+    ],
+    [
+     "would",
+     3.96
+    ],
+    [
+     "you",
+     4.14
+    ],
+    [
+     "love",
+     4.34
+    ],
+    [
+     "most?",
+     4.66
+    ]
+   ]
+  },
+  {
+   "id": "NS",
+   "clip": "NS",
+   "base": "NS",
+   "kind": "N",
+   "who": null,
+   "start": 55.775,
+   "dur": 1.197,
+   "file": "NS.wav",
+   "text": "He said:",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said.",
+     0.38
+    ]
+   ]
+  },
+  {
+   "id": "L2",
+   "clip": "L2",
+   "base": "L2",
+   "kind": "C",
+   "who": "THE LEPER",
+   "start": 57.172,
+   "dur": 6.333,
+   "file": "L2.wav",
+   "text": "Good colour, good skin. People find me disgusting.",
+   "words": [
+    [
+     "Good",
+     0.0
+    ],
+    [
+     "colour,",
+     0.52
+    ],
+    [
+     "good",
+     1.8
+    ],
+    [
+     "skin,",
+     2.28
+    ],
+    [
+     "people",
+     3.66
+    ],
+    [
+     "find",
+     4.74
+    ],
+    [
+     "me",
+     5.12
+    ],
+    [
+     "disgusting",
+     5.3
+    ]
+   ]
+  },
+  {
+   "id": "N11",
+   "clip": "N11",
+   "base": "N11",
+   "kind": "N",
+   "who": null,
+   "start": 63.705,
+   "dur": 2.776,
+   "file": "N11.wav",
+   "text": "The angel wiped his hand over him\u2026",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.36
+    ],
+    [
+     "wiped",
+     0.72
+    ],
+    [
+     "his",
+     1.14
+    ],
+    [
+     "hand",
+     1.46
+    ],
+    [
+     "over",
+     1.8
+    ],
+    [
+     "him",
+     2.14
+    ]
+   ]
+  },
+  {
+   "id": "N12_a",
+   "clip": "N12_a",
+   "base": "N12",
+   "kind": "N",
+   "who": null,
+   "start": 66.681,
+   "dur": 2.2,
+   "file": "N12_a.wav",
+   "text": "And the disease was gone.",
+   "words": [
+    [
+     "and",
+     0.0
+    ],
+    [
+     "the",
+     0.22
+    ],
+    [
+     "disease",
+     0.32
+    ],
+    [
+     "was",
+     0.72
+    ],
+    [
+     "gone.",
+     1.36
+    ]
+   ]
+  },
+  {
+   "id": "N12_b",
+   "clip": "N12_b",
+   "base": "N12",
+   "kind": "N",
+   "who": null,
+   "start": 69.081,
+   "dur": 6.486,
+   "file": "N12_b.wav",
+   "text": "Good colour. Good skin. But this gift was the start of his test.",
+   "words": [
+    [
+     "good",
+     0.0
+    ],
+    [
+     "colour,",
+     0.72
+    ],
+    [
+     "good",
+     1.48
+    ],
+    [
+     "skin,",
+     1.58
+    ],
+    [
+     "but",
+     2.94
+    ],
+    [
+     "this",
+     3.24
+    ],
+    [
+     "gift",
+     3.8
+    ],
+    [
+     "was",
+     4.2
+    ],
+    [
+     "the",
+     4.8
+    ],
+    [
+     "start",
+     5.0
+    ],
+    [
+     "of",
+     5.32
+    ],
+    [
+     "his",
+     5.64
+    ],
+    [
+     "test.",
+     5.76
+    ]
+   ]
+  },
+  {
+   "id": "N13",
+   "clip": "N13",
+   "base": "N13",
+   "kind": "N",
+   "who": null,
+   "start": 75.768,
+   "dur": 5.556,
+   "file": "N13.wav",
+   "text": "Then the angel asked: \"And what kind of wealth would you love most?\"",
+   "words": [
+    [
+     "Then",
+     0.0
+    ],
+    [
+     "the",
+     0.5
+    ],
+    [
+     "angel",
+     0.64
+    ],
+    [
+     "asked,",
+     0.92
+    ],
+    [
+     "and",
+     2.36
+    ],
+    [
+     "what",
+     2.58
+    ],
+    [
+     "kind",
+     2.96
+    ],
+    [
+     "of",
+     3.26
+    ],
+    [
+     "wealth",
+     3.5
+    ],
+    [
+     "would",
+     3.9
+    ],
+    [
+     "you",
+     4.36
+    ],
+    [
+     "love",
+     4.52
+    ],
+    [
+     "most?",
+     4.76
+    ]
+   ]
+  },
+  {
+   "id": "NS_2",
+   "clip": "NS",
+   "base": "NS",
+   "kind": "N",
+   "who": null,
+   "start": 81.524,
+   "dur": 1.197,
+   "file": "NS.wav",
+   "text": "He said:",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said.",
+     0.38
+    ]
+   ]
+  },
+  {
+   "id": "L3",
+   "clip": "L3",
+   "base": "L3",
+   "kind": "C",
+   "who": "THE LEPER",
+   "start": 82.921,
+   "dur": 1.191,
+   "file": "L3.wav",
+   "text": "Camels.",
+   "words": [
+    [
+     "Camels",
+     0.0
+    ]
+   ]
+  },
+  {
+   "id": "N14",
+   "clip": "N14",
+   "base": "N14",
+   "kind": "N",
+   "who": null,
+   "start": 84.312,
+   "dur": 8.044,
+   "file": "N14.wav",
+   "text": "So he was given a she-camel, heavy with young. And the angel said: \"May Allah bless you in her.\"",
+   "words": [
+    [
+     "So",
+     0.0
+    ],
+    [
+     "he",
+     0.54
+    ],
+    [
+     "was",
+     0.9
+    ],
+    [
+     "given",
+     1.1
+    ],
+    [
+     "a",
+     1.38
+    ],
+    [
+     "she",
+     1.68
+    ],
+    [
+     "-camel",
+     1.94
+    ],
+    [
+     "heavy",
+     2.38
+    ],
+    [
+     "with",
+     3.12
+    ],
+    [
+     "young",
+     3.42
+    ],
+    [
+     "and",
+     3.7
+    ],
+    [
+     "the",
+     4.58
+    ],
+    [
+     "angel",
+     4.7
+    ],
+    [
+     "said",
+     4.92
+    ],
+    [
+     "may",
+     5.28
+    ],
+    [
+     "Allah",
+     6.08
+    ],
+    [
+     "bless",
+     6.42
+    ],
+    [
+     "you",
+     7.04
+    ],
+    [
+     "in",
+     7.34
+    ],
+    [
+     "her",
+     7.56
+    ]
+   ]
+  },
+  {
+   "id": "N15",
+   "clip": "N15",
+   "base": "N15",
+   "kind": "N",
+   "who": null,
+   "start": 92.556,
+   "dur": 3.648,
+   "file": "N15.wav",
+   "text": "Then the angel walked on\u2026 to the second man.",
+   "words": [
+    [
+     "Then",
+     0.0
+    ],
+    [
+     "the",
+     0.44
+    ],
+    [
+     "angel",
+     0.6
+    ],
+    [
+     "walked",
+     1.0
+    ],
+    [
+     "on",
+     1.44
+    ],
+    [
+     "to",
+     1.9
+    ],
+    [
+     "the",
+     2.6
+    ],
+    [
+     "second",
+     2.72
+    ],
+    [
+     "man.",
+     2.96
+    ]
+   ]
+  },
+  {
+   "id": "N16",
+   "clip": "N16",
+   "base": "N16",
+   "kind": "N",
+   "who": null,
+   "start": 96.404,
+   "dur": 4.641,
+   "file": "N16.wav",
+   "text": "The second man was bald, and people turned away from him too.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "second",
+     0.26
+    ],
+    [
+     "man",
+     0.58
+    ],
+    [
+     "was",
+     0.9
+    ],
+    [
+     "bald,",
+     1.18
+    ],
+    [
+     "and",
+     2.18
+    ],
+    [
+     "people",
+     2.5
+    ],
+    [
+     "turned",
+     2.8
+    ],
+    [
+     "away",
+     3.12
+    ],
+    [
+     "from",
+     3.44
+    ],
+    [
+     "him",
+     3.66
+    ],
+    [
+     "too.",
+     3.94
+    ]
+   ]
+  },
+  {
+   "id": "N17",
+   "clip": "N17",
+   "base": "N17",
+   "kind": "N",
+   "who": null,
+   "start": 101.245,
+   "dur": 5.464,
+   "file": "N17.wav",
+   "text": "The same angel came to him and asked: \"What would you love most?\"",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "same",
+     0.38
+    ],
+    [
+     "angel",
+     0.68
+    ],
+    [
+     "came",
+     1.12
+    ],
+    [
+     "to",
+     1.48
+    ],
+    [
+     "him",
+     1.7
+    ],
+    [
+     "and",
+     1.9
+    ],
+    [
+     "asked,",
+     2.14
+    ],
+    [
+     "What",
+     3.22
+    ],
+    [
+     "would",
+     3.38
+    ],
+    [
+     "you",
+     3.7
+    ],
+    [
+     "love",
+     3.88
+    ],
+    [
+     "most?",
+     4.22
+    ]
+   ]
+  },
+  {
+   "id": "NS_3",
+   "clip": "NS",
+   "base": "NS",
+   "kind": "N",
+   "who": null,
+   "start": 106.909,
+   "dur": 1.197,
+   "file": "NS.wav",
+   "text": "He said:",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said.",
+     0.38
+    ]
+   ]
+  },
+  {
+   "id": "B1",
+   "clip": "B1",
+   "base": "B1",
+   "kind": "C",
+   "who": "THE BALD MAN",
+   "start": 108.306,
+   "dur": 6.833,
+   "file": "B1.wav",
+   "text": "Good hair. And for this to be taken away from me. People find me disgusting.",
+   "words": [
+    [
+     "Good",
+     0.0
+    ],
+    [
+     "hair",
+     0.5
+    ],
+    [
+     "and",
+     0.84
+    ],
+    [
+     "for",
+     1.76
+    ],
+    [
+     "this",
+     1.9
+    ],
+    [
+     "to",
+     2.06
+    ],
+    [
+     "be",
+     2.2
+    ],
+    [
+     "taken",
+     2.34
+    ],
+    [
+     "away",
+     2.56
+    ],
+    [
+     "from",
+     2.86
+    ],
+    [
+     "me",
+     3.12
+    ],
+    [
+     "people",
+     3.64
+    ],
+    [
+     "find",
+     4.56
+    ],
+    [
+     "me",
+     5.68
+    ],
+    [
+     "disgusting",
+     5.82
+    ]
+   ]
+  },
+  {
+   "id": "N18",
+   "clip": "N18",
+   "base": "N18",
+   "kind": "N",
+   "who": null,
+   "start": 115.339,
+   "dur": 4.795,
+   "file": "N18.wav",
+   "text": "The angel wiped his hand over him\u2026 and his hair grew back.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.36
+    ],
+    [
+     "wiped",
+     0.82
+    ],
+    [
+     "his",
+     1.32
+    ],
+    [
+     "hand",
+     1.64
+    ],
+    [
+     "over",
+     1.96
+    ],
+    [
+     "him,",
+     2.28
+    ],
+    [
+     "and",
+     2.96
+    ],
+    [
+     "his",
+     3.24
+    ],
+    [
+     "hair",
+     3.38
+    ],
+    [
+     "grew",
+     3.76
+    ],
+    [
+     "back",
+     4.08
+    ]
+   ]
+  },
+  {
+   "id": "N19",
+   "clip": "N19",
+   "base": "N19",
+   "kind": "N",
+   "who": null,
+   "start": 120.334,
+   "dur": 4.511,
+   "file": "N19.wav",
+   "text": "Then the angel asked: \"And what kind of wealth would you love most?\"",
+   "words": [
+    [
+     "Then",
+     0.0
+    ],
+    [
+     "the",
+     0.5
+    ],
+    [
+     "angel",
+     0.66
+    ],
+    [
+     "asked",
+     0.88
+    ],
+    [
+     "and",
+     1.3
+    ],
+    [
+     "what",
+     2.06
+    ],
+    [
+     "kind",
+     2.34
+    ],
+    [
+     "of",
+     2.62
+    ],
+    [
+     "wealth",
+     2.8
+    ],
+    [
+     "would",
+     3.18
+    ],
+    [
+     "you",
+     3.46
+    ],
+    [
+     "love",
+     3.6
+    ],
+    [
+     "most?",
+     3.8
+    ]
+   ]
+  },
+  {
+   "id": "NS_4",
+   "clip": "NS",
+   "base": "NS",
+   "kind": "N",
+   "who": null,
+   "start": 125.045,
+   "dur": 1.197,
+   "file": "NS.wav",
+   "text": "He said:",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said.",
+     0.38
+    ]
+   ]
+  },
+  {
+   "id": "B2",
+   "clip": "B2",
+   "base": "B2",
+   "kind": "C",
+   "who": "THE BALD MAN",
+   "start": 126.442,
+   "dur": 1.32,
+   "file": "B2.wav",
+   "text": "Cows.",
+   "words": [
+    [
+     "Cows",
+     0.0
+    ]
+   ]
+  },
+  {
+   "id": "N20",
+   "clip": "N20",
+   "base": "N20",
+   "kind": "N",
+   "who": null,
+   "start": 127.963,
+   "dur": 6.088,
+   "file": "N20.wav",
+   "text": "So he was given a pregnant cow. And the angel said: \"May Allah bless you in her.\"",
+   "words": [
+    [
+     "So",
+     0.0
+    ],
+    [
+     "he",
+     0.36
+    ],
+    [
+     "was",
+     0.76
+    ],
+    [
+     "given",
+     0.92
+    ],
+    [
+     "a",
+     1.2
+    ],
+    [
+     "pregnant",
+     1.54
+    ],
+    [
+     "cow,",
+     1.92
+    ],
+    [
+     "and",
+     2.92
+    ],
+    [
+     "the",
+     3.24
+    ],
+    [
+     "angel",
+     3.36
+    ],
+    [
+     "said,",
+     3.62
+    ],
+    [
+     "May",
+     4.5
+    ],
+    [
+     "Allah",
+     4.58
+    ],
+    [
+     "bless",
+     4.94
+    ],
+    [
+     "you",
+     5.34
+    ],
+    [
+     "in",
+     5.54
+    ],
+    [
+     "her.",
+     5.68
+    ]
+   ]
+  },
+  {
+   "id": "N21",
+   "clip": "N21",
+   "base": "N21",
+   "kind": "N",
+   "who": null,
+   "start": 134.25,
+   "dur": 3.965,
+   "file": "N21.wav",
+   "text": "Then the angel walked on\u2026 to the third man.",
+   "words": [
+    [
+     "Then",
+     0.0
+    ],
+    [
+     "the",
+     0.42
+    ],
+    [
+     "angel",
+     0.98
+    ],
+    [
+     "walked",
+     1.26
+    ],
+    [
+     "on",
+     1.62
+    ],
+    [
+     "to",
+     1.98
+    ],
+    [
+     "the",
+     2.84
+    ],
+    [
+     "third",
+     3.02
+    ],
+    [
+     "man.",
+     3.26
+    ]
+   ]
+  },
+  {
+   "id": "N22",
+   "clip": "N22",
+   "base": "N22",
+   "kind": "N",
+   "who": null,
+   "start": 138.415,
+   "dur": 2.402,
+   "file": "N22.wav",
+   "text": "The third man was blind.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "third",
+     0.4
+    ],
+    [
+     "man",
+     0.68
+    ],
+    [
+     "was",
+     1.08
+    ],
+    [
+     "blind",
+     1.62
+    ]
+   ]
+  },
+  {
+   "id": "N23",
+   "clip": "N23",
+   "base": "N23",
+   "kind": "N",
+   "who": null,
+   "start": 141.017,
+   "dur": 5.713,
+   "file": "N23.wav",
+   "text": "The same angel came to him too, and asked: \"What would you love most?\"",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "same",
+     0.22
+    ],
+    [
+     "angel",
+     0.54
+    ],
+    [
+     "came",
+     1.08
+    ],
+    [
+     "to",
+     1.4
+    ],
+    [
+     "him",
+     1.62
+    ],
+    [
+     "too,",
+     1.88
+    ],
+    [
+     "and",
+     2.72
+    ],
+    [
+     "asked,",
+     2.88
+    ],
+    [
+     "What",
+     3.84
+    ],
+    [
+     "would",
+     4.0
+    ],
+    [
+     "you",
+     4.12
+    ],
+    [
+     "love",
+     4.4
+    ],
+    [
+     "most?",
+     4.72
+    ]
+   ]
+  },
+  {
+   "id": "NS_5",
+   "clip": "NS",
+   "base": "NS",
+   "kind": "N",
+   "who": null,
+   "start": 146.929,
+   "dur": 1.197,
+   "file": "NS.wav",
+   "text": "He said:",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said.",
+     0.38
+    ]
+   ]
+  },
+  {
+   "id": "BL1",
+   "clip": "BL1",
+   "base": "BL1",
+   "kind": "C",
+   "who": "THE BLIND MAN",
+   "start": 148.326,
+   "dur": 5.942,
+   "file": "BL1.wav",
+   "text": "That Allah gives me back my sight\u2026 so I can see people.",
+   "words": [
+    [
+     "that",
+     0.0
+    ],
+    [
+     "Allah",
+     0.42
+    ],
+    [
+     "gives",
+     0.92
+    ],
+    [
+     "me",
+     1.52
+    ],
+    [
+     "back",
+     1.8
+    ],
+    [
+     "my",
+     2.06
+    ],
+    [
+     "sight",
+     2.3
+    ],
+    [
+     "so",
+     2.7
+    ],
+    [
+     "I",
+     3.76
+    ],
+    [
+     "can",
+     4.64
+    ],
+    [
+     "see",
+     4.78
+    ],
+    [
+     "people.",
+     5.16
+    ]
+   ]
+  },
+  {
+   "id": "N24",
+   "clip": "N24",
+   "base": "N24",
+   "kind": "N",
+   "who": null,
+   "start": 154.468,
+   "dur": 2.48,
+   "file": "N24.wav",
+   "text": "The angel wiped his hand over him\u2026",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.36
+    ],
+    [
+     "wiped",
+     0.64
+    ],
+    [
+     "his",
+     1.06
+    ],
+    [
+     "hand",
+     1.32
+    ],
+    [
+     "over",
+     1.64
+    ],
+    [
+     "him.",
+     1.94
+    ]
+   ]
+  },
+  {
+   "id": "N25",
+   "clip": "N25",
+   "base": "N25",
+   "kind": "N",
+   "who": null,
+   "start": 157.149,
+   "dur": 3.178,
+   "file": "N25.wav",
+   "text": "And Allah gave him back his sight.",
+   "words": [
+    [
+     "and",
+     0.0
+    ],
+    [
+     "Allah",
+     0.36
+    ],
+    [
+     "gave",
+     0.86
+    ],
+    [
+     "him",
+     1.48
+    ],
+    [
+     "back",
+     1.8
+    ],
+    [
+     "his",
+     2.22
+    ],
+    [
+     "sight.",
+     2.5
+    ]
+   ]
+  },
+  {
+   "id": "N26",
+   "clip": "N26",
+   "base": "N26",
+   "kind": "N",
+   "who": null,
+   "start": 160.526,
+   "dur": 4.752,
+   "file": "N26.wav",
+   "text": "Then the angel asked: \"And what kind of wealth would you love most?\"",
+   "words": [
+    [
+     "Then",
+     0.0
+    ],
+    [
+     "the",
+     0.48
+    ],
+    [
+     "angel",
+     0.66
+    ],
+    [
+     "asked,",
+     0.9
+    ],
+    [
+     "and",
+     2.0
+    ],
+    [
+     "what",
+     2.14
+    ],
+    [
+     "kind",
+     2.5
+    ],
+    [
+     "of",
+     2.7
+    ],
+    [
+     "wealth",
+     2.86
+    ],
+    [
+     "would",
+     3.16
+    ],
+    [
+     "you",
+     3.62
+    ],
+    [
+     "love",
+     3.84
+    ],
+    [
+     "most?",
+     4.06
+    ]
+   ]
+  },
+  {
+   "id": "NS_6",
+   "clip": "NS",
+   "base": "NS",
+   "kind": "N",
+   "who": null,
+   "start": 165.478,
+   "dur": 1.197,
+   "file": "NS.wav",
+   "text": "He said:",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said.",
+     0.38
+    ]
+   ]
+  },
+  {
+   "id": "BL2",
+   "clip": "BL2",
+   "base": "BL2",
+   "kind": "C",
+   "who": "THE BLIND MAN",
+   "start": 166.875,
+   "dur": 0.726,
+   "file": "BL2.wav",
+   "text": "Sheep.",
+   "words": [
+    [
+     "sheep",
+     0.0
+    ]
+   ]
+  },
+  {
+   "id": "N27",
+   "clip": "N27",
+   "base": "N27",
+   "kind": "N",
+   "who": null,
+   "start": 167.801,
+   "dur": 3.77,
+   "file": "N27.wav",
+   "text": "So he was given a sheep, ready to give birth.",
+   "words": [
+    [
+     "So",
+     0.0
+    ],
+    [
+     "he",
+     0.46
+    ],
+    [
+     "was",
+     0.84
+    ],
+    [
+     "given",
+     1.0
+    ],
+    [
+     "a",
+     1.26
+    ],
+    [
+     "sheep",
+     1.56
+    ],
+    [
+     "ready",
+     1.86
+    ],
+    [
+     "to",
+     2.56
+    ],
+    [
+     "give",
+     2.92
+    ],
+    [
+     "birth",
+     3.1
+    ]
+   ]
+  },
+  {
+   "id": "N28_a",
+   "clip": "N28_a",
+   "base": "N28",
+   "kind": "N",
+   "who": null,
+   "start": 171.771,
+   "dur": 1.62,
+   "file": "N28_a.wav",
+   "text": "The camel gave birth.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "camel",
+     0.3
+    ],
+    [
+     "gave",
+     0.64
+    ],
+    [
+     "birth.",
+     0.92
+    ]
+   ]
+  },
+  {
+   "id": "N28_b",
+   "clip": "N28_b",
+   "base": "N28",
+   "kind": "N",
+   "who": null,
+   "start": 173.591,
+   "dur": 1.71,
+   "file": "N28_b.wav",
+   "text": "The cow gave birth.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "cow",
+     0.46
+    ],
+    [
+     "gave",
+     0.74
+    ],
+    [
+     "birth.",
+     0.98
+    ]
+   ]
+  },
+  {
+   "id": "N28_c",
+   "clip": "N28_c",
+   "base": "N28",
+   "kind": "N",
+   "who": null,
+   "start": 175.501,
+   "dur": 1.775,
+   "file": "N28_c.wav",
+   "text": "The sheep gave birth.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "sheep",
+     0.44
+    ],
+    [
+     "gave",
+     0.72
+    ],
+    [
+     "birth.",
+     1.14
+    ]
+   ]
+  },
+  {
+   "id": "N29",
+   "clip": "N29",
+   "base": "N29",
+   "kind": "N",
+   "who": null,
+   "start": 177.476,
+   "dur": 2.513,
+   "file": "N29.wav",
+   "text": "And they kept on multiplying\u2026",
+   "words": [
+    [
+     "and",
+     0.0
+    ],
+    [
+     "they",
+     0.4
+    ],
+    [
+     "kept",
+     0.56
+    ],
+    [
+     "on",
+     0.82
+    ],
+    [
+     "multiplying.",
+     1.26
+    ]
+   ]
+  },
+  {
+   "id": "N30",
+   "clip": "N30",
+   "base": "N30",
+   "kind": "N",
+   "who": null,
+   "start": 180.189,
+   "dur": 9.723,
+   "file": "N30.wav",
+   "text": "Until one man had a valley full of camels. One had a valley full of cows. And one had a valley full of sheep.",
+   "words": [
+    [
+     "until",
+     0.0
+    ],
+    [
+     "one",
+     0.46
+    ],
+    [
+     "man",
+     0.78
+    ],
+    [
+     "had",
+     1.12
+    ],
+    [
+     "a",
+     1.66
+    ],
+    [
+     "valley",
+     1.98
+    ],
+    [
+     "full",
+     2.36
+    ],
+    [
+     "of",
+     2.84
+    ],
+    [
+     "camels,",
+     3.08
+    ],
+    [
+     "one",
+     4.36
+    ],
+    [
+     "had",
+     4.42
+    ],
+    [
+     "a",
+     4.58
+    ],
+    [
+     "valley",
+     4.68
+    ],
+    [
+     "full",
+     4.96
+    ],
+    [
+     "of",
+     5.22
+    ],
+    [
+     "cows,",
+     5.38
+    ],
+    [
+     "and",
+     6.4
+    ],
+    [
+     "one",
+     6.66
+    ],
+    [
+     "had",
+     7.0
+    ],
+    [
+     "a",
+     7.54
+    ],
+    [
+     "valley",
+     7.72
+    ],
+    [
+     "full",
+     8.12
+    ],
+    [
+     "of",
+     8.62
+    ],
+    [
+     "sheep.",
+     8.96
+    ]
+   ]
+  },
+  {
+   "id": "N31",
+   "clip": "N31",
+   "base": "N31",
+   "kind": "N",
+   "who": null,
+   "start": 190.112,
+   "dur": 3.15,
+   "file": "N31.wav",
+   "text": "Three poor men\u2026 had become rich.",
+   "words": [
+    [
+     "Three",
+     0.0
+    ],
+    [
+     "poor",
+     0.6
+    ],
+    [
+     "men",
+     0.98
+    ],
+    [
+     "had",
+     1.36
+    ],
+    [
+     "become",
+     1.98
+    ],
+    [
+     "rich",
+     2.32
+    ]
+   ]
+  },
+  {
+   "id": "N32",
+   "clip": "N32",
+   "base": "N32",
+   "kind": "N",
+   "who": null,
+   "start": 193.462,
+   "dur": 2.606,
+   "file": "N32.wav",
+   "text": "And then, the angel came back.",
+   "words": [
+    [
+     "and",
+     0.0
+    ],
+    [
+     "then",
+     0.42
+    ],
+    [
+     "the",
+     0.72
+    ],
+    [
+     "angel",
+     1.32
+    ],
+    [
+     "came",
+     1.62
+    ],
+    [
+     "back.",
+     1.9
+    ]
+   ]
+  },
+  {
+   "id": "N33",
+   "clip": "N33",
+   "base": "N33",
+   "kind": "N",
+   "who": null,
+   "start": 196.268,
+   "dur": 5.643,
+   "file": "N33.wav",
+   "text": "The man who had once been a leper now owned a whole valley of camels.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "man",
+     0.42
+    ],
+    [
+     "who",
+     0.74
+    ],
+    [
+     "had",
+     1.04
+    ],
+    [
+     "once",
+     1.14
+    ],
+    [
+     "been",
+     1.42
+    ],
+    [
+     "a",
+     1.72
+    ],
+    [
+     "leper",
+     1.84
+    ],
+    [
+     "now",
+     2.3
+    ],
+    [
+     "owned",
+     2.86
+    ],
+    [
+     "a",
+     3.32
+    ],
+    [
+     "whole",
+     3.56
+    ],
+    [
+     "valley",
+     4.0
+    ],
+    [
+     "of",
+     4.6
+    ],
+    [
+     "camels.",
+     4.88
+    ]
+   ]
+  },
+  {
+   "id": "N34_a",
+   "clip": "N34_a",
+   "base": "N34",
+   "kind": "N",
+   "who": null,
+   "start": 202.111,
+   "dur": 7.53,
+   "file": "N34_a.wav",
+   "text": "Then a poor traveller came to him, his skin diseased, looking just the way he used to look.",
+   "words": [
+    [
+     "Then",
+     0.0
+    ],
+    [
+     "a",
+     0.48
+    ],
+    [
+     "poor",
+     0.88
+    ],
+    [
+     "traveller",
+     1.36
+    ],
+    [
+     "came",
+     1.94
+    ],
+    [
+     "to",
+     2.4
+    ],
+    [
+     "him,",
+     2.64
+    ],
+    [
+     "his",
+     3.3
+    ],
+    [
+     "skin",
+     3.48
+    ],
+    [
+     "diseased,",
+     3.86
+    ],
+    [
+     "looking",
+     4.9
+    ],
+    [
+     "just",
+     5.12
+    ],
+    [
+     "the",
+     5.78
+    ],
+    [
+     "way",
+     6.02
+    ],
+    [
+     "he",
+     6.22
+    ],
+    [
+     "used",
+     6.54
+    ],
+    [
+     "to",
+     6.76
+    ],
+    [
+     "look",
+     7.0
+    ]
+   ]
+  },
+  {
+   "id": "N34_b",
+   "clip": "N34_b",
+   "base": "N34",
+   "kind": "N",
+   "who": null,
+   "start": 209.841,
+   "dur": 1.702,
+   "file": "N34_b.wav",
+   "text": "It was the angel.",
+   "words": [
+    [
+     "It",
+     0.0
+    ],
+    [
+     "was",
+     0.72
+    ],
+    [
+     "the",
+     0.9
+    ],
+    [
+     "angel.",
+     1.1
+    ]
+   ]
+  },
+  {
+   "id": "N35_a",
+   "clip": "N35_a",
+   "base": "N35",
+   "kind": "N",
+   "who": null,
+   "start": 211.743,
+   "dur": 3.19,
+   "file": "N35_a.wav",
+   "text": "He said: \"I am a poor man.",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said,",
+     0.42
+    ],
+    [
+     "I",
+     1.2
+    ],
+    [
+     "am",
+     1.48
+    ],
+    [
+     "a",
+     1.66
+    ],
+    [
+     "poor",
+     1.88
+    ],
+    [
+     "man.",
+     2.26
+    ]
+   ]
+  },
+  {
+   "id": "N35_b",
+   "clip": "N35_b",
+   "base": "N35",
+   "kind": "N",
+   "who": null,
+   "start": 215.133,
+   "dur": 3.74,
+   "file": "N35_b.wav",
+   "text": "Every means I had for my journey has been cut off.",
+   "words": [
+    [
+     "Every",
+     0.0
+    ],
+    [
+     "means",
+     0.78
+    ],
+    [
+     "I",
+     1.1
+    ],
+    [
+     "had",
+     1.32
+    ],
+    [
+     "for",
+     1.56
+    ],
+    [
+     "my",
+     1.72
+    ],
+    [
+     "journey",
+     1.88
+    ],
+    [
+     "has",
+     2.2
+    ],
+    [
+     "been",
+     2.48
+    ],
+    [
+     "cut",
+     2.68
+    ],
+    [
+     "off.",
+     2.9
+    ]
+   ]
+  },
+  {
+   "id": "N35_c",
+   "clip": "N35_c",
+   "base": "N35",
+   "kind": "N",
+   "who": null,
+   "start": 219.073,
+   "dur": 5.192,
+   "file": "N35_c.wav",
+   "text": "Today I can only reach my destination with Allah's help, and then yours.\"",
+   "words": [
+    [
+     "Today,",
+     0.0
+    ],
+    [
+     "I",
+     0.98
+    ],
+    [
+     "can",
+     1.04
+    ],
+    [
+     "only",
+     1.2
+    ],
+    [
+     "reach",
+     1.48
+    ],
+    [
+     "my",
+     1.78
+    ],
+    [
+     "destination",
+     1.98
+    ],
+    [
+     "with",
+     2.42
+    ],
+    [
+     "Allah's",
+     2.96
+    ],
+    [
+     "help,",
+     3.5
+    ],
+    [
+     "and",
+     4.22
+    ],
+    [
+     "then",
+     4.4
+    ],
+    [
+     "yours.",
+     4.52
+    ]
+   ]
+  },
+  {
+   "id": "N36",
+   "clip": "N36",
+   "base": "N36",
+   "kind": "N",
+   "who": null,
+   "start": 224.465,
+   "dur": 8.809,
+   "file": "N36.wav",
+   "text": "\"I ask you, by the One who gave you good colour, good skin and all this wealth: give me one camel, so I can finish my journey.\"",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "ask",
+     0.28
+    ],
+    [
+     "you,",
+     0.64
+    ],
+    [
+     "by",
+     1.22
+    ],
+    [
+     "the",
+     1.32
+    ],
+    [
+     "one",
+     1.44
+    ],
+    [
+     "who",
+     1.64
+    ],
+    [
+     "gave",
+     1.88
+    ],
+    [
+     "you",
+     2.1
+    ],
+    [
+     "good",
+     2.32
+    ],
+    [
+     "colour,",
+     2.58
+    ],
+    [
+     "good",
+     3.4
+    ],
+    [
+     "skin,",
+     3.5
+    ],
+    [
+     "and",
+     4.24
+    ],
+    [
+     "all",
+     4.34
+    ],
+    [
+     "this",
+     4.5
+    ],
+    [
+     "wealth,",
+     4.7
+    ],
+    [
+     "give",
+     5.8
+    ],
+    [
+     "me",
+     5.92
+    ],
+    [
+     "one",
+     6.12
+    ],
+    [
+     "camel",
+     6.5
+    ],
+    [
+     "so",
+     6.96
+    ],
+    [
+     "I",
+     7.52
+    ],
+    [
+     "can",
+     7.66
+    ],
+    [
+     "finish",
+     7.78
+    ],
+    [
+     "my",
+     8.06
+    ],
+    [
+     "journey.",
+     8.28
+    ]
+   ]
+  },
+  {
+   "id": "N37",
+   "clip": "N37",
+   "base": "N37",
+   "kind": "N",
+   "who": null,
+   "start": 233.474,
+   "dur": 1.29,
+   "file": "N37.wav",
+   "text": "The man said:",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "man",
+     0.42
+    ],
+    [
+     "said",
+     0.62
+    ]
+   ]
+  },
+  {
+   "id": "L4",
+   "clip": "L4",
+   "base": "L4",
+   "kind": "C",
+   "who": "THE LEPER",
+   "start": 234.964,
+   "dur": 2.49,
+   "file": "L4.wav",
+   "text": "The demands on my wealth are many.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "demands",
+     0.44
+    ],
+    [
+     "on",
+     0.78
+    ],
+    [
+     "my",
+     1.36
+    ],
+    [
+     "wealth",
+     1.52
+    ],
+    [
+     "are",
+     1.82
+    ],
+    [
+     "many.",
+     1.98
+    ]
+   ]
+  },
+  {
+   "id": "N38_a",
+   "clip": "N38_a",
+   "base": "N38",
+   "kind": "N",
+   "who": null,
+   "start": 237.653,
+   "dur": 3.66,
+   "file": "N38_a.wav",
+   "text": "The angel said: \"I think I know you.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.38
+    ],
+    [
+     "said,",
+     0.58
+    ],
+    [
+     "I",
+     1.82
+    ],
+    [
+     "think",
+     2.1
+    ],
+    [
+     "I",
+     2.32
+    ],
+    [
+     "know",
+     2.52
+    ],
+    [
+     "you.",
+     2.76
+    ]
+   ]
+  },
+  {
+   "id": "N38_b",
+   "clip": "N38_b",
+   "base": "N38",
+   "kind": "N",
+   "who": null,
+   "start": 241.513,
+   "dur": 3.74,
+   "file": "N38_b.wav",
+   "text": "Weren't you a leper whom people found disgusting?",
+   "words": [
+    [
+     "Weren't",
+     0.0
+    ],
+    [
+     "you",
+     0.62
+    ],
+    [
+     "a",
+     0.76
+    ],
+    [
+     "leper",
+     0.92
+    ],
+    [
+     "whom",
+     1.42
+    ],
+    [
+     "people",
+     1.92
+    ],
+    [
+     "found",
+     2.22
+    ],
+    [
+     "disgusting?",
+     2.6
+    ]
+   ]
+  },
+  {
+   "id": "N38_c",
+   "clip": "N38_c",
+   "base": "N38",
+   "kind": "N",
+   "who": null,
+   "start": 245.453,
+   "dur": 1.34,
+   "file": "N38_c.wav",
+   "text": "Weren't you poor\u2026",
+   "words": [
+    [
+     "Weren't",
+     0.0
+    ],
+    [
+     "you",
+     0.62
+    ],
+    [
+     "poor?",
+     0.76
+    ]
+   ]
+  },
+  {
+   "id": "N38_d",
+   "clip": "N38_d",
+   "base": "N38",
+   "kind": "N",
+   "who": null,
+   "start": 246.993,
+   "dur": 1.941,
+   "file": "N38_d.wav",
+   "text": "and then Allah gave you all of this?\"",
+   "words": [
+    [
+     "And",
+     0.0
+    ],
+    [
+     "then",
+     0.24
+    ],
+    [
+     "Allah",
+     0.34
+    ],
+    [
+     "gave",
+     0.58
+    ],
+    [
+     "you",
+     0.88
+    ],
+    [
+     "all",
+     1.08
+    ],
+    [
+     "of",
+     1.28
+    ],
+    [
+     "this",
+     1.42
+    ]
+   ]
+  },
+  {
+   "id": "N39",
+   "clip": "N39",
+   "base": "N39",
+   "kind": "N",
+   "who": null,
+   "start": 249.134,
+   "dur": 1.311,
+   "file": "N39.wav",
+   "text": "The man said:",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "man",
+     0.26
+    ],
+    [
+     "said.",
+     0.48
+    ]
+   ]
+  },
+  {
+   "id": "L1_2",
+   "clip": "L1",
+   "base": "L1",
+   "kind": "ECHO",
+   "who": "THE LEPER",
+   "start": 250.645,
+   "dur": 6.04,
+   "file": "L1.wav",
+   "text": "I inherited all of this, from my fathers and their fathers before them.",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "inherited",
+     0.56
+    ],
+    [
+     "all",
+     1.3
+    ],
+    [
+     "of",
+     1.58
+    ],
+    [
+     "this",
+     1.76
+    ],
+    [
+     "from",
+     2.04
+    ],
+    [
+     "my",
+     3.1
+    ],
+    [
+     "fathers",
+     3.32
+    ],
+    [
+     "and",
+     3.64
+    ],
+    [
+     "their",
+     4.18
+    ],
+    [
+     "fathers",
+     4.38
+    ],
+    [
+     "before",
+     4.7
+    ],
+    [
+     "them.",
+     5.08
+    ]
+   ]
+  },
+  {
+   "id": "N40",
+   "clip": "N40",
+   "base": "N40",
+   "kind": "N",
+   "who": null,
+   "start": 256.885,
+   "dur": 6.125,
+   "file": "N40.wav",
+   "text": "The angel said: \"If you are lying\u2026 may Allah return you to how you were.\"",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.42
+    ],
+    [
+     "said,",
+     0.66
+    ],
+    [
+     "if",
+     1.88
+    ],
+    [
+     "you",
+     2.1
+    ],
+    [
+     "are",
+     2.26
+    ],
+    [
+     "lying,",
+     2.38
+    ],
+    [
+     "may",
+     3.56
+    ],
+    [
+     "Allah",
+     3.64
+    ],
+    [
+     "return",
+     4.0
+    ],
+    [
+     "you",
+     4.68
+    ],
+    [
+     "to",
+     4.96
+    ],
+    [
+     "how",
+     5.18
+    ],
+    [
+     "you",
+     5.38
+    ],
+    [
+     "were.",
+     5.58
+    ]
+   ]
+  },
+  {
+   "id": "N41",
+   "clip": "N41",
+   "base": "N41",
+   "kind": "N",
+   "who": null,
+   "start": 263.21,
+   "dur": 7.299,
+   "file": "N41.wav",
+   "text": "Next, the angel came to the man who had once been bald, now the owner of a whole valley of cows.",
+   "words": [
+    [
+     "Next",
+     0.0
+    ],
+    [
+     "the",
+     0.62
+    ],
+    [
+     "angel",
+     1.12
+    ],
+    [
+     "came",
+     1.38
+    ],
+    [
+     "to",
+     1.72
+    ],
+    [
+     "the",
+     1.92
+    ],
+    [
+     "man",
+     2.04
+    ],
+    [
+     "who",
+     2.26
+    ],
+    [
+     "had",
+     2.48
+    ],
+    [
+     "once",
+     2.56
+    ],
+    [
+     "been",
+     2.8
+    ],
+    [
+     "bald",
+     3.06
+    ],
+    [
+     "now",
+     3.38
+    ],
+    [
+     "the",
+     4.32
+    ],
+    [
+     "owner",
+     4.54
+    ],
+    [
+     "of",
+     4.78
+    ],
+    [
+     "a",
+     5.0
+    ],
+    [
+     "whole",
+     5.1
+    ],
+    [
+     "valley",
+     5.4
+    ],
+    [
+     "of",
+     5.9
+    ],
+    [
+     "cows",
+     6.12
+    ]
+   ]
+  },
+  {
+   "id": "N42",
+   "clip": "N42",
+   "base": "N42",
+   "kind": "N",
+   "who": null,
+   "start": 270.709,
+   "dur": 6.122,
+   "file": "N42.wav",
+   "text": "He came in the form and look of a bald man\u2026 and asked him just as he had asked the first.",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "came",
+     0.38
+    ],
+    [
+     "in",
+     0.62
+    ],
+    [
+     "the",
+     0.8
+    ],
+    [
+     "form",
+     0.92
+    ],
+    [
+     "and",
+     1.24
+    ],
+    [
+     "look",
+     1.56
+    ],
+    [
+     "of",
+     1.8
+    ],
+    [
+     "a",
+     2.08
+    ],
+    [
+     "bald",
+     2.22
+    ],
+    [
+     "man,",
+     2.5
+    ],
+    [
+     "and",
+     3.38
+    ],
+    [
+     "asked",
+     3.54
+    ],
+    [
+     "him",
+     3.92
+    ],
+    [
+     "just",
+     4.22
+    ],
+    [
+     "as",
+     4.66
+    ],
+    [
+     "he",
+     4.9
+    ],
+    [
+     "had",
+     5.06
+    ],
+    [
+     "asked",
+     5.14
+    ],
+    [
+     "the",
+     5.38
+    ],
+    [
+     "first.",
+     5.5
+    ]
+   ]
+  },
+  {
+   "id": "N43_a",
+   "clip": "N43_a",
+   "base": "N43",
+   "kind": "N",
+   "who": null,
+   "start": 277.031,
+   "dur": 2.7,
+   "file": "N43_a.wav",
+   "text": "And the man gave the very same answer.",
+   "words": [
+    [
+     "And",
+     0.0
+    ],
+    [
+     "the",
+     0.44
+    ],
+    [
+     "man",
+     0.54
+    ],
+    [
+     "gave",
+     0.8
+    ],
+    [
+     "the",
+     1.06
+    ],
+    [
+     "very",
+     1.24
+    ],
+    [
+     "same",
+     1.48
+    ],
+    [
+     "answer.",
+     1.9
+    ]
+   ]
+  },
+  {
+   "id": "N43_b",
+   "clip": "N43_b",
+   "base": "N43",
+   "kind": "N",
+   "who": null,
+   "start": 279.931,
+   "dur": 1.024,
+   "file": "N43_b.wav",
+   "text": "He said:",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "said,",
+     0.42
+    ],
+    [
+     "He",
+     0.64
+    ],
+    [
+     "said,",
+     0.68
+    ],
+    [
+     "He",
+     0.7
+    ],
+    [
+     "said,",
+     0.76
+    ],
+    [
+     "He",
+     0.88
+    ],
+    [
+     "said,",
+     1.0
+    ],
+    [
+     "He",
+     1.0
+    ],
+    [
+     "said,",
+     1.0
+    ]
+   ]
+  },
+  {
+   "id": "B3",
+   "clip": "B3",
+   "base": "B3",
+   "kind": "C",
+   "who": "THE BALD MAN",
+   "start": 281.154,
+   "dur": 2.92,
+   "file": "B3.wav",
+   "text": "The demands on my wealth are many.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "demands",
+     0.62
+    ],
+    [
+     "on",
+     1.02
+    ],
+    [
+     "my",
+     1.32
+    ],
+    [
+     "wealth",
+     1.48
+    ],
+    [
+     "are",
+     1.78
+    ],
+    [
+     "many.",
+     2.08
+    ]
+   ]
+  },
+  {
+   "id": "N44",
+   "clip": "N44",
+   "base": "N44",
+   "kind": "N",
+   "who": null,
+   "start": 284.274,
+   "dur": 4.35,
+   "file": "N44.wav",
+   "text": "And when the angel reminded him who he used to be, he said:",
+   "words": [
+    [
+     "And",
+     0.0
+    ],
+    [
+     "when",
+     0.3
+    ],
+    [
+     "the",
+     0.46
+    ],
+    [
+     "angel",
+     0.6
+    ],
+    [
+     "reminded",
+     0.92
+    ],
+    [
+     "him",
+     1.54
+    ],
+    [
+     "who",
+     1.86
+    ],
+    [
+     "he",
+     2.18
+    ],
+    [
+     "used",
+     2.4
+    ],
+    [
+     "to",
+     2.64
+    ],
+    [
+     "be,",
+     2.88
+    ],
+    [
+     "he",
+     3.7
+    ],
+    [
+     "said,",
+     3.82
+    ]
+   ]
+  },
+  {
+   "id": "B4",
+   "clip": "B4",
+   "base": "B4",
+   "kind": "C",
+   "who": "THE BALD MAN",
+   "start": 288.824,
+   "dur": 6.124,
+   "file": "B4.wav",
+   "text": "I inherited all of this, from my fathers before me.",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "inherit",
+     0.58
+    ],
+    [
+     "all",
+     1.22
+    ],
+    [
+     "of",
+     2.04
+    ],
+    [
+     "this",
+     2.24
+    ],
+    [
+     "from",
+     3.02
+    ],
+    [
+     "my",
+     3.52
+    ],
+    [
+     "father's",
+     3.76
+    ],
+    [
+     "father",
+     4.48
+    ],
+    [
+     "before",
+     4.84
+    ],
+    [
+     "me",
+     5.3
+    ]
+   ]
+  },
+  {
+   "id": "N45",
+   "clip": "N45",
+   "base": "N45",
+   "kind": "N",
+   "who": null,
+   "start": 295.148,
+   "dur": 5.974,
+   "file": "N45.wav",
+   "text": "The angel said: \"If you are lying\u2026 may Allah return you to how you were.\"",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.26
+    ],
+    [
+     "said,",
+     0.48
+    ],
+    [
+     "if",
+     1.38
+    ],
+    [
+     "you",
+     1.78
+    ],
+    [
+     "are",
+     2.04
+    ],
+    [
+     "lying,",
+     2.18
+    ],
+    [
+     "may",
+     3.5
+    ],
+    [
+     "Allah",
+     3.58
+    ],
+    [
+     "return",
+     3.9
+    ],
+    [
+     "you",
+     4.48
+    ],
+    [
+     "to",
+     4.78
+    ],
+    [
+     "how",
+     4.98
+    ],
+    [
+     "you",
+     5.2
+    ],
+    [
+     "were.",
+     5.42
+    ]
+   ]
+  },
+  {
+   "id": "N46",
+   "clip": "N46",
+   "base": "N46",
+   "kind": "N",
+   "who": null,
+   "start": 301.322,
+   "dur": 4.783,
+   "file": "N46.wav",
+   "text": "Two men had been tested. Now only one was left.",
+   "words": [
+    [
+     "Two",
+     0.0
+    ],
+    [
+     "men",
+     0.5
+    ],
+    [
+     "had",
+     0.76
+    ],
+    [
+     "been",
+     1.0
+    ],
+    [
+     "tested,",
+     1.18
+    ],
+    [
+     "now",
+     2.12
+    ],
+    [
+     "only",
+     2.48
+    ],
+    [
+     "one",
+     3.26
+    ],
+    [
+     "was",
+     3.7
+    ],
+    [
+     "left",
+     4.14
+    ]
+   ]
+  },
+  {
+   "id": "N47",
+   "clip": "N47",
+   "base": "N47",
+   "kind": "N",
+   "who": null,
+   "start": 306.305,
+   "dur": 3.313,
+   "file": "N47.wav",
+   "text": "The man who had been blind.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "man",
+     0.44
+    ],
+    [
+     "who",
+     0.8
+    ],
+    [
+     "had",
+     1.3
+    ],
+    [
+     "been",
+     1.38
+    ],
+    [
+     "blind",
+     1.54
+    ]
+   ]
+  },
+  {
+   "id": "N48",
+   "clip": "N48",
+   "base": "N48",
+   "kind": "N",
+   "who": null,
+   "start": 309.819,
+   "dur": 6.816,
+   "file": "N48.wav",
+   "text": "Last, the angel came to the man who had once been blind, now the owner of a whole valley of sheep.",
+   "words": [
+    [
+     "Last",
+     0.0
+    ],
+    [
+     "the",
+     0.6
+    ],
+    [
+     "angel",
+     1.32
+    ],
+    [
+     "came",
+     1.54
+    ],
+    [
+     "to",
+     1.92
+    ],
+    [
+     "the",
+     2.12
+    ],
+    [
+     "man",
+     2.22
+    ],
+    [
+     "who",
+     2.48
+    ],
+    [
+     "had",
+     2.74
+    ],
+    [
+     "once",
+     2.84
+    ],
+    [
+     "been",
+     3.04
+    ],
+    [
+     "blind",
+     3.32
+    ],
+    [
+     "now",
+     3.74
+    ],
+    [
+     "the",
+     4.46
+    ],
+    [
+     "owner",
+     4.64
+    ],
+    [
+     "of",
+     4.84
+    ],
+    [
+     "a",
+     5.08
+    ],
+    [
+     "whole",
+     5.16
+    ],
+    [
+     "valley",
+     5.38
+    ],
+    [
+     "of",
+     5.9
+    ],
+    [
+     "sheep",
+     6.1
+    ]
+   ]
+  },
+  {
+   "id": "N49_a",
+   "clip": "N49_a",
+   "base": "N49",
+   "kind": "N",
+   "who": null,
+   "start": 316.835,
+   "dur": 6.6,
+   "file": "N49_a.wav",
+   "text": "He came in the form of a blind man, and said: \"I am a poor man, a traveller.",
+   "words": [
+    [
+     "He",
+     0.0
+    ],
+    [
+     "came",
+     0.24
+    ],
+    [
+     "in",
+     0.5
+    ],
+    [
+     "the",
+     0.68
+    ],
+    [
+     "form",
+     0.76
+    ],
+    [
+     "of",
+     1.08
+    ],
+    [
+     "a",
+     1.42
+    ],
+    [
+     "blind",
+     1.54
+    ],
+    [
+     "man,",
+     1.82
+    ],
+    [
+     "and",
+     2.64
+    ],
+    [
+     "said,",
+     2.82
+    ],
+    [
+     "I",
+     3.74
+    ],
+    [
+     "am",
+     4.22
+    ],
+    [
+     "a",
+     4.5
+    ],
+    [
+     "poor",
+     4.62
+    ],
+    [
+     "man,",
+     4.9
+    ],
+    [
+     "a",
+     5.72
+    ],
+    [
+     "traveller.",
+     5.82
+    ]
+   ]
+  },
+  {
+   "id": "N49_b",
+   "clip": "N49_b",
+   "base": "N49",
+   "kind": "N",
+   "who": null,
+   "start": 323.635,
+   "dur": 3.51,
+   "file": "N49_b.wav",
+   "text": "Every means I had for my journey has been cut off.",
+   "words": [
+    [
+     "Every",
+     0.0
+    ],
+    [
+     "means",
+     0.66
+    ],
+    [
+     "I",
+     0.9
+    ],
+    [
+     "had",
+     1.12
+    ],
+    [
+     "for",
+     1.34
+    ],
+    [
+     "my",
+     1.48
+    ],
+    [
+     "journey",
+     1.64
+    ],
+    [
+     "has",
+     2.0
+    ],
+    [
+     "been",
+     2.28
+    ],
+    [
+     "cut",
+     2.46
+    ],
+    [
+     "off",
+     2.66
+    ]
+   ]
+  },
+  {
+   "id": "N49_c",
+   "clip": "N49_c",
+   "base": "N49",
+   "kind": "N",
+   "who": null,
+   "start": 327.345,
+   "dur": 5.518,
+   "file": "N49_c.wav",
+   "text": "Today I can only reach my destination with Allah's help, and then yours.\"",
+   "words": [
+    [
+     "Today,",
+     0.0
+    ],
+    [
+     "I",
+     1.3
+    ],
+    [
+     "can",
+     1.34
+    ],
+    [
+     "only",
+     1.46
+    ],
+    [
+     "reach",
+     1.76
+    ],
+    [
+     "my",
+     2.04
+    ],
+    [
+     "destination",
+     2.24
+    ],
+    [
+     "with",
+     2.74
+    ],
+    [
+     "Allah's",
+     3.24
+    ],
+    [
+     "help,",
+     3.72
+    ],
+    [
+     "and",
+     4.5
+    ],
+    [
+     "then",
+     4.64
+    ],
+    [
+     "yours.",
+     4.78
+    ]
+   ]
+  },
+  {
+   "id": "N50",
+   "clip": "N50",
+   "base": "N50",
+   "kind": "N",
+   "who": null,
+   "start": 333.063,
+   "dur": 9.745,
+   "file": "N50.wav",
+   "text": "\"I ask you, by the One who gave you back your sight: give me one sheep, so I can finish my journey.\" Two men had already turned him away.",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "ask",
+     0.44
+    ],
+    [
+     "you,",
+     0.74
+    ],
+    [
+     "by",
+     1.28
+    ],
+    [
+     "the",
+     1.52
+    ],
+    [
+     "one",
+     1.64
+    ],
+    [
+     "who",
+     1.82
+    ],
+    [
+     "gave",
+     2.06
+    ],
+    [
+     "you",
+     2.34
+    ],
+    [
+     "back",
+     2.58
+    ],
+    [
+     "your",
+     2.76
+    ],
+    [
+     "sight,",
+     2.96
+    ],
+    [
+     "give",
+     3.78
+    ],
+    [
+     "me",
+     3.86
+    ],
+    [
+     "one",
+     4.08
+    ],
+    [
+     "sheep",
+     4.52
+    ],
+    [
+     "so",
+     4.92
+    ],
+    [
+     "I",
+     5.4
+    ],
+    [
+     "can",
+     5.52
+    ],
+    [
+     "finish",
+     5.64
+    ],
+    [
+     "my",
+     5.98
+    ],
+    [
+     "journey.",
+     6.2
+    ],
+    [
+     "Two",
+     7.16
+    ],
+    [
+     "men",
+     7.48
+    ],
+    [
+     "had",
+     7.72
+    ],
+    [
+     "already",
+     7.98
+    ],
+    [
+     "turned",
+     8.3
+    ],
+    [
+     "him",
+     8.62
+    ],
+    [
+     "away.",
+     8.78
+    ]
+   ]
+  },
+  {
+   "id": "N51",
+   "clip": "N51",
+   "base": "N51",
+   "kind": "N",
+   "who": null,
+   "start": 343.008,
+   "dur": 1.44,
+   "file": "N51.wav",
+   "text": "The man said:",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "man",
+     0.4
+    ],
+    [
+     "said,",
+     0.64
+    ],
+    [
+     "The",
+     0.98
+    ],
+    [
+     "man",
+     0.98
+    ],
+    [
+     "said,",
+     0.98
+    ],
+    [
+     "The",
+     1.18
+    ],
+    [
+     "man",
+     1.4
+    ],
+    [
+     "said,",
+     1.42
+    ]
+   ]
+  },
+  {
+   "id": "BL3",
+   "clip": "BL3",
+   "base": "BL3",
+   "kind": "C",
+   "who": "THE BLIND MAN",
+   "start": 344.648,
+   "dur": 10.342,
+   "file": "BL3.wav",
+   "text": "I was blind\u2026 and Allah gave me back my sight. I was poor\u2026 and He made me rich.",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "was",
+     0.3
+    ],
+    [
+     "blind,",
+     0.56
+    ],
+    [
+     "and",
+     2.58
+    ],
+    [
+     "Allah",
+     2.84
+    ],
+    [
+     "gave",
+     3.74
+    ],
+    [
+     "me",
+     4.22
+    ],
+    [
+     "back",
+     4.46
+    ],
+    [
+     "my",
+     4.68
+    ],
+    [
+     "sight.",
+     4.92
+    ],
+    [
+     "I",
+     6.78
+    ],
+    [
+     "was",
+     7.08
+    ],
+    [
+     "poor,",
+     7.24
+    ],
+    [
+     "and",
+     8.48
+    ],
+    [
+     "He",
+     8.88
+    ],
+    [
+     "made",
+     9.06
+    ],
+    [
+     "me",
+     9.32
+    ],
+    [
+     "rich.",
+     9.66
+    ]
+   ]
+  },
+  {
+   "id": "BL4",
+   "clip": "BL4",
+   "base": "BL4",
+   "kind": "C",
+   "who": "THE BLIND MAN",
+   "start": 355.19,
+   "dur": 7.334,
+   "file": "BL4.wav",
+   "text": "So take whatever you want. By Allah, I will not hold back anything you take for Allah today.",
+   "words": [
+    [
+     "So",
+     0.0
+    ],
+    [
+     "take",
+     0.58
+    ],
+    [
+     "whatever",
+     1.26
+    ],
+    [
+     "you",
+     1.56
+    ],
+    [
+     "want.",
+     1.78
+    ],
+    [
+     "By",
+     2.9
+    ],
+    [
+     "Allah,",
+     3.08
+    ],
+    [
+     "I",
+     3.62
+    ],
+    [
+     "will",
+     3.74
+    ],
+    [
+     "not",
+     3.9
+    ],
+    [
+     "hold",
+     4.28
+    ],
+    [
+     "back",
+     4.56
+    ],
+    [
+     "anything",
+     4.84
+    ],
+    [
+     "you",
+     5.4
+    ],
+    [
+     "take",
+     5.76
+    ],
+    [
+     "for",
+     5.96
+    ],
+    [
+     "Allah",
+     6.2
+    ],
+    [
+     "today",
+     6.5
+    ]
+   ]
+  },
+  {
+   "id": "N52_a",
+   "clip": "N52_a",
+   "base": "N52",
+   "kind": "N",
+   "who": null,
+   "start": 362.725,
+   "dur": 2.8,
+   "file": "N52_a.wav",
+   "text": "The angel said: \"Keep your wealth.",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.34
+    ],
+    [
+     "said,",
+     0.58
+    ],
+    [
+     "Keep",
+     1.7
+    ],
+    [
+     "your",
+     1.9
+    ],
+    [
+     "wealth.",
+     2.08
+    ]
+   ]
+  },
+  {
+   "id": "N52_b",
+   "clip": "N52_b",
+   "base": "N52",
+   "kind": "N",
+   "who": null,
+   "start": 365.725,
+   "dur": 3.262,
+   "file": "N52_b.wav",
+   "text": "All three of you were only being tested.\"",
+   "words": [
+    [
+     "all",
+     0.0
+    ],
+    [
+     "three",
+     0.66
+    ],
+    [
+     "of",
+     0.96
+    ],
+    [
+     "you",
+     1.08
+    ],
+    [
+     "were",
+     1.26
+    ],
+    [
+     "only",
+     1.6
+    ],
+    [
+     "being",
+     1.98
+    ],
+    [
+     "tested.",
+     2.3
+    ]
+   ]
+  },
+  {
+   "id": "N53",
+   "clip": "N53",
+   "base": "N53",
+   "kind": "N",
+   "who": null,
+   "start": 369.187,
+   "dur": 4.92,
+   "file": "N53.wav",
+   "text": "\"Allah is pleased with you\u2026 and He is angry with your two companions.\"",
+   "words": [
+    [
+     "Allah",
+     0.0
+    ],
+    [
+     "is",
+     0.48
+    ],
+    [
+     "pleased",
+     0.96
+    ],
+    [
+     "with",
+     1.3
+    ],
+    [
+     "you",
+     1.62
+    ],
+    [
+     "and",
+     2.12
+    ],
+    [
+     "he",
+     2.62
+    ],
+    [
+     "is",
+     2.78
+    ],
+    [
+     "angry",
+     2.94
+    ],
+    [
+     "with",
+     3.36
+    ],
+    [
+     "your",
+     3.72
+    ],
+    [
+     "two",
+     3.88
+    ],
+    [
+     "companions.",
+     4.02
+    ]
+   ]
+  },
+  {
+   "id": "N54_a",
+   "clip": "N54_a",
+   "base": "N54",
+   "kind": "N",
+   "who": null,
+   "start": 374.307,
+   "dur": 3.08,
+   "file": "N54_a.wav",
+   "text": "Three men were tested the same way.",
+   "words": [
+    [
+     "Three",
+     0.0
+    ],
+    [
+     "men",
+     0.58
+    ],
+    [
+     "were",
+     0.9
+    ],
+    [
+     "tested",
+     1.26
+    ],
+    [
+     "the",
+     1.74
+    ],
+    [
+     "same",
+     2.04
+    ],
+    [
+     "way",
+     2.34
+    ]
+   ]
+  },
+  {
+   "id": "N54_b",
+   "clip": "N54_b",
+   "base": "N54",
+   "kind": "N",
+   "who": null,
+   "start": 377.587,
+   "dur": 2.675,
+   "file": "N54_b.wav",
+   "text": "Two of them gave the very same answer:",
+   "words": [
+    [
+     "Two",
+     0.0
+    ],
+    [
+     "of",
+     0.42
+    ],
+    [
+     "them",
+     0.58
+    ],
+    [
+     "gave",
+     0.76
+    ],
+    [
+     "the",
+     1.08
+    ],
+    [
+     "very",
+     1.3
+    ],
+    [
+     "same",
+     1.56
+    ],
+    [
+     "answer.",
+     2.0
+    ]
+   ]
+  },
+  {
+   "id": "L1_3",
+   "clip": "L1",
+   "base": "L1",
+   "kind": "ECHO",
+   "who": "THE LEPER",
+   "start": 380.462,
+   "dur": 6.04,
+   "file": "L1.wav",
+   "text": "I inherited all of this, from my fathers and their fathers before them.",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "inherited",
+     0.56
+    ],
+    [
+     "all",
+     1.3
+    ],
+    [
+     "of",
+     1.58
+    ],
+    [
+     "this",
+     1.76
+    ],
+    [
+     "from",
+     2.04
+    ],
+    [
+     "my",
+     3.1
+    ],
+    [
+     "fathers",
+     3.32
+    ],
+    [
+     "and",
+     3.64
+    ],
+    [
+     "their",
+     4.18
+    ],
+    [
+     "fathers",
+     4.38
+    ],
+    [
+     "before",
+     4.7
+    ],
+    [
+     "them.",
+     5.08
+    ]
+   ]
+  },
+  {
+   "id": "N55",
+   "clip": "N55",
+   "base": "N55",
+   "kind": "N",
+   "who": null,
+   "start": 386.702,
+   "dur": 1.264,
+   "file": "N55.wav",
+   "text": "And one answered:",
+   "words": [
+    [
+     "and",
+     0.0
+    ],
+    [
+     "one",
+     0.3
+    ],
+    [
+     "answered.",
+     0.54
+    ]
+   ]
+  },
+  {
+   "id": "BL3_2",
+   "clip": "BL3",
+   "base": "BL3",
+   "kind": "ECHO",
+   "who": "THE BLIND MAN",
+   "start": 388.167,
+   "dur": 10.342,
+   "file": "BL3.wav",
+   "text": "I was blind\u2026 and Allah gave me back my sight. I was poor\u2026 and He made me rich.",
+   "words": [
+    [
+     "I",
+     0.0
+    ],
+    [
+     "was",
+     0.3
+    ],
+    [
+     "blind,",
+     0.56
+    ],
+    [
+     "and",
+     2.58
+    ],
+    [
+     "Allah",
+     2.84
+    ],
+    [
+     "gave",
+     3.74
+    ],
+    [
+     "me",
+     4.22
+    ],
+    [
+     "back",
+     4.46
+    ],
+    [
+     "my",
+     4.68
+    ],
+    [
+     "sight.",
+     4.92
+    ],
+    [
+     "I",
+     6.78
+    ],
+    [
+     "was",
+     7.08
+    ],
+    [
+     "poor,",
+     7.24
+    ],
+    [
+     "and",
+     8.48
+    ],
+    [
+     "He",
+     8.88
+    ],
+    [
+     "made",
+     9.06
+    ],
+    [
+     "me",
+     9.32
+    ],
+    [
+     "rich.",
+     9.66
+    ]
+   ]
+  },
+  {
+   "id": "N56_a",
+   "clip": "N56_a",
+   "base": "N56",
+   "kind": "N",
+   "who": null,
+   "start": 398.709,
+   "dur": 2.62,
+   "file": "N56_a.wav",
+   "text": "Two of them forgot where it came from.",
+   "words": [
+    [
+     "Two",
+     0.0
+    ],
+    [
+     "of",
+     0.42
+    ],
+    [
+     "them",
+     0.58
+    ],
+    [
+     "forgot",
+     0.74
+    ],
+    [
+     "where",
+     1.24
+    ],
+    [
+     "it",
+     1.5
+    ],
+    [
+     "came",
+     1.66
+    ],
+    [
+     "from.",
+     1.84
+    ]
+   ]
+  },
+  {
+   "id": "N56_b",
+   "clip": "N56_b",
+   "base": "N56",
+   "kind": "N",
+   "who": null,
+   "start": 401.529,
+   "dur": 1.323,
+   "file": "N56_b.wav",
+   "text": "One remembered.",
+   "words": [
+    [
+     "One",
+     0.0
+    ],
+    [
+     "remembered",
+     0.56
+    ]
+   ]
+  },
+  {
+   "id": "N57_a",
+   "clip": "N57_a",
+   "base": "N57",
+   "kind": "N",
+   "who": null,
+   "start": 403.052,
+   "dur": 4.55,
+   "file": "N57_a.wav",
+   "text": "The angel asked each of them: \"What would you love most?\"",
+   "words": [
+    [
+     "The",
+     0.0
+    ],
+    [
+     "angel",
+     0.4
+    ],
+    [
+     "asked",
+     0.74
+    ],
+    [
+     "each",
+     1.24
+    ],
+    [
+     "of",
+     1.6
+    ],
+    [
+     "them,",
+     1.8
+    ],
+    [
+     "what",
+     2.52
+    ],
+    [
+     "would",
+     2.76
+    ],
+    [
+     "you",
+     3.02
+    ],
+    [
+     "love",
+     3.32
+    ],
+    [
+     "most?",
+     3.62
+    ]
+   ]
+  },
+  {
+   "id": "N57_b",
+   "clip": "N57_b",
+   "base": "N57",
+   "kind": "N",
+   "who": null,
+   "start": 407.802,
+   "dur": 2.06,
+   "file": "N57_b.wav",
+   "text": "What would you have asked for?",
+   "words": [
+    [
+     "What",
+     0.0
+    ],
+    [
+     "would",
+     0.52
+    ],
+    [
+     "you",
+     0.66
+    ],
+    [
+     "have",
+     0.92
+    ],
+    [
+     "asked",
+     1.1
+    ],
+    [
+     "for?",
+     1.36
+    ]
+   ]
+  },
+  {
+   "id": "N57_c",
+   "clip": "N57_c",
+   "base": "N57",
+   "kind": "N",
+   "who": null,
+   "start": 410.062,
+   "dur": 1.554,
+   "file": "N57_c.wav",
+   "text": "Tell us in the comments.",
+   "words": [
+    [
+     "Tell",
+     0.0
+    ],
+    [
+     "us",
+     0.5
+    ],
+    [
+     "in",
+     0.64
+    ],
+    [
+     "the",
+     0.76
+    ],
+    [
+     "comments",
+     0.88
+    ]
+   ]
+  }
+ ]
+}

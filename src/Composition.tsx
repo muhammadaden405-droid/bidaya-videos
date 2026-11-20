@@ -2,6 +2,7 @@ import { Ep2, Ep2Part, Ep2Hooks, Ep2Outro, EP2_READY, EP2_PARTS, EP2_HOOKS_LENGT
 import React from "react";
 import { Composition, AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Ep2Trailer15, TRAILER15_LENGTH } from "./ep2/Trailer15";
+import { Ep3, Ep3Part, EP3_LEN, EP3_PARTS } from "./ep3/Episode";
 import { amiri, serif } from "./fonts";
 import { SilhouetteScene } from "./styles/Silhouette";
 import { ParchmentScene } from "./styles/Parchment";
@@ -108,6 +109,11 @@ export const MyComposition = () => (
     <Composition id="Ep1ThumbV" component={Ep1ThumbV} durationInFrames={1} fps={30} width={1080} height={1920} />
     <Composition id="RigTest" component={RigTest} durationInFrames={150} fps={30} width={1920} height={1080} />
     <Composition id="Ep2Trailer15" component={Ep2Trailer15} durationInFrames={TRAILER15_LENGTH} fps={30} width={1080} height={1920} />
+    <Composition id="Ep3" component={Ep3} durationInFrames={EP3_LEN} fps={30} width={1920} height={1080} />
+    <Composition id="Ep3Vertical" component={Ep3} durationInFrames={EP3_LEN} fps={30} width={1080} height={1920} />
+    {EP3_PARTS.map((p) => (
+      <Composition key={`e3${p.n}`} id={`Ep3-Part${p.n}`} component={Ep3Part} defaultProps={{ n: p.n }} durationInFrames={p.end - p.start} fps={30} width={1080} height={1920} />
+    ))}
     <Composition id="Ep2" component={Ep2} durationInFrames={EP2_READY} fps={30} width={1920} height={1080} />
     <Composition id="Ep2Vertical" component={Ep2} durationInFrames={EP2_READY} fps={30} width={1080} height={1920} />
     <Composition id="Ep2Outro" component={Ep2Outro} durationInFrames={EP2_OUTRO_LEN} fps={30} width={1920} height={1080} />

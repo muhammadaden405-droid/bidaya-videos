@@ -1,0 +1,73 @@
+name: Render Episode 3
+# Runs when render-request.json changes on the ep3 branch (so a render can be started with a plain git push).
+# Renders the 16:9 and 9:16 films in parallel chunks, mixes the audio, joins them, cuts the 9:16 film into the
+# TikTok parts (public/ep3/parts.json), and publishes everything to a render/ branch (files split under 90 MB).
+on:
+  push:
+    branches: [ep3]
+    paths: [render-request.json]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  chunk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        comp: [Ep3, Ep3Vertical]
+        i: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Render chunk (video only)
+        run: |
+          N=$(node -e "const v=require('./src/ep3/vo.json');console.log(v.total+20+150)")
+          C=6; I=${{ matrix.i }}; A=$(( N * I / C )); B=$(( N * (I + 1) / C - 1 ))
+          echo "frames $A-$B of $N"
+          npx remotion render ${{ matrix.comp }} out/c.mp4 --frames=$A-$B --muted --concurrency=4
+      - uses: actions/upload-artifact@v4
+        with: { name: "${{ matrix.comp }}-c${{ matrix.i }}", path: out/c.mp4, retention-days: 3 }
+  join:
+    needs: chunk
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        comp: [Ep3, Ep3Vertical]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - uses: actions/download-artifact@v4
+        with: { pattern: "${{ matrix.comp }}-c*", path: chunks }
+      - name: Audio, join, parts
+        run: |
+          npx remotion render ${{ matrix.comp }} out/audio.wav --codec=wav
+          for i in 0 1 2 3 4 5; do echo "file '$PWD/chunks/${{ matrix.comp }}-c$i/c.mp4'"; done > list.txt
+          ffmpeg -loglevel error -y -f concat -safe 0 -i list.txt -c copy out/video.mp4
+          ffmpeg -loglevel error -y -i out/video.mp4 -i out/audio.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -shortest out/${{ matrix.comp }}.mp4
+          if [ "${{ matrix.comp }}" = "Ep3Vertical" ]; then
+            python3 - <<'PY'
+          import json, subprocess
+          for p in json.load(open("public/ep3/parts.json")):
+              a, b = p["start"] / 30, (p["end"] - p["start"]) / 30
+              subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-ss", f"{a:.3f}", "-i", "out/Ep3Vertical.mp4", "-t", f"{b:.3f}", "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-c:a", "aac", "-b:a", "192k", f"out/Ep3-Part{p['n']}.mp4"], check=True)
+          PY
+          fi
+      - name: Publish to branch
+        run: |
+          BR="render/${{ matrix.comp }}-${{ github.run_id }}"
+          mkdir pub && cd pub
+          for f in ../out/Ep3*.mp4; do split -b 90m -d "$f" "$(basename $f).part"; done
+          git init -q -b "$BR"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -qm "Render ${{ matrix.comp }} (run ${{ github.run_id }})"
+          git push -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "HEAD:refs/heads/$BR"
+          echo "Published to $BR"

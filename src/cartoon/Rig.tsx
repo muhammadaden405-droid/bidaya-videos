@@ -68,6 +68,9 @@ export type Outfit = {
   aura?: string; // soft light around the figure
   glasses?: boolean; // dark glasses (a blind man, until he is healed)
   spots?: number; // diseased skin, 0..1 (fades as he is healed)
+  hair?: string; // hair colour (Episode 3: the bald man's hair grows back)
+  hairAmt?: number; // 0..1 how much hair has grown
+  shine?: number; // 0..1 a bald head's shine
 };
 
 const Limb: React.FC<{ x: number; y: number; a1: number; a2: number; l1: number; l2: number; w: number; color: string; hand?: string; foot?: string; children?: React.ReactNode }> = ({ x, y, a1, a2, l1, l2, w, color, hand, foot, children }) => (
@@ -158,6 +161,13 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
               {/* with a mouth on the face side, the wrap tail hangs at the back of the head */}
               <path d="M 26 -6 Q 40 20 30 46 L 22 44 Q 28 20 18 0 Z" fill={outfit.wrap} transform={mouth !== undefined || mood ? "scale(-1 1)" : undefined} />
             </>
+          ) : null}
+          {outfit.shine ? <ellipse cx={-10} cy={-18} rx={9} ry={5} fill="#fff" opacity={0.35 * outfit.shine} transform="rotate(-25 -10 -18)" /> : null}
+          {outfit.hair && (outfit.hairAmt ?? 1) > 0 ? (
+            <g opacity={Math.min(1, (outfit.hairAmt ?? 1) * 1.6)} transform={`translate(0 ${(1 - (outfit.hairAmt ?? 1)) * 6})`}>
+              <path d="M -31 4 Q -36 -36 0 -36 Q 34 -36 31 2 Q 22 -14 0 -16 Q -20 -14 -31 4 Z" fill={outfit.hair} />
+              <path d="M -31 4 Q -38 22 -30 30 L -24 8 Z" fill={outfit.hair} />
+            </g>
           ) : null}
           {outfit.hood ? (
             <>
