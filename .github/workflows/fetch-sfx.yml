@@ -1,0 +1,27 @@
+name: Fetch SFX
+# Downloads the CC0 sounds listed in tools/sfx-fetch.txt into public/trailer/sfx (as mp3) and commits them,
+# because the editing machine cannot reach sound libraries directly.
+on:
+  push:
+    branches: [ep3]
+    paths: [tools/sfx-fetch.txt]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Download and convert
+        run: |
+          grep -v '^#' tools/sfx-fetch.txt | while IFS='|' read -r name url; do
+            name=$(echo $name | xargs); url=$(echo $url | xargs); [ -z "$name" ] && continue
+            [ -f public/trailer/sfx/$name.mp3 ] && continue
+            curl -fsSL -A "Mozilla/5.0" "$url" -o /tmp/in && ffmpeg -v error -y -i /tmp/in -ac 1 -ar 48000 -b:a 160k public/trailer/sfx/$name.mp3 && echo "ok $name" || echo "FAILED $name"
+          done
+      - name: Commit
+        run: |
+          git config user.name "Claude"; git config user.email "noreply@anthropic.com"
+          git add public/trailer/sfx && git commit -m "Add fetched CC0 sounds" && git push || echo "nothing new"
