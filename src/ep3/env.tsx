@@ -33,6 +33,19 @@ export const Tree: React.FC<{ x: number; y: number; s?: number; kind?: "round" |
   );
 };
 /** a river running behind the scene, with moving glints */
+/** a wooden footbridge from the near bank over to the far bank (seen end-on, so it narrows as it goes away) */
+export const Bridge: React.FC<{ x: number }> = ({ x }) => (
+  <g transform={`translate(${x} 1306) scale(1.45) translate(0 -1306)`}>
+    <path d="M -95 1306 L 95 1306 L 62 1206 L -62 1206 Z" fill="#9b7350" stroke="#3a2a1e" strokeWidth={4} />
+    {new Array(9).fill(0).map((_, k) => { const y = 1300 - k * 11.5, w = 95 - (k / 9) * 33; return <line key={k} x1={-w} y1={y} x2={w} y2={y} stroke="#6e4f34" strokeWidth={3} />; })}
+    {[-1, 1].map((sd) => <g key={sd}>
+      <path d={`M ${sd * 95} 1306 L ${sd * 62} 1206`} stroke="#5a3e28" strokeWidth={6} />
+      <path d={`M ${sd * 97} 1262 L ${sd * 64} 1176`} stroke="#5a3e28" strokeWidth={6} />
+      {[0, 0.33, 0.66, 1].map((t) => <line key={t} x1={sd * (95 - 33 * t)} y1={1306 - 100 * t} x2={sd * (97 - 33 * t)} y2={1262 - 86 * t} stroke="#5a3e28" strokeWidth={5} />)}
+    </g>)}
+    <path d="M -95 1306 L 95 1306 L 90 1318 L -90 1318 Z" fill="#000" opacity={0.15} />
+  </g>
+);
 export const River: React.FC<{ y?: number; h?: number; dusk?: boolean }> = ({ y = 1235, h = 46, dusk }) => {
   const f = useCurrentFrame();
   const c = dusk ? "#6c7fa8" : "#5aa6d6", lc = dusk ? "#c9b8d8" : "#d8f0ff";
@@ -63,7 +76,7 @@ const Tufts: React.FC<{ seed: string; y0: number; y1: number; n?: number }> = ({
   </g>
 );
 /** The green valley: far hills, trees, a river behind, and a grass meadow in front. `herd` is drawn on the far bank. */
-export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: number; sunY?: number; river?: boolean; trees?: number; back?: React.ReactNode; mid?: React.ReactNode; dim?: number }> = ({ cam, sky = "day", seed = "m", sunX = 1480, sunY = 760, river = true, trees = 7, back, mid, dim = 0 }) => {
+export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: number; sunY?: number; river?: boolean; trees?: number; back?: React.ReactNode; mid?: React.ReactNode; far?: React.ReactNode; bridge?: number; dim?: number }> = ({ cam, sky = "day", seed = "m", sunX = 1480, sunY = 760, river = true, trees = 7, back, mid, far, bridge, dim = 0 }) => {
   const dusk = sky === "dusk" || sky === "night";
   return (
     <>
@@ -73,6 +86,7 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
       <Layer d={0.3} cam={cam}>
         <path d={ridge(`${seed}b`, 1150, 130, 200)} fill={dusk ? "#3f6045" : "#5f9a52"} />
         {new Array(trees + 4).fill(0).map((_, i) => <Tree key={i} x={-600 + random(`${seed}ft${i}`) * 3200} y={1120 + random(`${seed}fy${i}`) * 40} s={0.35 + random(`${seed}fs${i}`) * 0.15} kind={i % 3 === 0 ? "cypress" : "round"} tint={dusk ? 1 : 0} />)}
+        {far}
       </Layer>
       <AbsoluteFill style={{ background: `linear-gradient(rgba(0,0,0,0) 25%, ${dusk ? "rgba(255,190,150,0.22)" : "rgba(235,245,255,0.3)"} 55%, rgba(0,0,0,0) 80%)` }} />
       <Layer d={0.55} cam={cam}>
@@ -80,6 +94,7 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
         {new Array(trees).fill(0).map((_, i) => <Tree key={i} x={-500 + random(`${seed}nt${i}`) * 3000} y={1192} s={(i % 4 === 1 ? 1.1 : 0.85) + random(`${seed}ns${i}`) * 0.2} kind={i % 4 === 1 ? "palm" : i % 4 === 3 ? "cypress" : "round"} tint={dusk ? 1 : 0} />)}
         {back}
         {river ? <River dusk={dusk} /> : null}
+        {river && bridge !== undefined ? <Bridge x={bridge} /> : null}
       </Layer>
       <Layer d={0.8} cam={cam}>
         <path d={`M -1400 1262 Q 960 1250 3400 1262 L 3400 1400 L -1400 1400 Z`} fill={dusk ? "#55854c" : GRASS_L} />

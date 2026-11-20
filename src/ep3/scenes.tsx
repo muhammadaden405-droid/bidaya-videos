@@ -100,10 +100,9 @@ export const BaldMarket: React.FC = () => {
   const away = iv(frame, [turn + 6, dur], [0, 260]);
   return (
     <AbsoluteFill>
-      <Meadow cam={cam} seed="bm" trees={4} />
+      <Meadow cam={cam} seed="bm" trees={4} mid={<g transform={`translate(0 1290) scale(0.8) translate(0 ${-FLOOR})`}><Stalls x={-200} /></g>} />
       <Layer d={1} cam={cam}>
         <Defs />
-        <Stalls x={-120} />
         <Actor x={BX} y={FLOOR} s={S} outfit={BALD_POOR} pose={{ ...STAND, armRU: -158, armRL: -78, head: 10, lean: 3 }} mood="frown" />
         <FolkWalk x={1380 + away} i={0} walking={frame >= turn + 6} flip={frame < turn} mood={frame < turn ? "sneer" : "neutral"} />
         <FolkWalk x={1560 + away} i={3} walking={frame >= turn + 6} flip={frame < turn} mood={frame < turn ? "sneer" : "neutral"} />
@@ -256,10 +255,10 @@ export const Wish: React.FC<{ who: Who }> = ({ who }) => {
   return (
     <AbsoluteFill style={{ filter: pov > 0.01 ? `blur(${pov * 16}px) brightness(${1 + pov * 0.2})` : undefined }}>
       <Meadow cam={cam} seed={`w${who}`} sky={who === "bald" ? "dusk" : "day"} sunX={who === "bald" ? 520 : 1480} sunY={who === "bald" ? 880 : 760}
-        mid={who === "leper" ? <g transform={`translate(1760 1290) scale(0.7) translate(0 ${-FLOOR})`}><House x={0} poor /></g> : undefined} />
+        mid={who === "leper" ? <g transform={`translate(1760 1290) scale(0.7) translate(0 ${-FLOOR})`}><House x={0} poor /></g> : who === "bald" ? <g transform={`translate(0 1290) scale(0.8) translate(0 ${-FLOOR})`}><Stalls x={1500} /></g> : undefined} />
       <Layer d={1} cam={cam}>
         <Defs />
-        {who === "leper" ? <Wall x0={760} x1={1800} /> : who === "bald" ? <Stalls x={1620} /> : null}
+        {who === "leper" ? <Wall x0={760} x1={1800} /> : null}
         {showAnimal ? <g transform={`translate(${anX} ${anY})`}><Animal kind={kind} walk={anWalking ? anX : undefined} graze={frame * 0.05} s={kind === "camel" ? 0.95 : 1} /></g> : null}
         <Glow x={MX} y={1050} r={360} o={0.6 * Math.sin(Math.PI * healed)} />
         <Actor x={MX} y={manY} s={S} outfit={outfit} pose={pose} flip mouth={m} mood={mood} seat={stand < 1 ? "ground" : undefined} hold={who === "blind" && healed < 0.5 ? <Cane /> : undefined} />
@@ -286,8 +285,9 @@ const Valley: React.FC<{ who: Who; t0: number; n: number; rich?: boolean; birth?
   return (
     <AbsoluteFill style={{ filter: dark ? `brightness(${1 - 0.5 * dark}) saturate(${1 - 0.65 * dark})` : undefined }}>
       <Meadow cam={cam} seed={`v${who}`} sky={dusk ? "dusk" : "day"} sunX={dusk ? 520 : 1480} sunY={dusk ? 880 : 760}
-        back={<Herd kind={kind} n={n * 1.6} x0={-300} x1={2300} y0={1194} y1={1232} frame={frame} seed={`hb${who}`} s={0.2} />}
- />
+        back={<Herd kind={kind} n={n * 1.8} x0={-400} x1={2400} y0={1192} y1={1234} frame={frame} seed={`hb${who}`} s={0.2} />}
+        far={<Herd kind={kind} n={n * 1.4} x0={-500} x1={2500} y0={1128} y1={1168} frame={frame} seed={`hf${who}`} s={0.11} />}
+        bridge={480} />
       <Layer d={1} cam={cam}>
         <Defs />
         <House x={1720} rich={rich} poor={!rich} />
@@ -306,20 +306,20 @@ export const Valleys: React.FC<{ mode: "grow" | "tease" | "judged" }> = ({ mode 
     const cuts = [0, Wd("N03_a", "given") - 4, Wd("N03_a", "asked") - 4, L("N03_b") - 2];
     const k = cuts.filter((c) => frame >= c).length - 1;
     if (k === 3) return <AngelComesBack t0={cuts[3]} />;
-    return <Valley who={WHO3[k]} t0={cuts[k]} n={22} rich />;
+    return <Valley who={WHO3[k]} t0={cuts[k]} n={48} rich />;
   }
   if (mode === "judged") {
     // two valleys go dark and quiet, the third stays in the light (three cuts)
     const len = Math.max(30, L("N54_b") - 2 > 0 ? L("N54_b") - 2 : 90);
     const k = Math.min(2, Math.floor(frame / (len / 3)));
-    return <Valley who={WHO3[k]} t0={Math.round(k * len / 3)} n={22} rich dark={k < 2 ? iv(frame - k * len / 3, [0, 18], [0, 1]) : 0} />;
+    return <Valley who={WHO3[k]} t0={Math.round(k * len / 3)} n={48} rich dark={k < 2 ? iv(frame - k * len / 3, [0, 18], [0, 1]) : 0} />;
   }
   const b = [0, L("N28_b") - 2, L("N28_c") - 2];
   const n29 = L("N29") - 2, n30 = L("N30") - 2, n31 = L("N31") - 2, n32 = L("N32") - 2;
   if (frame < n29) { const k = frame >= b[2] ? 2 : frame >= b[1] ? 1 : 0; return <Valley who={WHO3[k]} t0={b[k]} n={1} birth />; }
-  if (frame < n30) { const step = Math.max(1, Math.floor((n30 - n29) / 4)); const i = Math.min(3, Math.floor((frame - n29) / step)); return <Valley who={WHO3[i % 3]} t0={n29 + i * step} n={3 + (frame - n29) * 0.25} />; }
-  if (frame < n31) { const c = [n30, Wd("N30", "one") - 4, Wd("N30", "one", 1) - 4]; const k = frame >= c[2] ? 2 : frame >= c[1] ? 1 : 0; return <Valley who={WHO3[k]} t0={c[k]} n={24} />; }
-  if (frame < n32) { const step = Math.max(1, Math.floor((n32 - n31) / 3)); const k = Math.min(2, Math.floor((frame - n31) / step)); return <Valley who={WHO3[k]} t0={n31 + k * step} n={26} rich />; }
+  if (frame < n30) { const step = Math.max(1, Math.floor((n30 - n29) / 4)); const i = Math.min(3, Math.floor((frame - n29) / step)); return <Valley who={WHO3[i % 3]} t0={n29 + i * step} n={4 + (frame - n29) * 0.55} />; }
+  if (frame < n31) { const c = [n30, Wd("N30", "one", 1) - 4, Wd("N30", "one", 2) - 4]; const k = frame >= c[2] ? 2 : frame >= c[1] ? 1 : 0; return <Valley who={WHO3[k]} t0={c[k]} n={56} />; }
+  if (frame < n32) { const step = Math.max(1, Math.floor((n32 - n31) / 3)); const k = Math.min(2, Math.floor((frame - n31) / step)); return <Valley who={WHO3[k]} t0={n31 + k * step} n={60} rich />; }
   return <AngelComesBack t0={n32} />;
 };
 /** the angel, in the form of a poor traveller, walking back along the river path at dusk */
@@ -404,7 +404,8 @@ export const Gate: React.FC<{ who: Who; cold?: boolean }> = ({ who, cold }) => {
   return (
     <AbsoluteFill>
       <Meadow cam={cam} seed={`g${who}`} sky={night ? "night" : who === "blind" ? "day" : "dusk"} sunX={who === "blind" ? 1480 : 520} sunY={who === "blind" ? 760 : 880}
-        back={<Herd kind={kind} n={26} x0={-300} x1={2300} y0={1196} y1={1236} frame={frame} seed={`gb${who}`} s={0.2} />}
+        back={<Herd kind={kind} n={70} x0={-400} x1={2400} y0={1192} y1={1234} frame={frame} seed={`gb${who}`} s={0.2} />}
+        far={<Herd kind={kind} n={56} x0={-500} x1={2500} y0={1128} y1={1168} frame={frame} seed={`gf${who}`} s={0.11} />} bridge={560}
  />
       <Layer d={1} cam={cam}>
         <Defs />
@@ -441,7 +442,7 @@ export const Verdict: React.FC = () => {
   }
   return (
     <AbsoluteFill>
-      <Meadow cam={cam} seed="gblind" back={<Herd kind="sheep" n={26} x0={-300} x1={2300} y0={1196} y1={1236} frame={frame} seed="gbblind" s={0.2} />} />
+      <Meadow cam={cam} seed="gblind" back={<Herd kind="sheep" n={70} x0={-400} x1={2400} y0={1192} y1={1234} frame={frame} seed="gbblind" s={0.2} />} far={<Herd kind="sheep" n={56} x0={-500} x1={2500} y0={1128} y1={1168} frame={frame} seed="gfblind" s={0.11} />} bridge={560} />
       <Layer d={1} cam={cam}>
         <Defs />
         <House x={1720} rich />

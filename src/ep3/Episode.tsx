@@ -46,7 +46,7 @@ type Sfx = { src: string; from: number; len?: number; vol: number; fadeIn?: numb
 const lib = (n: string) => `trailer/sfx/${n}.mp3`;
 const whoosh = (from: number, vol = 0.18): Sfx => ({ src: lib("short-video-whoosh-01"), from: from - 3, len: 30, vol });
 const one = (n: string, from: number, v: number, len = 90, fadeOut = 20): Sfx => ({ src: lib(n), from, len, vol: v, fadeOut });
-const AMB: Record<Amb, [string, number]> = { day: ["animal-bird-03", 0.1], dusk: ["blizzard-wind-01", 0.08], night: ["night-ambience-01", 0.12] };
+const AMB: Record<Amb, [string, number]> = { day: ["river-ambience-01", 0.06], dusk: ["blizzard-wind-01", 0.08], night: ["night-ambience-01", 0.12] };
 const SFX: Sfx[] = [];
 for (const c of SCENES) {
   if (c.from > 0) SFX.push(whoosh(c.from, 0.2));
@@ -56,7 +56,7 @@ const heals = [wf("N12_a", "gone"), wf("N18", "grew"), wf("N25", "sight")];
 SFX.push(
   ...heals.map((h) => one("own-air-swell", h - 30, 0.22, 90, 40)),
   // the gifts, and the herds multiplying
-  one("camel-grumble-01", lf("N14") + 8, 0.35, 70), { src: lib("own-hooves"), from: lf("N29"), len: lf("N31") - lf("N29"), vol: 0.22, fadeIn: 20, fadeOut: 30, loop: true },
+  one("camel-grumble-01", lf("N14") + 8, 0.35, 70),
   one("camel-grumble-01", lf("N28_a") + 10, 0.3, 60), one("camel-grumble-01", lf("N33") + 20, 0.22, 60),
   // the traveller walks up to each man
   ...["N34_a", "N42", "N48"].map((id) => ({ src: lib("footsteps-sand-01"), from: lf(id), len: 80, vol: 0.24, fadeOut: 12, loop: true })),

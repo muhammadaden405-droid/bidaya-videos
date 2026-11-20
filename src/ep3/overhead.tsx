@@ -143,10 +143,14 @@ export const BaldTop: React.FC = () => {
       <TopPerson x={960} y={960} a={-90} outfit={BALD_POOR} handOnHead />
       {ring.map((k) => {
         const ang = (k / ring.length) * Math.PI * 2 + 0.3;
-        const r = 300 + iv(frame, [turn + 10 + k * 3, turn + 90 + k * 3], [0, 520]);
-        const x = 960 + Math.cos(ang) * r, y = 960 + Math.sin(ang) * r * 0.9;
+        // they turn their backs, then walk off along the street (never across the stalls)
+        const go = iv(frame, [turn + 10 + k * 3, turn + 90 + k * 3], [0, 620]);
+        const dx = Math.cos(ang) >= 0 ? 1 : -1;
+        const x = 960 + Math.cos(ang) * 300 + dx * go, y = Math.max(720, Math.min(1200, 960 + Math.sin(ang) * 270));
         const face = (ang * 180) / Math.PI + 180; // looking at him
-        const a = face + iv(frame, [turn + k * 3, turn + 10 + k * 3], [0, 180], ease);
+        const away = dx > 0 ? 0 : 180;
+        const turned = iv(frame, [turn + k * 3, turn + 10 + k * 3], [0, 1], ease);
+        const a = face + (((away - face + 540) % 360) - 180) * turned;
         const walking = frame > turn + 10 + k * 3;
         return <TopPerson key={k} x={x} y={y} a={a} outfit={FOLK(k % 5)} step={walking ? frame * 0.32 + k : 0} />;
       })}
