@@ -75,12 +75,12 @@ export const Cow: React.FC<{ walk?: number; graze?: number; flip?: boolean; s?: 
 export const Sheep: React.FC<{ walk?: number; graze?: number; flip?: boolean; s?: number; young?: boolean }> = ({ walk, graze = 0, flip, s = 1, young }) => {
   const wool = "#f2ede0", ws = "#d8d0bd", face = "#2f2622";
   const dip = walk === undefined ? (Math.sin(graze * 0.4) * 0.5 + 0.5) : 0;
-  const puffs: [number, number, number][] = [[-90, -170, 46], [-40, -195, 52], [20, -198, 52], [76, -178, 46], [-70, -128, 44], [0, -125, 48], [62, -128, 44], [-110, -140, 34]];
+  const puffs: [number, number, number][] = [[-90, -170, 46], [-40, -195, 52], [20, -198, 52], [76, -178, 46], [-70, -128, 44], [0, -125, 48], [62, -128, 44], [-110, -140, 34], [-58, -104, 34], [4, -100, 38], [58, -104, 34]];
   return (
     <g transform={`scale(${(flip ? -1 : 1) * s * (young ? 0.55 : 1)} ${s * (young ? 0.55 : 1)})`}>
       <ellipse cx={0} cy={5} rx={120} ry={11} fill="#000" opacity={0.17} />
-      <Leg x={-70} y={-110} len={110} w={16} c={face} a={legSwing(walk, Math.PI)} hoof="#14100e" />
-      <Leg x={60} y={-110} len={110} w={16} c={face} a={legSwing(walk, 0)} hoof="#14100e" />
+      <Leg x={-58} y={-110} len={110} w={13} c="#1c1613" a={legSwing(walk, Math.PI)} hoof="#0e0b09" />
+      <Leg x={72} y={-110} len={110} w={13} c="#1c1613" a={legSwing(walk, 0)} hoof="#0e0b09" />
       <g>
         {puffs.map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r + 4} fill={ws} />)}
         {puffs.map(([x, y, r], i) => <circle key={`b${i}`} cx={x} cy={y - 3} r={r} fill={wool} />)}
@@ -91,8 +91,8 @@ export const Sheep: React.FC<{ walk?: number; graze?: number; flip?: boolean; s?
         <circle cx={144} cy={-180} r={4} fill="#e8e0d0" />
         <circle cx={104} cy={-206} r={22} fill={wool} />
       </g>
-      <Leg x={-50} y={-110} len={110} w={17} c={face} a={legSwing(walk, 0)} hoof="#14100e" />
-      <Leg x={80} y={-110} len={110} w={17} c={face} a={legSwing(walk, Math.PI)} hoof="#14100e" />
+      <Leg x={-46} y={-110} len={110} w={16} c={face} a={legSwing(walk, 0)} hoof="#14100e" />
+      <Leg x={84} y={-110} len={110} w={16} c={face} a={legSwing(walk, Math.PI)} hoof="#14100e" />
     </g>
   );
 };
@@ -104,8 +104,9 @@ export const Animal: React.FC<{ kind: Kind; walk?: number; graze?: number; flip?
 export const Herd: React.FC<{ kind: Kind; n: number; x0: number; x1: number; y0: number; y1: number; frame: number; seed: string; s?: number; o?: number }> = ({ kind, n, x0, x1, y0, y1, frame, seed, s = 0.35, o = 1 }) => {
   // the newest animal fades in instead of popping in, so a growing herd never jumps
   const items = new Array(Math.max(0, Math.ceil(n))).fill(0).map((_, i) => {
-    const y = y0 + random(`${seed}y${i}`) * (y1 - y0);
-    return { x: x0 + random(`${seed}x${i}`) * (x1 - x0), y, k: s * (0.8 + 0.4 * (y - y0) / Math.max(1, y1 - y0)), flip: random(`${seed}f${i}`) > 0.5, ph: random(`${seed}p${i}`) * 20, young: random(`${seed}c${i}`) > 0.8, o: Math.min(1, n - i) };
+    const y = y0 + ((i * 0.7548776 + random(`${seed}y${i}`) * 0.25) % 1) * (y1 - y0);
+    const gx = (i * 0.618034 + random(`${seed}r`)) % 1;
+    return { x: x0 + (gx + (random(`${seed}x${i}`) - 0.5) * 0.012) * (x1 - x0), y, k: s * (0.8 + 0.4 * (y - y0) / Math.max(1, y1 - y0)), flip: random(`${seed}f${i}`) > 0.5, ph: random(`${seed}p${i}`) * 20, young: random(`${seed}c${i}`) > 0.8, o: Math.min(1, n - i) };
   }).sort((a, b) => a.y - b.y);
   return (
     <g opacity={o}>

@@ -58,6 +58,14 @@ SFX.push(
   // the gifts, and the herds multiplying
   one("camel-grumble-01", lf("N14") + 8, 0.35, 70),
   one("camel-grumble-01", lf("N28_a") + 10, 0.3, 60), one("camel-grumble-01", lf("N33") + 20, 0.22, 60),
+  // cows and sheep get their own voices too (real recordings, CC0): the gifts, the births, the multiplying, the valleys
+  one("cow-moo-a", lf("N20") + 20, 0.3, 80), one("sheep-baa-01", lf("N27") + 20, 0.32, 40), one("sheep-baa-02", lf("N27") + 46, 0.22, 40),
+  one("cow-moo-b", lf("N28_b") + 6, 0.26, 75), one("sheep-baa-03", lf("N28_c") + 6, 0.28, 40), one("sheep-baa-02", lf("N28_c") + 26, 0.2, 40),
+  one("camel-grumble-01", lf("N29") - 2, 0.16, 20, 8), one("cow-moo-a", lf("N29") + 17, 0.18, 22, 8), one("sheep-baa-01", lf("N29") + 36, 0.22, 22, 8),
+  one("camel-grumble-01", lf("N30") + 4, 0.22, 60), one("cow-moo-b", wf("N30", "one", 1) + 2, 0.24, 70), one("sheep-baa-01", wf("N30", "one", 2) + 2, 0.26, 40), one("sheep-baa-03", wf("N30", "one", 2) + 24, 0.18, 40),
+  one("camel-grumble-01", lf("N31"), 0.16, 30, 10), one("cow-moo-a", lf("N31") + 33, 0.16, 32, 10), one("sheep-baa-02", lf("N31") + 66, 0.16, 30, 10),
+  one("cow-moo-b", wf("N03_a", "given"), 0.14, 40, 15), one("sheep-baa-03", wf("N03_a", "asked"), 0.14, 30, 10),
+  one("cow-moo-b", lf("N41") + 40, 0.12, 70), one("sheep-baa-03", lf("N47") + 40, 0.14, 40),
   // the traveller walks up to each man
   ...["N34_a", "N42", "N48"].map((id) => ({ src: lib("footsteps-sand-01"), from: lf(id), len: 80, vol: 0.24, fadeOut: 12, loop: true })),
   // the two curses: a low rumble and wind; then the shadow falls over the two valleys
