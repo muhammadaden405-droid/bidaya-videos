@@ -183,6 +183,8 @@ export const Wish: React.FC<{ who: Who }> = ({ who }) => {
   const wipe = L(w.wipe);
   const healAt = Wd(w.heal[0], w.heal[1]) - 2;
   const giftAt = L(w.gift);
+  // the animal is only brought once he has asked for it: the angel leads it in from off-screen on its rope
+  const inStart = giftAt - 6, G = giftAt + 50;
   const leave = w.walk ? L(w.walk) + 6 : 99999;
   // the angel walks in leading the animal, steps close to wipe his hand over the man, steps back, then leaves
   const inX = -200 + iv(frame, [ask - 12, arrive], [0, 1080]);
@@ -195,7 +197,7 @@ export const Wish: React.FC<{ who: Who }> = ({ who }) => {
   const stand = who === "leper" ? iv(frame, [healAt + 26, healAt + 46], [0, 1], ease) : 1;
   const manY = sitY(FLOOR - 8, S, true) * (1 - stand) + FLOOR * stand;
   const manHead = manY - 232 * S;
-  const takes = iv(frame, [giftAt + 4, giftAt + 16], [0, 1], ease);
+  const takes = iv(frame, [G + 4, G + 16], [0, 1], ease);
   let pose: Pose = who === "bald" ? { ...STAND, armRU: -158 + 120 * healed, armRL: -78 + 60 * healed, head: 10 * (1 - healed) } : { ...STAND, head: 8 * (1 - healed) };
   if (stand < 1) pose = blend({ ...SITG, head: 10 }, pose, stand);
   const tap = who === "blind" && healed < 1 ? Math.sin(frame * 0.3) * 8 : 0;
@@ -210,22 +212,23 @@ export const Wish: React.FC<{ who: Who }> = ({ who }) => {
   let aPose: Pose = aWalk ? walkBy(aFlip ? -ax : ax, S) : { ...STAND, head: -4 };
   if (wiping) { const r = reach(ax, FLOOR, S, false, tx, ty); aPose = { ...STAND, armRU: r.u, armRL: r.l, head: 6, lean: 4 }; }
   // the rope: in the angel's far hand while he leads; held out to the man; then in the man's hand
-  const lead = frame < giftAt + 10;
+  const lead = frame >= inStart && frame < G + 10;
   if (lead && !aWalk) aPose = { ...aPose, armLU: 30, armLL: -10 };
-  const give = iv(frame, [giftAt - 4, giftAt + 10], [0, 1], ease) * (1 - iv(frame, [giftAt + 24, giftAt + 34], [0, 1]));
+  const give = iv(frame, [G - 4, G + 10], [0, 1], ease) * (1 - iv(frame, [G + 24, G + 34], [0, 1]));
   if (give > 0 && !wiping) { const r = reach(ax, FLOOR, S, false, MX - 150, FLOOR - 330); aPose = { ...aPose, armRU: aPose.armRU * (1 - give) + r.u * give, armRL: aPose.armRL * (1 - give) + r.l * give }; }
   // the animal follows the angel in, then walks behind to stand by its new owner
   const trail = TRAIL[kind];
   const anStart = Math.min(ax, inX) - trail;
-  const goBy = iv(frame, [giftAt + 16, giftAt + 110], [0, 1]);
-  const anX = goBy === 0 ? anStart : anStart + (MX + 340 - anStart) * goBy;
-  const anWalking = (frame > ask - 12 && frame < arrive) || (goBy > 0 && goBy < 1);
+  const come = iv(frame, [inStart, G - 6], [0, 1]);
+  const goBy = iv(frame, [G + 16, G + 90], [0, 1]);
+  const anX = goBy === 0 ? anStart - 760 * (1 - come) : anStart + (MX + 340 - anStart) * goBy;
+  const anWalking = (come > 0 && come < 1) || (goBy > 0 && goBy < 1);
   const anY = FLOOR - 26;
   const [hx, hy] = HEAD_AT[kind];
   const animalHead = { x: anX + hx * (kind === "camel" ? 0.95 : 1), y: anY + hy * (kind === "camel" ? 0.95 : 1) };
-  const ropeEnd = frame < giftAt ? handAt(ax, FLOOR, S, aFlip, aPose.armLU, aPose.armLL, false) : frame < giftAt + 10 ? handAt(ax, FLOOR, S, aFlip, aPose.armRU, aPose.armRL, true) : handAt(MX, manY, S, true, pose.armRU, pose.armRL, true);
-  const showAnimal = frame > ask - 12;
-  const rope = showAnimal && goBy < 1;
+  const ropeEnd = frame < G ? handAt(ax, FLOOR, S, aFlip, aPose.armLU, aPose.armLL, false) : frame < G + 10 ? handAt(ax, FLOOR, S, aFlip, aPose.armRU, aPose.armRL, true) : handAt(MX, manY, S, true, pose.armRU, pose.armRL, true);
+  const showAnimal = frame > inStart;
+  const rope = showAnimal; // the rope stays in his hand from the moment he takes it
   // camera
   const AXc = Math.max(300, ax);
   const two = (z: number): Cam => aim(vertical, (AXc + MX) / 2, 1060, vertical ? Math.min(z, 1.4) : z);
@@ -243,7 +246,7 @@ export const Wish: React.FC<{ who: Who }> = ({ who }) => {
     { at: L(w.ns2) - 2, a: onMan(2.0), b: onMan(2.15) },
     { at: L(w.ans2) - 2, a: onMan(2.25), b: onMan(2.4) },
     { at: giftAt - 2, a: two(1.1), b: two(1.22) },
-    { at: giftAt + 34, a: aim(vertical, MX + 160, 1000, 1.05), b: aim(vertical, MX + 200, 990, 1.15) },
+    { at: G + 34, a: aim(vertical, MX + 160, 1000, 1.05), b: aim(vertical, MX + 200, 990, 1.15) },
   ];
   if (who === "leper") shots.push({ at: L("N12_b") - 2, a: onMan(2.0), b: onMan(2.2) });
   if (w.bless) shots.push({ at: Wd(w.gift, w.bless) - 2, a: onAngel(2.0), b: onAngel(2.15) });
@@ -314,7 +317,7 @@ export const Valleys: React.FC<{ mode: "grow" | "tease" | "judged" }> = ({ mode 
   const b = [0, L("N28_b") - 2, L("N28_c") - 2];
   const n29 = L("N29") - 2, n30 = L("N30") - 2, n31 = L("N31") - 2, n32 = L("N32") - 2;
   if (frame < n29) { const k = frame >= b[2] ? 2 : frame >= b[1] ? 1 : 0; return <Valley who={WHO3[k]} t0={b[k]} n={1} birth />; }
-  if (frame < n30) { const step = Math.max(1, Math.floor((n30 - n29) / 4)); const i = Math.floor((frame - n29) / step); return <Valley who={WHO3[i % 3]} t0={n29 + i * step} n={3 + (frame - n29) * 0.25} />; }
+  if (frame < n30) { const step = Math.max(1, Math.floor((n30 - n29) / 4)); const i = Math.min(3, Math.floor((frame - n29) / step)); return <Valley who={WHO3[i % 3]} t0={n29 + i * step} n={3 + (frame - n29) * 0.25} />; }
   if (frame < n31) { const c = [n30, Wd("N30", "one") - 4, Wd("N30", "one", 1) - 4]; const k = frame >= c[2] ? 2 : frame >= c[1] ? 1 : 0; return <Valley who={WHO3[k]} t0={c[k]} n={24} />; }
   if (frame < n32) { const step = Math.max(1, Math.floor((n32 - n31) / 3)); const k = Math.min(2, Math.floor((frame - n31) / step)); return <Valley who={WHO3[k]} t0={n31 + k * step} n={26} rich />; }
   return <AngelComesBack t0={n32} />;

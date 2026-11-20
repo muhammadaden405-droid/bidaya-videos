@@ -102,13 +102,14 @@ export const Animal: React.FC<{ kind: Kind; walk?: number; graze?: number; flip?
 /** A herd grazing on the far bank / hillside: n animals by a fixed seed, so it grows without reshuffling.
  * Drawn smaller because they are far away; place it BEHIND the people (never where anyone walks). */
 export const Herd: React.FC<{ kind: Kind; n: number; x0: number; x1: number; y0: number; y1: number; frame: number; seed: string; s?: number; o?: number }> = ({ kind, n, x0, x1, y0, y1, frame, seed, s = 0.35, o = 1 }) => {
-  const items = new Array(Math.max(0, Math.floor(n))).fill(0).map((_, i) => {
+  // the newest animal fades in instead of popping in, so a growing herd never jumps
+  const items = new Array(Math.max(0, Math.ceil(n))).fill(0).map((_, i) => {
     const y = y0 + random(`${seed}y${i}`) * (y1 - y0);
-    return { x: x0 + random(`${seed}x${i}`) * (x1 - x0), y, k: s * (0.8 + 0.4 * (y - y0) / Math.max(1, y1 - y0)), flip: random(`${seed}f${i}`) > 0.5, ph: random(`${seed}p${i}`) * 20, young: random(`${seed}c${i}`) > 0.8 };
+    return { x: x0 + random(`${seed}x${i}`) * (x1 - x0), y, k: s * (0.8 + 0.4 * (y - y0) / Math.max(1, y1 - y0)), flip: random(`${seed}f${i}`) > 0.5, ph: random(`${seed}p${i}`) * 20, young: random(`${seed}c${i}`) > 0.8, o: Math.min(1, n - i) };
   }).sort((a, b) => a.y - b.y);
   return (
     <g opacity={o}>
-      {items.map((a, i) => <g key={i} transform={`translate(${a.x} ${a.y})`}><Animal kind={kind} graze={frame * 0.05 + a.ph} flip={a.flip} s={a.k} young={a.young} /></g>)}
+      {items.map((a, i) => <g key={i} transform={`translate(${a.x} ${a.y})`} opacity={a.o}><Animal kind={kind} graze={frame * 0.05 + a.ph} flip={a.flip} s={a.k} young={a.young} /></g>)}
     </g>
   );
 };

@@ -143,7 +143,19 @@ export const Stalls: React.FC<{ x: number }> = ({ x }) => (
           <rect x={-220} y={-260} width={440} height={260} fill="#8a6a46" stroke="#3a2a1e" strokeWidth={6} />
           <line x1={-220} y1={-260} x2={-220} y2={-760} stroke="#5a3e28" strokeWidth={12} /><line x1={220} y1={-260} x2={220} y2={-760} stroke="#5a3e28" strokeWidth={12} />
           <path d="M -270 -760 L 270 -760 L 250 -620 L -250 -620 Z" fill={c} stroke="#3a2a1e" strokeWidth={6} />
-          {[-150, -60, 30, 120].map((fx, k) => <circle key={k} cx={fx} cy={-282} r={30} fill={["#e8b440", "#c2412f", "#7fae4a", "#e98a2c"][k]} stroke="#3a2a1e" strokeWidth={3} />)}
+          {i === 1 ? <>
+            {/* clay jars and a stack of folded cloth */}
+            {[-140, -50].map((jx, k) => <path key={k} d={`M ${jx - 22} -262 Q ${jx - 50} -310 ${jx - 26} -360 L ${jx - 14} -378 L ${jx + 14} -378 L ${jx + 26} -360 Q ${jx + 50} -310 ${jx + 22} -262 Z`} fill={k ? "#b8673e" : "#c97f4f"} stroke="#3a2a1e" strokeWidth={4} />)}
+            {[0, 1, 2].map((k) => <rect key={k} x={40} y={-290 - k * 26} width={150} height={26} rx={6} fill={["#7a4a8a", "#d8ccb0", "#3f7a4a"][k]} stroke="#3a2a1e" strokeWidth={3} />)}
+          </> : [-110, 100].map((bx, k) => (
+            <g key={k}>
+              {/* a woven basket heaped with fruit (pomegranates / lemons / dates) */}
+              {[[-40, -300], [0, -310], [40, -300], [-20, -330], [20, -330]].map(([fx, fy], j) => <g key={j}><circle cx={bx + fx} cy={fy} r={22} fill={[["#c2412f", "#e8b440"], ["#e8b440", "#7a3b22"]][i ? 1 : 0][k]} stroke="#3a2a1e" strokeWidth={3} />{k === 0 && i === 0 ? <path d={`M ${bx + fx - 5} ${fy - 22} l 5 -8 l 5 8`} fill="#8a2a1e" /> : null}</g>)}
+              <path d={`M ${bx - 80} -300 L ${bx + 80} -300 L ${bx + 62} -262 L ${bx - 62} -262 Z`} fill="#a77a42" stroke="#3a2a1e" strokeWidth={4} />
+              {[-50, -20, 10, 40].map((wx) => <line key={wx} x1={bx + wx} y1={-298} x2={bx + wx + 8} y2={-264} stroke="#7a5528" strokeWidth={3} />)}
+              <line x1={bx - 74} y1={-282} x2={bx + 74} y2={-282} stroke="#7a5528" strokeWidth={3} />
+            </g>
+          ))}
         </g>
       );
     })}
