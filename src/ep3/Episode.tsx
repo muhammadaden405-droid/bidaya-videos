@@ -1,10 +1,11 @@
 import React from "react";
 import { LeperTop, BaldTop, BlindTop } from "./overhead";
+import { Village3D, AngelSent3D } from "./three";
 import { AbsoluteFill, Html5Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { sans, amiri, serif, display } from "../fonts";
 import { Grain } from "../ep1/kit";
 import { Abs, V, lf, wf, iv, ease, useShot } from "./kit";
-import { VillageWide, LeperAlone, BaldMarket, BlindPath, AngelSent, Wish, Valleys, Gate, Verdict, Ending } from "./scenes";
+import { LeperAlone, BaldMarket, BlindPath, Wish, Valleys, Gate, Verdict, Ending } from "./scenes";
 
 // Episode 3 — The Blind Man, the Leper and the Bald Man. One timeline, two films (16:9 and 9:16), cut to the locked voice track.
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -15,11 +16,11 @@ const OUT = V.total + 20;
 const SCENES: SceneCue[] = [
   { C: Gate, from: 0, to: lf("N03_a"), props: { who: "leper", cold: true }, amb: "dusk" },
   { C: Valleys, from: lf("N03_a"), to: lf("N04"), props: { mode: "tease" }, amb: "day" },
-  { C: VillageWide, from: lf("N04"), to: lf("N05_a"), amb: "day" },
+  { C: Village3D, from: lf("N04"), to: lf("N05_a"), amb: "day" },
   { C: LeperAlone, from: lf("N05_a"), to: lf("N06"), amb: "day" },
   { C: BaldMarket, from: lf("N06"), to: lf("N07"), amb: "day" },
   { C: BlindPath, from: lf("N07"), to: lf("N08"), amb: "day" },
-  { C: AngelSent, from: lf("N08"), to: lf("N09"), amb: "day" },
+  { C: AngelSent3D, from: lf("N08"), to: lf("N09"), amb: "day" },
   { C: LeperTop, from: lf("N09"), to: lf("N10") - 14, amb: "day" },
   { C: Wish, from: lf("N10") - 14, to: lf("N16"), props: { who: "leper" }, amb: "day" },
   { C: BaldTop, from: lf("N16"), to: lf("N17") - 14, amb: "dusk" },
