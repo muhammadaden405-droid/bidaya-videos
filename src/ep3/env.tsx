@@ -69,13 +69,13 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
     <>
       <Sky stops={SKIES[sky]} />
       <Layer d={0.05} cam={cam}><Defs /><Glow x={sunX} y={sunY} r={420} o={dusk ? 0.7 : 0.55} /><circle cx={sunX} cy={sunY} r={50} fill="#fff6d8" /></Layer>
-      <Layer d={0.15} cam={cam} blur={4}><path d={ridge(`${seed}a`, 1050, 220, 260)} fill={dusk ? "#5a5f86" : "#8fb0c4"} opacity={0.85} /></Layer>
-      <Layer d={0.3} cam={cam} blur={2.4}>
+      <Layer d={0.15} cam={cam}><path d={ridge(`${seed}a`, 1050, 220, 260)} fill={dusk ? "#5a5f86" : "#8fb0c4"} opacity={0.85} /></Layer>
+      <Layer d={0.3} cam={cam}>
         <path d={ridge(`${seed}b`, 1150, 130, 200)} fill={dusk ? "#3f6045" : "#5f9a52"} />
         {new Array(trees + 4).fill(0).map((_, i) => <Tree key={i} x={-600 + random(`${seed}ft${i}`) * 3200} y={1120 + random(`${seed}fy${i}`) * 40} s={0.35 + random(`${seed}fs${i}`) * 0.15} kind={i % 3 === 0 ? "cypress" : "round"} tint={dusk ? 1 : 0} />)}
       </Layer>
-      <AbsoluteFill style={{ background: `linear-gradient(rgba(0,0,0,0) 25%, ${dusk ? "rgba(255,190,150,0.16)" : "rgba(235,245,255,0.22)"} 55%, rgba(0,0,0,0) 80%)` }} />
-      <Layer d={0.55} cam={cam} blur={1}>
+      <AbsoluteFill style={{ background: `linear-gradient(rgba(0,0,0,0) 25%, ${dusk ? "rgba(255,190,150,0.22)" : "rgba(235,245,255,0.3)"} 55%, rgba(0,0,0,0) 80%)` }} />
+      <Layer d={0.55} cam={cam}>
         <path d={`M -1400 1190 Q 960 1160 3400 1190 L 3400 1300 L -1400 1300 Z`} fill={dusk ? "#4c7a46" : GRASS} />
         {new Array(trees).fill(0).map((_, i) => <Tree key={i} x={-500 + random(`${seed}nt${i}`) * 3000} y={1192} s={(i % 4 === 1 ? 1.1 : 0.85) + random(`${seed}ns${i}`) * 0.2} kind={i % 4 === 1 ? "palm" : i % 4 === 3 ? "cypress" : "round"} tint={dusk ? 1 : 0} />)}
         {back}
@@ -91,12 +91,13 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
         <Tufts seed={`${seed}t`} y0={FLOOR - 10} y1={FLOOR + 260} />
         <Flowers seed={`${seed}f`} y0={FLOOR} y1={FLOOR + 280} />
       </Layer>
-      <Layer d={1.45} cam={cam} blur={7}>
+      <Layer d={1.45} cam={cam}>
         {new Array(12).fill(0).map((_, i) => {
           const x = -900 + random(`${seed}fg${i}`) * 3800, y = FLOOR + 330 + random(`${seed}fgy${i}`) * 120, sc = 2.6 + random(`${seed}fgs${i}`) * 1.6;
           return <g key={i} transform={`translate(${x} ${y}) scale(${sc})`} opacity={0.9}>
-            {[-14, -5, 4, 12].map((bx, k) => <path key={k} d={`M ${bx} 0 Q ${bx + (k % 2 ? 8 : -8)} -40 ${bx + (k % 2 ? 14 : -12)} -${70 + k * 8}`} stroke={dusk ? "#456f3c" : k % 2 ? "#4f8a3c" : "#6aa84f"} strokeWidth={7} fill="none" strokeLinecap="round" />)}
-            {i % 3 === 0 ? <circle cx={4} cy={-78} r={9} fill={i % 2 ? "#f2d36b" : "#f4f0e6"} /> : null}
+            {[-14, -5, 4, 12].map((bx, k) => { const d = `M ${bx} 0 Q ${bx + (k % 2 ? 8 : -8)} -40 ${bx + (k % 2 ? 14 : -12)} -${70 + k * 8}`, c = dusk ? "#456f3c" : k % 2 ? "#4f8a3c" : "#6aa84f";
+              return <g key={k}><path d={d} stroke={c} strokeWidth={13} fill="none" strokeLinecap="round" opacity={0.35} /><path d={d} stroke={c} strokeWidth={8} fill="none" strokeLinecap="round" opacity={0.5} /></g>; })}
+            {i % 3 === 0 ? <><circle cx={4} cy={-78} r={14} fill={i % 2 ? "#f2d36b" : "#f4f0e6"} opacity={0.35} /><circle cx={4} cy={-78} r={9} fill={i % 2 ? "#f2d36b" : "#f4f0e6"} opacity={0.6} /></> : null}
           </g>;
         })}
       </Layer>
