@@ -164,10 +164,7 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
           ) : null}
           {outfit.shine ? <ellipse cx={-10} cy={-18} rx={9} ry={5} fill="#fff" opacity={0.35 * outfit.shine} transform="rotate(-25 -10 -18)" /> : null}
           {outfit.hair && (outfit.hairAmt ?? 1) > 0 ? (
-            <g opacity={Math.min(1, (outfit.hairAmt ?? 1) * 1.6)} transform={`translate(0 ${(1 - (outfit.hairAmt ?? 1)) * 6})`}>
-              <path d="M -31 4 Q -36 -36 0 -36 Q 34 -36 31 2 Q 22 -14 0 -16 Q -20 -14 -31 4 Z" fill={outfit.hair} />
-              <path d="M -31 4 Q -38 22 -30 30 L -24 8 Z" fill={outfit.hair} />
-            </g>
+            <path d="M -24 16 Q -34 -4 -26 -22 Q -10 -36 10 -33 Q 26 -29 28 -18 Q 12 -24 -2 -20 Q -16 -14 -16 6 Z" fill={outfit.hair} opacity={Math.min(1, (outfit.hairAmt ?? 1) * 1.4)} transform={`scale(${0.85 + 0.15 * (outfit.hairAmt ?? 1)})`} />
           ) : null}
           {outfit.hood ? (
             <>

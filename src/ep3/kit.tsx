@@ -118,3 +118,30 @@ export const shook = (cam: Cam, frame: number, hits: number[], amp = 14): Cam =>
   const s = shakeAt(frame, hits, amp);
   return { ...cam, x: cam.x + s.x, y: cam.y + s.y };
 };
+/** Arm kinematics for a figure placed at (x, y) with scale s: the near arm reaches a world point (IK), and
+ * where a hand is (FK). Angles use the rig's convention: 0 = hanging down, −90 = straight forward. */
+const R = Math.PI / 180;
+const dir = (a: number) => [-Math.sin(a * R), Math.cos(a * R)];
+export const reach = (x: number, y: number, s: number, flip: boolean, tx: number, ty: number, near = true): { u: number; l: number } => {
+  const sg = flip ? -1 : 1;
+  const sx = near ? 6 : -4;
+  const vx = ((tx - x) / s) * sg - sx, vy = (ty - y) / s + 196;
+  const l1 = 52, l2 = 48;
+  const d = Math.max(8, Math.min(l1 + l2 - 0.5, Math.hypot(vx, vy)));
+  const k = d / Math.hypot(vx, vy);
+  const px = vx * k, py = vy * k;
+  const tv = Math.atan2(-px, py) / R;
+  const al = Math.acos(Math.max(-1, Math.min(1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d)))) / R;
+  const pick = [tv + al, tv - al].map((u) => ({ u, ey: dir(u)[1] * l1 })).sort((a, b) => b.ey - a.ey)[0].u;
+  const [ex, ey] = dir(pick).map((v) => v * l1);
+  let l = Math.atan2(-(px - ex), py - ey) / R - pick;
+  while (l > 180) l -= 360;
+  while (l < -180) l += 360;
+  return { u: pick, l };
+};
+export const handAt = (x: number, y: number, s: number, flip: boolean, u: number, l: number, near = true) => {
+  const sg = flip ? -1 : 1;
+  const [ax, ay] = dir(u), [bx, by] = dir(u + l);
+  const hx = (near ? 6 : -4) + 52 * ax + 50 * bx, hy = -196 + 52 * ay + 50 * by;
+  return { x: x + sg * hx * s, y: y + hy * s };
+};

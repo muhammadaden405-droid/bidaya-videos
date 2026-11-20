@@ -3,7 +3,7 @@ import { AbsoluteFill, Html5Audio, Img, Sequence, interpolate, staticFile, useCu
 import { sans, amiri, serif, display } from "../fonts";
 import { Grain } from "../ep1/kit";
 import { Abs, V, lf, wf, iv, ease, useShot } from "./kit";
-import { Village, Wish, Valleys, Gate, Verdict, Ending } from "./scenes";
+import { VillageWide, LeperAlone, BaldMarket, BlindPath, AngelSent, Wish, Valleys, Gate, Verdict, Ending } from "./scenes";
 
 // Episode 3 — The Blind Man, the Leper and the Bald Man. One timeline, two films (16:9 and 9:16), cut to the locked voice track.
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -14,7 +14,11 @@ const OUT = V.total + 20;
 const SCENES: SceneCue[] = [
   { C: Gate, from: 0, to: lf("N03_a"), props: { who: "leper", cold: true }, amb: "dusk" },
   { C: Valleys, from: lf("N03_a"), to: lf("N04"), props: { mode: "tease" }, amb: "day" },
-  { C: Village, from: lf("N04"), to: lf("N09"), amb: "day" },
+  { C: VillageWide, from: lf("N04"), to: lf("N05_a"), amb: "day" },
+  { C: LeperAlone, from: lf("N05_a"), to: lf("N06"), amb: "day" },
+  { C: BaldMarket, from: lf("N06"), to: lf("N07"), amb: "day" },
+  { C: BlindPath, from: lf("N07"), to: lf("N08"), amb: "day" },
+  { C: AngelSent, from: lf("N08"), to: lf("N09"), amb: "day" },
   { C: Wish, from: lf("N09"), to: lf("N16"), props: { who: "leper" }, amb: "day" },
   { C: Wish, from: lf("N16"), to: lf("N22"), props: { who: "bald" }, amb: "dusk" },
   { C: Wish, from: lf("N22"), to: lf("N28_a"), props: { who: "blind" }, amb: "day" },
@@ -46,7 +50,6 @@ for (const c of SCENES) {
 const heals = [wf("N12_a", "gone"), wf("N18", "grew"), wf("N25", "sight")];
 SFX.push(
   ...heals.map((h) => one("own-air-swell", h - 30, 0.22, 90, 40)),
-  one("own-reverse-swell", lf("N24"), 0.16, lf("N25") - lf("N24") + 10, 10),
   // the gifts, and the herds multiplying
   one("camel-grumble-01", lf("N14") + 8, 0.35, 70), { src: lib("own-hooves"), from: lf("N29"), len: lf("N31") - lf("N29"), vol: 0.22, fadeIn: 20, fadeOut: 30, loop: true },
   one("camel-grumble-01", lf("N28_a") + 10, 0.3, 60), one("camel-grumble-01", lf("N33") + 20, 0.22, 60),
@@ -55,7 +58,7 @@ SFX.push(
   // the two curses: a low rumble and wind; then the shadow falls over the two valleys
   ...[wf("N40", "may"), wf("N45", "may")].flatMap((k) => [one("own-rumble", k - 4, 0.35, 120, 50), one("horror-wind-whisper-04", k + 6, 0.2, 60, 30)]),
   one("own-air-swell", wf("N53", "pleased") - 20, 0.2, 100, 40), one("own-rumble", wf("N53", "angry"), 0.22, 90, 40),
-  // both lies together over the split screen: the bald man's echoing line under the leper's
+  // both lies together over the split screen: the bald man's line under the leper's
   { src: "ep3/vo/B4.wav", from: lf("L1_3"), len: 200, vol: 0.75, fadeOut: 20 },
 );
 for (const e of PS.slice(2, 7)) SFX.push({ src: lib("own-air-swell"), from: e - 110, len: 110, vol: 0.12, fadeIn: 80, fadeOut: 10 });

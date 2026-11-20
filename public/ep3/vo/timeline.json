@@ -1,5 +1,5 @@
 {
- "total": 411.816,
+ "total": 411.008,
  "timeline": [
   {
    "id": "N00",
@@ -3669,7 +3669,7 @@
    "kind": "C",
    "who": "THE BALD MAN",
    "start": 288.824,
-   "dur": 6.124,
+   "dur": 5.315,
    "file": "B4.wav",
    "text": "I inherited all of this, from my fathers before me.",
    "words": [
@@ -3678,44 +3678,40 @@
      0.0
     ],
     [
-     "inherit",
-     0.58
+     "inherited",
+     0.54
     ],
     [
      "all",
-     1.22
+     1.26
     ],
     [
      "of",
-     2.04
+     1.98
     ],
     [
      "this",
-     2.24
+     2.26
     ],
     [
      "from",
-     3.02
+     2.64
     ],
     [
      "my",
-     3.52
+     3.46
     ],
     [
-     "father's",
-     3.76
-    ],
-    [
-     "father",
-     4.48
+     "fathers",
+     3.72
     ],
     [
      "before",
-     4.84
+     4.22
     ],
     [
-     "me",
-     5.3
+     "me.",
+     4.76
     ]
    ]
   },
@@ -3725,7 +3721,7 @@
    "base": "N45",
    "kind": "N",
    "who": null,
-   "start": 295.148,
+   "start": 294.339,
    "dur": 5.974,
    "file": "N45.wav",
    "text": "The angel said: \"If you are lying\u2026 may Allah return you to how you were.\"",
@@ -3798,7 +3794,7 @@
    "base": "N46",
    "kind": "N",
    "who": null,
-   "start": 301.322,
+   "start": 300.513,
    "dur": 4.783,
    "file": "N46.wav",
    "text": "Two men had been tested. Now only one was left.",
@@ -3851,7 +3847,7 @@
    "base": "N47",
    "kind": "N",
    "who": null,
-   "start": 306.305,
+   "start": 305.497,
    "dur": 3.313,
    "file": "N47.wav",
    "text": "The man who had been blind.",
@@ -3888,7 +3884,7 @@
    "base": "N48",
    "kind": "N",
    "who": null,
-   "start": 309.819,
+   "start": 309.01,
    "dur": 6.816,
    "file": "N48.wav",
    "text": "Last, the angel came to the man who had once been blind, now the owner of a whole valley of sheep.",
@@ -3985,7 +3981,7 @@
    "base": "N49",
    "kind": "N",
    "who": null,
-   "start": 316.835,
+   "start": 316.026,
    "dur": 6.6,
    "file": "N49_a.wav",
    "text": "He came in the form of a blind man, and said: \"I am a poor man, a traveller.",
@@ -4070,7 +4066,7 @@
    "base": "N49",
    "kind": "N",
    "who": null,
-   "start": 323.635,
+   "start": 322.826,
    "dur": 3.51,
    "file": "N49_b.wav",
    "text": "Every means I had for my journey has been cut off.",
@@ -4127,7 +4123,7 @@
    "base": "N49",
    "kind": "N",
    "who": null,
-   "start": 327.345,
+   "start": 326.536,
    "dur": 5.518,
    "file": "N49_c.wav",
    "text": "Today I can only reach my destination with Allah's help, and then yours.\"",
@@ -4192,7 +4188,7 @@
    "base": "N50",
    "kind": "N",
    "who": null,
-   "start": 333.063,
+   "start": 332.255,
    "dur": 9.745,
    "file": "N50.wav",
    "text": "\"I ask you, by the One who gave you back your sight: give me one sheep, so I can finish my journey.\" Two men had already turned him away.",
@@ -4321,7 +4317,7 @@
    "base": "N51",
    "kind": "N",
    "who": null,
-   "start": 343.008,
+   "start": 342.199,
    "dur": 1.44,
    "file": "N51.wav",
    "text": "The man said:",
@@ -4370,7 +4366,7 @@
    "base": "BL3",
    "kind": "C",
    "who": "THE BLIND MAN",
-   "start": 344.648,
+   "start": 343.84,
    "dur": 10.342,
    "file": "BL3.wav",
    "text": "I was blind\u2026 and Allah gave me back my sight. I was poor\u2026 and He made me rich.",
@@ -4455,7 +4451,7 @@
    "base": "BL4",
    "kind": "C",
    "who": "THE BLIND MAN",
-   "start": 355.19,
+   "start": 354.382,
    "dur": 7.334,
    "file": "BL4.wav",
    "text": "So take whatever you want. By Allah, I will not hold back anything you take for Allah today.",
@@ -4540,7 +4536,7 @@
    "base": "N52",
    "kind": "N",
    "who": null,
-   "start": 362.725,
+   "start": 361.916,
    "dur": 2.8,
    "file": "N52_a.wav",
    "text": "The angel said: \"Keep your wealth.",
@@ -4577,7 +4573,7 @@
    "base": "N52",
    "kind": "N",
    "who": null,
-   "start": 365.725,
+   "start": 364.916,
    "dur": 3.262,
    "file": "N52_b.wav",
    "text": "All three of you were only being tested.\"",
@@ -4622,7 +4618,7 @@
    "base": "N53",
    "kind": "N",
    "who": null,
-   "start": 369.187,
+   "start": 368.378,
    "dur": 4.92,
    "file": "N53.wav",
    "text": "\"Allah is pleased with you\u2026 and He is angry with your two companions.\"",
@@ -4687,7 +4683,7 @@
    "base": "N54",
    "kind": "N",
    "who": null,
-   "start": 374.307,
+   "start": 373.498,
    "dur": 3.08,
    "file": "N54_a.wav",
    "text": "Three men were tested the same way.",
@@ -4728,7 +4724,7 @@
    "base": "N54",
    "kind": "N",
    "who": null,
-   "start": 377.587,
+   "start": 376.778,
    "dur": 2.675,
    "file": "N54_b.wav",
    "text": "Two of them gave the very same answer:",
@@ -4773,7 +4769,7 @@
    "base": "L1",
    "kind": "ECHO",
    "who": "THE LEPER",
-   "start": 380.462,
+   "start": 379.654,
    "dur": 6.04,
    "file": "L1.wav",
    "text": "I inherited all of this, from my fathers and their fathers before them.",
@@ -4838,7 +4834,7 @@
    "base": "N55",
    "kind": "N",
    "who": null,
-   "start": 386.702,
+   "start": 385.894,
    "dur": 1.264,
    "file": "N55.wav",
    "text": "And one answered:",
@@ -4863,7 +4859,7 @@
    "base": "BL3",
    "kind": "ECHO",
    "who": "THE BLIND MAN",
-   "start": 388.167,
+   "start": 387.358,
    "dur": 10.342,
    "file": "BL3.wav",
    "text": "I was blind\u2026 and Allah gave me back my sight. I was poor\u2026 and He made me rich.",
@@ -4948,7 +4944,7 @@
    "base": "N56",
    "kind": "N",
    "who": null,
-   "start": 398.709,
+   "start": 397.901,
    "dur": 2.62,
    "file": "N56_a.wav",
    "text": "Two of them forgot where it came from.",
@@ -4993,7 +4989,7 @@
    "base": "N56",
    "kind": "N",
    "who": null,
-   "start": 401.529,
+   "start": 400.721,
    "dur": 1.323,
    "file": "N56_b.wav",
    "text": "One remembered.",
@@ -5014,7 +5010,7 @@
    "base": "N57",
    "kind": "N",
    "who": null,
-   "start": 403.052,
+   "start": 402.244,
    "dur": 4.55,
    "file": "N57_a.wav",
    "text": "The angel asked each of them: \"What would you love most?\"",
@@ -5071,7 +5067,7 @@
    "base": "N57",
    "kind": "N",
    "who": null,
-   "start": 407.802,
+   "start": 406.994,
    "dur": 2.06,
    "file": "N57_b.wav",
    "text": "What would you have asked for?",
@@ -5108,7 +5104,7 @@
    "base": "N57",
    "kind": "N",
    "who": null,
-   "start": 410.062,
+   "start": 409.254,
    "dur": 1.554,
    "file": "N57_c.wav",
    "text": "Tell us in the comments.",
