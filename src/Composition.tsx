@@ -1,3 +1,4 @@
+import { Ep3Thumb, Ep3ThumbV } from "./ep3/Thumb";
 import { Ep2, Ep2Part, Ep2Hooks, Ep2Outro, EP2_READY, EP2_PARTS, EP2_HOOKS_LENGTH, EP2_OUTRO_LEN } from "./ep2/Episode";
 import React from "react";
 import { Composition, AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
@@ -105,6 +106,8 @@ export const MyComposition = () => (
     {EP1_SHORTS.map((s) => (
       <Composition key={s.id} id={s.id} component={Ep1Short} defaultProps={{ from: s.from, to: s.to, headline: s.headline, tease: s.tease }} durationInFrames={shortLength(s)} fps={30} width={1080} height={1920} />
     ))}
+    <Composition id="Ep3Thumb" component={Ep3Thumb} durationInFrames={1} fps={30} width={1920} height={1080} />
+    <Composition id="Ep3ThumbV" component={Ep3ThumbV} durationInFrames={1} fps={30} width={1080} height={1920} />
     <Composition id="Ep1Thumb" component={Ep1Thumb} durationInFrames={1} fps={30} width={1920} height={1080} />
     <Composition id="Ep1ThumbV" component={Ep1ThumbV} durationInFrames={1} fps={30} width={1080} height={1920} />
     <Composition id="RigTest" component={RigTest} durationInFrames={150} fps={30} width={1920} height={1080} />
