@@ -1,4 +1,5 @@
 import React from "react";
+import { LeperTop, BaldTop, BlindTop } from "./overhead";
 import { AbsoluteFill, Html5Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { sans, amiri, serif, display } from "../fonts";
 import { Grain } from "../ep1/kit";
@@ -19,9 +20,12 @@ const SCENES: SceneCue[] = [
   { C: BaldMarket, from: lf("N06"), to: lf("N07"), amb: "day" },
   { C: BlindPath, from: lf("N07"), to: lf("N08"), amb: "day" },
   { C: AngelSent, from: lf("N08"), to: lf("N09"), amb: "day" },
-  { C: Wish, from: lf("N09"), to: lf("N16"), props: { who: "leper" }, amb: "day" },
-  { C: Wish, from: lf("N16"), to: lf("N22"), props: { who: "bald" }, amb: "dusk" },
-  { C: Wish, from: lf("N22"), to: lf("N28_a"), props: { who: "blind" }, amb: "day" },
+  { C: LeperTop, from: lf("N09"), to: lf("N10") - 14, amb: "day" },
+  { C: Wish, from: lf("N10") - 14, to: lf("N16"), props: { who: "leper" }, amb: "day" },
+  { C: BaldTop, from: lf("N16"), to: lf("N17") - 14, amb: "dusk" },
+  { C: Wish, from: lf("N17") - 14, to: lf("N22"), props: { who: "bald" }, amb: "dusk" },
+  { C: BlindTop, from: lf("N22"), to: lf("N23") - 14, amb: "day" },
+  { C: Wish, from: lf("N23") - 14, to: lf("N28_a"), props: { who: "blind" }, amb: "day" },
   { C: Valleys, from: lf("N28_a"), to: lf("N33"), props: { mode: "grow" }, amb: "day" },
   { C: Gate, from: lf("N33"), to: lf("N41"), props: { who: "leper" }, amb: "dusk" },
   { C: Gate, from: lf("N41"), to: lf("N47"), props: { who: "bald" }, amb: "dusk" },

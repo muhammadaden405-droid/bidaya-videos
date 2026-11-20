@@ -43,7 +43,7 @@ export const VillageWide: React.FC = () => {
   const cam = cutCam(frame, [{ at: 0, a: aim(vertical, 960, 1120, 0.95), b: aim(vertical, 1020, 1110, 1.08) }], dur);
   return (
     <AbsoluteFill>
-      <Meadow cam={cam} seed="vw" mid={<g>{[200, 700, 1300, 1800].map((x, i) => <g key={i} transform={`translate(${x} 1290) scale(0.42) translate(0 ${-FLOOR})`}><House x={0} poor /></g>)}</g>} />
+      <Meadow cam={cam} seed="vw" mid={<g>{[-300, 460, 1220, 1980].map((x, i) => <g key={i} transform={`translate(${x} 1290) scale(0.7) translate(0 ${-FLOOR})`}><House x={0} poor /></g>)}</g>} />
       <Layer d={1} cam={cam}>
         <Defs />
         {[0, 1, 2, 3, 4].map((i) => { const x = (i % 2 ? 1900 : 0) + (i % 2 ? -1 : 1) * (frame * (1.6 + i * 0.3) + i * 230); return <FolkWalk key={i} x={x} i={i} walking flip={i % 2 === 1} s={S * 0.9} />; })}
@@ -69,13 +69,15 @@ export const LeperAlone: React.FC = () => {
   const pull = iv(frame, [b, b + 30], [0, 1], ease);
   return (
     <AbsoluteFill>
-      <Meadow cam={cam} seed="la" mid={<g transform={`translate(1500 1290) scale(0.5) translate(0 ${-FLOOR})`}><House x={0} poor /></g>} />
+      <Meadow cam={cam} seed="la" mid={<g transform={`translate(1560 1290) scale(0.7) translate(0 ${-FLOOR})`}><House x={0} poor /></g>} />
       <Layer d={1} cam={cam}>
         <Defs />
         <Wall x0={560} x1={1400} />
         <Actor x={LX} y={sitY(FLOOR - 8, S, true)} s={S} outfit={LEPER_POOR} pose={{ ...SITG, head: 12, lean: 6 }} mood="frown" seat="ground" />
         <FolkWalk x={m1} i={0} walking={t >= 0 && (t < 36 || t > 44)} flip={!turned} mood={turned ? "frown" : "neutral"} />
         <FolkWalk x={m1 + 160} i={2} walking={t >= 0 && (t < 36 || t > 44)} flip={!turned} />
+        <FolkWalk x={m1 + 330} i={4} walking={t >= 0 && (t < 30 || t > 40)} flip={t < 34} mood={t >= 34 ? "frown" : "neutral"} />
+        <FolkWalk x={m1 + 480} i={1} walking={t >= 0 && (t < 30 || t > 40)} flip={t < 34} />
         <Actor x={500 - pull * 220} y={FLOOR} s={S * 0.95} outfit={{ ...FOLK(1), wrap: "#8a5a6a" }} pose={pull > 0 && pull < 1 ? walkBy(-(500 - pull * 220), S) : { ...STAND, armRU: -60, armRL: -20 }} flip mood="tight" />
         <Actor x={620 - pull * 220} y={FLOOR} s={S * 0.6} outfit={FOLK(3)} pose={pull > 0 && pull < 1 ? walkBy(-(620 - pull * 220), S * 0.6) : STAND} flip={pull > 0} />
       </Layer>
@@ -105,6 +107,8 @@ export const BaldMarket: React.FC = () => {
         <Actor x={BX} y={FLOOR} s={S} outfit={BALD_POOR} pose={{ ...STAND, armRU: -158, armRL: -78, head: 10, lean: 3 }} mood="frown" />
         <FolkWalk x={1380 + away} i={0} walking={frame >= turn + 6} flip={frame < turn} mood={frame < turn ? "sneer" : "neutral"} />
         <FolkWalk x={1560 + away} i={3} walking={frame >= turn + 6} flip={frame < turn} mood={frame < turn ? "sneer" : "neutral"} />
+        <FolkWalk x={1740 + away * 1.1} i={2} walking={frame >= turn + 10} flip={frame < turn + 4} mood={frame < turn ? "sneer" : "neutral"} />
+        <FolkWalk x={640 - away} i={4} walking={frame >= turn + 8} flip={frame >= turn + 2} mood={frame < turn ? "sneer" : "neutral"} />
       </Layer>
       <Vignette s={0.4} />
     </AbsoluteFill>
@@ -249,7 +253,7 @@ export const Wish: React.FC<{ who: Who }> = ({ who }) => {
   return (
     <AbsoluteFill style={{ filter: pov > 0.01 ? `blur(${pov * 16}px) brightness(${1 + pov * 0.2})` : undefined }}>
       <Meadow cam={cam} seed={`w${who}`} sky={who === "bald" ? "dusk" : "day"} sunX={who === "bald" ? 520 : 1480} sunY={who === "bald" ? 880 : 760}
-        mid={who === "leper" ? <g transform={`translate(1700 1290) scale(0.5) translate(0 ${-FLOOR})`}><House x={0} poor /></g> : undefined} />
+        mid={who === "leper" ? <g transform={`translate(1760 1290) scale(0.7) translate(0 ${-FLOOR})`}><House x={0} poor /></g> : undefined} />
       <Layer d={1} cam={cam}>
         <Defs />
         {who === "leper" ? <Wall x0={760} x1={1800} /> : who === "bald" ? <Stalls x={1620} /> : null}
@@ -283,7 +287,7 @@ const Valley: React.FC<{ who: Who; t0: number; n: number; rich?: boolean; birth?
  />
       <Layer d={1} cam={cam}>
         <Defs />
-        {rich ? <House x={1720} rich /> : <g transform={`translate(1720 ${FLOOR}) scale(0.62) translate(0 ${-FLOOR})`}><House x={0} poor /></g>}
+        <House x={1720} rich={rich} poor={!rich} />
         {birth ? <g transform={`translate(1260 ${FLOOR - 20})`}><Animal kind={kind} graze={frame * 0.05} flip s={kind === "camel" ? 0.95 : 1} />{young > 0 ? <g opacity={young} transform={`translate(${kind === "camel" ? -260 : -190} 4)`}><Glow x={0} y={-120} r={160} o={0.4 * (1 - young * 0.5)} /><Animal kind={kind} young graze={frame * 0.08 + 2} flip s={kind === "camel" ? 0.95 : 1} /></g> : null}</g> : null}
         <Actor x={birth ? 700 : 900} y={FLOOR} s={S} outfit={outfit} pose={rich ? { ...STAND, armRU: -24, armLU: -14 } : STAND} mood={dark ? "tight" : "smile"} />
       </Layer>

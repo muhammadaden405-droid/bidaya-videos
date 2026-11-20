@@ -75,12 +75,12 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
       </Layer>
       <Layer d={0.55} cam={cam}>
         <path d={`M -1400 1190 Q 960 1160 3400 1190 L 3400 1300 L -1400 1300 Z`} fill={dusk ? "#4c7a46" : GRASS} />
+        {new Array(trees).fill(0).map((_, i) => <Tree key={i} x={-500 + random(`${seed}nt${i}`) * 3000} y={1192} s={(i % 4 === 1 ? 1.1 : 0.85) + random(`${seed}ns${i}`) * 0.2} kind={i % 4 === 1 ? "palm" : i % 4 === 3 ? "cypress" : "round"} tint={dusk ? 1 : 0} />)}
         {back}
         {river ? <River dusk={dusk} /> : null}
       </Layer>
       <Layer d={0.8} cam={cam}>
         <path d={`M -1400 1262 Q 960 1250 3400 1262 L 3400 1400 L -1400 1400 Z`} fill={dusk ? "#55854c" : GRASS_L} />
-        {new Array(trees).fill(0).map((_, i) => <Tree key={i} x={-500 + random(`${seed}nt${i}`) * 3000} y={1290} s={0.6 + random(`${seed}ns${i}`) * 0.2} kind={i % 4 === 1 ? "palm" : "round"} tint={dusk ? 1 : 0} />)}
         {mid}
       </Layer>
       <Layer d={1} cam={cam}>
@@ -93,19 +93,19 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
     </>
   );
 };
-/** A house sized for its people: the door is taller than a man (a figure at scale 2 is ≈ 520 px). */
+/** A house sized for its people: one storey ≈ 2× a man (a figure at scale 2 is ≈ 520 px), the door ≈ 1.35× a man. */
 export const House: React.FC<{ x: number; rich?: boolean; poor?: boolean }> = ({ x, rich, poor }) => {
   const wall = poor ? "#b99a6e" : "#e6d3ae", trim = rich ? "#c9962e" : "#9b7b52";
   return (
     <g transform={`translate(${x} ${FLOOR - 4})`}>
-      <rect x={-380} y={-720} width={760} height={720} fill={wall} stroke="#3a2a1e" strokeWidth={8} />
-      <rect x={-410} y={-760} width={820} height={50} fill={trim} stroke="#3a2a1e" strokeWidth={6} />
-      {rich ? <rect x={-380} y={-710} width={760} height={18} fill="#e3b341" opacity={0.6} /> : null}
-      <path d="M -120 0 L -120 -460 Q 0 -600 120 -460 L 120 0 Z" fill="#4a3220" stroke="#3a2a1e" strokeWidth={7} />
-      {rich ? <path d="M -140 0 L -140 -470 Q 0 -630 140 -470 L 140 0" fill="none" stroke="#e3b341" strokeWidth={12} /> : null}
-      <line x1={0} y1={-560} x2={0} y2={0} stroke="#2e1f14" strokeWidth={5} />
-      {[-270, 270].map((wx) => <g key={wx}><path d={`M ${wx - 55} -380 L ${wx - 55} -520 Q ${wx} -580 ${wx + 55} -520 L ${wx + 55} -380 Z`} fill="#3a2718" stroke="#3a2a1e" strokeWidth={6} /></g>)}
-      {rich ? <><Tree x={-470} y={0} s={0.9} kind="palm" /><Tree x={470} y={0} s={0.8} kind="cypress" /></> : null}
+      {rich ? <><Tree x={-640} y={0} s={3.6} kind="palm" /><Tree x={640} y={0} s={3.3} kind="cypress" /></> : null}
+      <rect x={-500} y={-1010} width={1000} height={1010} fill={wall} stroke="#3a2a1e" strokeWidth={8} />
+      <rect x={-535} y={-1055} width={1070} height={56} fill={trim} stroke="#3a2a1e" strokeWidth={6} />
+      {rich ? <rect x={-500} y={-998} width={1000} height={20} fill="#e3b341" opacity={0.6} /> : null}
+      <path d="M -160 0 L -160 -540 Q 0 -760 160 -540 L 160 0 Z" fill="#4a3220" stroke="#3a2a1e" strokeWidth={7} />
+      {rich ? <path d="M -184 0 L -184 -550 Q 0 -800 184 -550 L 184 0" fill="none" stroke="#e3b341" strokeWidth={14} /> : null}
+      <line x1={0} y1={-700} x2={0} y2={0} stroke="#2e1f14" strokeWidth={6} />
+      {[-345, 345].map((wx) => <path key={wx} d={`M ${wx - 70} -560 L ${wx - 70} -740 Q ${wx} -820 ${wx + 70} -740 L ${wx + 70} -560 Z`} fill="#3a2718" stroke="#3a2a1e" strokeWidth={6} />)}
     </g>
   );
 };
@@ -125,8 +125,8 @@ export const Stalls: React.FC<{ x: number }> = ({ x }) => (
       return (
         <g key={i} transform={`translate(${sx} 0)`}>
           <rect x={-220} y={-260} width={440} height={260} fill="#8a6a46" stroke="#3a2a1e" strokeWidth={6} />
-          <line x1={-220} y1={-260} x2={-220} y2={-600} stroke="#5a3e28" strokeWidth={12} /><line x1={220} y1={-260} x2={220} y2={-600} stroke="#5a3e28" strokeWidth={12} />
-          <path d="M -260 -600 L 260 -600 L 240 -470 L -240 -470 Z" fill={c} stroke="#3a2a1e" strokeWidth={6} />
+          <line x1={-220} y1={-260} x2={-220} y2={-760} stroke="#5a3e28" strokeWidth={12} /><line x1={220} y1={-260} x2={220} y2={-760} stroke="#5a3e28" strokeWidth={12} />
+          <path d="M -270 -760 L 270 -760 L 250 -620 L -250 -620 Z" fill={c} stroke="#3a2a1e" strokeWidth={6} />
           {[-150, -60, 30, 120].map((fx, k) => <circle key={k} cx={fx} cy={-282} r={30} fill={["#e8b440", "#c2412f", "#7fae4a", "#e98a2c"][k]} stroke="#3a2a1e" strokeWidth={3} />)}
         </g>
       );
