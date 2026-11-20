@@ -9,8 +9,8 @@ import { iv, useShot, useView, useL, Vignette } from "./kit";
 // built low-poly so it sits next to the flat 2D style. Units are metres (a man ≈ 1.75, a house ≈ 3.6 tall).
 // People stay faceless; the angel is drawn on his own canvas and blurred, as in every other scene.
 
-const riverX = (z: number) => Math.sin(z * 0.025) * 12 + Math.sin(z * 0.061) * 3;
-const ground = (x: number, z: number) => {
+export const riverX = (z: number) => Math.sin(z * 0.025) * 12 + Math.sin(z * 0.061) * 3;
+export const ground = (x: number, z: number) => {
   const d = Math.abs(x - riverX(z));
   const base = d < 5 ? -0.9 + d * 0.1 : d < 16 ? -0.4 + (d - 5) * 0.06 : 0.26 + Math.pow(d - 16, 1.5) * 0.018;
   return base + Math.sin(x * 0.11) * Math.cos(z * 0.13) * 0.35 + Math.sin(x * 0.031 + z * 0.02) * 0.6;
@@ -88,7 +88,7 @@ const Tree: React.FC<{ x: number; z: number; s: number; kind: number }> = ({ x, 
   );
 };
 const VILLAGE: [number, number, number][] = [[-14, -8, 0.2], [-22, -20, -0.1], [-12, -30, 0.3], [-26, -4, 0], [-20, 8, -0.2], [-34, -16, 0.15], [16, -14, -0.2], [24, -2, 0.1], [20, -28, 0], [32, -18, 0.25], [28, 10, -0.15]];
-const House3D: React.FC<{ x: number; z: number; r: number; i: number }> = ({ x, z, r, i }) => {
+export const House3D: React.FC<{ x: number; z: number; r: number; i: number }> = ({ x, z, r, i }) => {
   const y = ground(x, z);
   const wall = ["#e6d3ae", "#d9c39a", "#cdb488", "#e2cfa8"][i % 4];
   return (
@@ -120,7 +120,7 @@ const Sheep3D: React.FC<{ x: number; z: number; a: number }> = ({ x, z, a }) => 
 );
 
 /** the valley: terrain, river, trees, far mountains, the village and its people, sheep on the slopes */
-const Valley: React.FC<{ frame: number; dawn?: boolean; village?: boolean; clear?: [number, number, number, number] }> = ({ frame, dawn, village = true, clear }) => {
+export const Valley: React.FC<{ frame: number; dawn?: boolean; village?: boolean; clear?: [number, number, number, number] }> = ({ frame, dawn, village = true, clear }) => {
   const trees = useMemo(() => {
     const out: { x: number; z: number; s: number; kind: number }[] = [];
     for (let i = 0; out.length < 170 && i < 900; i++) {
@@ -151,15 +151,15 @@ const Valley: React.FC<{ frame: number; dawn?: boolean; village?: boolean; clear
   );
 };
 
-type V3 = [number, number, number];
-const CamRig: React.FC<{ pos: V3; look: V3 }> = ({ pos, look }) => {
+export type V3 = [number, number, number];
+export const CamRig: React.FC<{ pos: V3; look: V3 }> = ({ pos, look }) => {
   const { camera } = useThree();
   camera.position.set(...pos);
   camera.lookAt(...look);
   return null;
 };
-const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-const Canvas3D: React.FC<{ fog: string; children: React.ReactNode; style?: React.CSSProperties; dawn?: boolean }> = ({ fog, children, style, dawn }) => {
+export const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+export const Canvas3D: React.FC<{ fog: string; children: React.ReactNode; style?: React.CSSProperties; dawn?: boolean }> = ({ fog, children, style, dawn }) => {
   const { width, height } = useVideoConfig();
   const { vertical } = useView();
   return (

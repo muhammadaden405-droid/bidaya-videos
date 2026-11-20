@@ -1,5 +1,5 @@
 import React from "react";
-import { random, useCurrentFrame } from "remotion";
+import { AbsoluteFill, random, useCurrentFrame } from "remotion";
 import { Cam, Layer, Defs, Sky, SKIES, ridge, Glow, FLOOR } from "./kit";
 
 // Episode 3 scenery (owner's note): the Children of Israel lived among green valleys, so every scene is
@@ -24,6 +24,7 @@ export const Tree: React.FC<{ x: number; y: number; s?: number; kind?: "round" |
   );
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <ellipse cx={14} cy={2} rx={110} ry={12} fill="#000" opacity={0.15} />
       <path d="M -12 0 L -8 -120 L 8 -120 L 12 0 Z" fill="#6b4a32" />
       <circle cx={-60} cy={-150} r={70} fill={dark} /><circle cx={60} cy={-150} r={72} fill={dark} />
       <circle cx={0} cy={-200} r={90} fill={mid} /><circle cx={-40} cy={-130} r={60} fill={mid} />
@@ -68,12 +69,13 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
     <>
       <Sky stops={SKIES[sky]} />
       <Layer d={0.05} cam={cam}><Defs /><Glow x={sunX} y={sunY} r={420} o={dusk ? 0.7 : 0.55} /><circle cx={sunX} cy={sunY} r={50} fill="#fff6d8" /></Layer>
-      <Layer d={0.15} cam={cam}><path d={ridge(`${seed}a`, 1050, 220, 260)} fill={dusk ? "#5a5f86" : "#8fb0c4"} opacity={0.85} /></Layer>
-      <Layer d={0.3} cam={cam}>
+      <Layer d={0.15} cam={cam} blur={4}><path d={ridge(`${seed}a`, 1050, 220, 260)} fill={dusk ? "#5a5f86" : "#8fb0c4"} opacity={0.85} /></Layer>
+      <Layer d={0.3} cam={cam} blur={2.4}>
         <path d={ridge(`${seed}b`, 1150, 130, 200)} fill={dusk ? "#3f6045" : "#5f9a52"} />
         {new Array(trees + 4).fill(0).map((_, i) => <Tree key={i} x={-600 + random(`${seed}ft${i}`) * 3200} y={1120 + random(`${seed}fy${i}`) * 40} s={0.35 + random(`${seed}fs${i}`) * 0.15} kind={i % 3 === 0 ? "cypress" : "round"} tint={dusk ? 1 : 0} />)}
       </Layer>
-      <Layer d={0.55} cam={cam}>
+      <AbsoluteFill style={{ background: `linear-gradient(rgba(0,0,0,0) 25%, ${dusk ? "rgba(255,190,150,0.16)" : "rgba(235,245,255,0.22)"} 55%, rgba(0,0,0,0) 80%)` }} />
+      <Layer d={0.55} cam={cam} blur={1}>
         <path d={`M -1400 1190 Q 960 1160 3400 1190 L 3400 1300 L -1400 1300 Z`} fill={dusk ? "#4c7a46" : GRASS} />
         {new Array(trees).fill(0).map((_, i) => <Tree key={i} x={-500 + random(`${seed}nt${i}`) * 3000} y={1192} s={(i % 4 === 1 ? 1.1 : 0.85) + random(`${seed}ns${i}`) * 0.2} kind={i % 4 === 1 ? "palm" : i % 4 === 3 ? "cypress" : "round"} tint={dusk ? 1 : 0} />)}
         {back}
@@ -89,7 +91,15 @@ export const Meadow: React.FC<{ cam: Cam; sky?: SkyKey; seed?: string; sunX?: nu
         <Tufts seed={`${seed}t`} y0={FLOOR - 10} y1={FLOOR + 260} />
         <Flowers seed={`${seed}f`} y0={FLOOR} y1={FLOOR + 280} />
       </Layer>
-      {dim > 0 ? null : null}
+      <Layer d={1.45} cam={cam} blur={7}>
+        {new Array(12).fill(0).map((_, i) => {
+          const x = -900 + random(`${seed}fg${i}`) * 3800, y = FLOOR + 330 + random(`${seed}fgy${i}`) * 120, sc = 2.6 + random(`${seed}fgs${i}`) * 1.6;
+          return <g key={i} transform={`translate(${x} ${y}) scale(${sc})`} opacity={0.9}>
+            {[-14, -5, 4, 12].map((bx, k) => <path key={k} d={`M ${bx} 0 Q ${bx + (k % 2 ? 8 : -8)} -40 ${bx + (k % 2 ? 14 : -12)} -${70 + k * 8}`} stroke={dusk ? "#456f3c" : k % 2 ? "#4f8a3c" : "#6aa84f"} strokeWidth={7} fill="none" strokeLinecap="round" />)}
+            {i % 3 === 0 ? <circle cx={4} cy={-78} r={9} fill={i % 2 ? "#f2d36b" : "#f4f0e6"} /> : null}
+          </g>;
+        })}
+      </Layer>
     </>
   );
 };
@@ -99,7 +109,10 @@ export const House: React.FC<{ x: number; rich?: boolean; poor?: boolean }> = ({
   return (
     <g transform={`translate(${x} ${FLOOR - 4})`}>
       {rich ? <><Tree x={-640} y={0} s={3.6} kind="palm" /><Tree x={640} y={0} s={3.3} kind="cypress" /></> : null}
+      <path d="M -500 0 L 500 0 L 720 -46 L -280 -46 Z" fill="#000" opacity={0.16} />
       <rect x={-500} y={-1010} width={1000} height={1010} fill={wall} stroke="#3a2a1e" strokeWidth={8} />
+      <rect x={260} y={-1006} width={236} height={1002} fill="#000" opacity={0.08} />
+      <rect x={-496} y={-1000} width={992} height={60} fill="#000" opacity={0.13} />
       <rect x={-535} y={-1055} width={1070} height={56} fill={trim} stroke="#3a2a1e" strokeWidth={6} />
       {rich ? <rect x={-500} y={-998} width={1000} height={20} fill="#e3b341" opacity={0.6} /> : null}
       <path d="M -160 0 L -160 -540 Q 0 -760 160 -540 L 160 0 Z" fill="#4a3220" stroke="#3a2a1e" strokeWidth={7} />
@@ -112,6 +125,7 @@ export const House: React.FC<{ x: number; rich?: boolean; poor?: boolean }> = ({
 /** a low stone wall (the leper's corner of the village) */
 export const Wall: React.FC<{ x0: number; x1: number }> = ({ x0, x1 }) => (
   <g>
+    <path d={`M ${x0} ${FLOOR} L ${x1} ${FLOOR} L ${x1 + 120} ${FLOOR - 30} L ${x0 + 120} ${FLOOR - 30} Z`} fill="#000" opacity={0.15} />
     <rect x={x0} y={FLOOR - 230} width={x1 - x0} height={230} fill="#b7a07c" stroke="#3a2a1e" strokeWidth={6} />
     {new Array(Math.floor((x1 - x0) / 90)).fill(0).map((_, i) => <line key={i} x1={x0 + 90 * i + 45} y1={FLOOR - 230} x2={x0 + 90 * i + 45} y2={FLOOR} stroke="#9a8462" strokeWidth={3} />)}
     <rect x={x0 - 10} y={FLOOR - 250} width={x1 - x0 + 20} height={26} fill="#a58d68" stroke="#3a2a1e" strokeWidth={5} />
@@ -124,6 +138,7 @@ export const Stalls: React.FC<{ x: number }> = ({ x }) => (
       const sx = i * 560, c = ["#b5452f", "#2f6f8f", "#c48a2a"][i];
       return (
         <g key={i} transform={`translate(${sx} 0)`}>
+          <ellipse cx={20} cy={0} rx={300} ry={22} fill="#000" opacity={0.15} />
           <rect x={-220} y={-260} width={440} height={260} fill="#8a6a46" stroke="#3a2a1e" strokeWidth={6} />
           <line x1={-220} y1={-260} x2={-220} y2={-760} stroke="#5a3e28" strokeWidth={12} /><line x1={220} y1={-260} x2={220} y2={-760} stroke="#5a3e28" strokeWidth={12} />
           <path d="M -270 -760 L 270 -760 L 250 -620 L -250 -620 Z" fill={c} stroke="#3a2a1e" strokeWidth={6} />
