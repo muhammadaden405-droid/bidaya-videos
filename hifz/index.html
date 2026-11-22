@@ -221,7 +221,7 @@ textarea{min-height:90px;resize:vertical}
 .danger{color:var(--warn)}
 /* tabs */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.tabs div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.tabs div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 .tabs button{border:0;background:none;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--mute);font-size:12px;font-weight:600}
 .tabs svg{width:24px;height:24px;stroke:currentColor;stroke-width:2;fill:none}
 .tabs button.on{color:var(--green)}
@@ -244,6 +244,32 @@ textarea{min-height:90px;resize:vertical}
 .toast.on{display:block;animation:fade .2s}
 .empty{color:var(--mute);margin:6px 0 0}
 .kv.plan dd{white-space:normal;text-align:right}
+.mt-ar{font-family:"Amiri Quran",serif;font-size:22px;line-height:1.6;font-weight:400;direction:rtl}
+.mt-big{font-size:30px;line-height:1.6;margin:0;text-align:center}
+.mrow{display:flex;gap:12px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 0;align-items:flex-start}
+.mrow:last-child{border:0}
+.mnum{flex:none;width:30px;height:30px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-weight:800;font-size:14px;margin-top:6px}
+.mbody{flex:1;display:flex;flex-direction:column;gap:4px}
+.mmeta{font-size:13px;color:var(--mute)}
+.mrec{display:block;font-size:12.5px;color:var(--gold);font-weight:600}
+.mcur{display:block;width:100%;text-align:left;cursor:pointer}
+.mbar2{position:sticky;top:calc(env(safe-area-inset-top) + 60px);z-index:4;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0 8px}
+.mh{font:400 22px/1.7 "Amiri Quran",serif;text-align:center;color:var(--gold);margin:18px 0 6px}
+.mpart{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 14px 8px;margin:8px 0}
+.mpart.today{border:2px solid var(--gold2)}
+.mpart.done{background:color-mix(in srgb,var(--done) 9%,var(--paper))}
+.mpart .tag{position:absolute;top:-10px;left:12px;background:var(--gold2);color:#2a1c00;font-size:12px;font-weight:800;border-radius:99px;padding:2px 10px}
+.mx{font-size:var(--mfs,24px);line-height:1.95;text-align:justify;cursor:pointer;transition:filter .2s,opacity .2s}
+.mx.hid{filter:blur(7px);opacity:.55}
+.poem .mx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px;text-align:center}
+.vh{display:block}
+@media(max-width:430px){.poem .mx{grid-template-columns:minmax(0,1fr)}.poem .vh:nth-child(2){padding-inline-start:24%}.poem .vh:nth-child(1){padding-inline-end:24%}}
+.mfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+.mbtns{display:flex;gap:6px;align-items:center}
+.chk.sm{width:42px;height:42px}
+.mpart.done .chk{background:var(--done);border-color:var(--done)}
+.mpart.done .chk svg{stroke-dashoffset:0}
+a.chip{text-decoration:none;color:inherit}
 .presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .recp{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px;margin:0 0 10px;align-items:center;gap:12px;box-shadow:var(--sh)}
 .recp.on{display:flex}
@@ -298,6 +324,7 @@ textarea{min-height:90px;resize:vertical}
   <p class="note" id="mHint">Swipe to turn the page. With “Hide text” on, tap a verse to check yourself.</p>
 </section>
 
+<section class="view" id="v-mutun" aria-label="Mutūn"></section>
 <section class="view" id="v-progress" aria-label="Progress"></section>
 <section class="view set" id="v-settings" aria-label="Settings"></section>
 </div>
@@ -314,6 +341,7 @@ textarea{min-height:90px;resize:vertical}
 <nav class="tabs" aria-label="Sections"><div>
   <button data-tab="today"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>Today</button>
   <button data-tab="mushaf"><svg viewBox="0 0 24 24"><path d="M12 6c-2-1.6-5-2-8-1.5v14c3-.5 6-.1 8 1.5 2-1.6 5-2 8-1.5v-14c-3-.5-6-.1-8 1.5zM12 6v14"/></svg>Mushaf</button>
+  <button data-tab="mutun"><svg viewBox="0 0 24 24"><path d="M4 19V5a1 1 0 011-1h3a1 1 0 011 1v14M9 19V7a1 1 0 011-1h3a1 1 0 011 1v12M14.5 8.2l2.9-.8a1 1 0 011.2.7l3 11.4M3 19h18"/></svg>Mutūn</button>
   <button data-tab="progress"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
   <button data-tab="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.6 1.6 0 00-1-1.5 1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H3a2 2 0 110-4h.1a1.6 1.6 0 001.5-1 1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3H9a1.6 1.6 0 001-1.5V3a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8V9a1.6 1.6 0 001.5 1H21a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg>Settings</button>
 </div></nav>
@@ -379,13 +407,13 @@ const dayNo=()=>Math.floor(parse(TODAY).getTime()/864e5);
 
 /* ---------- state ---------- */
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
+const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,mt:{},mcur:'',mper:1,mfs:24,goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
 function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});
   if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=Math.max(1,Math.min(20,Math.round(+S.per||2)));
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
   if(S.order==='juz30'){S.dir='juzback';S.sp=582}S.order='start';if(!DIRS[S.dir])S.dir='fwd';S.sp=Math.max(1,Math.min(604,Math.round(+S.sp)||1));if(!['whole','juz','surah'].includes(S.gKind)){S.gKind='whole';S.gVal=0}if(!RECITERS.some(r=>r[0]===S.reciter))S.reciter=RECITERS[0][0];
   S.pages=S.pages&&typeof S.pages==='object'?S.pages:{};S.rev=S.rev&&typeof S.rev==='object'?S.rev:{};
-  S.cur=Math.max(1,Math.min(604,+S.cur||1));S.fs=Math.max(20,Math.min(44,+S.fs||28));if(![1,3,5,10].includes(S.rep))S.rep=3}
+  S.cur=Math.max(1,Math.min(604,+S.cur||1));S.mt=S.mt&&typeof S.mt==='object'?S.mt:{};S.mper=Math.max(1,Math.min(10,+S.mper||1));S.mfs=Math.max(18,Math.min(40,+S.mfs||24));S.fs=Math.max(20,Math.min(44,+S.fs||28));if(![1,3,5,10].includes(S.rep))S.rep=3}
 fix();
 const save=()=>{S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Could not save on this device')}};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
@@ -465,6 +493,7 @@ function renderToday(){ensureLesson();const c=calc(),L=S.lesson,n=L.p.length,dn=
   const st=c.diff===0?'On track':c.diff>0?'+'+c.diff+' ahead':(-c.diff)+' behind';
   h+='<div class="card"><div class="row"><div><p class="lab">Your goal</p><h2>'+esc(goalLabel())+'</h2></div><button class="btn sm ghost" data-plan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gDone/c.gLen*100)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'page')+(c.finish?' · finish about '+fmt(c.finish):'')+(S.goal?' · target '+fmt(parse(S.goal)):'')+'</p></div>';
   h+='<div class="stats"><div class="stat"><b>'+c.tot+'</b><span>of 604 pages</span></div><div class="stat"><b>'+pl(c.streak,'day')+'</b><span>streak</span></div><div class="stat"><b'+(c.diff<0?' class="warn"':'')+'>'+st+'</b><span>schedule</span></div></div>';
+  h+=mutunTodayCard();
   if(n){const r=RECITERS.find(x=>x[0]===S.reciter);h+='<div class="card"><p class="lab">Listen first, then memorize</p><h2>'+esc(r[1])+'</h2><p class="note" style="margin:2px 0 0">'+esc(r[2])+'</p><div class="btns"><button class="btn sm" id="listen">▶ Play today’s pages</button><button class="btn sm ghost" id="dl">Save for offline</button><button class="btn sm ghost" data-recite="1">🎙 Test my recitation</button></div></div>'}
   $('v-today').innerHTML=h}
 $('v-today').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
@@ -572,6 +601,7 @@ function renderProgress(){const c=calc(),pct=c.tot/604*100,J=juzList();let h='';
   h+=goalCard(c);
   h+='<div class="card"><div class="row"><h2>Your 604 pages</h2><span class="pill">Tap a juz</span></div><div class="legend"><span style="--c:var(--done)">Memorized</span><span style="--c:color-mix(in srgb,var(--done) 30%,var(--card))">Known before plan</span><span style="--c:var(--gold)">Today</span></div>'
    +J.map(x=>'<div class="jz'+(openJuz===x.j?' open':'')+'"><button class="jh" data-j="'+x.j+'" aria-expanded="'+(openJuz===x.j)+'"><b>Juz '+x.j+'</b><span class="bar"><i style="width:'+(x.m/x.n*100)+'%"></i></span><small>'+x.m+'/'+x.n+'</small><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="jb">'+(openJuz===x.j?juzBody(x):'')+'</div></div>').join('')+'</div>';
+  h+=mutunProgressCard();
   const W=12,now=parse(TODAY),h0=add(now,-now.getDay()-7*(W-1));let hm='',wk=0;
   for(let i=0;i<W*7;i++){const d=add(h0,i),k=ymd(d),n=c.o[k]||0;if(i>=(W-1)*7&&k<=TODAY)wk+=n;hm+='<i class="h '+(k>TODAY?'x':'l'+Math.min(n,3))+'" title="'+fmt(d)+': '+pl(n,'page')+'"></i>'}
   h+='<div class="card"><h2>Last 12 weeks</h2><div class="heat" style="grid-template-columns:repeat('+W+',minmax(0,1fr))">'+hm+'</div><p class="note">This week: '+pl(wk,'new page')+' · last 4 weeks: '+pl(c.r28,'new page')+'</p></div>';
@@ -641,7 +671,7 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 /* ---------- backup ---------- */
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
-const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,mt:S.mt,mcur:S.mcur,mper:S.mper,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
 function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:''});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
@@ -754,12 +784,71 @@ $('recShow').onclick=()=>{REC.show=!REC.show;recPaint()};
 $('recReset').onclick=()=>{recBuild();recPaint()};
 $('recDone').onclick=()=>{recStop(true);REC.mode=false;renderMushaf()};
 
+/* ---------- mutūn ---------- */
+let MI=null,mOpen='',mHide=false,mWin=null;const MD={};
+const mDone=id=>Object.keys(S.mt[id]||{}).length;
+function loadMI(){if(MI)return Promise.resolve(MI);return fetch('data/mutun/index.json').then(r=>r.json()).then(d=>{MI=d;return d})}
+function loadMatn(id){if(MD[id])return Promise.resolve(MD[id]);return fetch('data/mutun/'+id+'.json').then(r=>r.json()).then(d=>{const parts=[];d.secs.forEach((s,si)=>(s.p||s.v).forEach(x=>parts.push({si,x})));d.parts=parts;MD[id]=d;return d})}
+const mInfo=id=>MI&&MI.find(x=>x.id===id);
+const mNext=(id,n)=>{const m=S.mt[id]||{},o=[],N=mInfo(id)?mInfo(id).n:0;for(let i=0;i<N&&o.length<n;i++)if(!m[i])o.push(i);return o};
+const partText=x=>Array.isArray(x)?x.join(' … '):x;
+const partHTML=x=>Array.isArray(x)?'<span class="vh">'+esc(x[0])+'</span><span class="vh">'+esc(x[1])+'</span>':esc(x);
+const ytLink=t=>'https://www.youtube.com/results?search_query='+encodeURIComponent('قراءة متن '+t);
+let arVoice=null;const pickVoice=()=>{try{arVoice=speechSynthesis.getVoices().find(v=>/^ar/i.test(v.lang))||null}catch(e){}};
+if('speechSynthesis' in window){pickVoice();speechSynthesis.addEventListener&&speechSynthesis.addEventListener('voiceschanged',pickVoice)}
+function speak(text,rep){if(!('speechSynthesis' in window)){toast('Read-aloud isn’t supported in this browser');return}
+  pickVoice();if(!arVoice)toast('No Arabic voice found. Add one in your phone’s settings: Accessibility → Spoken Content (iPhone) or Text-to-speech (Android).',6000);
+  speechSynthesis.cancel();let n=0;const go=()=>{const u=new SpeechSynthesisUtterance(text);u.lang='ar-SA';if(arVoice)u.voice=arVoice;u.rate=.8;u.onend=()=>{if(++n<rep)setTimeout(go,400)};speechSynthesis.speak(u)};go()}
+function renderMutun(){const V=$('v-mutun');
+  if(!MI){V.innerHTML='<div class="card"><p class="note">Loading the mutūn…</p></div>';loadMI().then(renderMutun).catch(()=>{V.innerHTML='<div class="card"><p class="note">Couldn’t load the mutūn. Connect to the internet once so they can be saved.</p></div>'});return}
+  if(mOpen){renderMatn();return}
+  let h='<div class="card"><h2>Mutūn</h2><p class="note" style="margin-top:4px">Core texts that students of knowledge memorize, in study order. Mark each portion as you memorize it.</p><div class="row" style="margin-top:10px"><span class="note" style="margin:0">New portions a day</span><div class="step"><button data-mp="-1" aria-label="Fewer portions">−</button><b>'+S.mper+'</b><button data-mp="1" aria-label="More portions">+</button></div></div></div>';
+  if(S.mcur&&mInfo(S.mcur)){const b=mInfo(S.mcur),d=mDone(b.id);h+='<button class="card mcur" data-mo="'+b.id+'"><p class="lab">Your current matn</p><div class="row"><div><b class="ar mt-ar">'+esc(b.t)+'</b><span class="note" style="display:block;margin:0">'+esc(b.en)+' · '+d+' of '+b.n+'</span></div><span class="pill">Continue ›</span></div><div class="bar" style="margin-top:10px"><i style="width:'+(d/b.n*100)+'%"></i></div></button>'}
+  h+='<div class="card"><h2>Study ladder</h2>'+MI.map((b,i)=>{const d=mDone(b.id);return '<button class="mrow" data-mo="'+b.id+'"><span class="mnum">'+(i+1)+'</span><span class="mbody"><span class="row" style="align-items:baseline"><b class="ar mt-ar">'+esc(b.t)+'</b><span class="pill">'+esc(b.cat)+'</span></span><span class="mmeta">'+esc(b.en)+' · '+esc(b.ae)+' (d. '+b.d+' AH)</span>'+(b.rec?'<span class="mrec">'+esc(b.rec)+'</span>':'')+'<span class="bar"><i style="width:'+(d/b.n*100)+'%"></i></span><span class="mmeta">'+d+' of '+pl(b.n,b.poem?'portion':'portion')+(b.poem?' · poem':'')+'</span></span></button>'}).join('')+'</div>'
+   +'<p class="note">Texts: Shamela editions via the OpenITI corpus. Recommendations checked in Shamela.</p>';
+  V.innerHTML=h}
+function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';renderMutun();return}
+  if(!MD[b.id]){V.innerHTML='<div class="card"><p class="note">Loading '+esc(b.en)+'…</p></div>';loadMatn(b.id).then(()=>{if(mOpen===b.id)renderMatn()}).catch(()=>toast('Couldn’t load this matn'));return}
+  const D=MD[b.id],m=S.mt[b.id]||{},d=mDone(b.id),nx=new Set(mNext(b.id,S.mper)),first=[...nx][0]??Math.max(0,b.n-1);
+  if(!mWin||mWin.id!==b.id){const a=Math.max(0,first-3);mWin={id:b.id,a,z:Math.min(b.n,a+40)}}
+  let h='<div class="mbar2"><button class="nav" data-mback="1" aria-label="Back to the list"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="mt"><b>'+esc(b.en)+'</b><span>'+esc(b.ae)+' · d. '+b.d+' AH</span></div><span style="width:46px"></span></div>'
+   +'<div class="card"><p class="ar mt-big" lang="ar">'+esc(b.t)+'</p>'+(b.rec?'<p class="mrec" style="margin-top:4px">'+esc(b.rec)+'</p>':'')
+   +'<div class="bar" style="margin-top:12px"><i style="width:'+(d/b.n*100)+'%"></i></div><p class="note">'+d+' of '+b.n+' portions memorized'+(S.mcur===b.id?' · your current matn':'')+'</p>'
+   +'<div class="tools" style="justify-content:flex-start;margin:10px 0 0">'+(S.mcur!==b.id?'<button class="chip" data-mset="1">Make this my current matn</button>':'')+'<button class="chip'+(mHide?' on':'')+'" data-mhide="1">'+(mHide?'Hiding text':'Hide text')+'</button><button class="chip" data-mfs="-2" aria-label="Smaller text">A−</button><button class="chip" data-mfs="2" aria-label="Larger text">A+</button><a class="chip" href="'+ytLink(b.t)+'" target="_blank" rel="noopener">🎧 Recorded readings</a></div></div>';
+  if(mWin.a>0)h+='<button class="btn ghost wide" data-mmore="-1" style="margin-bottom:10px">Show earlier portions</button>';
+  let lastSi=-1;for(let i=mWin.a;i<mWin.z;i++){const P=D.parts[i],sec=D.secs[P.si];
+    if(P.si!==lastSi){lastSi=P.si;if(sec.h)h+='<h3 class="mh ar" lang="ar">'+esc(sec.h)+'</h3>'}
+    const done=!!m[i],today=nx.has(i);
+    h+='<div class="mpart'+(done?' done':'')+(today?' today':'')+(b.poem?' poem':'')+'" id="mp'+i+'">'+(today?'<span class="tag">Today</span>':'')+'<div class="mx ar'+(mHide&&!done?' hid':'')+'" lang="ar" data-rv="'+i+'">'+partHTML(P.x)+'</div><div class="mfoot"><span class="note" style="margin:0">'+(i+1)+' / '+b.n+'</span><span class="mbtns"><button class="chip" data-say="'+i+'" aria-label="Read portion '+(i+1)+' aloud">▶</button><button class="chk sm" data-mchk="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' portion '+(i+1)+' memorized">'+ICON_CHECK+'</button></span></div></div>'}
+  if(mWin.z<b.n)h+='<button class="btn ghost wide" data-mmore="1">Show more portions</button>';
+  h+='<p class="note">“▶” reads a portion aloud with your phone’s Arabic voice, repeating it '+pl(S.rep,'time')+'. It can mispronounce endings, so check against the text.</p>';
+  V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px')}
+$('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data-rv]');if(!t)return;const d=t.dataset;
+  if(d.mp){S.mper=Math.max(1,Math.min(10,S.mper+(+d.mp)));save();renderMutun();renderToday();return}
+  if(d.mo){mOpen=d.mo;mWin=null;mHide=false;renderMutun();scrollTo({top:0});const nx=mNext(mOpen,1)[0];if(nx>3)setTimeout(()=>{const el=$('mp'+nx);el&&el.scrollIntoView({block:'center'})},350);return}
+  if(d.mback){mOpen='';renderMutun();scrollTo({top:0});return}
+  if(d.mset){S.mcur=mOpen;save();renderMatn();renderToday();toast('Set as your current matn ✓');return}
+  if(d.mhide){mHide=!mHide;renderMatn();return}
+  if(d.mfs){S.mfs=Math.max(18,Math.min(40,S.mfs+(+d.mfs)));save();document.documentElement.style.setProperty('--mfs',S.mfs+'px');return}
+  if(d.mmore){const b=mInfo(mOpen);if(+d.mmore>0)mWin.z=Math.min(b.n,mWin.z+40);else mWin.a=Math.max(0,mWin.a-40);renderMatn();return}
+  if(d.say){speak(partText(MD[mOpen].parts[+d.say].x),S.rep);return}
+  if(d.mchk){const i=+d.mchk,m=S.mt[mOpen]||(S.mt[mOpen]={});const was=!!m[i];if(was)delete m[i];else m[i]=TODAY;if(!S.mcur)S.mcur=mOpen;save();
+    const y=scrollY;renderMatn();scrollTo({top:y});if(!was){const b=mInfo(mOpen);if(mDone(mOpen)===b.n)toast('Mā shāʾ Allāh! You finished '+b.en+' ✓',4000);else toast('Portion '+(i+1)+' memorized ✓')}renderToday();return}
+  if(d.rv&&mHide){t.classList.toggle('hid')}});
+function mutunTodayCard(){if(!MI)return '';const b=S.mcur&&mInfo(S.mcur);
+  if(!b)return '<div class="card"><p class="lab">Mutūn</p><h2>Memorize a matn too</h2><p class="note" style="margin:4px 0 0">Thalāthat al-Uṣūl, al-Arbaʿūn al-Nawawiyyah, Kitāb al-Tawḥīd and more, in study order.</p><div class="btns"><button class="btn sm" data-gomutun="1">Choose a matn</button></div></div>';
+  const nx=mNext(b.id,S.mper),d=mDone(b.id);
+  return '<div class="card"><div class="row"><div><p class="lab">Matn today</p><h2 class="ar mt-ar" style="font-weight:400">'+esc(b.t)+'</h2></div><span class="pill">'+d+' / '+b.n+'</span></div>'+(nx.length?'<p class="note" style="margin:4px 0 0">'+(nx.length>1?'Portions '+(nx[0]+1)+'–'+(nx[nx.length-1]+1):'Portion '+(nx[0]+1))+' of '+esc(b.en)+'</p>':'<p class="note">Finished. Mā shāʾ Allāh! Pick your next matn.</p>')+'<div class="btns"><button class="btn sm" data-gomutun="'+b.id+'">'+(nx.length?'Open today’s portions':'Choose next matn')+'</button></div></div>'}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-gomutun]');if(!b)return;const id=b.dataset.gomutun;mOpen=id!=='1'&&mInfo(id)&&mNext(id,1).length?id:'';mWin=null;go('mutun')});
+function mutunProgressCard(){if(!MI)return '';const st=MI.filter(b=>mDone(b.id));if(!st.length)return '';
+  return '<div class="card"><h2>Mutūn</h2>'+st.map(b=>{const d=mDone(b.id);return '<div class="rv"><div style="flex:1"><b>'+esc(b.en)+'</b><small>'+d+' of '+b.n+' portions</small><span class="bar" style="display:block;margin-top:6px"><i style="width:'+(d/b.n*100)+'%"></i></span></div></div>'}).join('')+'</div>'}
+
 /* ---------- routing ---------- */
-const TABS=['today','mushaf','progress','settings'];
+const TABS=['today','mushaf','mutun','progress','settings'];
 function go(tab,page){if(page){S.cur=page;save()}if(location.hash!=='#'+tab)location.hash=tab;else show()}
 function show(){let h=location.hash.slice(1);if(h.startsWith('restore=')){const c=h.slice(8);history.replaceState(null,'',location.pathname+'#today');show();askRestore(c);return}
   if(!TABS.includes(h))h='today';TABS.forEach(t=>{$('v-'+t).classList.toggle('on',t===h)});document.querySelectorAll('.tabs button').forEach(b=>{b.classList.toggle('on',b.dataset.tab===h);b.setAttribute('aria-current',b.dataset.tab===h?'page':'false')});
-  if(h!=='mushaf'&&REC.listening)recStop(false);if(h==='mushaf')renderMushaf();if(h==='settings')renderSettings();scrollTo({top:0})}
+  if(h!=='mushaf'&&REC.listening)recStop(false);if(h==='mushaf')renderMushaf();if(h==='mutun')renderMutun();if(h==='settings')renderSettings();if(h!=='mutun'&&'speechSynthesis' in window)try{speechSynthesis.cancel()}catch(e){}scrollTo({top:0})}
 document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(b.dataset.tab)});
 addEventListener('hashchange',show);
 function applyTheme(){document.documentElement.dataset.theme=S.theme;const m=document.querySelector('meta[name=theme-color]');m.content=S.theme==='amber'?'#0c0800':(S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'#0f1411':'#f4efe2'}
@@ -770,6 +859,7 @@ let deferredInstall=null;addEventListener('beforeinstallprompt',e=>{e.preventDef
 const restoring=location.hash.startsWith('#restore=');
 applyTheme();renderAll();show();
 if(!S.setup&&!restoring)setTimeout(()=>openPlan(true),500);
+loadMI().then(()=>{renderToday();renderProgress()}).catch(()=>{});
 fetch('data/quran.json').then(r=>r.json()).then(d=>{Q=d.pages;renderAll();if(location.hash==='#mushaf')renderMushaf()}).catch(()=>{$('mPage').innerHTML='<div class="skel">Couldn’t load the mushaf. Connect to the internet once so it can be saved.</div>'});
 if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller,t0=Date.now();navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had)return;if(Date.now()-t0<8000)location.reload();else toast('App updated ✓ Reopen it to see what’s new',4000)})}
 }
