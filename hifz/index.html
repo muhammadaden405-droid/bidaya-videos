@@ -30,6 +30,7 @@
 /* no blue light: every colour has a zero blue channel */
 :root[data-theme=amber]{color-scheme:dark;--bg:#0c0800;--card:#1a1200;--ink:#ffc200;--mute:#b88a00;--line:#3a2900;--soft:#261b00;--paper:#140e00;--green:#4a3300;--green2:#2a1d00;--onG:#ffd000;--onG2:#d9a400;--gold:#ffaa00;--gold2:#ffcc00;--done:#ff9900;--warn:#ff6a00;--frame:#6b4c00;--sh:none}
 *{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,"Amiri Quran",system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -242,6 +243,25 @@ textarea{min-height:90px;resize:vertical}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:40;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:14px;font-weight:600;font-size:15px;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.25);display:none}
 .toast.on{display:block;animation:fade .2s}
 .empty{color:var(--mute);margin:6px 0 0}
+.kv.plan dd{white-space:normal;text-align:right}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.recp{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px;margin:0 0 10px;align-items:center;gap:12px;box-shadow:var(--sh)}
+.recp.on{display:flex}
+.mic{width:58px;height:58px;border-radius:50%;border:0;background:var(--green);color:var(--onG);display:grid;place-items:center;flex:none}
+.mic svg{width:26px;height:26px;fill:currentColor}
+.mic.live{background:#c0392b;color:#fff;animation:pulse 1.4s ease-in-out infinite}
+:root[data-theme=amber] .mic.live{background:#ff3d00;color:#000}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(192,57,43,.18)}}
+.rst{flex:1;line-height:1.3}
+.rst b{display:block;font-size:15px}
+.rst span{display:block;font:18px/1.6 "Amiri Quran",serif;direction:rtl;color:var(--mute);min-height:1.6em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rcount{display:flex;flex-direction:column;gap:2px;font-weight:800;font-size:14px;text-align:right;white-space:nowrap}
+.rec .w{filter:blur(6px);opacity:.5;transition:filter .25s,opacity .25s;border-radius:6px}
+.rec.show .w,.rec .w.ok,.rec .w.bad,.rec .w.sk,.rec .w.fx{filter:none;opacity:1}
+.rec .w.bad{color:var(--warn);text-decoration:underline wavy var(--warn);text-underline-offset:8px}
+.rec .w.sk{color:var(--warn);text-decoration:line-through}
+.rec .w.fx{color:var(--gold)}
+.rec .w.cur{background:color-mix(in srgb,var(--gold2) 30%,transparent)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -266,7 +286,14 @@ textarea{min-height:90px;resize:vertical}
     <button class="chip" id="mSmall" aria-label="Smaller text">A−</button>
     <button class="chip" id="mBig" aria-label="Larger text">A+</button>
     <button class="chip" id="mPlay">▶ Listen</button>
+    <button class="chip" id="mRec">🎙 Recite</button>
   </div>
+  <div class="recp" id="recp">
+    <button class="mic" id="recMic" aria-label="Start listening"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button>
+    <div class="rst"><b id="recSt">Tap the mic and recite this page</b><span id="recHeard" lang="ar"></span></div>
+    <div class="rcount"><span id="recOk" style="color:var(--done)">✓ 0</span><span id="recBad" style="color:var(--warn)">✗ 0</span></div>
+  </div>
+  <div class="tools" id="recTools" hidden><button class="chip" id="recShow">Show text</button><button class="chip" id="recReset">Restart page</button><button class="chip" id="recDone">Finish</button></div>
   <article class="mp" id="mPage"><div class="skel">Loading the mushaf…</div></article>
   <p class="note" id="mHint">Swipe to turn the page. With “Hide text” on, tap a verse to check yourself.</p>
 </section>
@@ -332,6 +359,9 @@ const TIPS=[
  {t:'The first step of knowledge',who:'Ibn ʿAbd al-Barr',ar:'طلب العلم درجات ورتب لا ينبغي تعديها… فأول العلم حفظ كتاب الله عز وجل وتفهمه',en:'Seeking knowledge has levels and stages that should not be skipped. The first of knowledge is memorizing the Book of Allah and understanding it.',src:'Jāmiʿ Bayān al-ʿIlm, quoted in Min Hady al-Salaf fī Ṭalab al-ʿIlm, p. 40'},
  {t:'It is never too late',who:'Ibn ʿUthaymīn',ar:'الحفظ أفضل؛ لأنه بالحفظ يحصل له التلاوة والحفظ',en:'Asked whether someone aged thirty or older should memorize or only recite, he said: memorizing is better, because by memorizing he gets both the recitation and the memorization.',src:'Liqāʾ al-Bāb al-Maftūḥ (178)'}];
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const SST=[1, 2, 50, 77, 106, 128, 151, 177, 187, 208, 221, 235, 249, 255, 262, 267, 282, 293, 305, 312, 322, 332, 342, 350, 359, 367, 377, 385, 396, 404, 411, 415, 418, 428, 434, 440, 446, 453, 458, 467, 477, 483, 489, 496, 499, 502, 507, 511, 515, 518, 520, 523, 526, 528, 531, 534, 537, 542, 545, 549, 551, 553, 554, 556, 558, 560, 562, 564, 566, 568, 570, 572, 574, 575, 577, 578, 580, 582, 583, 585, 586, 587, 587, 589, 590, 591, 591, 592, 593, 594, 595, 595, 596, 596, 597, 597, 598, 598, 599, 599, 600, 600, 601, 601, 601, 602, 602, 602, 603, 603, 603, 604, 604, 604],SEN=[1, 49, 76, 106, 127, 150, 176, 186, 207, 221, 235, 248, 255, 261, 267, 281, 293, 304, 312, 321, 331, 341, 349, 359, 366, 376, 385, 396, 404, 410, 414, 417, 427, 434, 440, 445, 452, 458, 467, 476, 482, 489, 495, 498, 502, 506, 510, 515, 517, 520, 523, 525, 528, 531, 534, 537, 541, 545, 548, 551, 552, 554, 555, 557, 559, 561, 564, 566, 568, 570, 571, 573, 575, 577, 578, 580, 581, 583, 584, 585, 586, 587, 589, 589, 590, 591, 592, 592, 594, 594, 595, 596, 596, 596, 597, 597, 598, 599, 599, 600, 600, 600, 601, 601, 601, 602, 602, 602, 603, 603, 603, 604, 604, 604];
+const DIRS={fwd:['Forward','Page after page, towards An-Nās'],back:['Backward','Page before page, towards Al-Fātiḥah (like starting from An-Nās)'],juzback:['Juz by juz, backwards','Finish a juz, then the one before it: 30, 29, 28…']};
+const PRESETS={fatiha:['Al-Fātiḥah → An-Nās',1,'fwd','whole',0],amma:['Juz ʿAmma from An-Nās',604,'back','juz',30],baqarah:['Sūrat al-Baqarah',2,'fwd','surah',2],juz:['Juz 30, 29, 28…',582,'juzback','whole',0]};
 const KEY='hifz-app-v1';
 const pad=n=>String(n).padStart(2,'0'),p3=n=>String(n).padStart(3,'0');
 const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -349,11 +379,11 @@ const dayNo=()=>Math.floor(parse(TODAY).getTime()/864e5);
 
 /* ---------- state ---------- */
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
+const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
 function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});
   if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=Math.max(1,Math.min(20,Math.round(+S.per||2)));
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
-  if(!['start','juz30'].includes(S.order))S.order='start';if(!RECITERS.some(r=>r[0]===S.reciter))S.reciter=RECITERS[0][0];
+  if(S.order==='juz30'){S.dir='juzback';S.sp=582}S.order='start';if(!DIRS[S.dir])S.dir='fwd';S.sp=Math.max(1,Math.min(604,Math.round(+S.sp)||1));if(!['whole','juz','surah'].includes(S.gKind)){S.gKind='whole';S.gVal=0}if(!RECITERS.some(r=>r[0]===S.reciter))S.reciter=RECITERS[0][0];
   S.pages=S.pages&&typeof S.pages==='object'?S.pages:{};S.rev=S.rev&&typeof S.rev==='object'?S.rev:{};
   S.cur=Math.max(1,Math.min(604,+S.cur||1));S.fs=Math.max(20,Math.min(44,+S.fs||28));if(![1,3,5,10].includes(S.rep))S.rep=3}
 fix();
@@ -370,25 +400,40 @@ const firstWords=p=>{const i=pageInfo(p);return i?i.ay.map(x=>x[2]).join(' ').sp
 
 /* ---------- plan maths ---------- */
 const offSet=()=>new Set(S.off);
-const seq=()=>{if(S.order!=='juz30')return Array.from({length:604},(_,i)=>i+1);const a=[];for(let j=30;j>0;j--){const[s,e]=jr(j);for(let p=s;p<=e;p++)a.push(p)}return a};
+function seqFor(sp,dir){const a=[];
+  if(dir==='back'){for(let p=sp;p>=1;p--)a.push(p);for(let p=604;p>sp;p--)a.push(p);return a}
+  if(dir==='juzback'){const J=juzOf(sp),[js,je]=jr(J);for(let p=sp;p<=je;p++)a.push(p);for(let j=J-1;j>=1;j--){const[x,y]=jr(j);for(let p=x;p<=y;p++)a.push(p)}for(let j=30;j>J;j--){const[x,y]=jr(j);for(let p=x;p<=y;p++)a.push(p)}for(let p=js;p<sp;p++)a.push(p);return a}
+  for(let p=sp;p<=604;p++)a.push(p);for(let p=1;p<sp;p++)a.push(p);return a}
+function endFor(dir,kind,val){val=+val;if(kind==='juz'&&val>=1&&val<=30)return dir==='back'?jr(val)[0]:jr(val)[1];if(kind==='surah'&&val>=1&&val<=114&&dir!=='juzback')return dir==='back'?SST[val-1]:SEN[val-1];return 0}
+function goalSeqFor(sp,dir,kind,val){const a=seqFor(sp,dir),e=endFor(dir,kind,val);if(!e)return a;const i=a.indexOf(e);return i<0?a:a.slice(0,i+1)}
+const seq=()=>seqFor(S.sp,S.dir);
+const goalSeq=()=>goalSeqFor(S.sp,S.dir,S.gKind,S.gVal);
+function labelFor(dir,kind,val){if(!endFor(dir,kind,val))return 'The whole Qur’an';
+  if(kind==='juz')return dir==='fwd'?'To the end of Juz '+val:dir==='back'?'Back to the start of Juz '+val:'Through Juz '+val;
+  return (dir==='back'?'Back to the start of ':'To the end of ')+NAMES[val-1][0]}
+const goalLabel=()=>labelFor(S.dir,S.gKind,S.gVal);
+const surahAt=p=>{let s=1;while(s<114&&SST[s]<=p)s++;return s};
 const total=()=>Object.keys(S.pages).length;
-function byDay(){const o={};let prior=0;for(const d of Object.values(S.pages)){if(d==='pre'||d<S.start)prior++;else o[d]=(o[d]||0)+1}return{o,prior}}
-function finishAt(per,fromToday){const off=offSet();let left=604-total(),d=parse(TODAY),first=true;const done=byDay().o[TODAY]||0;
-  if(left<=0)return null;let guard=0;while(left>0&&guard++<40000){if(!off.has(d.getDay()))left-=first&&fromToday?Math.max(0,per-done):per;first=false;if(left>0)d=add(d,1)}return d}
-function calc(){const off=offSet(),{o,prior}=byDay(),tot=total(),goal=604-prior;
-  let sched=0;for(let d=parse(S.start);ymd(d)<=TODAY;d=add(d,1))if(!off.has(d.getDay()))sched++;
-  const since=tot-prior,expected=Math.min(goal,sched*S.per);
+function byDay(){const o={};for(const d of Object.values(S.pages))if(d!=='pre')o[d]=(o[d]||0)+1;return o}
+function finishFor(per,off,left,doneToday){if(left<=0)return null;const O=new Set(off);let d=parse(TODAY),first=true,g=0;
+  while(left>0&&g++<40000){if(!O.has(d.getDay()))left-=first?Math.max(0,per-doneToday):per;first=false;if(left>0)d=add(d,1)}return d}
+function studyDays(off,until){const O=new Set(off);let n=0;for(let d=parse(TODAY);ymd(d)<=until;d=add(d,1))if(!O.has(d.getDay()))n++;return n}
+function calc(){const off=offSet(),o=byDay(),G=goalSeq(),gLen=G.length;let gDone=0,prior=0,doneToday=0;
+  for(const p of G){const d=S.pages[p];if(d){gDone++;if(d==='pre'||d<S.start)prior++;if(d===TODAY)doneToday++}}
+  const left=gLen-gDone,since=gDone-prior;
+  let sched=0;for(let d=parse(S.start);ymd(d)<TODAY;d=add(d,1))if(!off.has(d.getDay()))sched++;
+  const expected=Math.min(gLen-prior,sched*S.per+(off.has(parse(TODAY).getDay())?0:Math.min(S.per,doneToday)));
   let streak=0,d=parse(TODAY);if(!o[TODAY])d=add(d,-1);
-  while(ymd(d)>=S.start){if(off.has(d.getDay())){d=add(d,-1);continue}if(o[ymd(d)]){streak++;d=add(d,-1)}else break}
-  let need=Math.ceil(goal/S.per),pd=parse(S.start);while(need>0){if(!off.has(pd.getDay()))need--;if(need>0)pd=add(pd,1)}
+  for(let g=0;g<4000;g++){const k=ymd(d);if(o[k]){streak++;d=add(d,-1)}else if(off.has(d.getDay())){d=add(d,-1)}else break}
   const win=Math.min(28,Math.round((parse(TODAY)-parse(S.start))/864e5)+1);let r28=0;for(let i=0;i<28;i++)r28+=o[ymd(add(parse(TODAY),-i))]||0;
-  return{tot,prior,diff:since-expected,streak,o,plan:pd,finish:finishAt(S.per,true),r28,win}}
+  return{tot:total(),gLen,gDone,left,diff:since-expected,streak,o,finish:finishFor(S.per,S.off,left,doneToday),r28,win,doneToday}}
 const isOff=()=>offSet().has(parse(TODAY).getDay());
 function ensureLesson(force){
   if(!force&&S.lesson&&S.lesson.d===TODAY)return;
-  if(isOff()&&!force){S.lesson={d:TODAY,p:[],off:true};save();return}
-  const nx=seq().filter(p=>!S.pages[p]).slice(0,S.per).sort((a,b)=>a-b);
-  S.lesson={d:TODAY,p:nx};save()}
+  const today=Object.keys(S.pages).filter(p=>S.pages[p]===TODAY).map(Number);
+  if(isOff()&&!force&&!today.length){S.lesson={d:TODAY,p:[],off:true};save();return}
+  const nx=goalSeq().filter(p=>!S.pages[p]).slice(0,Math.max(0,S.per-today.length));
+  S.lesson={d:TODAY,p:today.concat(nx).sort((a,b)=>a-b)};save()}
 const lessonDone=()=>S.lesson&&S.lesson.p.length>0&&S.lesson.p.every(p=>S.pages[p]);
 
 /* ---------- ui helpers ---------- */
@@ -407,28 +452,30 @@ function header(){const d=parse(TODAY);let h='';try{h=new Intl.DateTimeFormat('e
 
 /* ---------- today ---------- */
 function renderToday(){ensureLesson();const c=calc(),L=S.lesson,n=L.p.length,dn=L.p.filter(p=>S.pages[p]).length;let h='';
-  if(c.tot>=604){h+='<div class="hero"><p class="kick">Alḥamdulillāh</p><p class="big">All 604 pages</p><p class="sub">You have memorized the whole Qur’an. Keep revising every day.</p></div>'}
+  if(c.left===0){h+='<div class="hero"><p class="kick">Alḥamdulillāh</p><p class="big">Goal complete</p><p class="sub">'+(c.gLen>=604?'You have memorized the whole Qur’an. Keep revising every day.':esc(goalLabel())+' · all '+pl(c.gLen,'page')+' memorized.')+'</p>'+(c.tot<604?'<div class="offday"><button class="btn gold wide" data-plan="1">Set my next goal</button></div>':'')+'</div>'}
   else if(L.off&&!n){h+='<div class="hero"><div class="hl"><div><p class="kick">'+DAYS[parse(TODAY).getDay()]+' · revision day</p><p class="big">No new pages</p><p class="sub">Use today to revise what you have memorized.</p></div></div><div class="offday"><button class="btn gold wide" id="anyway">Memorize new pages anyway</button></div></div>'}
   else{const j=[...new Set(L.p.map(juzOf))].join(' & ');
     h+='<div class="hero"><div class="hl"><div><p class="kick">Today’s lesson · Juz '+j+'</p><p class="big">'+(n>1?'Pages '+L.p[0]+(n===2?' & ':'–')+L.p[n-1]:'Page '+L.p[0])+'</p><p class="sub">'+(Q?esc([...new Set(L.p.flatMap(p=>pageInfo(p).ay.map(x=>x[0])))].map(sname).join(' · ')):'Loading…')+'</p></div><div class="ring" style="color:var(--onG)">'+ring(dn,n,64,6,'var(--gold2)')+'<b>'+dn+'/'+n+'</b></div></div>'
     +'<div class="tiles'+(n===1?' one':'')+'">'+L.p.map(p=>{const d=!!S.pages[p];return '<div class="tile'+(d?' done':'')+'"><button class="open" data-open="'+p+'" aria-label="Open page '+p+'"></button><div class="th"><span class="pn">Page '+p+'</span><button class="chk" data-chk="'+p+'" aria-pressed="'+d+'" aria-label="'+(d?'Unmark':'Mark')+' page '+p+' as memorized">'+ICON_CHECK+'</button></div><div class="fw ar" lang="ar">'+esc(firstWords(p))+'</div><div class="sm">'+esc(rangeLabel(p))+'</div></div>'}).join('')+'</div>'
-    +(dn===n?'<div class="donebar"><button class="btn gold" id="rem">Today’s reminder</button><button class="btn ghost" id="more" style="background:rgba(255,255,255,.12);color:var(--onG)">+ One more page</button></div>':'')+'</div>'}
+    +(dn===n?'<div class="donebar"><button class="btn gold" id="rem">Today’s reminder</button><button class="btn ghost" data-recite="1" style="background:rgba(255,255,255,.12);color:var(--onG)">🎙 Recite to check</button><button class="btn ghost" id="more" style="background:rgba(255,255,255,.12);color:var(--onG)">+ One more page</button></div>':'')+'</div>'}
   const t=TIPS[(S.tip+dayNo())%TIPS.length],ti=(S.tip+dayNo())%TIPS.length;
   h+='<div class="card tip"><div class="row"><p class="lab">Before you start · tip '+(ti+1)+' of '+TIPS.length+'</p><span class="pill">'+esc(t.who)+'</span></div><h2>'+esc(t.t)+'</h2><p class="quote ar" lang="ar">«'+esc(t.ar)+'»</p><p class="mean">'+esc(t.en)+'</p><p class="src">'+esc(t.src)+'</p><div class="btns"><button class="btn sm ghost" id="tipNext">Next tip</button><button class="btn sm ghost" id="tipAll">All tips</button></div></div>';
   const mj=juzList().filter(x=>x.m).sort((a,b)=>a.r<b.r?-1:a.r>b.r?1:a.j-b.j);
   if(mj.length){const d=mj[0],done=d.r===TODAY;h+='<div class="card"><div class="row"><div><p class="lab">Revision</p><h2>'+(done?'All memorized juz revised today ✓':'Revise Juz '+d.j)+'</h2><p class="note" style="margin:2px 0 0">'+(done?'Bārak Allāhu fīk.':'Last revised '+ago(d.r)+' · '+d.m+' of '+d.n+' pages memorized')+'</p></div>'+(done?'':'<button class="btn sm" data-rev="'+d.j+'">Done</button>')+'</div></div>'}
   const st=c.diff===0?'On track':c.diff>0?'+'+c.diff+' ahead':(-c.diff)+' behind';
+  h+='<div class="card"><div class="row"><div><p class="lab">Your goal</p><h2>'+esc(goalLabel())+'</h2></div><button class="btn sm ghost" data-plan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gDone/c.gLen*100)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'page')+(c.finish?' · finish about '+fmt(c.finish):'')+(S.goal?' · target '+fmt(parse(S.goal)):'')+'</p></div>';
   h+='<div class="stats"><div class="stat"><b>'+c.tot+'</b><span>of 604 pages</span></div><div class="stat"><b>'+pl(c.streak,'day')+'</b><span>streak</span></div><div class="stat"><b'+(c.diff<0?' class="warn"':'')+'>'+st+'</b><span>schedule</span></div></div>';
-  if(n){const r=RECITERS.find(x=>x[0]===S.reciter);h+='<div class="card"><p class="lab">Listen first, then memorize</p><h2>'+esc(r[1])+'</h2><p class="note" style="margin:2px 0 0">'+esc(r[2])+'</p><div class="btns"><button class="btn sm" id="listen">▶ Play today’s pages</button><button class="btn sm ghost" id="dl">Save for offline</button></div></div>'}
+  if(n){const r=RECITERS.find(x=>x[0]===S.reciter);h+='<div class="card"><p class="lab">Listen first, then memorize</p><h2>'+esc(r[1])+'</h2><p class="note" style="margin:2px 0 0">'+esc(r[2])+'</p><div class="btns"><button class="btn sm" id="listen">▶ Play today’s pages</button><button class="btn sm ghost" id="dl">Save for offline</button><button class="btn sm ghost" data-recite="1">🎙 Test my recitation</button></div></div>'}
   $('v-today').innerHTML=h}
 $('v-today').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
   if(t.dataset.chk){toggle(+t.dataset.chk);return}
   if(t.dataset.open){go('mushaf',+t.dataset.open);return}
+  if(t.dataset.recite){go('mushaf',S.lesson.p[0]||S.cur);recEnter();return}
   if(t.dataset.rev){S.rev[t.dataset.rev]=TODAY;save();renderToday();toast('Juz '+t.dataset.rev+' revised ✓');return}
   switch(t.id){
    case 'anyway':ensureLesson(true);renderToday();break;
    case 'rem':celebrate(false);break;
-   case 'more':{const nx=seq().find(p=>!S.pages[p]&&!S.lesson.p.includes(p));if(nx){S.lesson.p.push(nx);S.lesson.p.sort((a,b)=>a-b);save();renderToday()}break}
+   case 'more':{const nx=goalSeq().concat(seq()).find(p=>!S.pages[p]&&!S.lesson.p.includes(p));if(nx){S.lesson.p.push(nx);S.lesson.p.sort((a,b)=>a-b);save();renderToday()}break}
    case 'tipNext':S.tip=(S.tip+1)%TIPS.length;save();renderToday();break;
    case 'tipAll':sheet('<h2>Advice for memorizing</h2><p class="note">From the Prophet ﷺ, the Salaf and the scholars after them.</p>'+TIPS.map(x=>'<div class="vcard"><p class="lab">'+esc(x.who)+'</p><h2 style="font-size:17px">'+esc(x.t)+'</h2><p class="quote ar" lang="ar">«'+esc(x.ar)+'»</p><p class="mean">'+esc(x.en)+'</p><p class="src">'+esc(x.src)+'</p></div>').join('')+'<button class="btn wide" data-close>Close</button>');break;
    case 'listen':go('mushaf',S.lesson.p[0]);startPlay(S.lesson.p.slice());break;
@@ -456,13 +503,17 @@ function renderMushaf(){const p=S.cur,j=juzOf(p);$('mTitle').textContent='Page '
   $('mHide').classList.toggle('on',hideMode);$('mHide').setAttribute('aria-pressed',hideMode);
   $('mPrev').disabled=p<=1;$('mNext').disabled=p>=604;
   document.documentElement.style.setProperty('--fs',S.fs+'px');
+  $('recp').classList.toggle('on',REC.mode);$('recTools').hidden=!REC.mode;$('mRec').classList.toggle('on',REC.mode);$('mHide').hidden=REC.mode;$('mPlay').hidden=REC.mode;$('mHint').hidden=REC.mode;
   if(!Q){$('mPage').innerHTML='<div class="skel">Loading the mushaf…</div>';return}
-  let h='<div class="mtext ar'+(hideMode?' hide':'')+'" lang="ar">';
+  if(REC.mode&&REC.page!==p)recBuild();
+  const hm=hideMode&&!REC.mode;let wi=0;
+  const body=t=>REC.mode?t.split(' ').map(w=>norm(w)?'<span class="w" data-i="'+(wi++)+'">'+esc(w)+'</span>':esc(w)).join(' '):esc(t);
+  let h='<div class="mtext ar'+(hm?' hide':'')+'" lang="ar">';
   for(const[s,a,t]of pageInfo(p).ay){
-    if(a===1){h+='</div><div class="sh ar" lang="ar">سورة '+esc(NAMES[s-1][2].replace(/^سُوْرَةُ\s*/,''))+'</div>'+(s!==1&&s!==9?'<div class="bas ar mtext" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>':'')+'<div class="mtext ar'+(hideMode?' hide':'')+'" lang="ar">'}
-    h+='<span class="ay" data-k="'+s+':'+a+'"><span class="t">'+esc(t)+'</span> <span class="num">﴿'+arn(a)+'﴾</span></span> '}
+    if(a===1){h+='</div><div class="sh ar" lang="ar">سورة '+esc(NAMES[s-1][2].replace(/^سُوْرَةُ\s*/,''))+'</div>'+(s!==1&&s!==9?'<div class="bas ar mtext" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>':'')+'<div class="mtext ar'+(hm?' hide':'')+'" lang="ar">'}
+    h+='<span class="ay" data-k="'+s+':'+a+'"><span class="t">'+body(t)+'</span> <span class="num">﴿'+arn(a)+'﴾</span></span> '}
   h+='</div><div class="pfoot ar">'+arn(p)+'</div>';
-  $('mPage').innerHTML=h.replace('<div class="mtext ar'+(hideMode?' hide':'')+'" lang="ar"></div>','');markPlaying()}
+  $('mPage').innerHTML=h.replace('<div class="mtext ar'+(hm?' hide':'')+'" lang="ar"></div>','');markPlaying();recPaint()}
 $('mPrev').onclick=()=>turn(-1);$('mNext').onclick=()=>turn(1);
 function turn(d){const n=S.cur+d;if(n<1||n>604)return;S.cur=n;save();renderMushaf();scrollTo({top:0})}
 $('mMem').onclick=()=>toggle(S.cur);
@@ -470,7 +521,7 @@ $('mHide').onclick=()=>{hideMode=!hideMode;renderMushaf()};
 $('mSmall').onclick=()=>{S.fs=Math.max(20,S.fs-2);save();renderMushaf()};
 $('mBig').onclick=()=>{S.fs=Math.min(44,S.fs+2);save();renderMushaf()};
 $('mPlay').onclick=()=>startPlay([S.cur]);
-$('mPage').addEventListener('click',e=>{const a=e.target.closest('.ay');if(!a)return;if(hideMode)a.classList.toggle('rv');else if(PL.list.length){const i=PL.list.findIndex(x=>x.k===a.dataset.k);if(i>=0){PL.i=i;PL.r=0;playCur()}}});
+$('mPage').addEventListener('click',e=>{if(REC.mode){const w=e.target.closest('.w');if(w){REC.pos=+w.dataset.i;for(let k=REC.pos;k<REC.st.length;k++){REC.st[k]=0;REC.heard[k]=''}recPaint();toast('Starting from this word')}return}const a=e.target.closest('.ay');if(!a)return;if(hideMode)a.classList.toggle('rv');else if(PL.list.length){const i=PL.list.findIndex(x=>x.k===a.dataset.k);if(i>=0){PL.i=i;PL.r=0;playCur()}}});
 {let x0=0,y0=0;$('mPage').addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
  $('mPage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>70&&Math.abs(dy)<60)turn(dx>0?1:-1)},{passive:true})}
 
@@ -530,11 +581,11 @@ function renderProgress(){const c=calc(),pct=c.tot/604*100,J=juzList();let h='';
 function juzBody(x){const L=new Set(S.lesson?S.lesson.p:[]);let g='<div class="pg">';
   for(let p=x.s;p<=x.e;p++){const d=S.pages[p],i=pageInfo(p);g+='<button class="pc'+(d?(d==='pre'||d<S.start?' kn':' me'):'')+(L.has(p)&&!d?' nx':'')+'" data-p="'+p+'" aria-pressed="'+!!d+'" title="Page '+p+'"><b>'+p+'</b><small>'+(i?esc(sname(i.f[0])):'')+'</small></button>'}
   const all=x.m===x.n;return g+'</div><div class="btns"><button class="btn sm ghost" data-jo="'+x.s+'">Open in mushaf</button><button class="btn sm ghost" data-jk="'+x.j+'">'+(all?'Clear this juz':'I already know this juz')+'</button></div><p class="note">Tap a page to mark it memorized today. “I already know this juz” records pages you knew before starting, so they don’t count toward today.</p>'}
-function goalCard(c){const left=604-c.tot;let h='<div class="card"><h2>Your goal</h2><label class="field"><span>I want to finish by</span><input type="date" id="goal" value="'+esc(S.goal)+'" min="'+TODAY+'"></label>';
-  if(!left)return h+'<p class="note">Complete. Alḥamdulillāh.</p></div>';
+function goalCard(c){let h='<div class="card"><div class="row"><div><p class="lab">Your goal</p><h2>'+esc(goalLabel())+'</h2></div><button class="btn sm ghost" data-plan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gDone/c.gLen*100)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'page')+' · from page '+S.sp+' ('+esc(NAMES[surahAt(S.sp)-1][0])+'), '+DIRS[S.dir][0].toLowerCase()+'</p><label class="field"><span>Finish by (optional)</span><input type="date" id="goal" value="'+esc(S.goal)+'" min="'+TODAY+'"></label>';
+  const left=c.left;if(!left)return h+'<p class="note">Goal complete. Alḥamdulillāh.</p></div>';
   const items=[];const planD=c.finish;items.push({l:'Your plan',s:pl(S.per,'page')+' a day, '+(7-S.off.length)+' days a week',d:planD,col:'var(--done)'});
   const rate=c.win>=7?c.r28/c.win:0;if(rate>0){const rd=add(parse(TODAY),Math.ceil(left/rate));items.push({l:'Your recent pace',s:(rate*7).toFixed(1).replace(/\.0$/,'')+' pages a week (last '+c.win+' days)',d:rd,col:'var(--gold)'})}
-  let gl='';if(S.goal&&S.goal>=TODAY){const off=offSet(),done=c.o[TODAY]||0;let sd=0;for(let d=parse(TODAY);ymd(d)<=S.goal;d=add(d,1))if(!off.has(d.getDay()))sd++;
+  let gl='';if(S.goal&&S.goal>=TODAY){const off=offSet(),done=c.doneToday;let sd=0;for(let d=parse(TODAY);ymd(d)<=S.goal;d=add(d,1))if(!off.has(d.getDay()))sd++;
     const need=sd?Math.ceil((left+(off.has(parse(TODAY).getDay())?0:done))/sd):left,ok=planD&&ymd(planD)<=S.goal;
     items.push({l:'Your goal',s:sd?'Needs '+pl(need,'page')+' per study day ('+sd+' study days left)':'Pick a later date',d:parse(S.goal),col:'var(--warn)',goal:1,ok,need});
     gl='<p class="note">'+(ok?'At your plan you’ll finish before your goal, in shāʾ Allāh.':'To reach your goal, raise your daily pages to '+need+'.')+'</p>'+(!ok&&sd&&need<=20&&need!==S.per?'<div class="btns"><button class="btn sm" id="useGoal">Use '+pl(need,'page')+' a day</button></div>':'')}
@@ -563,10 +614,7 @@ let audioInfo='';
 async function audioStats(){try{const c=await caches.open(AC),k=await c.keys();let mb='';if(navigator.storage&&navigator.storage.estimate){const e=await navigator.storage.estimate();mb=' · about '+Math.round((e.usage||0)/1048576)+' MB used'}audioInfo=k.length?pl(k.length,'verse')+' saved for offline'+mb:'No recitations saved yet'}catch(e){audioInfo='Offline audio isn’t available in this browser'}
   const el=$('aInfo');if(el)el.textContent=audioInfo}
 function renderSettings(){let h='';
-  h+='<div class="card"><h2>Plan</h2><label class="field"><span>Start date</span><input type="date" id="sStart" value="'+S.start+'"></label>'
-   +'<div class="field"><span>New pages per study day</span><div class="step"><button id="perM" aria-label="Fewer pages">−</button><b id="perV">'+S.per+'</b><button id="perP" aria-label="More pages">+</button></div></div>'
-   +'<div class="field"><span>Days off (revision only)</span><div class="days" id="sOff">'+DAYS.map((d,i)=>'<label><input type="checkbox" value="'+i+'"'+(S.off.includes(i)?' checked':'')+'><span>'+d+'</span></label>').join('')+'</div></div>'
-   +'<label class="field"><span>Memorization order</span><select id="sOrder"><option value="start"'+(S.order==='start'?' selected':'')+'>Al-Fātiḥah to An-Nās</option><option value="juz30"'+(S.order==='juz30'?' selected':'')+'>Juz 30 first, then backwards</option></select></label></div>';
+  h+='<div class="card"><h2>Plan</h2><dl class="kv plan" style="margin-top:10px"><div><dt>Start</dt><dd>Page '+S.sp+' · '+esc(NAMES[surahAt(S.sp)-1][0])+'</dd></div><div><dt>Direction</dt><dd>'+DIRS[S.dir][0]+'</dd></div><div><dt>Goal</dt><dd>'+esc(goalLabel())+'</dd></div><div><dt>Pace</dt><dd>'+pl(S.per,'page')+' a day · '+(7-S.off.length)+' days a week</dd></div>'+(S.goal?'<div><dt>Finish by</dt><dd>'+fmt(parse(S.goal))+'</dd></div>':'')+'</dl><div class="btns"><button class="btn sm" data-plan="1">Change plan</button></div></div>';
   h+='<div class="card"><h2>Reciter</h2><p class="note">Recitations come from EveryAyah.com, which offers them free to download. Save them once and they play without internet.</p><div class="rlist">'+RECITERS.map(r=>'<button class="rc'+(r[0]===S.reciter?' on':'')+'" data-r="'+r[0]+'"><span class="dot"></span><span><b>'+esc(r[1])+'</b><small>'+esc(r[2])+'</small></span></button>').join('')+'</div><p class="note" id="aInfo">'+esc(audioInfo||'Checking saved recitations…')+'</p><div class="btns"><button class="btn sm ghost" id="delAudio">Delete saved recitations</button></div></div>';
   h+='<div class="card"><h2>Appearance</h2><div class="field"><span>Theme</span><div class="seg" id="sTheme">'+[['auto','Auto'],['light','Light'],['dark','Dark'],['amber','No blue']].map(x=>'<button data-th="'+x[0]+'" class="'+(S.theme===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></div><p class="note">“No blue” uses only warm amber colours, for reading at night.</p></div>';
   h+='<div class="card"><h2>Install on your phone</h2><p class="note" style="margin-top:4px"><b>iPhone:</b> open this page in Safari, tap Share, then “Add to Home Screen”.<br><b>Android:</b> tap the ⋮ menu in Chrome, then “Install app”.</p>'+(deferredInstall?'<div class="btns"><button class="btn sm" id="install">Install app</button></div>':'')+'<p class="note">Your progress is saved on this device. On iPhone, the home-screen app keeps its own copy, so install it first and track from there.</p></div>';
@@ -593,17 +641,125 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 /* ---------- backup ---------- */
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
-const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,order:S.order,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
 function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:''});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
+
+/* ---------- plan sheet ---------- */
+let PS=null;
+document.addEventListener('click',e=>{if(e.target.closest('[data-plan]'))openPlan(false)});
+function goalOptsFor(sp,dir){const o=[['whole',0,'The whole Qur’an']],J=juzOf(sp),js=[];
+  for(let j=1;j<=30;j++)if(dir==='fwd'?jr(j)[1]>=sp:dir==='back'?jr(j)[0]<=sp:j<=J)js.push(j);
+  if(dir!=='fwd')js.reverse();js.forEach(j=>o.push(['juz',j,labelFor(dir,'juz',j)]));
+  if(dir!=='juzback'){const ss=[];for(let x=1;x<=114;x++)if(dir==='fwd'?SEN[x-1]>=sp:SST[x-1]<=sp)ss.push(x);if(dir==='back')ss.reverse();ss.forEach(x=>o.push(['surah',x,labelFor(dir,'surah',x)]))}
+  return o}
+function openPlan(welcome){PS={sp:S.sp,dir:S.dir,kind:S.gKind,val:+S.gVal||0,per:S.per,off:S.off.slice(),mode:S.goal&&S.goal>TODAY?'date':'per',date:S.goal&&S.goal>TODAY?S.goal:''};
+  const so=NAMES.map((n,i)=>'<option value="'+(i+1)+'">'+(i+1)+' · '+esc(n[0])+' (page '+SST[i]+')</option>').join('');
+  sheet('<h2>'+(welcome?'Set up your plan':'Your plan')+'</h2><p class="note">Start wherever you like, choose your own goal and pace. You can change it any time.</p>'
+   +'<div class="field"><span>Popular plans</span><div class="presets" id="plPre">'+Object.entries(PRESETS).map(([k,v])=>'<button class="chip" data-pre="'+k+'">'+esc(v[0])+'</button>').join('')+'</div></div>'
+   +'<label class="field"><span>1 · Where do you want to start?</span><select id="plSurah">'+so+'</select></label>'
+   +'<label class="field"><span style="font-weight:400;color:var(--mute)">or start on a page (1–604)</span><input type="number" id="plPage" min="1" max="604" inputmode="numeric"></label>'
+   +'<div class="field"><span>2 · Which way?</span><div class="rlist" id="plDir">'+Object.entries(DIRS).map(([k,v])=>'<button class="rc" data-dir="'+k+'"><span class="dot"></span><span><b>'+v[0]+'</b><small>'+esc(v[1])+'</small></span></button>').join('')+'</div></div>'
+   +'<label class="field"><span>3 · Your goal</span><select id="plGoal"></select></label>'
+   +'<div class="field"><span>4 · Your pace</span><div class="seg" id="plMode" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-m="per">Pages a day</button><button data-m="date">Finish by a date</button></div></div>'
+   +'<div class="field" id="plPerW"><div class="step"><button data-pp="-1" aria-label="Fewer pages">−</button><b id="plPerV"></b><button data-pp="1" aria-label="More pages">+</button><span class="note" style="margin:0">new pages a day</span></div></div>'
+   +'<label class="field" id="plDateW"><span>Finish by</span><input type="date" id="plDate" min="'+ymd(add(parse(TODAY),1))+'"></label>'
+   +'<div class="field"><span>Days off (revision only)</span><div class="days" id="plOff">'+DAYS.map((d,i)=>'<label><input type="checkbox" value="'+i+'"><span>'+d+'</span></label>').join('')+'</div></div>'
+   +'<div class="vcard" id="plSum" aria-live="polite"></div>'
+   +'<button class="btn wide" id="plSave">'+(welcome?'Start my plan':'Save plan')+'</button>'
+   +(welcome?'<button class="btn ghost wide" id="plSkip" style="margin-top:8px">Not now</button>':'<button class="btn ghost wide" data-close style="margin-top:8px">Cancel</button>'));
+  const P=$('panel'),syncStart=()=>{$('plPage').value=PS.sp;$('plSurah').value=String(surahAt(PS.sp))};
+  syncStart();$('plDate').value=PS.date;P.querySelectorAll('#plOff input').forEach(i=>{i.checked=PS.off.includes(+i.value)});
+  $('plPre').onclick=e=>{const b=e.target.closest('[data-pre]');if(!b)return;const v=PRESETS[b.dataset.pre];PS.sp=v[1];PS.dir=v[2];PS.kind=v[3];PS.val=v[4];syncStart();updPlan(true)};
+  $('plSurah').onchange=e=>{PS.sp=SST[+e.target.value-1];$('plPage').value=PS.sp;updPlan(true)};
+  $('plPage').oninput=e=>{const v=Math.round(+e.target.value);if(v>=1&&v<=604){PS.sp=v;$('plSurah').value=String(surahAt(v));updPlan(true)}};
+  $('plDir').onclick=e=>{const b=e.target.closest('[data-dir]');if(b){PS.dir=b.dataset.dir;updPlan(true)}};
+  $('plGoal').onchange=e=>{const[k,v]=e.target.value.split(':');PS.kind=k;PS.val=+v;updPlan(false)};
+  $('plMode').onclick=e=>{const b=e.target.closest('[data-m]');if(b){PS.mode=b.dataset.m;updPlan(false)}};
+  $('plPerW').onclick=e=>{const b=e.target.closest('[data-pp]');if(b){PS.per=Math.max(1,Math.min(20,PS.per+(+b.dataset.pp)));updPlan(false)}};
+  $('plDate').onchange=e=>{PS.date=e.target.value;updPlan(false)};
+  $('plOff').onchange=e=>{const v=[...P.querySelectorAll('#plOff input:checked')].map(i=>+i.value);if(v.length>6){e.target.checked=false;toast('Keep at least one study day');return}PS.off=v;updPlan(false)};
+  $('plSave').onclick=savePlan;if($('plSkip'))$('plSkip').onclick=()=>{S.setup=1;save();closeSheet()};
+  updPlan(true)}
+function planNums(){const G=goalSeqFor(PS.sp,PS.dir,PS.kind,PS.val),left=G.filter(p=>!S.pages[p]).length;let per=PS.per,sd=0,warn='';
+  if(PS.mode==='date'&&PS.date>TODAY){sd=studyDays(PS.off,PS.date);per=sd?Math.ceil(left/sd):left;if(per>20)warn='That needs '+per+' pages a day. Pick a later date.';per=Math.max(1,Math.min(20,per))}
+  return{G,left,per,fin:finishFor(per,PS.off,left,0),sd,warn}}
+function updPlan(opts){const P=$('panel');
+  P.querySelectorAll('#plDir .rc').forEach(b=>b.classList.toggle('on',b.dataset.dir===PS.dir));
+  if(opts){const o=goalOptsFor(PS.sp,PS.dir),cur=PS.kind+':'+PS.val;$('plGoal').innerHTML=o.map(x=>'<option value="'+x[0]+':'+x[1]+'">'+esc(x[2])+'</option>').join('');
+    if(o.some(x=>x[0]+':'+x[1]===cur))$('plGoal').value=cur;else{$('plGoal').value='whole:0';PS.kind='whole';PS.val=0}}
+  P.querySelectorAll('#plMode button').forEach(b=>b.classList.toggle('on',b.dataset.m===PS.mode));
+  $('plPerW').hidden=PS.mode!=='per';$('plDateW').hidden=PS.mode!=='date';$('plPerV').textContent=PS.per;
+  const n=planNums(),done=n.G.length-n.left,needDate=PS.mode==='date'&&!(PS.date>TODAY);
+  $('plSum').innerHTML='<p class="lab">Your plan</p><p class="mean"><b>Start:</b> page '+PS.sp+' · '+esc(NAMES[surahAt(PS.sp)-1][0])+', '+DIRS[PS.dir][0].toLowerCase()+'<br><b>Goal:</b> '+esc(labelFor(PS.dir,PS.kind,PS.val))+' · '+pl(n.G.length,'page')+(done?' ('+done+' already memorized)':'')+'<br><b>Pace:</b> '+(needDate?'pick a date':pl(n.per,'new page')+' a day, '+(7-PS.off.length)+' days a week')+'<br><b>Finish:</b> '+(!n.left?'already complete':needDate?'—':'about '+fmt(n.fin))+'</p>'+(n.warn?'<p class="src" style="color:var(--warn)">'+esc(n.warn)+'</p>':'')}
+function savePlan(){if(PS.mode==='date'&&!(PS.date>TODAY)){toast('Pick a finish date');return}const n=planNums();
+  S.sp=PS.sp;S.dir=PS.dir;S.gKind=PS.kind;S.gVal=PS.val;S.per=n.per;S.off=PS.off;S.goal=PS.mode==='date'?PS.date:'';S.start=TODAY;S.lesson=null;S.setup=1;save();closeSheet();renderAll();if(location.hash==='#settings')renderSettings();toast('Plan saved ✓ '+pl(n.per,'page')+' a day')}
+
+/* ---------- recite & check ---------- */
+/*ALIGN*/
+const AR_IGN=new Set(['اعوذ','بالله','من','الشيطان','الرجيم','بسم','الله','الرحمن','الرحمان','الرحيم','صدق','العظيم','امين']);
+function norm(w){return String(w).replace(/ٰ/g,'ا').replace(/[ؐ-ًؚ-ٟۖ-ۭـ]/g,'').replace(/[ٱأإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ء/g,'').replace(/[^ء-ي]/g,'')}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=[];for(let j=0;j<=n;j++)p[j]=j;for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+const sim=(a,b)=>1-lev(a,b)/Math.max(a.length,b.length,1);
+function alignWords(R,hw){const W=R.words,st=R.st,H=hw.map(w=>[w,norm(w)]).filter(x=>x[1]);
+  for(let j=0;j<H.length&&R.pos<W.length;j++){const h=H[j][1];let fixd=false;
+    for(let k=Math.max(0,R.pos-3);k<R.pos;k++)if((st[k]===2||st[k]===3)&&sim(h,W[k].n)>=.75){st[k]=4;fixd=true;break}
+    if(fixd)continue;
+    if(R.pos>0&&st[R.pos-1]===1&&sim(h,W[R.pos-1].n)>=.75)continue;
+    let hit=-1,two=false,used2=false;
+    for(let k=R.pos;k<Math.min(W.length,R.pos+6);k++){
+      if(sim(h,W[k].n)>=.7){hit=k;break}
+      if(k+1<W.length&&sim(h,W[k].n+W[k+1].n)>=.75){hit=k;two=true;break}
+      if(j+1<H.length&&sim(h+H[j+1][1],W[k].n)>=.75){hit=k;used2=true;break}}
+    if(hit>=0){for(let k=R.pos;k<hit;k++)st[k]=3;st[hit]=1;if(two)st[hit+1]=1;R.pos=hit+(two?2:1);if(used2)j++;continue}
+    if(AR_IGN.has(h)||h.length<2)continue;
+    if(sim(h,W[R.pos].n)>=.34){st[R.pos]=2;R.heard[R.pos]=H[j][0];R.pos++}}
+  return R}
+/*END*/
+const REC={mode:false,show:false,listening:false,words:[],st:[],heard:[],pos:0,interim:'',r:null,page:0,log:[]};
+const recSR=()=>window.SpeechRecognition||window.webkitSpeechRecognition;
+function recBuild(){REC.words=[];REC.st=[];REC.heard=[];REC.pos=0;REC.page=S.cur;const i=pageInfo(S.cur);if(!i)return;
+  for(const[s,a,t]of i.ay)for(const w of t.split(' ')){const n=norm(w);if(n)REC.words.push({w,n,k:s+':'+a})}}
+function recCounts(){let ok=0,bad=0;REC.st.forEach(x=>{if(x===1||x===4)ok++;else if(x===2||x===3)bad++});return{ok,bad}}
+function recPaint(){$('mPage').classList.toggle('rec',REC.mode);$('mPage').classList.toggle('show',REC.show);if(!REC.mode)return;
+  document.querySelectorAll('#mPage .w').forEach(el=>{const i=+el.dataset.i,x=REC.st[i];el.className='w'+(x===1?' ok':x===2?' bad':x===3?' sk':x===4?' fx':'')+(i===REC.pos&&REC.listening?' cur':'')});
+  const c=recCounts(),end=REC.words.length&&REC.pos>=REC.words.length;$('recOk').textContent='✓ '+c.ok;$('recBad').textContent='✗ '+c.bad;
+  $('recSt').textContent=REC.listening?(end?'Page complete':'Listening… recite now'):end?'Page complete · '+pl(c.bad,'mistake'):'Tap the mic and recite this page';
+  $('recHeard').textContent=REC.interim||'';$('recMic').classList.toggle('live',REC.listening);$('recMic').setAttribute('aria-label',REC.listening?'Stop listening':'Start listening');$('recShow').classList.toggle('on',REC.show)}
+function recEnter(){if(!recSR()){sheet('<h2>Recitation check isn’t available here</h2><p class="note">This browser can’t listen to recitation. Use Chrome on Android or a computer, or Safari on iPhone.</p><button class="btn wide" data-close>OK</button>');return}
+  REC.mode=true;REC.show=false;REC.page=0;REC.log=[];if(PL.on)stopPlay(true);hideMode=false;renderMushaf();
+  if(!S.recInfo){S.recInfo=1;save();sheet('<h2>Recite and check</h2><p class="mean">Tap the mic and recite this page from memory. Each word appears when you say it correctly. Skipped or different words are marked in orange. Tap any word to start from there.</p><p class="note">It uses your phone’s speech recognition, so it needs internet. It checks the words, not tajwīd or vowels, and it can mishear. Use it as a helper alongside a teacher.</p><button class="btn wide" data-close>Start</button>')}}
+function recExit(){recStop(false);REC.mode=false;renderMushaf()}
+function recStart(){const SR=recSR();if(!SR)return;if(!navigator.onLine){toast('Checking recitation needs internet');return}
+  if(!REC.words.length||REC.pos>=REC.words.length)recBuild();
+  const r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
+  r.onresult=e=>{let fin='',it='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=' '+x[0].transcript;else it+=' '+x[0].transcript}
+    REC.interim=it.trim();if(fin.trim()){alignWords(REC,fin.trim().split(/\s+/));if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}recPaint()};
+  r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){REC.listening=false;toast('Microphone access is blocked. Allow it in your browser settings.',4000)}else if(e.error==='network'){REC.listening=false;toast('Checking recitation needs internet')}recPaint()};
+  r.onend=()=>{if(REC.listening&&REC.r===r)setTimeout(()=>{if(REC.listening&&REC.r===r)try{r.start()}catch(x){}},250);else recPaint()};
+  REC.r=r;REC.listening=true;REC.interim='';try{r.start()}catch(x){}recPaint()}
+function recStop(summary){REC.listening=false;REC.interim='';if(REC.r){try{REC.r.stop()}catch(x){}}REC.r=null;recPaint();if(summary)recSummary()}
+function recEntry(){const c=recCounts(),m=[];REC.st.forEach((x,i)=>{if(x===2||x===3)m.push({w:REC.words[i].w,k:REC.words[i].k,h:REC.heard[i]||'',x})});return{p:REC.page,ok:c.ok,bad:c.bad,m}}
+function recPageDone(){REC.log.push(recEntry());const c=recCounts(),cur=S.cur,L=S.lesson&&S.lesson.p.includes(cur)?S.lesson.p:[],nx=L.find(p=>p!==cur&&!REC.log.some(x=>x.p===p));
+  if(nx){toast('Page '+cur+' done · '+pl(c.bad,'mistake')+'. On to page '+nx,3000);setTimeout(()=>{if(REC.mode&&REC.listening&&S.cur===cur){S.cur=nx;save();renderMushaf();scrollTo({top:0})}},1500)}else recStop(true)}
+function recSummary(){const all=REC.log.slice();if(REC.st.some(x=>x)&&!(REC.log.length&&REC.log[REC.log.length-1].p===REC.page))all.push(recEntry());REC.log=[];if(!all.length)return;
+  const bad=all.reduce((a,x)=>a+x.bad,0),ok=all.reduce((a,x)=>a+x.ok,0);
+  sheet('<h2>'+(bad?'Your recitation':'Mā shāʾ Allāh, no mistakes')+'</h2><p class="note">'+pl(ok,'word')+' right'+(bad?', '+pl(bad,'word')+' to review':'')+'.</p>'
+   +all.map(x=>'<div class="vcard"><p class="lab">Page '+x.p+' · ✓ '+x.ok+(x.bad?' · ✗ '+x.bad:'')+'</p>'+(x.m.length?x.m.map(y=>'<p class="mean"><span class="ar" lang="ar" style="font-size:22px;color:var(--warn)">'+esc(y.w)+'</span> <span class="src">'+y.k+' · '+(y.x===3?'skipped':'heard <span class="ar" lang="ar">'+esc(y.h)+'</span>')+'</span></p>').join(''):'<p class="mean">No mistakes on this page.</p>')+'</div>').join('')
+   +'<p class="note">Speech recognition can mishear. If you know a word was right, you can ignore it.</p><button class="btn wide" data-close>Close</button>')}
+$('mRec').onclick=()=>REC.mode?recExit():recEnter();
+$('recMic').onclick=()=>REC.listening?recStop(true):recStart();
+$('recShow').onclick=()=>{REC.show=!REC.show;recPaint()};
+$('recReset').onclick=()=>{recBuild();recPaint()};
+$('recDone').onclick=()=>{recStop(true);REC.mode=false;renderMushaf()};
 
 /* ---------- routing ---------- */
 const TABS=['today','mushaf','progress','settings'];
 function go(tab,page){if(page){S.cur=page;save()}if(location.hash!=='#'+tab)location.hash=tab;else show()}
 function show(){let h=location.hash.slice(1);if(h.startsWith('restore=')){const c=h.slice(8);history.replaceState(null,'',location.pathname+'#today');show();askRestore(c);return}
   if(!TABS.includes(h))h='today';TABS.forEach(t=>{$('v-'+t).classList.toggle('on',t===h)});document.querySelectorAll('.tabs button').forEach(b=>{b.classList.toggle('on',b.dataset.tab===h);b.setAttribute('aria-current',b.dataset.tab===h?'page':'false')});
-  if(h==='mushaf')renderMushaf();if(h==='settings')renderSettings();scrollTo({top:0})}
+  if(h!=='mushaf'&&REC.listening)recStop(false);if(h==='mushaf')renderMushaf();if(h==='settings')renderSettings();scrollTo({top:0})}
 document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(b.dataset.tab)});
 addEventListener('hashchange',show);
 function applyTheme(){document.documentElement.dataset.theme=S.theme;const m=document.querySelector('meta[name=theme-color]');m.content=S.theme==='amber'?'#0c0800':(S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'#0f1411':'#f4efe2'}
@@ -611,9 +767,11 @@ function renderAll(){header();renderToday();renderProgress();if(location.hash===
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){const t=ymd(new Date());if(t!==TODAY){TODAY=t;renderAll()}}});
 let deferredInstall=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(location.hash==='#settings')renderSettings()});
 
+const restoring=location.hash.startsWith('#restore=');
 applyTheme();renderAll();show();
+if(!S.setup&&!restoring)setTimeout(()=>openPlan(true),500);
 fetch('data/quran.json').then(r=>r.json()).then(d=>{Q=d.pages;renderAll();if(location.hash==='#mushaf')renderMushaf()}).catch(()=>{$('mPage').innerHTML='<div class="skel">Couldn’t load the mushaf. Connect to the internet once so it can be saved.</div>'});
-if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller,t0=Date.now();navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had)return;if(Date.now()-t0<8000)location.reload();else toast('App updated ✓ Reopen it to see what’s new',4000)})}
 }
 </script>
 </body>
