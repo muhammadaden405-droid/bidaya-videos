@@ -270,6 +270,11 @@ textarea{min-height:90px;resize:vertical}
 .mpart.done .chk{background:var(--done);border-color:var(--done)}
 .mpart.done .chk svg{stroke-dashoffset:0}
 a.chip{text-decoration:none;color:inherit}
+.mpc{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 6px}
+.pb2{min-width:48px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-weight:800;font-size:14px;padding:0 10px}
+.pb2.on{background:var(--gold2);border-color:var(--gold2);color:#2a1c00}
+#mpSeek{width:100%;accent-color:var(--done);height:28px}
+.mptime{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
 .presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .recp{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px;margin:0 0 10px;align-items:center;gap:12px;box-shadow:var(--sh)}
 .recp.on{display:flex}
@@ -407,7 +412,7 @@ const dayNo=()=>Math.floor(parse(TODAY).getTime()/864e5);
 
 /* ---------- state ---------- */
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,mt:{},mcur:'',mper:1,mfs:24,goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
+const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,mt:{},mcur:'',mper:1,mfs:24,mpos:{},goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
 function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});
   if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=Math.max(1,Math.min(20,Math.round(+S.per||2)));
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
@@ -564,7 +569,7 @@ const AU=new Audio();AU.preload='auto';
 const PL={list:[],i:0,r:0,pages:[],on:false,obj:null};
 let unlocked=false;function unlock(){if(unlocked)return;unlocked=true;try{const n=800,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i)};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);
   let bin='';b.forEach(x=>bin+=String.fromCharCode(x));AU.src='data:audio/wav;base64,'+btoa(bin);AU.play().catch(()=>{})}catch(e){}}
-function startPlay(pages){unlock();if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
+function startPlay(pages){unlock();if(!MA.paused)MA.pause();if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
 async function playCur(){const t=PL.list[PL.i];if(!t){stopPlay(true);return}
   PL.on=true;setPI();markPlaying();if(t.p&&t.p!==S.cur&&location.hash==='#mushaf'){S.cur=t.p;save();renderMushaf()}
   try{const b=await getBlob(url(t.s,t.a));if(PL.list[PL.i]!==t)return;if(PL.obj)URL.revokeObjectURL(PL.obj);PL.obj=URL.createObjectURL(b);AU.src=PL.obj;await AU.play();prefetch()}
@@ -671,7 +676,7 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 /* ---------- backup ---------- */
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
-const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,mt:S.mt,mcur:S.mcur,mper:S.mper,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,mt:S.mt,mcur:S.mcur,mper:S.mper,mpos:S.mpos,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
 function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:''});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
@@ -814,15 +819,15 @@ function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';render
   let h='<div class="mbar2"><button class="nav" data-mback="1" aria-label="Back to the list"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="mt"><b>'+esc(b.en)+'</b><span>'+esc(b.ae)+' · d. '+b.d+' AH</span></div><span style="width:46px"></span></div>'
    +'<div class="card"><p class="ar mt-big" lang="ar">'+esc(b.t)+'</p>'+(b.rec?'<p class="mrec" style="margin-top:4px">'+esc(b.rec)+'</p>':'')
    +'<div class="bar" style="margin-top:12px"><i style="width:'+(d/b.n*100)+'%"></i></div><p class="note">'+d+' of '+b.n+' portions memorized'+(S.mcur===b.id?' · your current matn':'')+'</p>'
-   +'<div class="tools" style="justify-content:flex-start;margin:10px 0 0">'+(S.mcur!==b.id?'<button class="chip" data-mset="1">Make this my current matn</button>':'')+'<button class="chip'+(mHide?' on':'')+'" data-mhide="1">'+(mHide?'Hiding text':'Hide text')+'</button><button class="chip" data-mfs="-2" aria-label="Smaller text">A−</button><button class="chip" data-mfs="2" aria-label="Larger text">A+</button><a class="chip" href="'+ytLink(b.t)+'" target="_blank" rel="noopener">🎧 Recorded readings</a></div></div>';
+   +'<div class="tools" style="justify-content:flex-start;margin:10px 0 0">'+(S.mcur!==b.id?'<button class="chip" data-mset="1">Make this my current matn</button>':'')+'<button class="chip'+(mHide?' on':'')+'" data-mhide="1">'+(mHide?'Hiding text':'Hide text')+'</button><button class="chip" data-mfs="-2" aria-label="Smaller text">A−</button><button class="chip" data-mfs="2" aria-label="Larger text">A+</button>'+(MREC[b.id]?'':'<a class="chip" href="'+ytLink(b.t)+'" target="_blank" rel="noopener">🎧 Find recorded readings</a>')+'</div></div>'+mpCard(b.id);
   if(mWin.a>0)h+='<button class="btn ghost wide" data-mmore="-1" style="margin-bottom:10px">Show earlier portions</button>';
   let lastSi=-1;for(let i=mWin.a;i<mWin.z;i++){const P=D.parts[i],sec=D.secs[P.si];
     if(P.si!==lastSi){lastSi=P.si;if(sec.h)h+='<h3 class="mh ar" lang="ar">'+esc(sec.h)+'</h3>'}
     const done=!!m[i],today=nx.has(i);
     h+='<div class="mpart'+(done?' done':'')+(today?' today':'')+(b.poem?' poem':'')+'" id="mp'+i+'">'+(today?'<span class="tag">Today</span>':'')+'<div class="mx ar'+(mHide&&!done?' hid':'')+'" lang="ar" data-rv="'+i+'">'+partHTML(P.x)+'</div><div class="mfoot"><span class="note" style="margin:0">'+(i+1)+' / '+b.n+'</span><span class="mbtns"><button class="chip" data-say="'+i+'" aria-label="Read portion '+(i+1)+' aloud">▶</button><button class="chk sm" data-mchk="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' portion '+(i+1)+' memorized">'+ICON_CHECK+'</button></span></div></div>'}
   if(mWin.z<b.n)h+='<button class="btn ghost wide" data-mmore="1">Show more portions</button>';
-  h+='<p class="note">“▶” reads a portion aloud with your phone’s Arabic voice, repeating it '+pl(S.rep,'time')+'. It can mispronounce endings, so check against the text.</p>';
-  V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px')}
+  h+='<p class="note">'+(MREC[b.id]?'Use the player above for the full recording. ':'')+'“▶” reads a portion aloud with your phone’s Arabic voice, repeating it '+pl(S.rep,'time')+'. It can mispronounce endings, so check against the text.</p>';
+  V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px');if(MREC[b.id]){mpPaint();mpRefreshSaved(b.id)}}
 $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data-rv]');if(!t)return;const d=t.dataset;
   if(d.mp){S.mper=Math.max(1,Math.min(10,S.mper+(+d.mp)));save();renderMutun();renderToday();return}
   if(d.mo){mOpen=d.mo;mWin=null;mHide=false;renderMutun();scrollTo({top:0});const nx=mNext(mOpen,1)[0];if(nx>3)setTimeout(()=>{const el=$('mp'+nx);el&&el.scrollIntoView({block:'center'})},350);return}
@@ -842,6 +847,68 @@ function mutunTodayCard(){if(!MI)return '';const b=S.mcur&&mInfo(S.mcur);
 document.addEventListener('click',e=>{const b=e.target.closest('[data-gomutun]');if(!b)return;const id=b.dataset.gomutun;mOpen=id!=='1'&&mInfo(id)&&mNext(id,1).length?id:'';mWin=null;go('mutun')});
 function mutunProgressCard(){if(!MI)return '';const st=MI.filter(b=>mDone(b.id));if(!st.length)return '';
   return '<div class="card"><h2>Mutūn</h2>'+st.map(b=>{const d=mDone(b.id);return '<div class="rv"><div style="flex:1"><b>'+esc(b.en)+'</b><small>'+d+' of '+b.n+' portions</small><span class="bar" style="display:block;margin-top:6px"><i style="width:'+(d/b.n*100)+'%"></i></span></div></div>'}).join('')+'</div>'}
+
+/* ---------- matn recordings ---------- */
+const ARC='https://archive.org/download/',A1=n=>ARC+'Mottoon_Talib/'+n+'.mp3',A2=n=>ARC+'Mutun_Sawtiya/'+n;
+const MREADERS={ansari:['Ibrāhīm al-Anṣārī','Mutūn Ṭālib al-ʿIlm reading, Shaykh ʿAbd al-Muḥsin al-Qāsim’s edition','archive.org/details/Mottoon_Talib'],shaydhami:['Abū Aḥmad Rashīd al-Shayẓamī','Mutūn Ṣawtiyyah','archive.org/details/Mutun_Sawtiya']};
+const MREC={nawaqid:{ansari:[A1('02')],shaydhami:[A2('010-Nawaqid_al-islam_al-10.mp3')]},qawaid:{ansari:[A1('03')],shaydhami:[A2('003-Qawaid_4.mp3')]},thalatha:{ansari:[A1('04')],shaydhami:[A2('001-Osoul_3.mp3')]},
+ arbain:{ansari:[A1('05')],shaydhami:[A2('068-Arbaoun-nawawiah.mp3')]},tuhfa:{ansari:[A1('06')],shaydhami:[A2('091-Tohfat_al-atfaal.mp3')]},shurut:{ansari:[A1('07')],shaydhami:[A2('002-Chorout-assalah.mp3')]},
+ tawhid:{ansari:[A1('08')],shaydhami:[A2('008-Ketab_tawheed_full.mp3')]},ajurrumiyya:{ansari:[A1('11')],shaydhami:[A2('085-Ajroumiah.mp3')]},wasitiyya:{ansari:[A1('12')],shaydhami:[A2('041-Alwassitiah.mp3')]},
+ kashf:{shaydhami:[A2('009-Kashf-ash-shobohaat.mp3')]},usulsunna:{shaydhami:[A2('045-Oussoul_assuna.mp3')]},lumca:{shaydhami:[A2('040-Lomaat_ali3tiqad.mp3')]},
+ umdaahkam:{shaydhami:Array.from({length:8},(_,i)=>A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3'))},umdafiqh:{shaydhami:Array.from({length:6},(_,i)=>A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3'))}};
+const MA=new Audio();MA.preload='none';
+const MP={id:'',r:'',f:0,obj:null,a:null,b:null,rate:1,loaded:'',saved:{}};
+const fmtT=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+':'+pad(m):m)+':'+pad(x)};
+const silentWav=()=>{const n=800,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i)};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);let s='';b.forEach(x=>s+=String.fromCharCode(x));return 'data:audio/wav;base64,'+btoa(s)};
+let maUnlocked=false;function maUnlock(){if(maUnlocked)return;maUnlocked=true;try{MA.src=silentWav();MA.play().catch(()=>{})}catch(e){}}
+function mpSel(id){const R=MREC[id];if(!R)return null;const p=(S.mpos||{})[id]||{};const r=R[p.r]?p.r:(R.ansari?'ansari':'shaydhami');return{r,f:Math.min(p.f||0,R[r].length-1),t:p.r===r?p.t||0:0}}
+async function mpCached(u){try{const c=await caches.open(AC);return !!(await c.match(u))}catch(e){return false}}
+async function mpRefreshSaved(id){const R=MREC[id];if(!R)return;for(const r in R){let all=true;for(const u of R[r])if(!(await mpCached(u))){all=false;break}MP.saved[id+':'+r]=all}mpPaint()}
+async function mpLoad(id,r,f,t,play){if(AU&&!AU.paused){AU.pause();PL.on=false;setPI()}
+  MP.id=id;MP.r=r;MP.f=f;MP.a=MP.b=null;const u=MREC[id][r][f];MP.loaded=u;let blob=null;
+  try{const c=await caches.open(AC),m=await c.match(u);if(m)blob=await m.blob()}catch(e){}
+  if(MP.loaded!==u)return;if(MP.obj){URL.revokeObjectURL(MP.obj);MP.obj=null}
+  if(blob){MP.obj=URL.createObjectURL(blob);MA.src=MP.obj}else MA.src=u;
+  MA.playbackRate=MP.rate;if(t)MA.addEventListener('loadedmetadata',()=>{try{MA.currentTime=t}catch(e){}},{once:true});
+  if(play)MA.play().catch(()=>toast(navigator.onLine?'Couldn’t play this recording. Try again.':'You’re offline and this recording isn’t saved yet.'));
+  if('mediaSession' in navigator){try{const b=mInfo(id);navigator.mediaSession.metadata=new MediaMetadata({title:b?b.en:'Matn',artist:MREADERS[r][0],album:'Hifz · Mutūn'})}catch(e){}}
+  mpPaint()}
+function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;
+  if(MP.id===id&&MA.src&&!MA.src.startsWith('data:')){if(MA.paused)MA.play().catch(()=>{});else MA.pause();return}
+  maUnlock();mpLoad(id,s.r,s.f,s.t,true)}
+let mpLast=0;
+MA.addEventListener('timeupdate',()=>{if(MA.src.startsWith('data:'))return;if(MP.a!=null&&MP.b!=null&&MA.currentTime>=MP.b){MA.currentTime=MP.a}
+  const now=Date.now();if(now-mpLast>4000&&MP.id){mpLast=now;S.mpos=S.mpos||{};S.mpos[MP.id]={r:MP.r,f:MP.f,t:Math.floor(MA.currentTime)};save()}mpPaint(true)});
+MA.addEventListener('play',()=>mpPaint());MA.addEventListener('pause',()=>mpPaint());
+MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;const L=MREC[MP.id][MP.r];if(MP.f+1<L.length){mpLoad(MP.id,MP.r,MP.f+1,0,true)}else{S.mpos[MP.id]={r:MP.r,f:0,t:0};save();mpPaint()}});
+function mpCard(id){const R=MREC[id];if(!R)return '';const s=mpSel(id),rs=Object.keys(R),L=R[s.r];
+  return '<div class="card mplay" id="mpCard"><div class="row"><p class="lab" style="margin:0">Listen to the matn</p><span class="pill" id="mpSaved"></span></div>'
+   +(rs.length>1?'<div class="seg" style="grid-template-columns:repeat('+rs.length+',minmax(0,1fr));margin-top:10px">'+rs.map(r=>'<button data-mpr="'+r+'" class="'+(r===s.r?'on':'')+'">'+esc(MREADERS[r][0].split(' ').slice(-1)[0])+'</button>').join('')+'</div>':'')
+   +'<p class="note" style="margin:8px 0 0"><b>'+esc(MREADERS[s.r][0])+'</b> · '+esc(MREADERS[s.r][1])+'</p>'
+   +(L.length>1?'<label class="field" style="margin-top:8px"><span>Part</span><select id="mpTrack">'+L.map((u,i)=>'<option value="'+i+'"'+(i===s.f?' selected':'')+'>Part '+(i+1)+' of '+L.length+'</option>').join('')+'</select></label>':'')
+   +'<div class="mpc"><button class="pb2" data-mps="-10" aria-label="Back 10 seconds">−10</button><button class="pp" data-mpp="1" id="mpPlay" aria-label="Play"><svg viewBox="0 0 24 24" id="mpIcon"><path d="M7 4l13 8-13 8z"/></svg></button><button class="pb2" data-mps="10" aria-label="Forward 10 seconds">+10</button><button class="pb2" data-mpx="1" id="mpRate">1×</button><button class="pb2" data-mpab="1" id="mpAB" aria-label="Loop a section">A–B</button></div>'
+   +'<input type="range" id="mpSeek" min="0" max="1000" value="0" aria-label="Position"><div class="row mptime"><span id="mpCur">0:00</span><span id="mpABl"></span><span id="mpDur">–:–</span></div>'
+   +'<div class="btns"><button class="btn sm ghost" data-mpsave="1" id="mpSave">Save for offline</button></div><p class="src">Plays from archive.org. “A–B” repeats a stretch: tap at the start, tap at the end, tap again to stop.</p></div>'}
+function mpPaint(light){const c=$('mpCard');if(!c||!mOpen)return;const on=MP.id===mOpen&&MA.src&&!MA.src.startsWith('data:'),playing=on&&!MA.paused;
+  $('mpIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mpPlay').setAttribute('aria-label',playing?'Pause':'Play');
+  const d=on&&isFinite(MA.duration)?MA.duration:0,s=mpSel(mOpen),t=on?MA.currentTime:s.t;$('mpCur').textContent=fmtT(t);$('mpDur').textContent=d?fmtT(d):'–:–';
+  const sk=$('mpSeek');if(sk&&document.activeElement!==sk)sk.value=d?Math.round(t/d*1000):0;
+  if(light)return;$('mpRate').textContent=MP.rate+'×';$('mpAB').classList.toggle('on',MP.a!=null);
+  $('mpABl').textContent=MP.a!=null?(MP.b!=null?'Repeating '+fmtT(MP.a)+'–'+fmtT(MP.b):'A at '+fmtT(MP.a)+' · tap A–B at the end'):'';
+  const sv=MP.saved[mOpen+':'+s.r];$('mpSaved').textContent=sv?'Saved offline ✓':'Streams online';$('mpSave').hidden=!!sv}
+async function mpSaveAll(){const id=mOpen,s=mpSel(id),L=MREC[id][s.r];let c;try{c=await caches.open(AC)}catch(e){toast('Offline saving isn’t available in this browser');return}
+  for(let i=0;i<L.length;i++){if(await c.match(L[i]))continue;toast('Saving '+(L.length>1?'part '+(i+1)+' of '+L.length:'the recording')+'… keep the app open',60000);
+    try{const r=await fetch(L[i],{mode:'cors'});if(!r.ok)throw 0;await c.put(L[i],r)}catch(e){toast('Couldn’t save it. It will still play online.',4000);mpRefreshSaved(id);return}}
+  toast('Saved for offline ✓',3000);mpRefreshSaved(id)}
+$('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+  if(d.mpp){mpToggle();return}
+  if(d.mps){if(MP.id===mOpen&&MA.src){MA.currentTime=Math.max(0,MA.currentTime+(+d.mps))}return}
+  if(d.mpx){const r=[0.75,1,1.25,1.5];MP.rate=r[(r.indexOf(MP.rate)+1)%r.length];MA.playbackRate=MP.rate;mpPaint();return}
+  if(d.mpab){if(MP.id!==mOpen||!MA.src){toast('Play the recording first');return}if(MP.a==null){MP.a=MA.currentTime}else if(MP.b==null){if(MA.currentTime>MP.a+1){MP.b=MA.currentTime;MA.currentTime=MP.a}else toast('Let it play a little past the start first')}else{MP.a=MP.b=null}mpPaint();return}
+  if(d.mpr){S.mpos=S.mpos||{};S.mpos[mOpen]={r:d.mpr,f:0,t:0};save();if(MP.id===mOpen){MA.pause();MP.id=''}const y=scrollY;renderMatn();scrollTo({top:y});return}
+  if(d.mpsave){mpSaveAll();return}},true);
+$('v-mutun').addEventListener('change',e=>{if(e.target.id==='mpTrack'){const f=+e.target.value,s=mpSel(mOpen);S.mpos=S.mpos||{};S.mpos[mOpen]={r:s.r,f,t:0};save();if(MP.id===mOpen){maUnlock();mpLoad(mOpen,s.r,f,0,!MA.paused)}else mpPaint()}});
+$('v-mutun').addEventListener('input',e=>{if(e.target.id==='mpSeek'&&MP.id===mOpen&&isFinite(MA.duration)){MA.currentTime=e.target.value/1000*MA.duration}});
 
 /* ---------- routing ---------- */
 const TABS=['today','mushaf','mutun','progress','settings'];
