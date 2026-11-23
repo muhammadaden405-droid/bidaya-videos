@@ -1012,7 +1012,7 @@ function recSaveAudio(){const n=MIC.recN,buf=new ArrayBuffer(44+n*2),v=new DataV
   if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],title:'My recitation'}).catch(()=>{});
   else{const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}}
 function recExit(){recStop(false);REC.mode=false;REC.any=false;renderMushaf()}
-function recStart(){if(REC.hold){REC.wantStart=true;return}REC.wantStart=false;if(useAI())return aiRecStart();phoneStart();if(REC.listening&&useHyb())hybOn()}
+function recStart(){if(REC.hold){REC.wantStart=true;return}REC.wantStart=false;aSess('auto');if(useAI())return aiRecStart();phoneStart();if(REC.listening&&useHyb())hybOn()}
 function phoneStart(){const SR=recSR();if(!SR)return;if(!navigator.onLine){toast('Checking recitation needs internet');return}
   if(!REC.words.length||REC.pos>=REC.words.length)recBuild();REC.listening=true;REC.interim='';REC.srN=0;
   dlog('phone recognition start · '+(navigator.standalone?'home-screen app':'browser')+' · mode '+(S.asr||'hyb'));srStart();recPaint()}
@@ -1234,7 +1234,16 @@ const MREC={nawaqid:{ansari:[A1('02')],shaydhami:[A2('010-Nawaqid_al-islam_al-10
  tawhid:{ansari:[A1('08')],shaydhami:[A2('008-Ketab_tawheed_full.mp3')]},ajurrumiyya:{ansari:[A1('11')],shaydhami:[A2('085-Ajroumiah.mp3')]},wasitiyya:{ansari:[A1('12')],shaydhami:[A2('041-Alwassitiah.mp3')]},
  kashf:{shaydhami:[A2('009-Kashf-ash-shobohaat.mp3')]},usulsunna:{shaydhami:[A2('045-Oussoul_assuna.mp3')]},lumca:{shaydhami:[A2('040-Lomaat_ali3tiqad.mp3')]},
  umdaahkam:{shaydhami:Array.from({length:8},(_,i)=>A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3'))},umdafiqh:{shaydhami:Array.from({length:6},(_,i)=>A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3'))}};
+/* the recordings' lengths (archive.org), used only if a recording can't be analysed on the phone */
+const MDUR={[A1('02')]:244.08,[A1('03')]:581.04,[A1('04')]:1786.97,[A1('05')]:2564.06,[A1('06')]:487.12,[A1('07')]:1318.57,[A1('08')]:7157.7,[A1('11')]:1520.46,[A1('12')]:3449.38,
+ [A2('010-Nawaqid_al-islam_al-10.mp3')]:210.61,[A2('003-Qawaid_4.mp3')]:425.08,[A2('001-Osoul_3.mp3')]:1335.94,[A2('068-Arbaoun-nawawiah.mp3')]:2446.68,[A2('091-Tohfat_al-atfaal.mp3')]:416.82,[A2('002-Chorout-assalah.mp3')]:1034.27,
+ [A2('008-Ketab_tawheed_full.mp3')]:10331.77,[A2('085-Ajroumiah.mp3')]:1350.55,[A2('041-Alwassitiah.mp3')]:3269.56,[A2('009-Kashf-ash-shobohaat.mp3')]:3248.46,[A2('045-Oussoul_assuna.mp3')]:997.22,[A2('040-Lomaat_ali3tiqad.mp3')]:2254.42};
+[1772.07,1743.99,1942.12,1845.21,1492.32,1765.54,1428.24,1759.71].forEach((v,i)=>MDUR[A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3')]=v);
+[2982.08,2962.09,3126.14,3481.75,3101.3,3269.84].forEach((v,i)=>MDUR[A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3')]=v);
 const MA=new Audio();MA.preload='none';
+/* iPhone: media playback through the speaker, even with the silent switch on */
+function aSess(t){try{const a=navigator.audioSession;if(a&&a.type!==t)a.type=t}catch(e){}}
+MA.addEventListener('error',()=>{if(MA.src.startsWith('data:'))return;dlog('audio error '+(MA.error&&MA.error.code)+' · '+mpKind());if(PP.on&&(PP.st==='seek'||PP.st==='play'))mppAudioFailed(PP.tok,MA.error)});
 const MP={id:'',r:'',f:0,obj:null,a:null,b:null,rate:[1,1.5,2].includes(S.mrate)?S.mrate:1,loaded:'',saved:{}};
 const RATES=[1,1.5,2];function mRate(v){MP.rate=v;S.mrate=v;save();MA.playbackRate=v;mpPaint();mbarPaint();document.querySelectorAll('[data-mspd]').forEach(b=>b.textContent=v+'×')}
 const fmtT=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+':'+pad(m):m)+':'+pad(x)};
@@ -1252,7 +1261,7 @@ async function mpLoad(id,r,f,t,play){if(!AU.paused){AU.pause();PL.on=false;setPI
   if(play)MA.play().catch(()=>toast(navigator.onLine?'Couldn’t play this recording. Try again.':'You’re offline and this recording isn’t saved yet.'));
   if('mediaSession' in navigator){try{const b=mInfo(id);navigator.mediaSession.metadata=new MediaMetadata({title:b?b.en:'Matn',artist:MREADERS[r][0],album:'Hifdh · Mutūn'})}catch(e){}}
   mpPaint();mbarPaint()}
-function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;if(PP.on)mbarHide();
+function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;if(PP.on)mbarHide();aSess('playback');
   if(MP.id===id&&MA.src&&!MA.src.startsWith('data:')){if(MA.paused)MA.play().catch(()=>{});else MA.pause();return}
   maUnlock();mpLoad(id,s.r,s.f,s.t,true)}
 /* ---------- part player: exactly the chosen lines, lined up with the reader's voice ---------- */
@@ -1537,23 +1546,39 @@ function mppView(){let t=0,b=innerHeight;const h=document.querySelector('header.
 function mppDom(){const li=PP.cur;PP.cur=-2;if(PP.on&&li>=0)mppHi(li);if(PP.on)mppBtns()}
 ['touchmove','wheel'].forEach(ev=>addEventListener(ev,()=>{PP.usT=performance.now()},{passive:true}));
 const mpOnce=(el,ev,ms)=>new Promise(res=>{let d=false;const f=()=>{if(d)return;d=true;el.removeEventListener(ev,f);res(true)};el.addEventListener(ev,f);setTimeout(()=>{if(!d){d=true;el.removeEventListener(ev,f);res(false)}},ms)});
-function mppFail(e){PP.st='idle';PP.seeking=false;MA.muted=false;mbarPaint();dlog('part play failed: '+(e&&e.message||e));toast(navigator.onLine?'Couldn’t play the recording. Tap play to try again.':'You’re offline and this recording isn’t saved yet.',4000)}
-async function mppUse(f,tok){const u=MREC[PP.id][PP.r][f];if(MP.loaded===u&&MP.obj&&MA.src.startsWith('blob:'))return true;
-  const blob=await mFile(u);if(PP.tok!==tok)return false;if(MP.obj)URL.revokeObjectURL(MP.obj);MP.obj=URL.createObjectURL(blob);MP.id=PP.id;MP.r=PP.r;MP.f=f;MP.loaded=u;return 'new'}
+function mppFail(e){PP.st='idle';PP.seeking=false;MP.loaded='';mbarPaint();dlog('part play failed: '+(e&&e.name||'')+' '+(e&&e.message||e)+(MA.error?' · audio error '+MA.error.code:''));toast(navigator.onLine?'Couldn’t play the recording. Tap play to try again.':'You’re offline and this recording isn’t saved yet.',4000)}
+/* the saved copy when there is one (the online file if the phone can't play the saved one) */
+async function mppUse(f,tok){const u=MREC[PP.id][PP.r][f];if(MP.loaded===u&&MA.src&&!MA.src.startsWith('data:')&&!MA.error)return true;let src=u;
+  if(!PP.noBlob){try{const c=await caches.open(AC),m=await c.match(u);if(m){const b=await m.blob();if(PP.tok!==tok)return false;if(MP.obj)URL.revokeObjectURL(MP.obj);MP.obj=URL.createObjectURL(b);src=MP.obj}}catch(e){}}
+  if(PP.tok!==tok)return false;MP.id=PP.id;MP.r=PP.r;MP.f=f;MP.loaded=u;MP.src=src;return 'new'}
+const mpKind=()=>MA.src.startsWith('blob:')?'saved copy':MA.src.startsWith('data:')?'unlock':'online file';
+/* load a file and put it at t (seconds) without any sound before the right place */
+async function mppLoadAt(t,tok){MA.preload='auto';MA.muted=false;MA.volume=1;MA.src=MP.src;MA.playbackRate=MP.rate;
+  if(MA.readyState<1)await mpOnce(MA,'loadedmetadata',2500);if(PP.tok!==tok)return false;
+  if(MA.readyState>=1){if(Math.abs(MA.currentTime-t)>.03){PP.seeking=true;MA.currentTime=t;await mpOnce(MA,'seeked',4000);PP.seeking=false}}
+  else{try{MA.currentTime=t}catch(e){}}            // the phone reads the file only once it plays: start there
+  return PP.tok===tok}
+async function mppSeekTo(t,tok){if(Math.abs(MA.currentTime-t)>.03){PP.seeking=true;MA.currentTime=t;await mpOnce(MA,'seeked',4000);PP.seeking=false}return PP.tok===tok}
 /* play the part from its first line */
 async function mppGo(tok){const ds=S.mdur[mppKey()],[f,lt]=g2f(ds,PP.ts);clearTimeout(PP.gapT);clearTimeout(PP.endT);PP.st='seek';mbarPaint();
-  try{const fresh=await mppUse(f,tok);if(!fresh)return;
-    if(fresh==='new'){MA.muted=true;MA.preload='auto';MA.src=MP.obj+'#t='+lt.toFixed(2);MA.playbackRate=MP.rate;await MA.play();if(PP.tok!==tok)return;
-      if(Math.abs(MA.currentTime-lt)>.25){PP.seeking=true;MA.currentTime=lt;await mpOnce(MA,'seeked',2000);PP.seeking=false}}
-    else{if(Math.abs(MA.currentTime-lt)>.03){PP.seeking=true;MA.currentTime=lt;await mpOnce(MA,'seeked',2000);PP.seeking=false}if(PP.tok!==tok)return;MA.playbackRate=MP.rate;await MA.play()}
-    if(PP.tok!==tok)return;MA.muted=false;PP.f=f;PP.st='play';mppHi(PP.a);mppLoop();mbarPaint();
+  clearTimeout(PP.wd);PP.wd=setTimeout(()=>{if(PP.tok===tok&&PP.st==='seek'){dlog('the audio took too long to start ('+mpKind()+', state '+MA.readyState+')');mppAudioFailed(tok,new Error('timeout'))}},12000);
+  try{aSess('playback');const fresh=await mppUse(f,tok);if(!fresh)return;
+    if(fresh==='new'){if(!(await mppLoadAt(lt,tok)))return}else if(!(await mppSeekTo(lt,tok)))return;
+    MA.muted=false;MA.playbackRate=MP.rate;await MA.play();if(PP.tok!==tok)return;
+    if(Math.abs(MA.currentTime-lt)>.5){if(!(await mppSeekTo(lt,tok)))return}
+    clearTimeout(PP.wd);PP.f=f;PP.st='play';mppHi(PP.a);mppLoop();mbarPaint();
+    if(fresh==='new')dlog('part: playing the '+mpKind()+' from '+lt.toFixed(1)+' s'+(MA.readyState<2?' (loading)':''));
+    const t1=MA.currentTime;setTimeout(()=>{if(PP.tok===tok&&PP.st==='play'&&!MA.paused&&Math.abs(MA.currentTime-t1)<.05){dlog('playback is not moving ('+mpKind()+', state '+MA.readyState+')');if(MA.src.startsWith('blob:')&&!PP.noBlob){PP.noBlob=true;MP.loaded='';mppGo(tok)}}},3000);
     if('mediaSession' in navigator){try{const b=mInfo(PP.id);navigator.mediaSession.metadata=new MediaMetadata({title:(b?b.en:'Matn')+' · '+(PP.b>PP.a?'lines '+(PP.a+1)+'–'+(PP.b+1):'line '+(PP.a+1)),artist:MREADERS[PP.r][0],album:'Hifdh · Mutūn'})}catch(e){}}}
-  catch(e){if(PP.tok===tok)mppFail(e)}}
+  catch(e){if(PP.tok===tok)mppAudioFailed(tok,e)}}
+/* the audio wouldn't load or play: try the online file instead of the saved copy once, otherwise say so */
+function mppAudioFailed(tok,e){if(PP.tok!==tok||PP.st==='idle')return;clearTimeout(PP.wd);
+  if(MA.src.startsWith('blob:')&&!PP.noBlob){dlog('the saved copy would not play ('+(e&&(e.name||e.code)||e)+'), trying the online file');PP.noBlob=true;MP.loaded='';PP.tok++;mppGo(PP.tok);return}
+  PP.tok++;mppFail(e)}
 /* a part that runs on into the next file: carry on there, past that file's spoken opening */
 async function mppNext(tok){const f=MP.f+1,sk=((MAL[mppKey()]||{}).skip||{})[f]||0;try{const fresh=await mppUse(f,tok);if(!fresh)return;
-  if(fresh==='new'){MA.muted=true;MA.src=MP.obj+(sk?'#t='+sk.toFixed(2):'');MA.playbackRate=MP.rate;await MA.play();if(PP.tok!==tok)return;if(Math.abs(MA.currentTime-sk)>.25){PP.seeking=true;MA.currentTime=sk;await mpOnce(MA,'seeked',2000);PP.seeking=false}}
-  else{PP.seeking=true;MA.currentTime=sk;await mpOnce(MA,'seeked',2000);PP.seeking=false;await MA.play()}
-  if(PP.tok!==tok)return;MA.muted=false;PP.f=f;mppLoop()}catch(e){if(PP.tok===tok)mppFail(e)}}
+  if(fresh==='new'){if(!(await mppLoadAt(sk,tok)))return}else if(!(await mppSeekTo(sk,tok)))return;
+  MA.muted=false;await MA.play();if(PP.tok!==tok)return;PP.f=f;mppLoop()}catch(e){if(PP.tok===tok)mppFail(e)}}
 const mppNow=()=>fStart(S.mdur[mppKey()],MP.f)+MA.currentTime;
 function mppLoop(){cancelAnimationFrame(PP.raf);const step=()=>{if(!PP.on||PP.st!=='play')return;mppCheck();PP.raf=requestAnimationFrame(step)};PP.raf=requestAnimationFrame(step)}
 function mppCheck(){if(!PP.on||PP.st!=='play'||PP.seeking||MA.paused||MP.id!==PP.id||MP.r!==PP.r)return;const g=mppNow();mppHi(mppLineAt(g));
@@ -1562,22 +1587,28 @@ function mppCheck(){if(!PP.on||PP.st!=='play'||PP.seeking||MA.paused||MP.id!==PP
 function mppDone(){clearTimeout(PP.endT);cancelAnimationFrame(PP.raf);if(!MA.paused){PP.self=true;MA.pause()}PP.n++;
   if(PP.n<S.rep){PP.st='gap';mbarPaint();const tok=PP.tok;PP.gapT=setTimeout(()=>{if(PP.tok===tok&&PP.st==='gap')mppGo(tok)},Math.round(850/(MP.rate||1)))}
   else{PP.st='done';PP.n=0;mppHi(-1);mbarPaint()}}
-function mppToggle(){if(!PP.on)return;maUnlock();
+function mppToggle(){if(!PP.on)return;maUnlock();aSess('playback');
+  if(PP.st==='seek'){playPart(PP.id,PP.a,PP.b,PP.r,true);return}
   if(PP.st==='play'){if(!MA.paused){PP.self=true;MA.pause()}PP.st='pause';mbarPaint();return}
   if(PP.st==='gap'){clearTimeout(PP.gapT);PP.st='pause';PP.fromStart=true;mbarPaint();return}
   if(PP.st==='pause'){if(PP.fromStart||MP.id!==PP.id||MP.r!==PP.r){PP.fromStart=false;mppGo(PP.tok);return}MA.muted=false;MA.play().then(()=>{if(PP.on){PP.st='play';mppLoop();mbarPaint()}}).catch(mppFail);return}
   if(PP.st==='done'||PP.st==='idle'){PP.n=0;if(MAL[mppKey()])mppGo(PP.tok);else playPart(PP.id,PP.a,PP.b,PP.r,true)}}
-function mppStop(){PP.tok++;clearTimeout(PP.gapT);clearTimeout(PP.endT);cancelAnimationFrame(PP.raf);const was=PP.on;PP.on=false;PP.st='idle';PP.seeking=false;MA.muted=false;if(was&&!MA.paused){PP.self=true;MA.pause()}mppHi(-1);mppBtns()}
+function mppStop(){PP.tok++;clearTimeout(PP.gapT);clearTimeout(PP.endT);clearTimeout(PP.wd);cancelAnimationFrame(PP.raf);const was=PP.on;PP.on=false;PP.st='idle';PP.seeking=false;MA.muted=false;if(was&&!MA.paused){PP.self=true;MA.pause()}mppHi(-1);mppBtns()}
+/* if the recording can't be analysed on this phone, still play it, timed from the text's length */
+function mEstimate(id,r){const D=MD[id],ds=MREC[id][r].map(u=>MDUR[u]||0);if(!D||!ds.every(x=>x>0))return null;const T=ds.reduce((x,y)=>x+y,0),R=AL.estimate(AL.units(D),[],T);return{on:R.on,off:R.off,q:0,est:true,ds,skip:{}}}
 /* start a part (tapping Play again on the same part pauses or resumes it) */
-async function playPart(id,a,b,r,again){maUnlock();r=r&&MREC[id]&&MREC[id][r]?r:mpSel(id).r;
+async function playPart(id,a,b,r,again){maUnlock();aSess('playback');r=r&&MREC[id]&&MREC[id][r]?r:mpSel(id).r;
   if(!again&&PP.on&&PP.id===id&&PP.a===a&&PP.b===b&&PP.r===r&&PP.st!=='prep'&&PP.st!=='seek'){mppToggle();return}
   const tok=++PP.tok;clearTimeout(PP.gapT);clearTimeout(PP.endT);cancelAnimationFrame(PP.raf);
   if(!AU.paused){AU.pause();PL.on=false;setPI();$('player').classList.remove('on')}
   if(!MA.paused){PP.self=true;MA.pause()}MP.a=MP.b=null;
   Object.assign(PP,{on:true,id,a,b,r,n:0,st:'prep',fromStart:false,seeking:false});mppHi(-1);mbarShow();mbarPaint();
   let A;try{A=await mPrepare(id,r)}
-  catch(e){if(PP.tok!==tok)return;PP.st='idle';mbarPaint();const m=String(e&&e.message||e);dlog('matn prepare failed: '+m);
-    toast(!navigator.onLine?'You’re offline and this recording isn’t saved yet.':/fetch|download|network|load/i.test(m)?'Couldn’t download the recording. Check the connection and tap play again.':'Couldn’t read this recording on this phone. Tap play to try again.',5000);return}
+  catch(e){if(PP.tok!==tok)return;const m=String(e&&e.message||e);dlog('matn prepare failed: '+m);
+    if(!navigator.onLine&&!(await mpCached(MREC[id][r][0]))){PP.st='idle';mbarPaint();toast('You’re offline and this recording isn’t saved yet.',5000);return}
+    A=(!MD[id]&&await loadMatn(id).catch(()=>null),mEstimate(id,r));
+    if(!A){PP.st='idle';mbarPaint();toast('Couldn’t get the recording ready. Tap play to try again.',5000);return}
+    S.mdur=S.mdur||{};S.mdur[id+':'+r]=A.ds;toast('This phone couldn’t line the text up with the recording, so parts may start a little early or late.',5000)}
   if(PP.tok!==tok)return;mpRefreshSaved(id);
   const n=A.on.length,gapB=a>0?Math.max(0,A.on[a]-A.off[a-1]):A.on[0],gapA=b+1<n?Math.max(0,A.on[b+1]-A.off[b]):1;
   PP.ts=Math.max(0,A.on[a]-Math.min(.22,gapB*.6));PP.te=A.off[b]+Math.min(.4,gapA*.6);if(PP.te<PP.ts+.4)PP.te=PP.ts+.4;
@@ -1749,7 +1780,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v24';
+const APPV='v25';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
