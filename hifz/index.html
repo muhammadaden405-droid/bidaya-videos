@@ -298,6 +298,44 @@ a.chip{text-decoration:none;color:inherit}
 .dots i.cur{transform:scale(1.5);outline:2px solid var(--gold2);outline-offset:1px}
 details.adv{margin:10px 0 0;border:1px solid var(--line);border-radius:14px;padding:0 12px}
 details.adv summary{min-height:46px;display:flex;align-items:center;font-weight:700;cursor:pointer;color:var(--gold)}
+.hdr-r{display:flex;align-items:center;gap:10px}
+.dates{font-size:12px;line-height:1.35;white-space:nowrap}
+@media (max-width:430px){.brand p{display:none}}
+body:has(#mbar.on) .selbar,body:has(#player.on) .selbar{bottom:calc(152px + env(safe-area-inset-bottom))}
+body:has(#mbar.on) main,body:has(#player.on) main{padding-bottom:calc(170px + env(safe-area-inset-bottom))}
+.hmic{width:44px;height:44px;border-radius:50%;border:1px solid rgba(227,192,99,.4);background:var(--green);color:var(--onG);display:grid;place-items:center;flex:none}
+.hmic svg{width:22px;height:22px;fill:currentColor}
+.ln{margin:0 0 6px;display:flex;gap:8px;align-items:baseline}
+.ln>span:not(.lno),.ln .vh{flex:1}
+.ln.poem{display:grid;grid-template-columns:1.6em minmax(0,1fr);text-align:center}
+.ln.poem .vh:last-child{grid-column:2}
+.lno{font:600 11px/1 Figtree,sans-serif;color:var(--mute);min-width:1.6em;text-align:center;direction:ltr}
+.dtext .ln{font-size:20px;line-height:1.8}
+.mlines{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:6px 8px}
+.mline{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--line);border-radius:10px;cursor:pointer}
+.mline:last-child{border:0}
+.mline .lt{flex:1;font-size:var(--mfs,24px);line-height:1.85;text-align:right}
+.mline.poem .lt{display:grid;grid-template-columns:minmax(0,1fr);text-align:center}
+.mline.sel{background:color-mix(in srgb,var(--gold2) 22%,transparent)}
+.mline.done .lno{color:var(--gold)}
+.hidall .mline:not(.done):not(.peek) .lt{filter:blur(7px);opacity:.55}
+.lchk{flex:none;width:36px;height:36px;border-radius:50%;border:2px solid var(--frame);background:var(--card);display:grid;place-items:center}
+.lchk svg{width:18px;height:18px;stroke:#15110a;stroke-width:3;fill:none;opacity:0}
+.mline.done .lchk{background:var(--done);border-color:var(--done)}
+.mline.done .lchk svg{opacity:1}
+.selbar{position:sticky;bottom:calc(72px + env(safe-area-inset-bottom));z-index:5;margin:10px 0;background:var(--card);border:1px solid var(--gold2);border-radius:18px;padding:10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.pact{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pact .btn{flex:1 1 0;gap:6px}
+.pact svg,.btn svg{width:16px;height:16px;fill:currentColor}
+.mpart .mx .ln{font-size:var(--mfs,24px);line-height:1.9}
+.mtest{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px;font-size:24px;line-height:2}
+.mtest .w{filter:blur(6px);opacity:.5;transition:filter .2s,opacity .2s;border-radius:6px}
+.mtest.show .w,.mtest .w.ok,.mtest .w.bad,.mtest .w.sk,.mtest .w.fx{filter:none;opacity:1}
+.w.tent{opacity:.75!important}
+.mtest .w.bad{color:var(--warn);text-decoration:underline wavy var(--warn);text-underline-offset:8px}
+.mtest .w.sk{color:var(--warn);text-decoration:line-through}
+.mtest .w.fx{color:var(--gold)}
+.mtest .w.cur{background:color-mix(in srgb,var(--gold2) 30%,transparent)}
 .dayhead{margin:2px 2px 10px}
 .dayhead .bar{margin-top:6px;height:6px}
 .dayhead b{font-size:14px}
@@ -346,7 +384,7 @@ details.adv summary{min-height:46px;display:flex;align-items:center;font-weight:
 <div class="app">
 <header class="top">
   <div class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="38" height="38"><div><h1>Hifz</h1><p id="greet">Qur'an memorization</p></div></div>
-  <div class="dates"><div id="hij"></div><div id="greg"></div></div>
+  <div class="hdr-r"><div class="dates"><div id="hij"></div><div id="greg"></div></div><button class="hmic" id="hdrMic" aria-label="Recite anything: the app finds where you are"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button></div>
 </header>
 
 <section class="view" id="v-today" aria-label="Today"></section>
@@ -398,6 +436,14 @@ details.adv summary{min-height:46px;display:flex;align-items:center;font-weight:
 </div></nav>
 
 <div class="scrim" id="scrim"><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
+<div class="player" id="mbar" role="region" aria-label="Matn player">
+  <button class="pp" id="mbPlay" aria-label="Play"><svg viewBox="0 0 24 24" id="mbIcon"><path d="M7 4l13 8-13 8z"/></svg></button>
+  <div class="pinfo"><b id="mbName"></b><span id="mbSub"></span></div>
+  <button class="pb" id="mbRep" aria-label="Times the part repeats">×3</button>
+  <button class="pb" id="mbR" aria-label="Switch reader">⇄</button>
+  <button class="pb" id="mbAdj" aria-label="Line up the timing"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
+  <button class="pb" id="mbClose" aria-label="Close player"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -458,13 +504,13 @@ const dayNo=()=>Math.floor(parse(TODAY).getTime()/864e5);
 
 /* ---------- state ---------- */
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,track:'',mt:{},mcur:'',mper:1,mfs:24,mpos:{},goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
+const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,track:'',mt:{},ml:{},mlen:5,mcur:'',mper:1,mfs:24,mpos:{},goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
 function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});
   if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=Math.max(1,Math.min(20,Math.round(+S.per||2)));
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
   if(S.order==='juz30'){S.dir='juzback';S.sp=582}S.order='start';if(!DIRS[S.dir])S.dir='fwd';S.sp=Math.max(1,Math.min(604,Math.round(+S.sp)||1));if(!['whole','juz','surah'].includes(S.gKind)){S.gKind='whole';S.gVal=0}if(!RECITERS.some(r=>r[0]===S.reciter))S.reciter=RECITERS[0][0];
   S.pages=S.pages&&typeof S.pages==='object'?S.pages:{};S.rev=S.rev&&typeof S.rev==='object'?S.rev:{};
-  S.cur=Math.max(1,Math.min(604,+S.cur||1));S.mt=S.mt&&typeof S.mt==='object'?S.mt:{};S.mp=Object.assign({sm:S.mcur||'thalatha',si:0,gk:'matn',gv:'',per:+S.mper||1,goal:'',start:TODAY,setup:S.mcur?1:0},S.mp&&typeof S.mp==='object'?S.mp:{});S.mp.per=Math.max(1,Math.min(20,+S.mp.per||1));S.mper=Math.max(1,Math.min(10,+S.mper||1));S.mfs=Math.max(18,Math.min(40,+S.mfs||24));S.fs=Math.max(20,Math.min(44,+S.fs||28));if(![1,3,5,10].includes(S.rep))S.rep=3}
+  S.cur=Math.max(1,Math.min(604,+S.cur||1));S.mt=S.mt&&typeof S.mt==='object'?S.mt:{};S.ml=S.ml&&typeof S.ml==='object'?S.ml:{};S.mp=Object.assign({sm:S.mcur||'thalatha',si:0,gk:'matn',gv:'',per:+S.mper||1,goal:'',start:TODAY,setup:S.mcur?1:0},S.mp&&typeof S.mp==='object'?S.mp:{});S.mp.per=Math.max(1,Math.min(20,+S.mp.per||1));S.mper=Math.max(1,Math.min(10,+S.mper||1));S.mfs=Math.max(18,Math.min(40,+S.mfs||24));S.fs=Math.max(20,Math.min(44,+S.fs||28));if(![1,3,5,10].includes(S.rep))S.rep=3}
 fix();
 const save=()=>{S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Could not save on this device')}};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
@@ -518,7 +564,7 @@ const lessonDone=()=>S.lesson&&S.lesson.p.length>0&&S.lesson.p.every(p=>S.pages[
 /* ---------- ui helpers ---------- */
 let tt;function toast(m,ms){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms||2600)}
 function sheet(html){$('panel').innerHTML='<div class="grab"></div>'+html;$('scrim').classList.add('on');$('panel').scrollTop=0;const f=$('panel').querySelector('button');if(f)f.focus({preventScroll:true})}
-const closeSheet=()=>$('scrim').classList.remove('on');
+const closeSheet=()=>{$('scrim').classList.remove('on');$('panel').onclick=null;if(REC.kind==='m'){if(REC.listening)recStop(false);REC.mode=false;REC.kind='q'}};
 $('scrim').addEventListener('click',e=>{if(e.target.id==='scrim'||e.target.closest('[data-close]'))closeSheet()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 function ring(v,max,size,stroke,col){const r=(size-stroke)/2,c=2*Math.PI*r,f=max?Math.min(1,v/max):0;
@@ -548,15 +594,15 @@ function openWelcome(){sheet('<h2>What do you want to memorize?</h2><p class="no
     if(S.track==='mutun'){S.setup=1;save();setTimeout(()=>openMPlan(),250)}else{afterPlan=S.track==='both'?'mutun':'';setTimeout(()=>openPlan(true),250)}renderAll()}}
 function deckCards(){const cards=[];ensureLesson();const c=calc(),L=S.lesson;
   if(doQ()){if(c.left===0)cards.push({t:'qinfo',k:'qdone'});else if(L.off&&!L.p.length)cards.push({t:'qinfo',k:'qoff'});else L.p.forEach(p=>cards.push({t:'q',p,d:!!S.pages[p]}))}
-  if(doM()&&MI){if(!S.mp.setup)cards.push({t:'minfo',k:'msetup'});else{const mc=mcalc();if(!mc.left)cards.push({t:'minfo',k:'mdone'});else{ensureMLesson();const ML=S.mlesson;if(!ML.items.length)cards.push({t:'minfo',k:'moff'});else{needMD([...new Set(ML.items.map(x=>x[0]))]);ML.items.forEach(([id,i])=>cards.push({t:'m',id,i,d:isMem(id,i)}))}}}}
+  if(doM()&&MI){if(!S.mp.setup)cards.push({t:'minfo',k:'msetup'});else{const mc=mcalc();if(!mc.left)cards.push({t:'minfo',k:'mdone'});else{ensureMLesson();const ML=S.mlesson;if(!ML.items.length)cards.push({t:'minfo',k:'moff'});else{needMD([...new Set(ML.items.map(x=>x[0]))]);mBlocks(ML.items).forEach(x=>cards.push({t:'m',id:x.id,a:x.a,b:x.b,d:blkDone(x)}))}}}}
   return cards}
 function cardHTML(x,ix){
   if(x.t==='q'){const j=juzOf(x.p),i=pageInfo(x.p),txt=i?i.ay.map(a=>a[2]).join(' ').split(' ').slice(0,45).join(' '):'';
     return '<article class="dcard'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Qur’an · Juz '+j+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':'')+'</div><div class="dt">Page '+x.p+'</div><div class="ds">'+esc(rangeLabel(x.p))+'</div><div class="dtext ar fade" lang="ar">'+esc(txt)+'</div>'
      +'<div class="dact"><button data-open="'+x.p+'">'+IC_OPEN+'Open</button><button data-qlisten="'+x.p+'">'+IC_PLAY+'Listen</button><button data-qtest="'+x.p+'">'+IC_MIC+'Test</button></div><button class="dmark" data-chk="'+x.p+'" aria-pressed="'+x.d+'">'+ICON_CHECK+(x.d?'Memorized':'I memorized this page')+'</button></article>'}
-  if(x.t==='m'){const b=mInfo(x.id),P=MD[x.id]&&MD[x.id].parts[x.i],key=x.id+':'+x.i,hid=dHide.has(key)&&!x.d;
-    return '<article class="dcard m'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Mutūn · '+esc(b.cat)+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':'')+'</div><div class="dt ar mt-ar" style="font-size:26px">'+esc(b.t)+'</div><div class="ds">'+esc(b.en)+' · portion '+(x.i+1)+' of '+b.n+'</div><div class="dtext ar'+(b.poem?' poem':'')+(hid?' hid':'')+'" lang="ar" data-dkey="'+key+'">'+(P?partHTML(P.x):'…')+'</div>'
-     +'<div class="dact"><button data-mopen="'+key+'">'+IC_OPEN+'Open</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button>'+(MREC[x.id]?'<button data-mlisten="'+x.id+'">'+IC_PLAY+'Listen</button>':'')+'</div><button class="dmark" data-mchk2="'+key+'" aria-pressed="'+x.d+'">'+ICON_CHECK+(x.d?'Memorized':'I memorized this portion')+'</button></article>'}
+  if(x.t==='m'){const b=mInfo(x.id),key=x.id+':'+x.a+':'+x.b,hid=dHide.has(key)&&!x.d,u=b.poem?'verses':'lines';
+    return '<article class="dcard m'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Mutūn · '+esc(b.cat)+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':'')+'</div><div class="dt ar mt-ar" style="font-size:26px">'+esc(b.t)+'</div><div class="ds">'+esc(b.en)+' · '+u+' '+(x.a+1)+(x.b>x.a?'–'+(x.b+1):'')+' of '+b.n+'</div><div class="dtext ar'+(hid?' hid':'')+'" lang="ar">'+blockLines(x)+'</div>'
+     +'<div class="dact">'+(MREC[x.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Listen</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+x.id+':'+x.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+x.d+'">'+ICON_CHECK+(x.d?'Memorized':'I memorized these '+u)+'</button></article>'}
   const I={qdone:['Qur’an · Alḥamdulillāh','Goal complete','Set your next Qur’an goal.','data-plan="1"','Set my next goal'],qoff:['Qur’an · revision day','No new pages today','Use today to revise what you have memorized.','id="anyway"','Memorize new pages anyway'],
    msetup:['Mutūn','Add the mutūn','Choose where to start, your goal and your pace.','data-mplan="1"','Set up my mutūn plan'],mdone:['Mutūn · Alḥamdulillāh','Goal complete','Set your next mutūn goal.','data-mplan="1"','Set my next goal'],moff:['Mutūn · revision day','No new portions today','Revise what you have memorized.','data-manyway="1"','Memorize anyway']}[x.k];
   return '<article class="dcard info" data-ix="'+ix+'"><div class="dhead"><span class="dk">'+I[0]+'</span></div><div class="dt">'+I[1]+'</div><div class="ds">'+I[2]+'</div><button class="dmark" '+I[3]+'>'+I[4]+'</button></article>'}
@@ -564,7 +610,7 @@ function renderToday(){const cards=deckCards(),work=cards.filter(x=>x.t==='q'||x
   const all=work.length&&dn===work.length;
   h+='<div class="dayhead"><div class="row"><span class="lab" style="margin:0">'+(work.length?(all?'Everything memorized today ✓':'Today’s memorization'):'Today')+'</span><b>'+(work.length?dn+' / '+work.length:'')+'</b></div>'+(work.length?'<div class="bar"><i style="width:'+(dn/work.length*100)+'%"></i></div>':'')+'</div>';
   const deck=cards.map(cardHTML);
-  if(all)deck.push('<article class="dcard info fin" data-ix="'+cards.length+'"><div class="dhead"><span class="dk">Alḥamdulillāh</span></div><div class="dt">All done for today</div><div class="ds">May Allah make it firm in your heart.</div><div class="dact col"><button id="rem">Today’s reminder</button>'+(doQ()&&calc().left?'<button id="more">+ One more page</button>':'')+(doM()&&S.mp.setup&&mcalc().left?'<button id="mmore">+ One more portion</button>':'')+'</div></article>');
+  if(all)deck.push('<article class="dcard info fin" data-ix="'+cards.length+'"><div class="dhead"><span class="dk">Alḥamdulillāh</span></div><div class="dt">All done for today</div><div class="ds">May Allah make it firm in your heart.</div><div class="dact col"><button id="rem">Today’s reminder</button>'+(doQ()&&calc().left?'<button id="more">+ One more page</button>':'')+(doM()&&S.mp.setup&&mcalc().left?'<button id="mmore">+ More lines</button>':'')+'</div></article>');
   h+='<div class="deck" id="deck">'+deck.join('')+'</div><div class="dots" id="dots">'+deck.map((_,k)=>'<i data-dot="'+k+'"></i>').join('')+'</div>';
   const mj=doQ()?juzList().filter(x=>x.m).sort((a,b)=>a.r<b.r?-1:a.r>b.r?1:a.j-b.j):[];
   if(mj.length){const d=mj[0],done=d.r===TODAY;h+='<div class="card"><div class="row"><div><p class="lab">Revision</p><h2>'+(done?'All memorized juz revised today ✓':'Revise Juz '+d.j)+'</h2><p class="note" style="margin:2px 0 0">'+(done?'Bārak Allāhu fīk.':'Last revised '+ago(d.r)+' · '+d.m+' of '+d.n+' pages memorized')+'</p></div>'+(done?'':'<button class="btn sm" data-rev="'+d.j+'">Done</button>')+'</div></div>'}
@@ -587,21 +633,19 @@ $('v-today').addEventListener('click',e=>{const dt=e.target.closest('[data-dot]'
   const tx=e.target.closest('.dtext.hid');if(tx){tx.classList.remove('hid');return}
   const t=e.target.closest('button');if(!t)return;const d=t.dataset;
   if(d.chk){const was=!!S.pages[+d.chk];const y=$('deck').scrollLeft;toggle(+d.chk);$('deck').scrollLeft=y;if(!was)deckScroll();return}
-  if(d.mchk2){const[id,i]=d.mchk2.split(':');const was=isMem(id,+i),y=$('deck').scrollLeft;mToggle(id,+i);renderToday();$('deck').scrollLeft=y;if(!was)deckScroll();return}
   if(d.open){go('mushaf',+d.open);return}
   if(d.qlisten){startPlay([+d.qlisten]);return}
-  if(d.qtest){go('mushaf',+d.qtest);recEnter();return}
+  if(d.qtest){go('mushaf',+d.qtest);if(recEnter())setTimeout(recStart,60);return}
   if(d.recite){go('mushaf',S.lesson.p[0]||S.cur);recEnter();return}
   if(d.dhide){if(dHide.has(d.dhide))dHide.delete(d.dhide);else dHide.add(d.dhide);const y=$('deck').scrollLeft;renderToday();$('deck').scrollLeft=y;return}
-  if(d.mopen){const[id,i]=d.mopen.split(':');mOpen=id;mFocus='today';mWin=null;mJump=+i;go('mutun');return}
-  if(d.mlisten){mOpen=d.mlisten;mFocus='today';mWin=null;go('mutun');return}
+  if(d.mopen){const[id,i]=d.mopen.split(':');mOpen=id;mFocus='today';mWin=null;mJump=+i;MSEL=null;go('mutun');return}
   if(d.rev){S.rev[d.rev]=TODAY;save();buzz();renderToday();toast('Juz '+d.rev+' revised ✓');return}
   if(d.manyway){ensureMLesson(true);renderToday();return}
   switch(t.id){
    case 'anyway':ensureLesson(true);renderToday();break;
    case 'rem':celebrate(false);break;
    case 'more':{const nx=goalSeq().concat(seq()).find(p=>!S.pages[p]&&!S.lesson.p.includes(p));if(nx){S.lesson.p.push(nx);S.lesson.p.sort((a,b)=>a-b);save();renderToday();deckScroll()}break}
-   case 'mmore':{const nx=mSeq().find(([id,i])=>!isMem(id,i)&&!S.mlesson.items.some(x=>x[0]===id&&x[1]===i));if(nx){S.mlesson.items.push(nx);save();renderToday();deckScroll()}break}
+   case 'mmore':{const nx=mSeq().filter(([id,i])=>!isMem(id,i)&&!S.mlesson.items.some(x=>x[0]===id&&x[1]===i)).slice(0,S.mp.per);if(nx.length){S.mlesson.items.push(...nx);save();renderToday();deckScroll()}break}
    case 'tipTog':tipOpen=!tipOpen;renderToday();break;
    case 'tipNext':S.tip=(S.tip+1)%TIPS.length;save();renderToday();break;
    case 'tipAll':sheet('<h2>Advice for memorizing</h2><p class="note">From the Prophet ﷺ, the Salaf and the scholars after them.</p>'+TIPS.map(x=>'<div class="vcard"><p class="lab">'+esc(x.who)+'</p><h2 style="font-size:17px">'+esc(x.t)+'</h2><p class="quote ar" lang="ar">«'+esc(x.ar)+'»</p><p class="mean">'+esc(x.en)+'</p><p class="src">'+esc(x.src)+'</p></div>').join('')+'<button class="btn wide" data-close>Close</button>');break}});
@@ -627,11 +671,11 @@ function renderMushaf(){const p=S.cur,j=juzOf(p);$('mTitle').textContent='Page '
   $('mHide').classList.toggle('on',hideMode);$('mHide').setAttribute('aria-pressed',hideMode);
   $('mPrev').disabled=p<=1;$('mNext').disabled=p>=604;
   document.documentElement.style.setProperty('--fs',S.fs+'px');
-  $('recp').classList.toggle('on',REC.mode);$('recTools').hidden=!REC.mode;$('mRec').classList.toggle('on',REC.mode);$('mHide').hidden=REC.mode;$('mPlay').hidden=REC.mode;$('mHint').hidden=REC.mode;
+  $('recp').classList.toggle('on',(REC.mode&&REC.kind==='q'));$('recTools').hidden=!(REC.mode&&REC.kind==='q');$('mRec').classList.toggle('on',(REC.mode&&REC.kind==='q'));$('mHide').hidden=(REC.mode&&REC.kind==='q');$('mPlay').hidden=(REC.mode&&REC.kind==='q');$('mHint').hidden=(REC.mode&&REC.kind==='q');
   if(!Q){$('mPage').innerHTML='<div class="skel">Loading the mushaf…</div>';return}
-  if(REC.mode&&REC.page!==p)recBuild();
-  const hm=hideMode&&!REC.mode;let wi=0;
-  const body=t=>REC.mode?t.split(' ').map(w=>norm(w)?'<span class="w" data-i="'+(wi++)+'">'+esc(w)+'</span>':esc(w)).join(' '):esc(t);
+  if((REC.mode&&REC.kind==='q')&&REC.page!==p)recBuild();
+  const hm=hideMode&&!(REC.mode&&REC.kind==='q');let wi=0;
+  const body=t=>(REC.mode&&REC.kind==='q')?t.split(' ').map(w=>norm(w)?'<span class="w" data-i="'+(wi++)+'">'+esc(w)+'</span>':esc(w)).join(' '):esc(t);
   let h='<div class="mtext ar'+(hm?' hide':'')+'" lang="ar">';
   for(const[s,a,t]of pageInfo(p).ay){
     if(a===1){h+='</div><div class="sh ar" lang="ar">سورة '+esc(NAMES[s-1][2].replace(/^سُوْرَةُ\s*/,''))+'</div>'+(s!==1&&s!==9?'<div class="bas ar mtext" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>':'')+'<div class="mtext ar'+(hm?' hide':'')+'" lang="ar">'}
@@ -645,7 +689,7 @@ $('mHide').onclick=()=>{hideMode=!hideMode;renderMushaf()};
 $('mSmall').onclick=()=>{S.fs=Math.max(20,S.fs-2);save();renderMushaf()};
 $('mBig').onclick=()=>{S.fs=Math.min(44,S.fs+2);save();renderMushaf()};
 $('mPlay').onclick=()=>startPlay([S.cur]);
-$('mPage').addEventListener('click',e=>{if(REC.mode){const w=e.target.closest('.w');if(w){REC.pos=+w.dataset.i;for(let k=REC.pos;k<REC.st.length;k++){REC.st[k]=0;REC.heard[k]=''}recPaint();toast('Starting from this word')}return}const a=e.target.closest('.ay');if(!a)return;if(hideMode)a.classList.toggle('rv');else if(PL.list.length){const i=PL.list.findIndex(x=>x.k===a.dataset.k);if(i>=0){PL.i=i;PL.r=0;playCur()}}});
+$('mPage').addEventListener('click',e=>{if(REC.mode&&REC.kind==='q'){const w=e.target.closest('.w');if(w){REC.pos=+w.dataset.i;for(let k=REC.pos;k<REC.st.length;k++){REC.st[k]=0;REC.heard[k]=''}recPaint();toast('Starting from this word')}return}const a=e.target.closest('.ay');if(!a)return;if(hideMode)a.classList.toggle('rv');else if(PL.list.length){const i=PL.list.findIndex(x=>x.k===a.dataset.k);if(i>=0){PL.i=i;PL.r=0;playCur()}}});
 {let x0=0,y0=0;$('mPage').addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
  $('mPage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>70&&Math.abs(dy)<60)turn(dx>0?1:-1)},{passive:true})}
 
@@ -659,10 +703,11 @@ const AU=new Audio();AU.preload='auto';
 const PL={list:[],i:0,r:0,pages:[],on:false,obj:null};
 let unlocked=false;function unlock(){if(unlocked)return;unlocked=true;try{const n=800,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i)};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);
   let bin='';b.forEach(x=>bin+=String.fromCharCode(x));AU.src='data:audio/wav;base64,'+btoa(bin);AU.play().catch(()=>{})}catch(e){}}
-function startPlay(pages){unlock();if(!MA.paused)MA.pause();if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
+function startPlay(pages){unlock();if(!MA.paused)MA.pause();$('mbar').classList.remove('on');MPP.on=false;if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
 async function playCur(){const t=PL.list[PL.i];if(!t){stopPlay(true);return}
   PL.on=true;setPI();markPlaying();if(t.p&&t.p!==S.cur&&location.hash==='#mushaf'){S.cur=t.p;save();renderMushaf()}
-  try{const b=await getBlob(url(t.s,t.a));if(PL.list[PL.i]!==t)return;if(PL.obj)URL.revokeObjectURL(PL.obj);PL.obj=URL.createObjectURL(b);AU.src=PL.obj;await AU.play();prefetch()}
+  try{const u=url(t.s,t.a);let b=null;try{const c=await caches.open(AC),m=await c.match(u);if(m)b=await m.blob()}catch(x){}
+    if(PL.list[PL.i]!==t)return;if(PL.obj){URL.revokeObjectURL(PL.obj);PL.obj=null}if(b){PL.obj=URL.createObjectURL(b);AU.src=PL.obj}else{AU.src=u;getBlob(u).catch(()=>{})}await AU.play();prefetch()}
   catch(e){PL.on=false;setPI();toast(navigator.onLine?'Couldn’t play this verse. Try again.':'You’re offline and this verse isn’t saved yet.')}}
 function prefetch(){for(let k=1;k<=2;k++){const t=PL.list[PL.i+k];if(t)getBlob(url(t.s,t.a)).catch(()=>{})}}
 AU.addEventListener('ended',()=>{const t=PL.list[PL.i];if(!t)return;if(!t.bas&&++PL.r<S.rep){playCur();return}PL.r=0;PL.i++;
@@ -769,7 +814,7 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 /* ---------- backup ---------- */
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
-const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,mt:S.mt,mp:S.mp,mpos:S.mpos,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
 function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:''});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
@@ -833,183 +878,236 @@ const sim=(a,b)=>1-lev(a,b)/Math.max(a.length,b.length,1);
 function alignWords(R,hw){const W=R.words,st=R.st,H=hw.map(w=>[w,norm(w)]).filter(x=>x[1]);
   for(let j=0;j<H.length&&R.pos<W.length;j++){const h=H[j][1];let fixd=false;
     for(let k=Math.max(0,R.pos-3);k<R.pos;k++)if((st[k]===2||st[k]===3)&&sim(h,W[k].n)>=.75){st[k]=4;fixd=true;break}
-    if(fixd)continue;
+    if(fixd){R.miss=0;continue}
     if(R.pos>0&&st[R.pos-1]===1&&sim(h,W[R.pos-1].n)>=.75)continue;
     let hit=-1,two=false,used2=false;
     for(let k=R.pos;k<Math.min(W.length,R.pos+6);k++){
       if(sim(h,W[k].n)>=.7){hit=k;break}
       if(k+1<W.length&&sim(h,W[k].n+W[k+1].n)>=.75){hit=k;two=true;break}
       if(j+1<H.length&&sim(h+H[j+1][1],W[k].n)>=.75){hit=k;used2=true;break}}
-    if(hit>=0){for(let k=R.pos;k<hit;k++)st[k]=3;st[hit]=1;if(two)st[hit+1]=1;R.pos=hit+(two?2:1);if(used2)j++;continue}
+    if(hit>=0){for(let k=R.pos;k<hit;k++)st[k]=3;st[hit]=1;if(two)st[hit+1]=1;R.pos=hit+(two?2:1);if(used2)j++;R.miss=0;continue}
     if(AR_IGN.has(h)||h.length<2)continue;
+    R.miss=(R.miss||0)+1;
     if(sim(h,W[R.pos].n)>=.34){st[R.pos]=2;R.heard[R.pos]=H[j][0];R.pos++}}
   return R}
 /*END*/
-const REC={mode:false,show:false,listening:false,words:[],st:[],heard:[],pos:0,interim:'',r:null,page:0,log:[]};
+const REC={mode:false,kind:'q',any:false,show:false,listening:false,words:[],st:[],heard:[],pos:0,interim:'',r:null,page:0,log:[],tent:new Set(),miss:0,mctx:null,recent:[]};
 const recSR=()=>window.SpeechRecognition||window.webkitSpeechRecognition;
-function recBuild(){REC.words=[];REC.st=[];REC.heard=[];REC.pos=0;REC.page=S.cur;const i=pageInfo(S.cur);if(!i)return;
-  for(const[s,a,t]of i.ay)for(const w of t.split(' ')){const n=norm(w);if(n)REC.words.push({w,n,k:s+':'+a})}}
+function recUI(){return REC.kind==='q'?{root:$('mPage'),mic:$('recMic'),st:$('recSt'),heard:$('recHeard'),ok:$('recOk'),bad:$('recBad'),show:$('recShow')}:{root:$('mrText'),mic:$('mrMic'),st:$('mrSt'),heard:$('mrHeard'),ok:$('mrOk'),bad:$('mrBad'),show:$('mrShow')}}
+function recReset(){REC.st=REC.words.map(()=>0);REC.heard=[];REC.pos=0;REC.miss=0;REC.tent=new Set();REC.recent=[]}
+function recBuild(){REC.words=[];if(REC.kind==='q'){REC.page=S.cur;const i=pageInfo(S.cur);if(i)for(const[s,a,t]of i.ay)for(const w of t.split(' ')){const n=norm(w);if(n)REC.words.push({w,n,k:s+':'+a})}}
+  else{const{id,a,b}=REC.mctx,D=MD[id];for(let li=a;li<=b;li++)for(const w of mText(D,li).split(' ')){const n=norm(w);if(n)REC.words.push({w,n,k:'line '+(li+1),li})}}recReset()}
 function recCounts(){let ok=0,bad=0;REC.st.forEach(x=>{if(x===1||x===4)ok++;else if(x===2||x===3)bad++});return{ok,bad}}
-function recPaint(){$('mPage').classList.toggle('rec',REC.mode);$('mPage').classList.toggle('show',REC.show);if(!REC.mode)return;
-  document.querySelectorAll('#mPage .w').forEach(el=>{const i=+el.dataset.i,x=REC.st[i];el.className='w'+(x===1?' ok':x===2?' bad':x===3?' sk':x===4?' fx':'')+(i===REC.pos&&REC.listening?' cur':'')});
-  const c=recCounts(),end=REC.words.length&&REC.pos>=REC.words.length;$('recOk').textContent='✓ '+c.ok;$('recBad').textContent='✗ '+c.bad;
-  $('recSt').textContent=REC.listening?(end?'Page complete':'Listening… recite now'):end?'Page complete · '+pl(c.bad,'mistake'):'Tap the mic and recite this page';
-  $('recHeard').textContent=REC.interim||'';$('recMic').classList.toggle('live',REC.listening);$('recMic').setAttribute('aria-label',REC.listening?'Stop listening':'Start listening');$('recShow').classList.toggle('on',REC.show)}
-function recEnter(){if(!recSR()){sheet('<h2>Recitation check isn’t available here</h2><p class="note">This browser can’t listen to recitation. Use Chrome on Android or a computer, or Safari on iPhone.</p><button class="btn wide" data-close>OK</button>');return}
-  REC.mode=true;REC.show=false;REC.page=0;REC.log=[];if(PL.on)stopPlay(true);hideMode=false;renderMushaf();
-  if(!S.recInfo){S.recInfo=1;save();sheet('<h2>Recite and check</h2><p class="mean">Tap the mic and recite this page from memory. Each word appears when you say it correctly. Skipped or different words are marked in orange. Tap any word to start from there.</p><p class="note">It uses your phone’s speech recognition, so it needs internet. It checks the words, not tajwīd or vowels, and it can mishear. Use it as a helper alongside a teacher.</p><button class="btn wide" data-close>Start</button>')}}
-function recExit(){recStop(false);REC.mode=false;renderMushaf()}
+function recPaint(){const U=recUI();if(!U.root)return;
+  if(REC.kind==='q'){$('mPage').classList.toggle('rec',REC.mode);$('mPage').classList.toggle('show',REC.show);if(!REC.mode)return}
+  else U.root.classList.toggle('show',REC.show);
+  U.root.querySelectorAll('.w').forEach(el=>{const i=+el.dataset.i,x=REC.st[i];el.className='w'+(x===1?' ok':x===2?' bad':x===3?' sk':x===4?' fx':REC.tent.has(i)?' ok tent':'')+(i===REC.pos&&REC.listening?' cur':'')});
+  const c=recCounts(),end=REC.words.length&&REC.pos>=REC.words.length;if(U.ok)U.ok.textContent='✓ '+c.ok;if(U.bad)U.bad.textContent='✗ '+c.bad;
+  if(U.st)U.st.textContent=REC.listening?(end?'Done':(!c.ok&&!c.bad?(REC.any?'Listening… recite anything':'Listening… start reciting'):'Listening…')):end?'Done · '+pl(c.bad,'mistake'):(REC.kind==='q'?'Tap the mic and recite':'Tap the mic and recite these lines');
+  if(U.heard)U.heard.textContent=REC.interim||'';if(U.mic){U.mic.classList.toggle('live',REC.listening);U.mic.setAttribute('aria-label',REC.listening?'Stop listening':'Start listening')}if(U.show)U.show.classList.toggle('on',REC.show)}
+/* where are you? search the Qur'an or the mutūn for what was recited */
+let QIX=null;const MIX={};
+function buildIx(items){const M=new Map();items.forEach((x,k)=>{let a=M.get(x.n);if(!a)M.set(x.n,a=[]);a.push(k)});return{W:items,M}}
+function qIndex(){if(QIX||!Q)return QIX;const it=[];for(let p=1;p<=604;p++){let i=0;for(const[s,a,t]of Q[p-1])for(const w of t.split(' ')){const n=norm(w);if(n)it.push({n,p,i:i++})}}return QIX=buildIx(it)}
+function mIndex(id){if(MIX[id])return MIX[id];const D=MD[id];if(!D)return null;const it=[];for(let li=0;li<D.L.length;li++)for(const w of mText(D,li).split(' ')){const n=norm(w);if(n)it.push({n,li})}return MIX[id]=buildIx(it)}
+function seqSearch(IX,H,near){if(!IX||H.length<3)return null;let best=null;const{W,M}=IX;
+  const an=H.map((h,k)=>({k,l:(M.get(h)||[]).length})).filter(x=>x.l>0&&!AR_IGN.has(H[x.k])).sort((a,b)=>a.l-b.l).slice(0,3);
+  for(const{k}of an)for(const x of M.get(H[k])){const s0=x-k;if(s0<0)continue;let sc=0;for(let q=0;q<H.length;q++){const w=W[s0+q];if(w&&sim(H[q],w.n)>=.7)sc++}
+    const d=near?near(W[s0]):0;if(!best||sc>best.sc||(sc===best.sc&&d<best.d))best={sc,start:s0,end:s0+H.length,d}}
+  return best&&best.sc/H.length>=.75?best:null}
+function tryFind(hw){if(!REC.find)return false;const fresh=!REC.st.some(x=>x),lost=REC.miss>=5;if(!fresh&&!lost)return false;
+  REC.recent=REC.recent.concat(hw.map(norm).filter(Boolean)).slice(-6);const H=REC.recent;if(H.length<3)return false;
+  if(REC.kind==='q'){const IX=qIndex(),f=seqSearch(IX,H,w=>Math.abs(w.p-S.cur));
+    if(f){const e=IX.W[f.end-1],s=IX.W[f.start];if(e.p!==S.cur||Math.abs(e.i-REC.pos)>6){S.cur=e.p;save();REC.page=0;renderMushaf();const st=s.p===e.p?s.i:0;for(let k=st;k<=e.i;k++)REC.st[k]=1;REC.pos=e.i+1;REC.miss=0;REC.recent=[];toast('Found: '+sname(Q[e.p-1][0][0])+' · page '+e.p);return true}return false}
+    if(REC.any){const m=findMatn(H);if(m){const{id,li}=m;recStop(false);REC.mode=false;renderMushaf();openMTest(id,Math.max(0,li-1),Math.min(MD[id].L.length-1,li+5),true);toast('Found: '+mInfo(id).en);return true}}return false}
+  const id=REC.mctx.id,IX=mIndex(id),f=seqSearch(IX,H,w=>Math.abs(w.li-REC.mctx.a));
+  if(f){const e=IX.W[f.end-1];if(e.li<REC.mctx.a||e.li>REC.mctx.b){const L=MD[id].L.length;REC.mctx.a=Math.max(0,e.li-1);REC.mctx.b=Math.min(L-1,REC.mctx.a+6);mtRender();let k=REC.words.findIndex(w=>w.li===e.li);for(let x=k;x>=0&&x<REC.words.length&&REC.words[x].li===e.li;x++){REC.st[x]=1;REC.pos=x+1}REC.recent=[];toast('Found: line '+(e.li+1));return true}}return false}
+function findMatn(H){if(!MI)return null;let best=null;for(const b of MI){const IX=mIndex(b.id);if(!IX)continue;const f=seqSearch(IX,H);if(f&&(!best||f.sc>best.sc))best={sc:f.sc,id:b.id,li:IX.W[f.start].li}}return best}
+let allLoading=false;function loadAllMutun(){if(allLoading||!MI)return;allLoading=true;MI.forEach(b=>loadMatn(b.id).catch(()=>{}))}
+function recEnter(any){if(!recSR()){sheet('<h2>Recitation check isn’t available here</h2><p class="note">This browser can’t listen to recitation. Use Chrome on Android or a computer, or Safari on iPhone.</p><button class="btn wide" data-close>OK</button>');return false}
+  if(REC.listening)recStop(false);REC.kind='q';REC.any=!!any;REC.find=true;REC.mode=true;REC.show=false;REC.page=0;REC.log=[];if(PL.on)stopPlay(true);mbarHide();hideMode=false;renderMushaf();if(any)loadMI().then(loadAllMutun).catch(()=>{});
+  if(!S.recInfo){S.recInfo=1;save();sheet('<h2>Recite and check</h2><p class="mean">Tap the mic and recite from memory. Words appear as you say them. Skipped or different words turn orange. If you start somewhere else, the app finds where you are and shows that part.</p><p class="note">It uses your phone’s speech recognition, so it needs internet. It checks the words, not tajwīd or vowels, and it can mishear.</p><button class="btn wide" data-close>Start</button>')}return true}
+function recExit(){recStop(false);REC.mode=false;REC.any=false;renderMushaf()}
 function recStart(){const SR=recSR();if(!SR)return;if(!navigator.onLine){toast('Checking recitation needs internet');return}
   if(!REC.words.length||REC.pos>=REC.words.length)recBuild();
   const r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
   r.onresult=e=>{let fin='',it='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=' '+x[0].transcript;else it+=' '+x[0].transcript}
-    REC.interim=it.trim();if(fin.trim()){alignWords(REC,fin.trim().split(/\s+/));if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}recPaint()};
+    REC.interim=it.trim();
+    if(fin.trim()){const hw=fin.trim().split(/\s+/);if(!tryFind(hw))alignWords(REC,hw);if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}
+    REC.tent=new Set();if(REC.interim&&REC.listening){const iw=REC.interim.split(/\s+/);if(!REC.st.some(x=>x)&&tryFind(iw)){REC.interim=''}else{const C={words:REC.words,st:REC.st.slice(),heard:[],pos:REC.pos,miss:0};alignWords(C,iw);for(let k=REC.pos;k<C.pos;k++)if(C.st[k]===1)REC.tent.add(k)}}
+    recPaint();const cur=document.querySelector((REC.kind==='q'?'#mPage':'#mrText')+' .w.cur');if(cur&&REC.kind==='q')cur.scrollIntoView({block:'nearest',behavior:'smooth'})};
   r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){REC.listening=false;toast('Microphone access is blocked. Allow it in your browser settings.',4000)}else if(e.error==='network'){REC.listening=false;toast('Checking recitation needs internet')}recPaint()};
-  r.onend=()=>{if(REC.listening&&REC.r===r)setTimeout(()=>{if(REC.listening&&REC.r===r)try{r.start()}catch(x){}},250);else recPaint()};
+  r.onend=()=>{if(REC.listening&&REC.r===r)setTimeout(()=>{if(REC.listening&&REC.r===r)try{r.start()}catch(x){}},80);else recPaint()};
   REC.r=r;REC.listening=true;REC.interim='';try{r.start()}catch(x){}recPaint()}
-function recStop(summary){REC.listening=false;REC.interim='';if(REC.r){try{REC.r.stop()}catch(x){}}REC.r=null;recPaint();if(summary)recSummary()}
-function recEntry(){const c=recCounts(),m=[];REC.st.forEach((x,i)=>{if(x===2||x===3)m.push({w:REC.words[i].w,k:REC.words[i].k,h:REC.heard[i]||'',x})});return{p:REC.page,ok:c.ok,bad:c.bad,m}}
-function recPageDone(){REC.log.push(recEntry());const c=recCounts(),cur=S.cur,L=S.lesson&&S.lesson.p.includes(cur)?S.lesson.p:[],nx=L.find(p=>p!==cur&&!REC.log.some(x=>x.p===p));
-  if(nx){toast('Page '+cur+' done · '+pl(c.bad,'mistake')+'. On to page '+nx,3000);setTimeout(()=>{if(REC.mode&&REC.listening&&S.cur===cur){S.cur=nx;save();renderMushaf();scrollTo({top:0})}},1500)}else recStop(true)}
-function recSummary(){const all=REC.log.slice();if(REC.st.some(x=>x)&&!(REC.log.length&&REC.log[REC.log.length-1].p===REC.page))all.push(recEntry());REC.log=[];if(!all.length)return;
-  const bad=all.reduce((a,x)=>a+x.bad,0),ok=all.reduce((a,x)=>a+x.ok,0);
+function recStop(summary){REC.listening=false;REC.interim='';REC.tent=new Set();if(REC.r){try{REC.r.stop()}catch(x){}}REC.r=null;recPaint();if(summary)recSummary()}
+function recEntry(){const c=recCounts(),m=[];REC.st.forEach((x,i)=>{if(x===2||x===3)m.push({w:REC.words[i].w,k:REC.words[i].k,h:REC.heard[i]||'',x})});return{label:REC.kind==='q'?'Page '+REC.page:mInfo(REC.mctx.id).en+' · lines '+(REC.mctx.a+1)+'–'+(REC.mctx.b+1),ok:c.ok,bad:c.bad,m,mk:REC.kind==='m'?REC.mctx.id+':'+REC.mctx.a+':'+REC.mctx.b:''}}
+function recPageDone(){if(REC.kind==='m'){recStop(true);return}REC.log.push(recEntry());const c=recCounts(),cur=S.cur;
+  const L=S.lesson&&S.lesson.p.includes(cur)?S.lesson.p:[],nx=REC.any?(cur<604?cur+1:0):L.find(p=>p!==cur&&!REC.log.some(x=>x.label==='Page '+p));
+  if(nx){toast('Page '+cur+' done · '+pl(c.bad,'mistake')+'. On to page '+nx,3000);setTimeout(()=>{if(REC.mode&&REC.listening&&S.cur===cur){S.cur=nx;save();renderMushaf();scrollTo({top:0})}},1200)}else recStop(true)}
+function recSummary(){const all=REC.log.slice();if(REC.st.some(x=>x))all.push(recEntry());REC.log=[];if(!all.length)return;
+  const bad=all.reduce((a,x)=>a+x.bad,0),ok=all.reduce((a,x)=>a+x.ok,0),mk=all.find(x=>x.mk);
   sheet('<h2>'+(bad?'Your recitation':'Mā shāʾ Allāh, no mistakes')+'</h2><p class="note">'+pl(ok,'word')+' right'+(bad?', '+pl(bad,'word')+' to review':'')+'.</p>'
-   +all.map(x=>'<div class="vcard"><p class="lab">Page '+x.p+' · ✓ '+x.ok+(x.bad?' · ✗ '+x.bad:'')+'</p>'+(x.m.length?x.m.map(y=>'<p class="mean"><span class="ar" lang="ar" style="font-size:22px;color:var(--warn)">'+esc(y.w)+'</span> <span class="src">'+y.k+' · '+(y.x===3?'skipped':'heard <span class="ar" lang="ar">'+esc(y.h)+'</span>')+'</span></p>').join(''):'<p class="mean">No mistakes on this page.</p>')+'</div>').join('')
-   +'<p class="note">Speech recognition can mishear. If you know a word was right, you can ignore it.</p><button class="btn wide" data-close>Close</button>')}
+   +all.map(x=>'<div class="vcard"><p class="lab">'+esc(x.label)+' · ✓ '+x.ok+(x.bad?' · ✗ '+x.bad:'')+'</p>'+(x.m.length?x.m.map(y=>'<p class="mean"><span class="ar" lang="ar" style="font-size:22px;color:var(--warn)">'+esc(y.w)+'</span> <span class="src">'+esc(y.k)+' · '+(y.x===3?'skipped':'heard <span class="ar" lang="ar">'+esc(y.h)+'</span>')+'</span></p>').join(''):'<p class="mean">No mistakes.</p>')+'</div>').join('')
+   +'<p class="note">Speech recognition can mishear. If you know a word was right, you can ignore it.</p>'+(mk&&!bad?'<button class="btn wide gold" data-mmark="'+mk.mk+'" style="margin-bottom:8px">Mark these lines memorized</button>':'')+'<button class="btn wide" data-close>Close</button>')}
 $('mRec').onclick=()=>REC.mode?recExit():recEnter();
 $('recMic').onclick=()=>REC.listening?recStop(true):recStart();
 $('recShow').onclick=()=>{REC.show=!REC.show;recPaint()};
 $('recReset').onclick=()=>{recBuild();recPaint()};
-$('recDone').onclick=()=>{recStop(true);REC.mode=false;renderMushaf()};
+$('recDone').onclick=()=>{recStop(true);REC.mode=false;REC.any=false;renderMushaf()};
+$('hdrMic').onclick=()=>{go('mushaf');if(recEnter(true))setTimeout(recStart,60)};
+/* matn test overlay */
+function mtRender(){const{id,a,b}=REC.mctx,D=MD[id],bk=mInfo(id);let wi=0,h='';
+  for(let li=a;li<=b;li++){const x=D.L[li][2],wr=t=>t.split(' ').map(w=>norm(w)?'<span class="w" data-i="'+(wi++)+'">'+esc(w)+'</span>':esc(w)).join(' ');
+    h+='<p class="ln'+(bk.poem?' poem':'')+'"><span class="lno">'+(li+1)+'</span>'+(Array.isArray(x)?'<span class="vh">'+wr(x[0])+'</span><span class="vh">'+wr(x[1])+'</span>':'<span>'+wr(x)+'</span>')+'</p>'}
+  $('mrText').innerHTML=h;$('mrTitle').textContent=bk.en+' · lines '+(a+1)+'–'+(b+1);recBuild();recPaint()}
+function openMTest(id,a,b,auto){if(!recSR()){recEnter();return}if(!MD[id]){loadMatn(id).then(()=>openMTest(id,a,b,auto));return}
+  if(REC.listening)recStop(false);if(PL.on)stopPlay(true);if(!MA.paused)MA.pause();
+  REC.kind='m';REC.mode=true;REC.any=false;REC.find=true;REC.show=false;REC.log=[];REC.mctx={id,a,b};
+  sheet('<div class="row"><div><p class="lab" style="margin:0">Test your memorization</p><h2 id="mrTitle"></h2></div></div><div class="recp on" style="margin-top:10px"><button class="mic" id="mrMic" aria-label="Start listening"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button><div class="rst"><b id="mrSt"></b><span id="mrHeard" lang="ar"></span></div><div class="rcount"><span id="mrOk" style="color:var(--done)">✓ 0</span><span id="mrBad" style="color:var(--warn)">✗ 0</span></div></div>'
+   +'<div class="tools" style="margin:0 0 8px"><button class="chip" id="mrShow">Show text</button><button class="chip" id="mrRe">Restart</button><button class="chip" data-close>Close</button></div><div class="mtest rec ar" lang="ar" id="mrText"></div>');
+  mtRender();$('mrMic').onclick=()=>REC.listening?recStop(true):recStart();$('mrShow').onclick=()=>{REC.show=!REC.show;recPaint()};$('mrRe').onclick=()=>{recBuild();recPaint()};
+  $('mrText').onclick=e=>{const w=e.target.closest('.w');if(!w)return;REC.pos=+w.dataset.i;for(let k=REC.pos;k<REC.st.length;k++){REC.st[k]=0;REC.heard[k]=''}recPaint()};
+  if(auto)setTimeout(recStart,80)}
 
-/* ---------- mutūn ---------- */
-let MI=null,mOpen='',mHide=false,mWin=null,mFocus='today',mJump=-1;const MD={},mLoading=new Set();
-const mDone=id=>Object.keys(S.mt[id]||{}).length;
-const isMem=(id,i)=>!!(S.mt[id]||{})[i];
-function loadMI(){if(MI)return Promise.resolve(MI);return fetch('data/mutun/index.json').then(r=>r.json()).then(d=>{MI=d;return d})}
-function loadMatn(id){if(MD[id])return Promise.resolve(MD[id]);return fetch('data/mutun/'+id+'.json').then(r=>r.json()).then(d=>{const parts=[];d.secs.forEach((s,si)=>(s.p||s.v).forEach(x=>parts.push({si,x})));d.parts=parts;MD[id]=d;return d})}
+/* ---------- mutūn (by lines) ---------- */
+let MI=null,mOpen='',mHide=false,mWin=null,mFocus='today',mJump=-1,MSEL=null;const MD={},mLoading=new Set();
+const mDone=id=>Object.keys(S.ml[id]||{}).length;
+const isMem=(id,i)=>!!(S.ml[id]||{})[i];
+function loadMI(){if(MI)return Promise.resolve(MI);return fetch('data/mutun/index.json').then(r=>r.json()).then(d=>{MI=d;mMigrate();return d})}
+function loadMatn(id){if(MD[id])return Promise.resolve(MD[id]);return fetch('data/mutun/'+id+'.json').then(r=>r.json()).then(d=>{if(!d.L)throw 0;MD[id]=d;return d})}
 const mInfo=id=>MI&&MI.find(x=>x.id===id);
 const mIdx=id=>MI?MI.findIndex(x=>x.id===id):-1;
-const partText=x=>Array.isArray(x)?x.join(' … '):x;
-const partHTML=x=>Array.isArray(x)?'<span class="vh">'+esc(x[0])+'</span><span class="vh">'+esc(x[1])+'</span>':esc(x);
+const mText=(D,i)=>{const x=D.L[i][2];return Array.isArray(x)?x.join(' '):x};
+const lineHTML=x=>Array.isArray(x)?'<span class="vh">'+esc(x[0])+'</span><span class="vh">'+esc(x[1])+'</span>':'<span>'+esc(x)+'</span>';
 const ytLink=t=>'https://www.youtube.com/results?search_query='+encodeURIComponent('قراءة متن '+t);
-const mFirstWords=t=>t.split(' ').slice(0,8).join(' ');
 const mFirstOpen=id=>{const b=mInfo(id);for(let i=0;i<b.n;i++)if(!isMem(id,i))return i;return 0};
+function mMigrate(){if(S.mlv===2)return;const old=S.mt||{};S.ml=S.ml||{};
+  for(const id in old){const b=mInfo(id);if(!b||!b.op)continue;const m=S.ml[id]||(S.ml[id]={});for(const i in old[id]){const a=b.op[+i],z=+i+1<b.op.length?b.op[+i+1]:b.n;for(let k=a;k<z;k++)m[k]=old[id][i]}}
+  if(S.mp&&S.mp.setup){const b=mInfo(S.mp.sm);if(b&&b.op)S.mp.si=b.op[Math.min(S.mp.si||0,b.op.length-1)]||0;S.mp.per=Math.max(3,Math.min(40,(S.mp.per||1)*3))}else if(S.mp)S.mp.per=5;
+  S.mlv=2;S.mlesson=null;save()}
 function mSeqFor(sm,si,gk,gv){if(!MI)return[];const a=mIdx(sm);if(a<0)return[];let z=a;if(gk==='all')z=MI.length-1;else if(gk==='thru'){const k=mIdx(gv);if(k>a)z=k}
   const o=[];for(let k=a;k<=z;k++){const b=MI[k];for(let i=(k===a?Math.max(0,Math.min(si,b.n-1)):0);i<b.n;i++)o.push([b.id,i])}return o}
 const mSeq=()=>mSeqFor(S.mp.sm,S.mp.si,S.mp.gk,S.mp.gv);
 function mLabelFor(sm,gk,gv){const b=mInfo(sm);if(!b)return '';if(gk==='all')return b.en+' → end of the ladder';if(gk==='thru'&&mInfo(gv)&&gv!==sm)return b.en+' → '+mInfo(gv).en;return b.en}
 const mGoalLabel=()=>mLabelFor(S.mp.sm,S.mp.gk,S.mp.gv);
-function mcalc(){const G=mSeq();let gDone=0,doneToday=0;for(const[id,i]of G){const d=(S.mt[id]||{})[i];if(d){gDone++;if(d===TODAY)doneToday++}}const left=G.length-gDone;
-  const o={};for(const id in S.mt)for(const i in S.mt[id]){const d=S.mt[id][i];o[d]=(o[d]||0)+1}let r28=0;for(let k=0;k<28;k++)r28+=o[ymd(add(parse(TODAY),-k))]||0;
+function mcalc(){const G=mSeq();let gDone=0,doneToday=0;for(const[id,i]of G){const d=(S.ml[id]||{})[i];if(d){gDone++;if(d===TODAY)doneToday++}}const left=G.length-gDone;
+  const o={};for(const id in S.ml)for(const i in S.ml[id]){const d=S.ml[id][i];o[d]=(o[d]||0)+1}let r28=0;for(let k=0;k<28;k++)r28+=o[ymd(add(parse(TODAY),-k))]||0;
   const win=Math.min(28,Math.round((parse(TODAY)-parse(S.mp.start))/864e5)+1);
   return{gLen:G.length,gDone,left,doneToday,finish:finishFor(S.mp.per,S.off,left,doneToday),r28,win}}
 function ensureMLesson(force){if(!MI||!S.mp.setup)return;if(!force&&S.mlesson&&S.mlesson.d===TODAY)return;const G=mSeq();
-  const today=G.filter(([id,i])=>(S.mt[id]||{})[i]===TODAY);
+  const today=G.filter(([id,i])=>(S.ml[id]||{})[i]===TODAY);
   if(isOff()&&!force&&!today.length){S.mlesson={d:TODAY,items:[],off:true};save();return}
   const nx=G.filter(([id,i])=>!isMem(id,i)).slice(0,Math.max(0,S.mp.per-today.length));
   S.mlesson={d:TODAY,items:today.concat(nx)};save()}
-function mTodayCounts(){if(!MI||!S.mp.setup)return{n:0,dn:0};ensureMLesson();const it=S.mlesson.items;return{n:it.length,dn:it.filter(([id,i])=>isMem(id,i)).length}}
-function mToggle(id,i){const m=S.mt[id]||(S.mt[id]={});if(m[i])delete m[i];else m[i]=TODAY;save();buzz();if(!m[i])return;
-  const ML=S.mlesson,b=mInfo(id);
-  if(ML&&ML.d===TODAY&&ML.items.length&&ML.items.every(([a,c])=>isMem(a,c))&&S.mseen!==TODAY){S.mseen=TODAY;save();toast('Today’s mutūn portions are done ✓ Bāraka Allāhu fīk',3500)}
-  else if(mDone(id)===b.n)toast('Mā shāʾ Allāh! You finished '+b.en+' ✓',4000);else toast('Portion '+(i+1)+' memorized ✓')}
+function mBlocks(items){const bl=[];for(const[id,i]of items){const l=bl[bl.length-1];if(l&&l.id===id&&i===l.b+1)l.b=i;else bl.push({id,a:i,b:i})}return bl}
+const blkDone=x=>{for(let i=x.a;i<=x.b;i++)if(!isMem(x.id,i))return false;return true};
+function mTodayCounts(){if(!MI||!S.mp.setup)return{n:0,dn:0};ensureMLesson();const B=mBlocks(S.mlesson.items);return{n:B.length,dn:B.filter(blkDone).length}}
+function mMark(id,a,b,on){const m=S.ml[id]||(S.ml[id]={});for(let i=a;i<=b;i++){if(on)m[i]=m[i]||TODAY;else delete m[i]}save();buzz();if(!on)return;
+  const ML=S.mlesson,bk=mInfo(id);
+  if(ML&&ML.d===TODAY&&ML.items.length&&ML.items.every(([x,y])=>isMem(x,y))&&S.mseen!==TODAY){S.mseen=TODAY;save();toast('Today’s mutūn lines are done ✓ Bāraka Allāhu fīk',3500)}
+  else if(mDone(id)===bk.n)toast('Mā shāʾ Allāh! You finished '+bk.en+' ✓',4000);else toast((b>a?'Lines '+(a+1)+'–'+(b+1):'Line '+(a+1))+' memorized ✓')}
 function needMD(ids){ids.filter(id=>!MD[id]&&!mLoading.has(id)).forEach(id=>{mLoading.add(id);loadMatn(id).then(()=>{mLoading.delete(id);renderToday();if(location.hash==='#mutun')renderMutun()}).catch(()=>mLoading.delete(id))})}
-function mutunTodayCard(){if(!MI)return '';
-  if(!S.mp.setup)return '<div class="card"><p class="lab">Mutūn</p><h2>Memorize the mutūn too</h2><p class="note" style="margin:4px 0 0">Choose where to start, your goal and your pace, just like the Qur’an.</p><div class="btns"><button class="btn sm" data-mplan="1">Set up my mutūn plan</button></div></div>';
-  const c=mcalc();if(!c.left)return '<div class="card"><p class="lab">Mutūn · Alḥamdulillāh</p><h2>Goal complete</h2><p class="note" style="margin:4px 0 0">'+esc(mGoalLabel())+' memorized.</p><div class="btns"><button class="btn sm" data-mplan="1">Set my next goal</button></div></div>';
-  ensureMLesson();const ML=S.mlesson,n=ML.items.length;
-  if(!n)return '<div class="card"><p class="lab">Mutūn · revision day</p><h2>No new portions today</h2><div class="btns"><button class="btn sm ghost" data-manyway="1">Memorize anyway</button></div></div>';
-  const ids=[...new Set(ML.items.map(x=>x[0]))];needMD(ids);const dn=ML.items.filter(([id,i])=>isMem(id,i)).length;
-  return '<div class="card"><div class="hl"><div><p class="lab">Mutūn today</p><h2 class="ar mt-ar" style="font-size:24px">'+esc(ids.map(id=>mInfo(id).t).join(' · '))+'</h2></div><div class="ring">'+ring(dn,n,56,5,'var(--gold)')+'<b style="font-size:14px">'+dn+'/'+n+'</b></div></div><div class="tiles'+(n===1?' one':'')+'">'
-   +ML.items.map(([id,i])=>{const b=mInfo(id),d=isMem(id,i),P=MD[id]&&MD[id].parts[i];return '<div class="tile mt'+(d?' done':'')+'"><button class="open" data-mopen="'+id+':'+i+'" aria-label="Open portion '+(i+1)+'"></button><div class="th"><span class="pn">Portion '+(i+1)+'</span><button class="chk" data-mchk2="'+id+':'+i+'" aria-pressed="'+d+'" aria-label="'+(d?'Unmark':'Mark')+' portion '+(i+1)+' memorized">'+ICON_CHECK+'</button></div><div class="fw ar" lang="ar">'+(P?esc(mFirstWords(partText(P.x))):'…')+'</div><div class="sm">'+esc(b.en)+' · '+(i+1)+'/'+b.n+'</div></div>'}).join('')+'</div></div>'}
-function mGoalCard(full){const c=mcalc();let h='<div class="card"><div class="row"><div><p class="lab">Mutūn goal</p><h2>'+esc(mGoalLabel())+'</h2></div><button class="btn sm ghost" data-mplan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gLen?c.gDone/c.gLen*100:0)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'portion')+' · '+pl(S.mp.per,'portion')+' a day'+(c.left?'':' · complete')+'</p>';
-  if(full&&c.left){const it=[['Your plan',pl(S.mp.per,'portion')+' a day, '+(7-S.off.length)+' days a week',c.finish]];const rate=c.win>=7?c.r28/c.win:0;
-    if(rate>0)it.push(['Your recent pace',(rate*7).toFixed(1).replace(/\.0$/,'')+' portions a week',add(parse(TODAY),Math.ceil(c.left/rate))]);
-    if(S.mp.goal&&S.mp.goal>=TODAY){const sd=studyDays(S.off,S.mp.goal),need=sd?Math.ceil((c.left+c.doneToday)/sd):c.left;it.push(['Your target',sd?'Needs '+pl(need,'portion')+' per study day':'Pick a later date',parse(S.mp.goal),1])}
+function blockLines(x,hid){const D=MD[x.id];if(!D)return '…';let h='';for(let i=x.a;i<=x.b;i++)h+='<p class="ln'+(mInfo(x.id).poem?' poem':'')+'"><span class="lno">'+(i+1)+'</span>'+lineHTML(D.L[i][2])+'</p>';return h}
+function mGoalCard(full){const c=mcalc();let h='<div class="card"><div class="row"><div><p class="lab">Mutūn goal</p><h2>'+esc(mGoalLabel())+'</h2></div><button class="btn sm ghost" data-mplan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gLen?c.gDone/c.gLen*100:0)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'line')+' · '+pl(S.mp.per,'line')+' a day'+(c.left?'':' · complete')+'</p>';
+  if(full&&c.left){const it=[['Your plan',pl(S.mp.per,'line')+' a day, '+(7-S.off.length)+' days a week',c.finish]];const rate=c.win>=7?c.r28/c.win:0;
+    if(rate>0)it.push(['Your recent pace',(rate*7).toFixed(1).replace(/\.0$/,'')+' lines a week',add(parse(TODAY),Math.ceil(c.left/rate))]);
+    if(S.mp.goal&&S.mp.goal>=TODAY){const sd=studyDays(S.off,S.mp.goal),need=sd?Math.ceil((c.left+c.doneToday)/sd):c.left;it.push(['Your target',sd?'Needs '+pl(need,'line')+' per study day':'Pick a later date',parse(S.mp.goal),1])}
     h+='<div class="proj">'+it.map(x=>'<div class="pj'+(x[3]?' goal':'')+'"><div><b style="white-space:normal">'+x[0]+'</b><small>'+esc(x[1])+'</small></div><b>'+(x[2]?fmt(x[2]):'—')+'</b></div>').join('')+'</div>'}
   else if(c.left)h+='<p class="note" style="margin-top:0">Finish about '+fmt(c.finish)+(S.mp.goal?' · target '+fmt(parse(S.mp.goal)):'')+'</p>';
   return h+'</div>'}
 function renderMutun(){const V=$('v-mutun');
   if(!MI){V.innerHTML='<div class="card"><p class="note">Loading the mutūn…</p></div>';loadMI().then(renderMutun).catch(()=>{V.innerHTML='<div class="card"><p class="note">Couldn’t load the mutūn. Connect to the internet once so they can be saved.</p></div>'});return}
   if(mOpen){renderMatn();return}
-  let h=S.mp.setup?mGoalCard(false):'<div class="hero"><p class="kick">Mutūn</p><p class="big" style="font-size:28px">Memorize the core texts</p><p class="sub">Pick where to start, your goal and your pace. Each day you get new portions to memorize.</p><div class="hact"><button class="hbtn gold" data-mplan="1">Set up my mutūn plan</button></div></div>';
-  h+='<div class="card"><h2>Study ladder</h2>'+MI.map((b,k)=>{const d=mDone(b.id),inG=S.mp.setup&&mSeq().some(x=>x[0]===b.id);return '<button class="mrow" data-mo="'+b.id+'"><span class="mnum'+(d===b.n?' fin':inG?' ing':'')+'">'+(d===b.n?'✓':k+1)+'</span><span class="mbody"><span class="row" style="align-items:baseline"><b class="ar mt-ar">'+esc(b.t)+'</b><span class="pill">'+esc(b.cat)+'</span></span><span class="mmeta">'+esc(b.en)+' · '+esc(b.ae)+' (d. '+b.d+' AH)</span>'+(b.rec?'<span class="mrec">'+esc(b.rec)+'</span>':'')+'<span class="bar"><i style="width:'+(d/b.n*100)+'%"></i></span><span class="mmeta">'+d+' of '+pl(b.n,'portion')+(MREC[b.id]?' · 🎧 recording':'')+(inG?' · in your goal':'')+'</span></span></button>'}).join('')+'</div>'
-   +'<p class="note">Texts: Shamela editions via the OpenITI corpus. Recordings: archive.org.</p>';
+  const inG=new Set(S.mp.setup?mSeq().map(x=>x[0]):[]);
+  let h=S.mp.setup?mGoalCard(false):'<div class="hero"><p class="kick">Mutūn</p><p class="big" style="font-size:28px">Memorize the core texts</p><p class="sub">Pick where to start, how many lines a day, and your goal.</p><div class="hact"><button class="hbtn gold" data-mplan="1">Set up my mutūn plan</button></div></div>';
+  h+='<div class="card"><h2>Study ladder</h2>'+MI.map((b,k)=>{const d=mDone(b.id),g=inG.has(b.id);return '<button class="mrow" data-mo="'+b.id+'"><span class="mnum'+(d===b.n?' fin':g?' ing':'')+'">'+(d===b.n?'✓':k+1)+'</span><span class="mbody"><span class="row" style="align-items:baseline"><b class="ar mt-ar">'+esc(b.t)+'</b><span class="pill">'+esc(b.cat)+'</span></span><span class="mmeta">'+esc(b.en)+' · '+esc(b.ae)+' (d. '+b.d+' AH)</span>'+(b.rec?'<span class="mrec">'+esc(b.rec)+'</span>':'')+'<span class="bar"><i style="width:'+(d/b.n*100)+'%"></i></span><span class="mmeta">'+d+' of '+pl(b.n,b.poem?'verse':'line')+(MREC[b.id]?' · 🎧 2 readers':'')+(g?' · in your goal':'')+'</span></span></button>'}).join('')+'</div><p class="note">Texts: Shamela editions via the OpenITI corpus. Recordings: archive.org.</p>';
   V.innerHTML=h}
 function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';renderMutun();return}
   if(!MD[b.id]){V.innerHTML='<div class="card"><p class="note">Loading '+esc(b.en)+'…</p></div>';loadMatn(b.id).then(()=>{if(mOpen===b.id)renderMatn()}).catch(()=>toast('Couldn’t load this matn'));return}
-  const D=D_=MD[b.id],d=mDone(b.id);ensureMLesson();const todayIdx=(S.mlesson&&S.mlesson.d===TODAY?S.mlesson.items:[]).filter(x=>x[0]===b.id).map(x=>x[1]);
-  if(mFocus==='today'&&!todayIdx.length)mFocus='all';
-  if(!mWin||mWin.id!==b.id){const f=mJump>=0?mJump:mFirstOpen(b.id),a=Math.max(0,f-3);mWin={id:b.id,a,z:Math.min(b.n,a+40)}}
-  const inPlan=S.mp.setup&&S.mp.sm===b.id;
+  const D=MD[b.id],d=mDone(b.id);ensureMLesson();const tb=mBlocks((S.mlesson&&S.mlesson.d===TODAY?S.mlesson.items:[]).filter(x=>x[0]===b.id));
+  if(mFocus==='today'&&!tb.length)mFocus='all';
+  if(!mWin||mWin.id!==b.id){const f=mJump>=0?mJump:mFirstOpen(b.id),a=Math.max(0,f-4);mWin={id:b.id,a,z:Math.min(b.n,a+60)}}
+  if(MSEL&&MSEL.id!==b.id)MSEL=null;const inPlan=S.mp.setup&&S.mp.sm===b.id,unit=b.poem?'verse':'line';
   let h='<div class="mbar2"><button class="nav" data-mback="1" aria-label="Back to the list"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="mt"><b>'+esc(b.en)+'</b><span>'+esc(b.ae)+' · d. '+b.d+' AH</span></div><span style="width:46px"></span></div>'
    +'<div class="card"><p class="ar mt-big" lang="ar">'+esc(b.t)+'</p>'+(b.rec?'<p class="mrec" style="margin-top:4px;text-align:center">'+esc(b.rec)+'</p>':'')
-   +'<div class="bar" style="margin-top:12px"><i style="width:'+(d/b.n*100)+'%"></i></div><p class="note">'+d+' of '+b.n+' portions memorized</p>'
-   +'<div class="tools" style="justify-content:flex-start;margin:10px 0 0">'+(inPlan?'':'<button class="chip" data-mplanhere="1">Start my plan here</button>')+'<button class="chip'+(mHide?' on':'')+'" data-mhide="1">'+(mHide?'Text hidden':'Hide text')+'</button><button class="chip" data-mfs="-2" aria-label="Smaller text">A−</button><button class="chip" data-mfs="2" aria-label="Larger text">A+</button>'+(MREC[b.id]?'':'<a class="chip" href="'+ytLink(b.t)+'" target="_blank" rel="noopener">Find recorded readings</a>')+'</div></div>'+mpCard(b.id);
-  if(todayIdx.length)h+='<div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:6px 0 10px"><button data-mseg="today" class="'+(mFocus==='today'?'on':'')+'">Today ('+todayIdx.length+')</button><button data-mseg="all" class="'+(mFocus!=='today'?'on':'')+'">Whole text</button></div>';
-  const card=i=>{const P=D.parts[i],done=isMem(b.id,i),today=todayIdx.includes(i);return '<div class="mpart'+(done?' done':'')+(today?' today':'')+(b.poem?' poem':'')+'" id="mp'+i+'">'+(today?'<span class="tag">Today</span>':'')+'<div class="mx ar'+(mHide&&!done?' hid':'')+'" lang="ar" data-rv="'+i+'">'+partHTML(P.x)+'</div><div class="mfoot"><span class="note" style="margin:0">'+(i+1)+' / '+b.n+'</span><button class="chk sm" data-mchk="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' portion '+(i+1)+' memorized">'+ICON_CHECK+'</button></div></div>'};
-  if(mFocus==='today'&&todayIdx.length){let last=-1;todayIdx.forEach(i=>{const si=D.parts[i].si;if(si!==last){last=si;if(D.secs[si].h)h+='<h3 class="mh ar" lang="ar">'+esc(D.secs[si].h)+'</h3>'}h+=card(i)});
-    h+='<p class="note">Memorize each portion, then tap the circle. Use “Hide text” to test yourself, and the A–B loop to repeat a line.</p>'}
-  else{if(mWin.a>0)h+='<button class="btn ghost wide" data-mmore="-1" style="margin-bottom:10px">Show earlier portions</button>';
-    let last=-1;for(let i=mWin.a;i<mWin.z;i++){const si=D.parts[i].si;if(si!==last){last=si;if(D.secs[si].h)h+='<h3 class="mh ar" lang="ar">'+esc(D.secs[si].h)+'</h3>'}h+=card(i)}
-    if(mWin.z<b.n)h+='<button class="btn ghost wide" data-mmore="1">Show more portions</button>'}
-  V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px');if(MREC[b.id]){mpPaint();mpRefreshSaved(b.id)}
-  if(mJump>=0){const j=mJump;mJump=-1;setTimeout(()=>{const el=$('mp'+j);el&&el.scrollIntoView({block:'center',behavior:'smooth'})},300)}}
-$('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data-rv]');if(!t)return;const d=t.dataset;
-  if(d.mo){mOpen=d.mo;mWin=null;mHide=false;mFocus='today';renderMutun();scrollTo({top:0});return}
-  if(d.mback){mOpen='';renderMutun();scrollTo({top:0});return}
+   +'<div class="bar" style="margin-top:12px"><i style="width:'+(d/b.n*100)+'%"></i></div><p class="note">'+d+' of '+pl(b.n,unit)+' memorized</p>'
+   +'<div class="tools" style="justify-content:flex-start;margin:10px 0 0">'+(inPlan?'':'<button class="chip" data-mplanhere="1">Start my plan here</button>')+'<button class="chip'+(mHide?' on':'')+'" data-mhide="1">'+(mHide?'Text hidden':'Hide text')+'</button><button class="chip" data-mfs="-2" aria-label="Smaller text">A−</button><button class="chip" data-mfs="2" aria-label="Larger text">A+</button>'+(MREC[b.id]?'':'<a class="chip" href="'+ytLink(b.t)+'" target="_blank" rel="noopener">Find recorded readings</a>')+'</div>'
+   +(MREC[b.id]&&Object.keys(MREC[b.id]).length>1?'<div class="field"><span>Reader</span><div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr))">'+Object.keys(MREC[b.id]).map(r=>'<button data-mrd="'+r+'" class="'+(mpSel(b.id).r===r?'on':'')+'">'+esc(MREADERS[r][0])+'</button>').join('')+'</div></div>':'')+'</div>';
+  if(tb.length)h+='<div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:6px 0 10px"><button data-mseg="today" class="'+(mFocus==='today'?'on':'')+'">Today</button><button data-mseg="all" class="'+(mFocus!=='today'?'on':'')+'">Whole text · practise</button></div>';
+  if(mFocus==='today'&&tb.length){tb.forEach(x=>{const dn=blkDone(x);h+='<div class="mpart today'+(dn?' done':'')+'"><span class="tag">Today · '+(x.b>x.a?unit+'s '+(x.a+1)+'–'+(x.b+1):unit+' '+(x.a+1))+'</span><div class="mx ar'+(mHide&&!dn?' hid':'')+'" lang="ar" data-rv="1">'+blockLines(x)+'</div>'+partBtns(b.id,x.a,x.b,dn)+'</div>'});
+    h+='<p class="note">Listen, repeat, then test yourself. Mark the lines when you have them.</p>'}
+  else{h+='<p class="note">Tap a '+unit+' to practise from there. Choose how many '+unit+'s with − and +.</p>';
+    if(mWin.a>0)h+='<button class="btn ghost wide" data-mmore="-1" style="margin-bottom:10px">Show earlier '+unit+'s</button>';
+    let last=-1;h+='<div class="mlines'+(mHide?' hidall':'')+'">';for(let i=mWin.a;i<mWin.z;i++){const si=D.L[i][0];if(si!==last){last=si;if(D.secs[si])h+='<h3 class="mh ar" lang="ar">'+esc(D.secs[si])+'</h3>'}
+      const sel=MSEL&&i>=MSEL.a&&i<MSEL.a+MSEL.len,done=isMem(b.id,i);h+='<div class="mline'+(done?' done':'')+(sel?' sel':'')+(b.poem?' poem':'')+'" data-ml="'+i+'"><span class="lno">'+(i+1)+'</span><span class="ar lt" lang="ar">'+lineHTML(D.L[i][2])+'</span><button class="lchk" data-mln="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' '+unit+' '+(i+1)+'">'+ICON_CHECK+'</button></div>'}
+    h+='</div>';if(mWin.z<b.n)h+='<button class="btn ghost wide" data-mmore="1">Show more '+unit+'s</button>';
+    if(MSEL){const a=MSEL.a,z=Math.min(b.n-1,a+MSEL.len-1);h+='<div class="selbar"><div class="row"><b>'+esc(unit[0].toUpperCase()+unit.slice(1))+'s '+(a+1)+'–'+(z+1)+'</b><div class="step"><button data-msl="-1" aria-label="Fewer '+unit+'s">−</button><b>'+MSEL.len+'</b><button data-msl="1" aria-label="More '+unit+'s">+</button></div><button class="pb2" data-msx="1" aria-label="Clear selection">✕</button></div>'+partBtns(b.id,a,z,(()=>{for(let i=a;i<=z;i++)if(!isMem(b.id,i))return false;return true})())+'</div>'}}
+  h+=MREC[b.id]?'<details class="adv"><summary>Full recording</summary>'+mpCard(b.id)+'</details>':'';
+  V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px');if(MREC[b.id]&&$('mpCard')){mpPaint();mpRefreshSaved(b.id)}
+  if(mJump>=0){const j=mJump;mJump=-1;setTimeout(()=>{const el=document.querySelector('[data-ml="'+j+'"]');el&&el.scrollIntoView({block:'center',behavior:'smooth'})},300)}}
+function partBtns(id,a,b,dn){return '<div class="pact">'+(MREC[id]?'<button class="btn sm" data-mpart="'+id+':'+a+':'+b+'">'+IC_PLAY+'Listen</button>':'')+'<button class="btn sm ghost" data-mtest="'+id+':'+a+':'+b+'">'+IC_MIC+'Test</button><button class="btn sm '+(dn?'ghost':'gold')+'" data-mmark="'+id+':'+a+':'+b+'">'+(dn?'✓ Memorized':'Mark memorized')+'</button></div>'}
+$('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data-rv],[data-ml]');if(!t)return;const d=t.dataset;
+  if(d.mo){mOpen=d.mo;mWin=null;mHide=false;mFocus='today';MSEL=null;renderMutun();scrollTo({top:0});return}
+  if(d.mback){mOpen='';MSEL=null;renderMutun();scrollTo({top:0});return}
   if(d.mplanhere){openMPlan({sm:mOpen,si:mFirstOpen(mOpen)});return}
   if(d.mseg){mFocus=d.mseg;renderMatn();return}
+  if(d.mrd){S.mpos=S.mpos||{};S.mpos[mOpen]={r:d.mrd,f:0,t:0};save();const y=scrollY;renderMatn();scrollTo({top:y});return}
   if(d.mhide){mHide=!mHide;const y=scrollY;renderMatn();scrollTo({top:y});return}
   if(d.mfs){S.mfs=Math.max(18,Math.min(40,S.mfs+(+d.mfs)));save();document.documentElement.style.setProperty('--mfs',S.mfs+'px');return}
-  if(d.mmore){const b=mInfo(mOpen);if(+d.mmore>0)mWin.z=Math.min(b.n,mWin.z+40);else mWin.a=Math.max(0,mWin.a-40);renderMatn();return}
-  if(d.mchk){const y=scrollY;mToggle(mOpen,+d.mchk);renderMatn();scrollTo({top:y});renderToday();return}
+  if(d.mmore){const b=mInfo(mOpen);if(+d.mmore>0)mWin.z=Math.min(b.n,mWin.z+60);else mWin.a=Math.max(0,mWin.a-60);renderMatn();return}
+  if(d.mln){const i=+d.mln,y=scrollY;mMark(mOpen,i,i,!isMem(mOpen,i));renderMatn();scrollTo({top:y});renderToday();return}
+  if(d.msl){MSEL.len=Math.max(1,Math.min(30,MSEL.len+(+d.msl)));S.mlen=MSEL.len;save();const y=scrollY;renderMatn();scrollTo({top:y});return}
+  if(d.msx){MSEL=null;const y=scrollY;renderMatn();scrollTo({top:y});return}
+  if(d.ml&&!t.closest('.lchk')){if(mHide&&t.querySelector('.lt')){t.classList.toggle('peek')}MSEL={id:mOpen,a:+d.ml,len:S.mlen||5};const y=scrollY;renderMatn();scrollTo({top:y});return}
   if(d.rv&&mHide){t.classList.toggle('hid')}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-mpart],[data-mtest],[data-mmark]');if(!t)return;const d=t.dataset,[id,a,b]=(d.mpart||d.mtest||d.mmark).split(':');
+  if(d.mpart){playPart(id,+a,+b);return}
+  if(d.mtest){openMTest(id,+a,+b);return}
+  if(d.mmark){let all=true;for(let i=+a;i<=+b;i++)if(!isMem(id,i))all=false;mMark(id,+a,+b,!all);if(t.closest('#panel'))closeSheet();renderToday();if(location.hash==='#mutun'){const y=scrollY;renderMutun();scrollTo({top:y})}}});
 document.addEventListener('click',e=>{if(e.target.closest('[data-mplan]'))openMPlan()});
 const MPRESETS=[['Start of the ladder','thalatha','all',''],['The short ʿaqīdah texts','thalatha','thru','nawaqid'],['al-Arbaʿūn al-Nawawiyyah','arbain','matn',''],['Kitāb al-Tawḥīd','tawhid','matn','']];
 let PM=null;
 function mGoalOpts(sm){const a=mIdx(sm),o=[['matn','','Only '+mInfo(sm).en]];for(let k=a+1;k<MI.length-1;k++)o.push(['thru',MI[k].id,'Through '+MI[k].en+' ('+(k-a+1)+' texts)']);if(a<MI.length-1)o.push(['all','','To the end of the ladder ('+(MI.length-a)+' texts)']);return o}
 function openMPlan(pre){if(!MI){toast('Loading the mutūn…');loadMI().then(()=>openMPlan(pre)).catch(()=>{});return}
-  const mp=S.mp;PM={sm:mp.sm,si:mp.setup?mp.si:0,gk:mp.gk,gv:mp.gv,per:mp.per,off:S.off.slice(),mode:mp.goal&&mp.goal>TODAY?'date':'per',date:mp.goal&&mp.goal>TODAY?mp.goal:''};
+  const mp=S.mp;PM={sm:mp.sm,si:mp.setup?mp.si:0,gk:mp.gk,gv:mp.gv,per:mp.per||5,off:S.off.slice(),mode:mp.goal&&mp.goal>TODAY?'date':'per',date:mp.goal&&mp.goal>TODAY?mp.goal:''};
   if(pre){PM.sm=pre.sm;PM.si=pre.si;PM.gk='matn';PM.gv=''}if(!mInfo(PM.sm))PM.sm=MI[0].id;
-  sheet('<h2>Your mutūn plan</h2><p class="note">Start with any matn, choose your goal and your pace. Portions you already memorized are skipped.</p><details class="adv"><summary>What the scholars say to start with</summary>'+qBlock(MFIRST)+qBlock(FIRST[1])+'</details>'
+  sheet('<h2>Your mutūn plan</h2><p class="note">Start with any matn, choose how many lines a day and your goal. Lines you already memorized are skipped.</p><details class="adv"><summary>What the scholars say to start with</summary>'+qBlock(MFIRST)+qBlock(FIRST[1])+'</details>'
    +'<div class="field"><span>Popular plans</span><div class="presets" id="mpPre">'+MPRESETS.map((x,k)=>'<button class="chip" data-mpre="'+k+'">'+esc(x[0])+'</button>').join('')+'</div></div>'
    +'<label class="field"><span>1 · Which matn do you start with?</span><select id="mpM">'+MI.map((b,k)=>'<option value="'+b.id+'">'+(k+1)+' · '+esc(b.en)+'</option>').join('')+'</select></label>'
-   +'<label class="field"><span style="font-weight:400;color:var(--mute)">Start at portion</span><input type="number" id="mpI" min="1" inputmode="numeric"></label>'
+   +'<label class="field"><span style="font-weight:400;color:var(--mute)" id="mpIL">Start at line</span><input type="number" id="mpI" min="1" inputmode="numeric"></label>'
    +'<label class="field"><span>2 · Your goal</span><select id="mpG"></select></label>'
-   +'<div class="field"><span>3 · Your pace</span><div class="seg" id="mpMode" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-m="per">Portions a day</button><button data-m="date">Finish by a date</button></div></div>'
-   +'<div class="field" id="mpPerW"><div class="step"><button data-pp="-1" aria-label="Fewer portions">−</button><b id="mpPerV"></b><button data-pp="1" aria-label="More portions">+</button><span class="note" style="margin:0">new portions a day</span></div></div>'
+   +'<div class="field"><span>3 · Your pace</span><div class="seg" id="mpMode" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-m="per">Lines a day</button><button data-m="date">Finish by a date</button></div></div>'
+   +'<div class="field" id="mpPerW"><div class="step"><button data-pp="-1" aria-label="Fewer lines">−</button><b id="mpPerV"></b><button data-pp="1" aria-label="More lines">+</button><span class="note" style="margin:0">new lines a day</span></div></div>'
    +'<label class="field" id="mpDateW"><span>Finish by</span><input type="date" id="mpDate" min="'+ymd(add(parse(TODAY),1))+'"></label>'
    +'<div class="field"><span>Days off (shared with the Qur’an)</span><div class="days" id="mpOff">'+DAYS.map((x,i)=>'<label><input type="checkbox" value="'+i+'"><span>'+x+'</span></label>').join('')+'</div></div>'
    +'<div class="vcard" id="mpSum" aria-live="polite"></div><button class="btn wide" id="mpSaveP">Save my mutūn plan</button><button class="btn ghost wide" data-close style="margin-top:8px">Cancel</button>');
-  const P=$('panel'),sync=()=>{$('mpM').value=PM.sm;const b=mInfo(PM.sm);$('mpI').max=b.n;$('mpI').value=PM.si+1};
+  const P=$('panel'),sync=()=>{$('mpM').value=PM.sm;const b=mInfo(PM.sm);$('mpI').max=b.n;$('mpI').value=PM.si+1;$('mpIL').textContent='Start at '+(b.poem?'verse':'line')+' (1–'+b.n+')'};
   sync();$('mpDate').value=PM.date;P.querySelectorAll('#mpOff input').forEach(i=>{i.checked=PM.off.includes(+i.value)});
   $('mpPre').onclick=e=>{const x=e.target.closest('[data-mpre]');if(!x)return;const v=MPRESETS[+x.dataset.mpre];PM.sm=v[1];PM.si=mFirstOpen(v[1]);PM.gk=v[2];PM.gv=v[3];sync();updMPlan(true)};
   $('mpM').onchange=e=>{PM.sm=e.target.value;PM.si=mFirstOpen(PM.sm);sync();updMPlan(true)};
   $('mpI').oninput=e=>{const v=Math.round(+e.target.value),b=mInfo(PM.sm);if(v>=1&&v<=b.n){PM.si=v-1;updMPlan(false)}};
   $('mpG').onchange=e=>{const[k,v]=e.target.value.split(':');PM.gk=k;PM.gv=v||'';updMPlan(false)};
   $('mpMode').onclick=e=>{const x=e.target.closest('[data-m]');if(x){PM.mode=x.dataset.m;updMPlan(false)}};
-  $('mpPerW').onclick=e=>{const x=e.target.closest('[data-pp]');if(x){PM.per=Math.max(1,Math.min(20,PM.per+(+x.dataset.pp)));updMPlan(false)}};
+  $('mpPerW').onclick=e=>{const x=e.target.closest('[data-pp]');if(x){PM.per=Math.max(1,Math.min(40,PM.per+(+x.dataset.pp)));updMPlan(false)}};
   $('mpDate').onchange=e=>{PM.date=e.target.value;updMPlan(false)};
   $('mpOff').onchange=e=>{const v=[...P.querySelectorAll('#mpOff input:checked')].map(i=>+i.value);if(v.length>6){e.target.checked=false;toast('Keep at least one study day');return}PM.off=v;updMPlan(false)};
   $('mpSaveP').onclick=saveMPlan;updMPlan(true)}
 function mPlanNums(){const G=mSeqFor(PM.sm,PM.si,PM.gk,PM.gv),left=G.filter(([id,i])=>!isMem(id,i)).length;let per=PM.per,warn='';
-  if(PM.mode==='date'&&PM.date>TODAY){const sd=studyDays(PM.off,PM.date);per=sd?Math.ceil(left/sd):left;if(per>20)warn='That needs '+per+' portions a day. Pick a later date.';per=Math.max(1,Math.min(20,per))}
+  if(PM.mode==='date'&&PM.date>TODAY){const sd=studyDays(PM.off,PM.date);per=sd?Math.ceil(left/sd):left;if(per>40)warn='That needs '+per+' lines a day. Pick a later date.';per=Math.max(1,Math.min(40,per))}
   return{G,left,per,fin:finishFor(per,PM.off,left,0),warn}}
 function updMPlan(opts){const P=$('panel');
   if(opts){const o=mGoalOpts(PM.sm),cur=PM.gk+':'+PM.gv;$('mpG').innerHTML=o.map(x=>'<option value="'+x[0]+':'+x[1]+'">'+esc(x[2])+'</option>').join('');if(o.some(x=>x[0]+':'+x[1]===cur))$('mpG').value=cur;else{PM.gk='matn';PM.gv='';$('mpG').value='matn:'}}
   P.querySelectorAll('#mpMode button').forEach(x=>x.classList.toggle('on',x.dataset.m===PM.mode));$('mpPerW').hidden=PM.mode!=='per';$('mpDateW').hidden=PM.mode!=='date';$('mpPerV').textContent=PM.per;
   const n=mPlanNums(),done=n.G.length-n.left,need=PM.mode==='date'&&!(PM.date>TODAY),b=mInfo(PM.sm);
-  $('mpSum').innerHTML='<p class="lab">Your plan</p><p class="mean"><b>Start:</b> '+esc(b.en)+', portion '+(PM.si+1)+' of '+b.n+'<br><b>Goal:</b> '+esc(mLabelFor(PM.sm,PM.gk,PM.gv))+' · '+pl(n.G.length,'portion')+(done?' ('+done+' already memorized)':'')+'<br><b>Pace:</b> '+(need?'pick a date':pl(n.per,'new portion')+' a day, '+(7-PM.off.length)+' days a week')+'<br><b>Finish:</b> '+(!n.left?'already complete':need?'—':'about '+fmt(n.fin))+'</p>'+(n.warn?'<p class="src" style="color:var(--warn)">'+esc(n.warn)+'</p>':'')}
+  $('mpSum').innerHTML='<p class="lab">Your plan</p><p class="mean"><b>Start:</b> '+esc(b.en)+', line '+(PM.si+1)+' of '+b.n+'<br><b>Goal:</b> '+esc(mLabelFor(PM.sm,PM.gk,PM.gv))+' · '+pl(n.G.length,'line')+(done?' ('+done+' already memorized)':'')+'<br><b>Pace:</b> '+(need?'pick a date':pl(n.per,'new line')+' a day, '+(7-PM.off.length)+' days a week')+'<br><b>Finish:</b> '+(!n.left?'already complete':need?'—':'about '+fmt(n.fin))+'</p>'+(n.warn?'<p class="src" style="color:var(--warn)">'+esc(n.warn)+'</p>':'')}
 function saveMPlan(){if(PM.mode==='date'&&!(PM.date>TODAY)){toast('Pick a finish date');return}const n=mPlanNums();
-  S.mp={sm:PM.sm,si:PM.si,gk:PM.gk,gv:PM.gv,per:n.per,goal:PM.mode==='date'?PM.date:'',start:TODAY,setup:1};S.off=PM.off;S.mlesson=null;save();closeSheet();renderAll();if(location.hash==='#mutun'){mOpen='';renderMutun()}toast('Mutūn plan saved ✓ '+pl(n.per,'portion')+' a day')}
+  S.mp={sm:PM.sm,si:PM.si,gk:PM.gk,gv:PM.gv,per:n.per,goal:PM.mode==='date'?PM.date:'',start:TODAY,setup:1};S.off=PM.off;S.mlesson=null;save();closeSheet();renderAll();if(location.hash==='#mutun'){mOpen='';renderMutun()}toast('Mutūn plan saved ✓ '+pl(n.per,'line')+' a day')}
 function mutunProgressCard(){if(!MI)return '';let h=S.mp.setup?mGoalCard(true):'';const st=MI.filter(b=>mDone(b.id));
-  if(st.length)h+='<div class="card"><h2>Mutūn memorized</h2>'+st.map(b=>{const d=mDone(b.id);return '<div class="rv"><div style="flex:1"><b>'+esc(b.en)+'</b><small>'+d+' of '+b.n+' portions</small><span class="bar" style="display:block;margin-top:6px"><i style="width:'+(d/b.n*100)+'%"></i></span></div></div>'}).join('')+'</div>';return h}
+  if(st.length)h+='<div class="card"><h2>Mutūn memorized</h2>'+st.map(b=>{const d=mDone(b.id);return '<div class="rv"><div style="flex:1"><b>'+esc(b.en)+'</b><small>'+d+' of '+pl(b.n,b.poem?'verse':'line')+'</small><span class="bar" style="display:block;margin-top:6px"><i style="width:'+(d/b.n*100)+'%"></i></span></div></div>'}).join('')+'</div>';return h}
 
 /* ---------- matn recordings ---------- */
 const ARC='https://archive.org/download/',A1=n=>ARC+'Mottoon_Talib/'+n+'.mp3',A2=n=>ARC+'Mutun_Sawtiya/'+n;
-const MREADERS={ansari:['Ibrāhīm al-Anṣārī','Mutūn Ṭālib al-ʿIlm reading, Shaykh ʿAbd al-Muḥsin al-Qāsim’s edition','archive.org/details/Mottoon_Talib'],shaydhami:['Abū Aḥmad Rashīd al-Shayẓamī','Mutūn Ṣawtiyyah','archive.org/details/Mutun_Sawtiya']};
+const MREADERS={ansari:['Ibrāhīm al-Anṣārī','Mutūn Ṭālib al-ʿIlm reading, Shaykh ʿAbd al-Muḥsin al-Qāsim’s edition'],shaydhami:['Abū Aḥmad Rashīd al-Shayẓamī','Mutūn Ṣawtiyyah']};
 const MREC={nawaqid:{ansari:[A1('02')],shaydhami:[A2('010-Nawaqid_al-islam_al-10.mp3')]},qawaid:{ansari:[A1('03')],shaydhami:[A2('003-Qawaid_4.mp3')]},thalatha:{ansari:[A1('04')],shaydhami:[A2('001-Osoul_3.mp3')]},
  arbain:{ansari:[A1('05')],shaydhami:[A2('068-Arbaoun-nawawiah.mp3')]},tuhfa:{ansari:[A1('06')],shaydhami:[A2('091-Tohfat_al-atfaal.mp3')]},shurut:{ansari:[A1('07')],shaydhami:[A2('002-Chorout-assalah.mp3')]},
  tawhid:{ansari:[A1('08')],shaydhami:[A2('008-Ketab_tawheed_full.mp3')]},ajurrumiyya:{ansari:[A1('11')],shaydhami:[A2('085-Ajroumiah.mp3')]},wasitiyya:{ansari:[A1('12')],shaydhami:[A2('041-Alwassitiah.mp3')]},
@@ -1023,32 +1121,60 @@ let maUnlocked=false;function maUnlock(){if(maUnlocked)return;maUnlocked=true;tr
 function mpSel(id){const R=MREC[id];if(!R)return null;const p=(S.mpos||{})[id]||{};const r=R[p.r]?p.r:(R.ansari?'ansari':'shaydhami');return{r,f:Math.min(p.f||0,R[r].length-1),t:p.r===r?p.t||0:0}}
 async function mpCached(u){try{const c=await caches.open(AC);return !!(await c.match(u))}catch(e){return false}}
 async function mpRefreshSaved(id){const R=MREC[id];if(!R)return;for(const r in R){let all=true;for(const u of R[r])if(!(await mpCached(u))){all=false;break}MP.saved[id+':'+r]=all}mpPaint()}
-async function mpLoad(id,r,f,t,play){if(AU&&!AU.paused){AU.pause();PL.on=false;setPI()}
-  MP.id=id;MP.r=r;MP.f=f;MP.a=MP.b=null;const u=MREC[id][r][f];MP.loaded=u;let blob=null;
+async function mpLoad(id,r,f,t,play){if(!AU.paused){AU.pause();PL.on=false;setPI();$('player').classList.remove('on')}
+  MP.id=id;MP.r=r;MP.f=f;const u=MREC[id][r][f];MP.loaded=u;let blob=null;
   try{const c=await caches.open(AC),m=await c.match(u);if(m)blob=await m.blob()}catch(e){}
   if(MP.loaded!==u)return;if(MP.obj){URL.revokeObjectURL(MP.obj);MP.obj=null}
   if(blob){MP.obj=URL.createObjectURL(blob);MA.src=MP.obj}else MA.src=u;
   MA.playbackRate=MP.rate;if(t)MA.addEventListener('loadedmetadata',()=>{try{MA.currentTime=t}catch(e){}},{once:true});
   if(play)MA.play().catch(()=>toast(navigator.onLine?'Couldn’t play this recording. Try again.':'You’re offline and this recording isn’t saved yet.'));
   if('mediaSession' in navigator){try{const b=mInfo(id);navigator.mediaSession.metadata=new MediaMetadata({title:b?b.en:'Matn',artist:MREADERS[r][0],album:'Hifz · Mutūn'})}catch(e){}}
-  mpPaint()}
-function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;
+  mpPaint();mbarPaint()}
+function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;MPP.on=false;
   if(MP.id===id&&MA.src&&!MA.src.startsWith('data:')){if(MA.paused)MA.play().catch(()=>{});else MA.pause();return}
   maUnlock();mpLoad(id,s.r,s.f,s.t,true)}
+/* part player: plays just the chosen lines, timed from the text */
+const MPP={on:false,id:'',a:0,b:0,r:'',ts:0,te:0,count:0};
+function mCum(id){const D=MD[id];if(D.cum)return D.cum;const c=[];let pos=0,ps=-1;for(let i=0;i<D.L.length;i++){if(D.L[i][0]!==ps){ps=D.L[i][0];pos+=(D.secs[ps]||'').length}c.push(pos);pos+=mText(D,i).length+1}c.push(pos);return D.cum=c}
+function mDurs(id,r){S.mdur=S.mdur||{};const k=id+':'+r;if(S.mdur[k])return Promise.resolve(S.mdur[k]);
+  return Promise.all(MREC[id][r].map(u=>new Promise(res=>{const a=new Audio();a.preload='metadata';let done=false;const fin=v=>{if(!done){done=true;res(v||0)}};a.onloadedmetadata=()=>fin(a.duration);a.onerror=()=>fin(0);setTimeout(()=>fin(0),20000);
+    caches.open(AC).then(c=>c.match(u)).then(m=>m?m.blob():null).catch(()=>null).then(b=>{a.src=b?URL.createObjectURL(b):u})}))).then(ds=>{if(ds.every(x=>x>0&&isFinite(x))){S.mdur[k]=ds;save()}return ds})}
+function tAt(id,r,ch){const ds=S.mdur[id+':'+r],c=mCum(id),T=c[c.length-1],D=ds.reduce((x,y)=>x+y,0),P=[[0,0],...(((S.anch||{})[id+':'+r])||[]),[T,D]].sort((x,y)=>x[0]-y[0]);
+  for(let k=1;k<P.length;k++)if(ch<=P[k][0]){const[a0,t0]=P[k-1],[a1,t1]=P[k];return t0+(a1>a0?(ch-a0)/(a1-a0)*(t1-t0):0)}return D}
+function setAnchor(id,r,ch,t){S.anch=S.anch||{};const k=id+':'+r;let A=(S.anch[k]||[]).filter(([c,x])=>c!==ch&&!(c<ch&&x>=t)&&!(c>ch&&x<=t));A.push([ch,Math.max(0,t)]);A.sort((x,y)=>x[0]-y[0]);S.anch[k]=A;save()}
+function g2f(ds,g){let s=0;for(let f=0;f<ds.length;f++){if(g<s+ds[f]||f===ds.length-1)return[f,Math.max(0,g-s)];s+=ds[f]}return[0,0]}
+const fStart=(ds,f)=>ds.slice(0,f).reduce((x,y)=>x+y,0);
+async function playPart(id,a,b,r){maUnlock();if(!MD[id])await loadMatn(id);MPP.on=true;MPP.id=id;MPP.a=a;MPP.b=b;MPP.r=r||mpSel(id).r;MPP.count=0;mbarShow();$('mbName').textContent='Loading the recording…';
+  const ds=await mDurs(id,MPP.r);if(!ds.every(x=>x>0)){MPP.on=false;toast(navigator.onLine?'Couldn’t load the recording. Try again.':'You’re offline and this recording isn’t saved.');mbarPaint();return}
+  const c=mCum(id);MPP.ts=Math.max(0,tAt(id,MPP.r,c[a])-.4);MPP.te=tAt(id,MPP.r,c[b+1])+.3;mppSeek(MPP.ts,true)}
+function mppSeek(g,play){const ds=S.mdur[MPP.id+':'+MPP.r],[f,lt]=g2f(ds,g);
+  if(MP.id!==MPP.id||MP.r!==MPP.r||MP.f!==f||!MA.src||MA.src.startsWith('data:'))mpLoad(MPP.id,MPP.r,f,lt,play);else{MA.currentTime=lt;if(play)MA.play().catch(()=>{})}}
 let mpLast=0;
 MA.addEventListener('timeupdate',()=>{if(MA.src.startsWith('data:'))return;if(MP.a!=null&&MP.b!=null&&MA.currentTime>=MP.b){MA.currentTime=MP.a}
-  const now=Date.now();if(now-mpLast>4000&&MP.id){mpLast=now;S.mpos=S.mpos||{};S.mpos[MP.id]={r:MP.r,f:MP.f,t:Math.floor(MA.currentTime)};save()}mpPaint(true)});
-MA.addEventListener('play',()=>mpPaint());MA.addEventListener('pause',()=>mpPaint());
-MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;const L=MREC[MP.id][MP.r];if(MP.f+1<L.length){mpLoad(MP.id,MP.r,MP.f+1,0,true)}else{S.mpos[MP.id]={r:MP.r,f:0,t:0};save();mpPaint()}});
-function mpCard(id){const R=MREC[id];if(!R)return '';const s=mpSel(id),rs=Object.keys(R),L=R[s.r];
-  return '<div class="card mplay" id="mpCard"><div class="row"><p class="lab" style="margin:0">Listen to the matn</p><span class="pill" id="mpSaved"></span></div>'
-   +(rs.length>1?'<div class="seg" style="grid-template-columns:repeat('+rs.length+',minmax(0,1fr));margin-top:10px">'+rs.map(r=>'<button data-mpr="'+r+'" class="'+(r===s.r?'on':'')+'">'+esc(MREADERS[r][0].split(' ').slice(-1)[0])+'</button>').join('')+'</div>':'')
-   +'<p class="note" style="margin:8px 0 0"><b>'+esc(MREADERS[s.r][0])+'</b> · '+esc(MREADERS[s.r][1])+'</p>'
+  if(MPP.on&&MP.id===MPP.id&&MP.r===MPP.r){const ds=S.mdur[MPP.id+':'+MPP.r];if(ds){const g=fStart(ds,MP.f)+MA.currentTime;if(g>=MPP.te){MPP.count++;if(MPP.count<S.rep)mppSeek(MPP.ts,true);else{MA.pause();MPP.count=0;mbarPaint()}}}}
+  const now=Date.now();if(now-mpLast>4000&&MP.id&&!MPP.on){mpLast=now;S.mpos=S.mpos||{};S.mpos[MP.id]={r:MP.r,f:MP.f,t:Math.floor(MA.currentTime)};save()}mpPaint(true);mbarPaint(true)});
+MA.addEventListener('play',()=>{mpPaint();mbarPaint()});MA.addEventListener('pause',()=>{mpPaint();mbarPaint()});
+MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;const L=MREC[MP.id][MP.r];if(MP.f+1<L.length)mpLoad(MP.id,MP.r,MP.f+1,0,true);else{if(!MPP.on){S.mpos[MP.id]={r:MP.r,f:0,t:0};save()}MPP.on=false;mpPaint();mbarPaint()}});
+function mbarShow(){$('player').classList.remove('on');$('mbar').classList.add('on')}
+function mbarHide(){$('mbar').classList.remove('on');MPP.on=false;if(!MA.paused)MA.pause()}
+function mbarPaint(light){if(!$('mbar').classList.contains('on')||!MPP.id)return;const b=mInfo(MPP.id),playing=!MA.paused&&MP.id===MPP.id;
+  $('mbIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mbPlay').setAttribute('aria-label',playing?'Pause':'Play');
+  if(light)return;$('mbName').textContent=(b?b.en:'')+' · '+(MPP.b>MPP.a?'lines '+(MPP.a+1)+'–'+(MPP.b+1):'line '+(MPP.a+1));$('mbSub').textContent=MREADERS[MPP.r][0].split(' ').slice(-1)[0]+(S.rep>1?' · repeats ×'+S.rep:'');$('mbRep').textContent='×'+S.rep;$('mbR').hidden=Object.keys(MREC[MPP.id]||{}).length<2}
+$('mbPlay').onclick=()=>{maUnlock();if(!MA.paused&&MP.id===MPP.id){MA.pause();return}if(MPP.id){if(MPP.on&&MP.id===MPP.id&&MA.src&&!MA.src.startsWith('data:'))MA.play().catch(()=>{});else playPart(MPP.id,MPP.a,MPP.b,MPP.r)}};
+$('mbRep').onclick=()=>{const r=[1,3,5,10];S.rep=r[(r.indexOf(S.rep)+1)%r.length];save();mbarPaint();setPI();toast(S.rep===1?'Plays once':'Repeats '+S.rep+' times')};
+$('mbR').onclick=()=>{const rs=Object.keys(MREC[MPP.id]);const r=rs[(rs.indexOf(MPP.r)+1)%rs.length];S.mpos=S.mpos||{};S.mpos[MPP.id]={r,f:0,t:0};save();playPart(MPP.id,MPP.a,MPP.b,r);toast(MREADERS[r][0])};
+$('mbClose').onclick=()=>mbarHide();
+$('mbAdj').onclick=()=>{if(!S.mdur||!S.mdur[MPP.id+':'+MPP.r]){toast('Play the part first');return}
+  sheet('<h2>Line up the recording</h2><p class="note">Timing is worked out from the text, so it can be a little early or late. Nudge it here. The app remembers, and nearby lines get more accurate too.</p><div class="field"><span>Start of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="s:-2">−2 s</button><button class="chip" data-adj="s:-0.5">−½ s</button><button class="chip" data-adj="s:0.5">+½ s</button><button class="chip" data-adj="s:2">+2 s</button></div></div><div class="field"><span>End of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="e:-2">−2 s</button><button class="chip" data-adj="e:-0.5">−½ s</button><button class="chip" data-adj="e:0.5">+½ s</button><button class="chip" data-adj="e:2">+2 s</button></div></div><button class="btn wide" data-close>Done</button>');
+  $('panel').onclick=e=>{const x=e.target.closest('[data-adj]');if(!x)return;const[w,v]=x.dataset.adj.split(':'),c=mCum(MPP.id),ch=w==='s'?c[MPP.a]:c[MPP.b+1],t0=tAt(MPP.id,MPP.r,ch);setAnchor(MPP.id,MPP.r,ch,t0+(+v));
+    const ts=Math.max(0,tAt(MPP.id,MPP.r,c[MPP.a])-.4),te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3;MPP.ts=ts;MPP.te=te;MPP.on=true;MPP.count=0;mppSeek(w==='s'?ts:Math.max(ts,te-3),true);toast(w==='s'?'Start moved':'End moved — playing the last seconds')}};
+function mpCard(id){const R=MREC[id];if(!R)return '';const s=mpSel(id),L=R[s.r];
+  return '<div class="card mplay" id="mpCard" style="margin:8px 0"><div class="row"><p class="lab" style="margin:0">'+esc(MREADERS[s.r][0])+'</p><span class="pill" id="mpSaved"></span></div>'
    +(L.length>1?'<label class="field" style="margin-top:8px"><span>Part</span><select id="mpTrack">'+L.map((u,i)=>'<option value="'+i+'"'+(i===s.f?' selected':'')+'>Part '+(i+1)+' of '+L.length+'</option>').join('')+'</select></label>':'')
    +'<div class="mpc"><button class="pb2" data-mps="-10" aria-label="Back 10 seconds">−10</button><button class="pp" data-mpp="1" id="mpPlay" aria-label="Play"><svg viewBox="0 0 24 24" id="mpIcon"><path d="M7 4l13 8-13 8z"/></svg></button><button class="pb2" data-mps="10" aria-label="Forward 10 seconds">+10</button><button class="pb2" data-mpx="1" id="mpRate">1×</button><button class="pb2" data-mpab="1" id="mpAB" aria-label="Loop a section">A–B</button></div>'
    +'<input type="range" id="mpSeek" min="0" max="1000" value="0" aria-label="Position"><div class="row mptime"><span id="mpCur">0:00</span><span id="mpABl"></span><span id="mpDur">–:–</span></div>'
-   +'<div class="btns"><button class="btn sm ghost" data-mpsave="1" id="mpSave">Save for offline</button></div><p class="src">Plays from archive.org. “A–B” repeats a stretch: tap at the start, tap at the end, tap again to stop.</p></div>'}
-function mpPaint(light){const c=$('mpCard');if(!c||!mOpen)return;const on=MP.id===mOpen&&MA.src&&!MA.src.startsWith('data:'),playing=on&&!MA.paused;
+   +'<div class="btns"><button class="btn sm ghost" data-mpsave="1" id="mpSave">Save for offline</button></div><p class="src">Plays from archive.org.</p></div>'}
+function mpPaint(light){const c=$('mpCard');if(!c||!mOpen)return;const on=MP.id===mOpen&&MA.src&&!MA.src.startsWith('data:')&&!MPP.on,playing=on&&!MA.paused;
   $('mpIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mpPlay').setAttribute('aria-label',playing?'Pause':'Play');
   const d=on&&isFinite(MA.duration)?MA.duration:0,s=mpSel(mOpen),t=on?MA.currentTime:s.t;$('mpCur').textContent=fmtT(t);$('mpDur').textContent=d?fmtT(d):'–:–';
   const sk=$('mpSeek');if(sk&&document.activeElement!==sk)sk.value=d?Math.round(t/d*1000):0;
@@ -1064,7 +1190,6 @@ $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button');if(
   if(d.mps){if(MP.id===mOpen&&MA.src){MA.currentTime=Math.max(0,MA.currentTime+(+d.mps))}return}
   if(d.mpx){const r=[0.75,1,1.25,1.5];MP.rate=r[(r.indexOf(MP.rate)+1)%r.length];MA.playbackRate=MP.rate;mpPaint();return}
   if(d.mpab){if(MP.id!==mOpen||!MA.src){toast('Play the recording first');return}if(MP.a==null){MP.a=MA.currentTime}else if(MP.b==null){if(MA.currentTime>MP.a+1){MP.b=MA.currentTime;MA.currentTime=MP.a}else toast('Let it play a little past the start first')}else{MP.a=MP.b=null}mpPaint();return}
-  if(d.mpr){S.mpos=S.mpos||{};S.mpos[mOpen]={r:d.mpr,f:0,t:0};save();if(MP.id===mOpen){MA.pause();MP.id=''}const y=scrollY;renderMatn();scrollTo({top:y});return}
   if(d.mpsave){mpSaveAll();return}},true);
 $('v-mutun').addEventListener('change',e=>{if(e.target.id==='mpTrack'){const f=+e.target.value,s=mpSel(mOpen);S.mpos=S.mpos||{};S.mpos[mOpen]={r:s.r,f,t:0};save();if(MP.id===mOpen){maUnlock();mpLoad(mOpen,s.r,f,0,!MA.paused)}else mpPaint()}});
 $('v-mutun').addEventListener('input',e=>{if(e.target.id==='mpSeek'&&MP.id===mOpen&&isFinite(MA.duration)){MA.currentTime=e.target.value/1000*MA.duration}});
