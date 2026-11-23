@@ -884,10 +884,10 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
 const NEWHOME='https://hifdh-quran.netlify.app/',MOVED=false;
-const backupLink=base=>(base||location.origin+location.pathname)+'#restore='+enc({mrate:S.mrate,asr:S.asr,asrV:S.asrV,rep:S.rep,fs:S.fs,mfs:S.mfs,theme:S.theme,recInfo:S.recInfo,start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,g:S.g,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const backupLink=base=>(base||location.origin+location.pathname)+'#restore='+enc({mrate:S.mrate,asr:S.asr,asrV:S.asrV,rep:S.rep,fs:S.fs,mfs:S.mfs,theme:S.theme,recInfo:S.recInfo,start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,g:S.g,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mtv:S.mtv||1,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
-function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:''});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
+function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:'',mtv:o.mtv||1});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();mTextMigrate().then(()=>{if(MI)renderAll()});toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
 
 /* ---------- plan sheet ---------- */
 let PS=null;
@@ -1037,7 +1037,7 @@ function srStart(){const SR=recSR(),r=new SR();r.lang='ar-SA';r.continuous=true;
     clearTimeout(timer);timer=setTimeout(flush,1200);
     recPaint();recScroll()};
   r.onerror=e=>{dlog('phone recognition error: '+e.error+' (session '+n+')');
-    if(e.error==='not-allowed'||e.error==='service-not-allowed'){if(n>1){REC.listening=false;REC.note='';recPaint();toast('Listening paused. Tap the mic to carry on.',3500)}else{REC.listening=false;toast('Microphone or speech recognition is blocked. Allow both for this app in your iPhone settings.',4500)}}
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){if(n>1){REC.listening=false;REC.note='';recPaint();toast('Listening paused. Tap the mic to carry on.',3500)}else{REC.listening=false;toast(navigator.standalone?'Speech recognition is blocked. Allow Microphone and Speech Recognition for Safari in iPhone Settings. If it still won’t listen from the Home Screen icon, open Hifdh in Safari.':'Microphone or speech recognition is blocked. Allow both for this app in your iPhone settings.',6000)}}
     else if(e.error==='network'){REC.listening=false;toast('The phone’s recognition needs internet')}
     else if(e.error==='audio-capture'&&HY.on){dlog('turning the AI double-check off: the phone could not share the mic');HY.off=true;hybOff()}
     recPaint()};
@@ -1069,7 +1069,7 @@ function mtRender(){const{id,a,b}=REC.mctx,D=MD[id],bk=mInfo(id);let wi=0,h='';
   for(let li=a;li<=b;li++){const x=D.L[li][2],wr=t=>t.split(' ').map(w=>norm(w)?'<span class="w" data-i="'+(wi++)+'">'+esc(w)+'</span>':esc(w)).join(' ');
     h+='<p class="ln'+(bk.poem?' poem':'')+'"><span class="lno">'+(li+1)+'</span>'+(Array.isArray(x)?'<span class="vh">'+wr(x[0])+'</span><span class="vh">'+wr(x[1])+'</span>':'<span>'+wr(x)+'</span>')+'</p>'}
   $('mrText').innerHTML=h;$('mrTitle').textContent=bk.en+' · lines '+(a+1)+'–'+(b+1);recBuild();recPaint()}
-function openMTest(id,a,b,auto){if(!recSR()){recEnter();return}if(!MD[id]){loadMatn(id).then(()=>openMTest(id,a,b,auto));return}
+function openMTest(id,a,b,auto){if(!recSR()){sheet('<h2>Testing needs the phone’s speech recognition</h2><p class="note">This browser doesn’t offer it. On iPhone, open Hifdh in Safari; on Android, use Chrome.</p><button class="btn wide" data-close>OK</button>');return}if(!MD[id]){loadMatn(id).then(()=>openMTest(id,a,b,auto));return}
   if(REC.listening)recStop(false);if(PL.on)stopPlay(true);if(!MA.paused)MA.pause();
   REC.kind='m';REC.mode=true;REC.any=false;REC.find=true;REC.show=false;REC.log=[];REC.mctx={id,a,b};
   sheet('<div class="row"><div><p class="lab" style="margin:0">Test your memorization</p><h2 id="mrTitle"></h2></div></div><div class="recp on" style="margin-top:10px"><button class="mic" id="mrMic" aria-label="Start listening"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button><div class="rst"><b id="mrSt"></b><span id="mrHeard" lang="ar"></span></div><div class="rcount"><span id="mrOk" style="color:var(--done)">✓ 0</span><span id="mrBad" style="color:var(--warn)">✗ 0</span></div></div>'
@@ -1079,10 +1079,20 @@ function openMTest(id,a,b,auto){if(!recSR()){recEnter();return}if(!MD[id]){loadM
   if(auto)setTimeout(recStart,80)}
 
 /* ---------- mutūn (by lines) ---------- */
-let MI=null,mOpen='',mHide=false,mWin=null,mFocus='today',mJump=-1,MSEL=null;const MD={},mLoading=new Set();
+let mPeek=new Set();let MI=null,mOpen='',mHide=false,mWin=null,mFocus='today',mJump=-1,MSEL=null;const MD={},mLoading=new Set();
 const mDone=id=>Object.keys(S.ml[id]||{}).length;
 const isMem=(id,i)=>!!(S.ml[id]||{})[i];
-function loadMI(){if(MI)return Promise.resolve(MI);return fetch('data/mutun/index.json').then(r=>r.json()).then(d=>{MI=d;mMigrate();return d})}
+function loadMI(){if(MI)return mTextMigrate().then(()=>MI);return fetch('data/mutun/index.json').then(r=>r.json()).then(d=>{MI=d;mMigrate();return mTextMigrate().then(()=>d)})}
+/* the texts were replaced by better editions (v2): memorized lines move to the new line numbers */
+const MTV=2;let mtvBusy=null;
+function mTextMigrate(){if((S.mtv||1)>=MTV)return Promise.resolve();if(mtvBusy)return mtvBusy;
+  const any=Object.values(S.ml||{}).some(m=>m&&Object.keys(m).length)||(S.mp&&S.mp.setup);if(!any){S.mtv=MTV;save();return Promise.resolve()}
+  return mtvBusy=fetch('data/mutun/mig2.json').then(r=>r.json()).then(G=>{
+    for(const id in G){const map=G[id],old=(S.ml||{})[id];
+      if(old&&Object.keys(old).length){const m={};map.forEach((r,j)=>{if(!r)return;let d='';for(let i=r[0];i<=r[1];i++){const v=old[i];if(!v){d='';break}if(!d||d==='pre'||(v!=='pre'&&v>d))d=v}if(d)m[j]=d});S.ml[id]=m}
+      if(S.mp&&S.mp.sm===id&&S.mp.si>0){const k=map.findIndex(r=>r&&r[1]>=S.mp.si);S.mp.si=k<0?0:k}
+      for(const f of ['mlt','anch'])if(S[f])for(const k of Object.keys(S[f]))if(k.startsWith(id+':'))delete S[f][k]}
+    S.mlesson=null;S.mtv=MTV;save();dlog('mutūn texts updated, progress moved to the new lines')}).catch(e=>dlog('mutūn update waits: '+(e&&e.message||e))).finally(()=>{mtvBusy=null})}
 const BAS='بسم الله الرحمن الرحيم';
 function prepMatn(id,d){const x=d.L[0]&&d.L[0][2];if(typeof x==='string'&&x.startsWith(BAS)){const rest=x.slice(BAS.length).trim();if(rest){d.L[0][2]=rest;d.pre=BAS.length+1}else{const m=S.ml[id]||(S.ml[id]={});if(!m[0])m[0]='pre'}}return d}
 function loadMatn(id){if(MD[id])return Promise.resolve(MD[id]);return fetch('data/mutun/'+id+'.json').then(r=>r.json()).then(d=>{if(!d.L)throw 0;MD[id]=prepMatn(id,d);return d})}
@@ -1095,7 +1105,7 @@ const mFirstOpen=id=>{const b=mInfo(id);for(let i=0;i<b.n;i++)if(!isMem(id,i))re
 function mMigrate(){if(S.mlv===2)return;const old=S.mt||{};S.ml=S.ml||{};
   for(const id in old){const b=mInfo(id);if(!b||!b.op)continue;const m=S.ml[id]||(S.ml[id]={});for(const i in old[id]){const a=b.op[+i],z=+i+1<b.op.length?b.op[+i+1]:b.n;for(let k=a;k<z;k++)m[k]=old[id][i]}}
   if(S.mp&&S.mp.setup){const b=mInfo(S.mp.sm);if(b&&b.op)S.mp.si=b.op[Math.min(S.mp.si||0,b.op.length-1)]||0;S.mp.per=Math.max(3,Math.min(40,(S.mp.per||1)*3))}else if(S.mp)S.mp.per=5;
-  S.mlv=2;S.mlesson=null;save()}
+  S.mlv=2;S.mtv=2;S.mlesson=null;save()}
 function mSeqFor(sm,si,gk,gv){if(!MI)return[];const a=mIdx(sm);if(a<0)return[];let z=a;if(gk==='all')z=MI.length-1;else if(gk==='thru'){const k=mIdx(gv);if(k>a)z=k}
   const o=[];for(let k=a;k<=z;k++){const b=MI[k];for(let i=(k===a?Math.max(0,Math.min(si,b.n-1)):0);i<b.n;i++)o.push([b.id,i])}return o}
 const mSeq=()=>mSeqFor(S.mp.sm,S.mp.si,S.mp.gk,S.mp.gv);
@@ -1131,7 +1141,7 @@ function renderMutun(){const V=$('v-mutun');
   if(mOpen){renderMatn();return}
   const inG=new Set(S.mp.setup?mSeq().map(x=>x[0]):[]);
   let h=S.mp.setup?mGoalCard(false):'<div class="hero"><p class="kick">Mutūn</p><p class="big" style="font-size:28px">Memorize the core texts</p><p class="sub">Pick where to start, how many lines a day, and your goal.</p><div class="hact"><button class="hbtn gold" data-mplan="1">Set up my mutūn plan</button></div></div>';
-  h+='<div class="card"><h2>Study ladder</h2>'+MI.map((b,k)=>{const d=mDone(b.id),g=inG.has(b.id);return '<button class="mrow" data-mo="'+b.id+'"><span class="mnum'+(d===b.n?' fin':g?' ing':'')+'">'+(d===b.n?'✓':k+1)+'</span><span class="mbody"><span class="row" style="align-items:baseline"><b class="ar mt-ar">'+esc(b.t)+'</b><span class="pill">'+esc(b.cat)+'</span></span><span class="mmeta">'+esc(b.en)+' · '+esc(b.ae)+' (d. '+b.d+' AH)</span>'+(b.rec?'<span class="mrec">'+esc(b.rec)+'</span>':'')+'<span class="bar"><i style="width:'+(d/b.n*100)+'%"></i></span><span class="mmeta">'+d+' of '+pl(b.n,b.poem?'verse':'line')+(MREC[b.id]?' · 🎧 2 readers':'')+(g?' · in your goal':'')+'</span></span></button>'}).join('')+'</div><p class="note">Texts: Shamela editions via the OpenITI corpus. Recordings: archive.org.</p>';
+  h+='<div class="card"><h2>Study ladder</h2>'+MI.map((b,k)=>{const d=mDone(b.id),g=inG.has(b.id);return '<button class="mrow" data-mo="'+b.id+'"><span class="mnum'+(d===b.n?' fin':g?' ing':'')+'">'+(d===b.n?'✓':k+1)+'</span><span class="mbody"><span class="row" style="align-items:baseline"><b class="ar mt-ar">'+esc(b.t)+'</b><span class="pill">'+esc(b.cat)+'</span></span><span class="mmeta">'+esc(b.en)+' · '+esc(b.ae)+' (d. '+b.d+' AH)</span>'+(b.rec?'<span class="mrec">'+esc(b.rec)+'</span>':'')+'<span class="bar"><i style="width:'+(d/b.n*100)+'%"></i></span><span class="mmeta">'+d+' of '+pl(b.n,b.poem?'verse':'line')+(MREC[b.id]?' · 🎧 2 readers':'')+(g?' · in your goal':'')+'</span></span></button>'}).join('')+'</div><p class="note">Texts: Shaykh ʿAbd al-Muḥsin al-Qāsim’s voweled editions (Mutūn Ṭālib al-ʿIlm) and other al-Maktabah al-Shāmilah editions. Recordings: archive.org.</p>';
   V.innerHTML=h}
 function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';renderMutun();return}
   if(!MD[b.id]){V.innerHTML='<div class="card"><p class="note">Loading '+esc(b.en)+'…</p></div>';loadMatn(b.id).then(()=>{if(mOpen===b.id)renderMatn()}).catch(()=>toast('Couldn’t load this matn'));return}
@@ -1140,7 +1150,7 @@ function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';render
   if(!mWin||mWin.id!==b.id){const f=mJump>=0?mJump:mFirstOpen(b.id),a=Math.max(0,f-4);mWin={id:b.id,a,z:Math.min(b.n,a+60)}}
   if(MSEL&&MSEL.id!==b.id)MSEL=null;const inPlan=S.mp.setup&&S.mp.sm===b.id,unit=b.poem?'verse':'line';
   let h='<div class="mbar2"><button class="nav" data-mback="1" aria-label="Back to the list"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="mt"><b>'+esc(b.en)+'</b><span>'+esc(b.ae)+' · d. '+b.d+' AH</span></div><span style="width:46px"></span></div>'
-   +'<div class="card"><p class="ar mt-big" lang="ar">'+esc(b.t)+'</p>'+(b.rec?'<p class="mrec" style="margin-top:4px;text-align:center">'+esc(b.rec)+'</p>':'')
+   +'<div class="card"><p class="ar mt-big" lang="ar">'+esc(b.t)+'</p>'+(b.rec?'<p class="mrec" style="margin-top:4px;text-align:center">'+esc(b.rec)+'</p>':'')+(b.src?'<p class="mrec" style="margin-top:2px;text-align:center">'+esc(b.src)+'</p>':'')
    +'<div class="bar" style="margin-top:12px"><i style="width:'+(d/b.n*100)+'%"></i></div><p class="note">'+d+' of '+pl(b.n,unit)+' memorized</p>'
    +'<div class="tools" style="justify-content:flex-start;margin:10px 0 0">'+(inPlan?'':'<button class="chip" data-mplanhere="1">Start my plan here</button>')+'<button class="chip'+(mHide?' on':'')+'" data-mhide="1">'+(mHide?'Text hidden':'Hide text')+'</button><button class="chip" data-mfs="-2" aria-label="Smaller text">A−</button><button class="chip" data-mfs="2" aria-label="Larger text">A+</button>'+(MREC[b.id]?'':'<a class="chip" href="'+ytLink(b.t)+'" target="_blank" rel="noopener">Find recorded readings</a>')+'</div>'
    +(MREC[b.id]&&Object.keys(MREC[b.id]).length>1?'<div class="field"><span>Reader</span><div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr))">'+Object.keys(MREC[b.id]).map(r=>'<button data-mrd="'+r+'" class="'+(mpSel(b.id).r===r?'on':'')+'">'+esc(MREADERS[r][0])+'</button>').join('')+'</div></div>':'')+'</div>';
@@ -1150,7 +1160,7 @@ function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';render
   else{h+='<p class="note">Tap a '+unit+' to practise from there. Choose how many '+unit+'s with − and +.</p>';
     if(mWin.a>0)h+='<button class="btn ghost wide" data-mmore="-1" style="margin-bottom:10px">Show earlier '+unit+'s</button>';
     let last=-1;h+='<div class="mlines'+(mHide?' hidall':'')+'">';for(let i=mWin.a;i<mWin.z;i++){const si=D.L[i][0];if(si!==last){last=si;if(D.secs[si])h+='<h3 class="mh ar" lang="ar">'+esc(D.secs[si])+'</h3>'}
-      const sel=MSEL&&i>=MSEL.a&&i<MSEL.a+MSEL.len,done=isMem(b.id,i);h+='<div class="mline'+(done?' done':'')+(sel?' sel':'')+(b.poem?' poem':'')+'" data-ml="'+i+'" data-k="'+b.id+':'+i+'"><span class="lno">'+(i+1)+'</span><span class="ar lt" lang="ar">'+lineHTML(D.L[i][2])+'</span><button class="lchk" data-mln="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' '+unit+' '+(i+1)+'">'+ICON_CHECK+'</button></div>'}
+      const sel=MSEL&&i>=MSEL.a&&i<MSEL.a+MSEL.len,done=isMem(b.id,i);h+='<div class="mline'+(done?' done':'')+(sel?' sel':'')+(mPeek.has(i)?' peek':'')+(b.poem?' poem':'')+'" data-ml="'+i+'" data-k="'+b.id+':'+i+'"><span class="lno">'+(i+1)+'</span><span class="ar lt" lang="ar">'+lineHTML(D.L[i][2])+'</span><button class="lchk" data-mln="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' '+unit+' '+(i+1)+'">'+ICON_CHECK+'</button></div>'}
     h+='</div>';if(mWin.z<b.n)h+='<button class="btn ghost wide" data-mmore="1">Show more '+unit+'s</button>';
     if(MSEL){const a=MSEL.a,z=Math.min(b.n-1,a+MSEL.len-1);h+='<div class="selbar"><div class="row"><b>'+esc(unit[0].toUpperCase()+unit.slice(1))+'s '+(a+1)+'–'+(z+1)+'</b><div class="step"><button data-msl="-1" aria-label="Fewer '+unit+'s">−</button><b>'+MSEL.len+'</b><button data-msl="1" aria-label="More '+unit+'s">+</button></div><button class="pb2" data-msx="1" aria-label="Clear selection">✕</button></div>'+partBtns(b.id,a,z,(()=>{for(let i=a;i<=z;i++)if(!isMem(b.id,i))return false;return true})())+'</div>'}}
   h+=MREC[b.id]?'<details class="adv"><summary>Full recording</summary>'+mpCard(b.id)+'</details>':'';
@@ -1158,18 +1168,18 @@ function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';render
   if(mJump>=0){const j=mJump;mJump=-1;setTimeout(()=>{const el=document.querySelector('[data-ml="'+j+'"]');el&&el.scrollIntoView({block:'center',behavior:'smooth'})},300)}}
 function partBtns(id,a,b,dn){return '<div class="pact">'+(MREC[id]?'<button class="btn sm" data-mpart="'+id+':'+a+':'+b+'">'+IC_PLAY+'Play</button><button class="btn sm ghost spd" data-mspd="1" aria-label="Playback speed">'+MP.rate+'×</button>':'')+'<button class="btn sm ghost" data-mtest="'+id+':'+a+':'+b+'">'+IC_MIC+'Test</button><button class="btn sm '+(dn?'ghost':'gold')+'" data-mmark="'+id+':'+a+':'+b+'">'+(dn?'✓ Memorized':'Mark memorized')+'</button></div>'}
 $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data-rv],[data-ml]');if(!t)return;const d=t.dataset;
-  if(d.mo){mOpen=d.mo;mWin=null;mHide=false;mFocus='today';MSEL=null;renderMutun();scrollTo({top:0});return}
+  if(d.mo){mOpen=d.mo;mWin=null;mHide=false;mPeek.clear();mFocus='today';MSEL=null;renderMutun();scrollTo({top:0});return}
   if(d.mback){mOpen='';MSEL=null;renderMutun();scrollTo({top:0});return}
   if(d.mplanhere){openMPlan({sm:mOpen,si:mFirstOpen(mOpen)});return}
   if(d.mseg){mFocus=d.mseg;renderMatn();return}
   if(d.mrd){S.mpos=S.mpos||{};S.mpos[mOpen]={r:d.mrd,f:0,t:0};save();const y=scrollY;renderMatn();scrollTo({top:y});return}
-  if(d.mhide){mHide=!mHide;const y=scrollY;renderMatn();scrollTo({top:y});return}
+  if(d.mhide){mHide=!mHide;mPeek.clear();const y=scrollY;renderMatn();scrollTo({top:y});return}
   if(d.mfs){S.mfs=Math.max(18,Math.min(40,S.mfs+(+d.mfs)));save();document.documentElement.style.setProperty('--mfs',S.mfs+'px');return}
   if(d.mmore){const b=mInfo(mOpen);if(+d.mmore>0)mWin.z=Math.min(b.n,mWin.z+60);else mWin.a=Math.max(0,mWin.a-60);renderMatn();return}
   if(d.mln){const i=+d.mln,y=scrollY;mMark(mOpen,i,i,!isMem(mOpen,i));renderMatn();scrollTo({top:y});renderToday();return}
   if(d.msl){MSEL.len=Math.max(1,Math.min(30,MSEL.len+(+d.msl)));S.mlen=MSEL.len;save();const y=scrollY;renderMatn();scrollTo({top:y});return}
   if(d.msx){MSEL=null;const y=scrollY;renderMatn();scrollTo({top:y});return}
-  if(d.ml&&!t.closest('.lchk')){if(mHide&&t.querySelector('.lt')){t.classList.toggle('peek')}MSEL={id:mOpen,a:+d.ml,len:S.mlen||5};const y=scrollY;renderMatn();scrollTo({top:y});return}
+  if(d.ml&&!t.closest('.lchk')){if(mHide){const i=+d.ml;if(mPeek.has(i))mPeek.delete(i);else mPeek.add(i)}MSEL={id:mOpen,a:+d.ml,len:S.mlen||5};const y=scrollY;renderMatn();scrollTo({top:y});return}
   if(d.rv&&mHide){t.classList.toggle('hid')}});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-mpart],[data-mtest],[data-mmark]');if(!t)return;const d=t.dataset,[id,a,b]=(d.mpart||d.mtest||d.mmark).split(':');
   if(d.mpart){playPart(id,+a,+b);return}
@@ -1224,6 +1234,12 @@ const MREC={nawaqid:{ansari:[A1('02')],shaydhami:[A2('010-Nawaqid_al-islam_al-10
  tawhid:{ansari:[A1('08')],shaydhami:[A2('008-Ketab_tawheed_full.mp3')]},ajurrumiyya:{ansari:[A1('11')],shaydhami:[A2('085-Ajroumiah.mp3')]},wasitiyya:{ansari:[A1('12')],shaydhami:[A2('041-Alwassitiah.mp3')]},
  kashf:{shaydhami:[A2('009-Kashf-ash-shobohaat.mp3')]},usulsunna:{shaydhami:[A2('045-Oussoul_assuna.mp3')]},lumca:{shaydhami:[A2('040-Lomaat_ali3tiqad.mp3')]},
  umdaahkam:{shaydhami:Array.from({length:8},(_,i)=>A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3'))},umdafiqh:{shaydhami:Array.from({length:6},(_,i)=>A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3'))}};
+/* the recordings' lengths (archive.org), so a part can start at once: iPhones often won't read a file's length before it plays */
+const MDUR={[A1('02')]:244.08,[A1('03')]:581.04,[A1('04')]:1786.97,[A1('05')]:2564.06,[A1('06')]:487.12,[A1('07')]:1318.57,[A1('08')]:7157.7,[A1('11')]:1520.46,[A1('12')]:3449.38,
+ [A2('010-Nawaqid_al-islam_al-10.mp3')]:210.61,[A2('003-Qawaid_4.mp3')]:425.08,[A2('001-Osoul_3.mp3')]:1335.94,[A2('068-Arbaoun-nawawiah.mp3')]:2446.68,[A2('091-Tohfat_al-atfaal.mp3')]:416.82,[A2('002-Chorout-assalah.mp3')]:1034.27,
+ [A2('008-Ketab_tawheed_full.mp3')]:10331.77,[A2('085-Ajroumiah.mp3')]:1350.55,[A2('041-Alwassitiah.mp3')]:3269.56,[A2('009-Kashf-ash-shobohaat.mp3')]:3248.46,[A2('045-Oussoul_assuna.mp3')]:997.22,[A2('040-Lomaat_ali3tiqad.mp3')]:2254.42};
+[1772.07,1743.99,1942.12,1845.21,1492.32,1765.54,1428.24,1759.71].forEach((v,i)=>MDUR[A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3')]=v);
+[2982.08,2962.09,3126.14,3481.75,3101.3,3269.84].forEach((v,i)=>MDUR[A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3')]=v);
 const MA=new Audio();MA.preload='none';
 const MP={id:'',r:'',f:0,obj:null,a:null,b:null,rate:[1,1.5,2].includes(S.mrate)?S.mrate:1,loaded:'',saved:{}};
 const RATES=[1,1.5,2];function mRate(v){MP.rate=v;S.mrate=v;save();MA.playbackRate=v;mpPaint();mbarPaint();document.querySelectorAll('[data-mspd]').forEach(b=>b.textContent=v+'×')}
@@ -1248,7 +1264,7 @@ function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;MPP.on=false;
 /* part player: plays just the chosen lines, timed from the text */
 const MPP={on:false,id:'',a:0,b:0,r:'',ts:0,te:0,count:0};
 function mCum(id){const D=MD[id];if(D.cum)return D.cum;const c=[];let pos=D.pre||0,ps=-1;for(let i=0;i<D.L.length;i++){if(D.L[i][0]!==ps){ps=D.L[i][0];pos+=(D.secs[ps]||'').length}c.push(pos);pos+=mText(D,i).length+1}c.push(pos);return D.cum=c}
-function mDurs(id,r){S.mdur=S.mdur||{};const k=id+':'+r;if(S.mdur[k])return Promise.resolve(S.mdur[k]);
+function mDurs(id,r){S.mdur=S.mdur||{};const k=id+':'+r;if(S.mdur[k])return Promise.resolve(S.mdur[k]);const H=MREC[id][r].map(u=>MDUR[u]);if(H.every(x=>x>0)){S.mdur[k]=H;save();return Promise.resolve(H)}
   return Promise.all(MREC[id][r].map(u=>new Promise(res=>{const a=new Audio();a.preload='metadata';let done=false;const fin=v=>{if(!done){done=true;res(v||0)}};a.onloadedmetadata=()=>fin(a.duration);a.onerror=()=>fin(0);setTimeout(()=>fin(0),20000);
     caches.open(AC).then(c=>c.match(u)).then(m=>m?m.blob():null).catch(()=>null).then(b=>{a.src=b?URL.createObjectURL(b):u})}))).then(ds=>{if(ds.every(x=>x>0&&isFinite(x))){S.mdur[k]=ds;save()}return ds})}
 function tAt(id,r,ch){const M=S.mlt&&S.mlt[id+':'+r];if(M){const c=mCum(id);let lo=0,hi=c.length-1;while(lo<hi){const md=(lo+hi+1)>>1;if(c[md]<=ch)lo=md;else hi=md-1}
@@ -1287,7 +1303,10 @@ async function mPauseMap(u,dur){S.mpz=S.mpz||{};if(S.mpz[u])return S.mpz[u];cons
   const c=await caches.open(AC);let m=await c.match(u);if(!m){const r=await fetch(u);if(!r.ok)throw new Error('download '+r.status);await c.put(u,r.clone());m=await c.match(u)||r}
   const blob=await m.blob();let oc;try{oc=new OfflineAudioContext(1,1,16000)}catch(e){oc=new OfflineAudioContext(1,1,44100)}
   const CH=2*1024*1024,hop=.02,out=[];let t=0,run=0,rs=0;
-  for(let o=0;o<blob.size;o+=CH){const buf=await oc.decodeAudioData(await blob.slice(o,Math.min(blob.size,o+CH)).arrayBuffer());
+  /* cut the file where an MP3 frame starts: Safari won't decode a piece that begins halfway through a frame */
+  const frameAt=async o=>{if(o<=0||o>=blob.size)return Math.min(o,blob.size);const b=new Uint8Array(await blob.slice(o,Math.min(blob.size,o+16384)).arrayBuffer());
+    for(let i=0;i+3<b.length;i++)if(b[i]===255&&(b[i+1]&224)===224&&(b[i+1]>>3&3)!==1&&(b[i+1]>>1&3)!==0&&(b[i+2]>>4)!==15&&(b[i+2]>>4)!==0&&(b[i+2]>>2&3)!==3)return o+i;return o};
+  for(let o=0,e;o<blob.size;o=e){e=await frameAt(Math.min(blob.size,o+CH));if(e<=o)e=Math.min(blob.size,o+CH);const buf=await oc.decodeAudioData(await blob.slice(o,e).arrayBuffer());
     const x=buf.getChannelData(0),sr=buf.sampleRate,hs=Math.round(sr*hop),db=[];for(let i=0;i+hs<=x.length;i+=hs){let q=0;for(let k=i;k<i+hs;k++)q+=x[k]*x[k];db.push(10*Math.log10(q/hs+1e-12))}
     const so=db.slice().sort((a,b)=>a-b),nz=so[Math.floor(so.length*.1)],sp=so[Math.floor(so.length*.9)],thr=nz+Math.max(8,.35*(sp-nz));
     for(let i=0;i<db.length;i++){const tt=t+i*hop;if(db[i]<thr){if(!run)rs=tt;run++}else{if(run*hop>=.22)out.push(rs,tt);run=0}}
@@ -1462,7 +1481,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v22';
+const APPV='v23';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
