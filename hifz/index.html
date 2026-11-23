@@ -303,7 +303,7 @@ details.adv summary{min-height:46px;display:flex;align-items:center;font-weight:
 @media (max-width:430px){.brand p{display:none}}
 body:has(#mbar.on) .selbar,body:has(#player.on) .selbar{bottom:calc(152px + env(safe-area-inset-bottom))}
 body:has(#mbar.on) main,body:has(#player.on) main{padding-bottom:calc(170px + env(safe-area-inset-bottom))}
-.hmic{width:44px;height:44px;border-radius:50%;border:1px solid rgba(227,192,99,.4);background:var(--green);color:var(--onG);display:grid;place-items:center;flex:none}
+.hmic{width:44px;height:44px;border-radius:50%;border:1px solid color-mix(in srgb,var(--gold2) 40%,transparent);background:var(--green);color:var(--onG);display:grid;place-items:center;flex:none}
 .hmic svg{width:22px;height:22px;fill:currentColor}
 .ln{margin:0 0 6px;display:flex;gap:8px;align-items:baseline}
 .ln>span:not(.lno),.ln .vh{flex:1}
@@ -336,6 +336,47 @@ body:has(#mbar.on) main,body:has(#player.on) main{padding-bottom:calc(170px + en
 .mtest .w.sk{color:var(--warn);text-decoration:line-through}
 .mtest .w.fx{color:var(--gold)}
 .mtest .w.cur{background:color-mix(in srgb,var(--gold2) 30%,transparent)}
+.onb{position:fixed;inset:0;z-index:45;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+body.onbon{overflow:hidden}
+.toast{z-index:60}
+.onb-hero{background:var(--hb);color:var(--ht);text-align:center;padding:calc(28px + env(safe-area-inset-top)) 22px 26px;border-radius:0 0 28px 28px}
+.onb-hero img{border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.onb-hero h1{margin:12px 0 6px;font-size:28px;font-weight:800;color:var(--gold2)}
+.onb-hero p{margin:0 auto;max-width:34ch;color:var(--hm);font-size:15px;line-height:1.45}
+.onb-in{max-width:560px;margin:0 auto;padding:4px 14px 8px}
+.onb-in .card{margin-top:12px}
+.seg.two{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px}
+.seg.three{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px}
+.two-col{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px}
+.step.big button{width:54px;height:54px;font-size:26px}
+.step.big b{font-size:30px;min-width:2.2ch}
+.oproj{margin-top:14px;border-radius:18px;padding:14px 16px;background:var(--hb);color:var(--ht)}
+.oproj .lab{color:var(--hm);margin:0}
+.oproj b{display:block;font-size:22px;color:var(--gold2);margin:2px 0}
+.oproj span{font-size:14px;color:var(--hm)}
+.ptab{display:grid;gap:6px;margin-top:8px}
+.ptab button{display:grid;grid-template-columns:5.6em 1fr auto;align-items:center;gap:8px;text-align:left;min-height:48px;padding:6px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.ptab button.on{border:2px solid var(--gold);background:color-mix(in srgb,var(--gold2) 16%,var(--bg))}
+.ptab span{font-weight:600}
+.ptab small{color:var(--mute);font-size:12.5px;text-align:right}
+.note.warn{color:var(--warn)}
+.onb-foot{position:sticky;bottom:0;z-index:2;max-width:560px;margin:0 auto;padding:12px 14px calc(10px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -10px 24px rgba(0,0,0,.08);text-align:center}
+.onb-foot p{margin:0 0 8px;font-weight:700;font-size:14px;color:var(--mute)}
+.linkb{border:0;background:none;color:var(--mute);font-weight:600;font-size:14px;min-height:44px;padding:0 14px;text-decoration:underline}
+.nudge{position:relative;margin:0 0 14px;padding:16px 16px 14px;border-radius:22px;background:var(--hb);color:var(--ht);border:1px solid color-mix(in srgb,var(--gold2) 35%,transparent)}
+.nudge .lab{color:var(--gold2)}
+.nudge h2{margin:4px 34px 6px 0;font-size:21px;line-height:1.25;color:var(--ht)}
+.nudge .nb{margin:0 0 10px;color:var(--hm);font-size:15px;line-height:1.45}
+.nudge .nq{background:color-mix(in srgb,var(--ht) 8%,transparent);border-radius:14px;padding:10px 12px}
+.nudge .quote{font-size:21px;margin:0;color:var(--ht)}
+.nudge .mean{color:var(--ht)}
+.nudge .src{color:var(--hm)}
+.nudge .btns{margin-top:12px}
+.nudge .btn{background:var(--gold2);color:#15110a}
+.nudge .btn.ghost{background:transparent;color:var(--gold2);border:1px solid color-mix(in srgb,var(--gold2) 50%,transparent)}
+.nudge .nx{position:absolute;top:8px;right:8px;width:40px;height:40px;border:0;border-radius:50%;background:color-mix(in srgb,var(--ht) 10%,transparent);color:var(--ht);font-size:22px}
+.nudge .why{margin-top:10px;font-size:14px}
+.nudge .why summary{color:var(--hm);cursor:pointer;min-height:32px}
 .dayhead{margin:2px 2px 10px}
 .dayhead .bar{margin-top:6px;height:6px}
 .dayhead b{font-size:14px}
@@ -444,6 +485,7 @@ body:has(#mbar.on) main,body:has(#player.on) main{padding-bottom:calc(170px + en
   <button class="pb" id="mbAdj" aria-label="Line up the timing"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
   <button class="pb" id="mbClose" aria-label="Close player"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div>
+<div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbT"></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -504,7 +546,7 @@ const dayNo=()=>Math.floor(parse(TODAY).getTime()/864e5);
 
 /* ---------- state ---------- */
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,track:'',mt:{},ml:{},mlen:5,mcur:'',mper:1,mfs:24,mpos:{},goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
+const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,track:'',g:'b',nudged:'',mt:{},ml:{},mlen:5,mcur:'',mper:1,mfs:24,mpos:{},goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
 function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});
   if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=Math.max(1,Math.min(20,Math.round(+S.per||2)));
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
@@ -608,6 +650,7 @@ function cardHTML(x,ix){
   return '<article class="dcard info" data-ix="'+ix+'"><div class="dhead"><span class="dk">'+I[0]+'</span></div><div class="dt">'+I[1]+'</div><div class="ds">'+I[2]+'</div><button class="dmark" '+I[3]+'>'+I[4]+'</button></article>'}
 function renderToday(){const cards=deckCards(),work=cards.filter(x=>x.t==='q'||x.t==='m'),dn=work.filter(x=>x.d).length,c=calc();let h='';
   const all=work.length&&dn===work.length;
+  h+=nudgeHTML(all);
   h+='<div class="dayhead"><div class="row"><span class="lab" style="margin:0">'+(work.length?(all?'Everything memorized today ✓':'Today’s memorization'):'Today')+'</span><b>'+(work.length?dn+' / '+work.length:'')+'</b></div>'+(work.length?'<div class="bar"><i style="width:'+(dn/work.length*100)+'%"></i></div>':'')+'</div>';
   const deck=cards.map(cardHTML);
   if(all)deck.push('<article class="dcard info fin" data-ix="'+cards.length+'"><div class="dhead"><span class="dk">Alḥamdulillāh</span></div><div class="dt">All done for today</div><div class="ds">May Allah make it firm in your heart.</div><div class="dact col"><button id="rem">Today’s reminder</button>'+(doQ()&&calc().left?'<button id="more">+ One more page</button>':'')+(doM()&&S.mp.setup&&mcalc().left?'<button id="mmore">+ More lines</button>':'')+'</div></article>');
@@ -784,7 +827,7 @@ let audioInfo='';
 async function audioStats(){try{const c=await caches.open(AC),k=await c.keys();let mb='';if(navigator.storage&&navigator.storage.estimate){const e=await navigator.storage.estimate();mb=' · about '+Math.round((e.usage||0)/1048576)+' MB used'}audioInfo=k.length?pl(k.length,'verse')+' saved for offline'+mb:'No recitations saved yet'}catch(e){audioInfo='Offline audio isn’t available in this browser'}
   const el=$('aInfo');if(el)el.textContent=audioInfo}
 function renderSettings(){let h='';
-  h+='<div class="card"><h2>What I memorize</h2><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px" id="sTrack">'+[['both','Both'],['quran','Qur’an'],['mutun','Mutūn']].map(x=>'<button data-trk="'+x[0]+'" class="'+(S.track===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><div class="btns"><button class="btn sm ghost" id="whyFirst">What the scholars say to memorize first</button>'+(S.track!=='quran'?'<button class="btn sm ghost" data-mplan="1">Mutūn plan</button>':'')+'</div></div>';
+  h+='<div class="card"><h2>What I memorize</h2><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px" id="sTrack">'+[['both','Both'],['quran','Qur’an'],['mutun','Mutūn']].map(x=>'<button data-trk="'+x[0]+'" class="'+(S.track===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><div class="btns"><button class="btn sm" id="newPlan">Make a new plan</button><button class="btn sm ghost" id="whyFirst">What the scholars say to memorize first</button>'+(S.track!=='quran'?'<button class="btn sm ghost" data-mplan="1">Mutūn plan</button>':'')+'</div></div>';
   h+='<div class="card"><h2>Qur’an plan</h2><dl class="kv plan" style="margin-top:10px"><div><dt>Start</dt><dd>Page '+S.sp+' · '+esc(NAMES[surahAt(S.sp)-1][0])+'</dd></div><div><dt>Direction</dt><dd>'+DIRS[S.dir][0]+'</dd></div><div><dt>Goal</dt><dd>'+esc(goalLabel())+'</dd></div><div><dt>Pace</dt><dd>'+pl(S.per,'page')+' a day · '+(7-S.off.length)+' days a week</dd></div>'+(S.goal?'<div><dt>Finish by</dt><dd>'+fmt(parse(S.goal))+'</dd></div>':'')+'</dl><div class="btns"><button class="btn sm" data-plan="1">Change plan</button></div></div>';
   h+='<div class="card"><h2>Reciter</h2><p class="note">Recitations come from EveryAyah.com, which offers them free to download. Save them once and they play without internet.</p><div class="rlist">'+RECITERS.map(r=>'<button class="rc'+(r[0]===S.reciter?' on':'')+'" data-r="'+r[0]+'"><span class="dot"></span><span><b>'+esc(r[1])+'</b><small>'+esc(r[2])+'</small></span></button>').join('')+'</div><p class="note" id="aInfo">'+esc(audioInfo||'Checking saved recitations…')+'</p><div class="btns"><button class="btn sm ghost" id="delAudio">Delete saved recitations</button></div></div>';
   h+='<div class="card"><h2>Appearance</h2><div class="field"><span>Theme</span><div class="seg" id="sTheme">'+[['auto','Auto'],['light','Light'],['dark','Dark'],['amber','No blue']].map(x=>'<button data-th="'+x[0]+'" class="'+(S.theme===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></div><p class="note">“No blue” uses only warm amber colours, for reading at night.</p></div>';
@@ -814,7 +857,7 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 /* ---------- backup ---------- */
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
-const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,g:S.g,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
 function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:''});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
@@ -1194,6 +1237,112 @@ $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button');if(
 $('v-mutun').addEventListener('change',e=>{if(e.target.id==='mpTrack'){const f=+e.target.value,s=mpSel(mOpen);S.mpos=S.mpos||{};S.mpos[mOpen]={r:s.r,f,t:0};save();if(MP.id===mOpen){maUnlock();mpLoad(mOpen,s.r,f,0,!MA.paused)}else mpPaint()}});
 $('v-mutun').addEventListener('input',e=>{if(e.target.id==='mpSeek'&&MP.id===mOpen&&isFinite(MA.duration)){MA.currentTime=e.target.value/1000*MA.duration}});
 
+/* ---------- first-run plan page ---------- */
+let OB=null;
+const hij=d=>{try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch(e){return ''}};
+function howLong(d){const n=Math.round((d-parse(TODAY))/864e5)+1;if(n<=1)return 'a day';if(n<14)return pl(n,'day');if(n<63)return pl(Math.round(n/7),'week');
+  const m=Math.round(n/30.44),y=Math.floor(m/12),r=m%12;return y?pl(y,'year')+(r?', '+pl(r,'month'):''):pl(m,'month')}
+function openOnb(first){OB={first:!!first,g:S.g||'b',tr:S.track||'both',off:S.off.slice(),
+  q:{sp:S.sp,dir:S.dir,kind:S.gKind,val:+S.gVal||0,per:S.per,date:'',warn:''},
+  m:{sm:S.mp.sm||'thalatha',si:S.mp.setup?S.mp.si:-1,gk:S.mp.gk||'matn',gv:S.mp.gv||'',per:S.mp.setup?S.mp.per:5,date:'',warn:''}};
+  const el=$('onb');el.hidden=false;document.body.classList.add('onbon');onbPaint();el.scrollTop=0;if(!MI)loadMI().then(()=>{if(OB)onbPaint()}).catch(()=>{})}
+function onbClose(){$('onb').hidden=true;document.body.classList.remove('onbon');OB=null}
+function obQ(per){const P=OB.q,G=goalSeqFor(P.sp,P.dir,P.kind,P.val),left=G.filter(p=>!S.pages[p]).length;return{len:G.length,left,fin:finishFor(per,OB.off,left,0)}}
+function obM(per){const P=OB.m;if(!mInfo(P.sm))P.sm=MI[0].id;if(P.si<0)P.si=mFirstOpen(P.sm);
+  const G=mSeqFor(P.sm,P.si,P.gk,P.gv),left=G.filter(([id,i])=>!isMem(id,i)).length;return{len:G.length,left,fin:finishFor(per,OB.off,left,0)}}
+function projHTML(r,unit,per){if(!r.left)return '<div class="oproj"><p class="lab">Finish</p><b>Already memorized, alḥamdulillāh</b></div>';const h=hij(r.fin);
+  return '<div class="oproj" aria-live="polite"><p class="lab">At '+pl(per,unit)+' a day you finish</p><b>'+fmt(r.fin,{weekday:'short',day:'numeric',month:'long',year:'numeric'})+'</b><span>'+(h?esc(h)+' · ':'')+'in about '+howLong(r.fin)+'</span></div>'}
+function paceTable(k,opts,cur,fn,unit){const set=[...new Set(opts.concat(cur))].sort((a,b)=>a-b);
+  return '<div class="ptab">'+set.map(p=>{const r=fn(p);return '<button class="'+(p===cur?'on':'')+'" data-op="'+k+':'+p+'" aria-pressed="'+(p===cur)+'"><b>'+pl(p,unit)+'</b><span>'+(r.left?fmt(r.fin):'—')+'</span><small>'+(r.left?howLong(r.fin):'')+'</small></button>'}).join('')+'</div>'}
+function onbPaint(){const el=$('onb'),y=el.scrollTop,O=OB,dq=O.tr!=='mutun',dm=O.tr!=='quran';let h='';
+  h+='<div class="onb-hero"><img src="icons/icon-192.png" alt="" width="58" height="58"><h1 id="onbT">Make your plan</h1><p>Choose your pace and see when you’ll finish, in shāʾ Allāh. You can change it any time.</p></div><div class="onb-in">';
+  h+='<section class="card"><h2>Who’s memorizing?</h2><div class="seg two">'+[['b','Brother'],['s','Sister']].map(x=>'<button data-og="'+x[0]+'" class="'+(O.g===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></section>';
+  h+='<section class="card"><h2>What will you memorize?</h2><div class="seg three">'+[['both','Qur’an + mutūn'],['quran','Qur’an'],['mutun','Mutūn']].map(x=>'<button data-ot="'+x[0]+'" class="'+(O.tr===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><details class="adv"><summary>What the scholars say to memorize first</summary>'+qBlock(FIRST[2])+qBlock(FIRST[1])+'</details></section>';
+  if(dq){const q=O.q,gop=goalOptsFor(q.sp,q.dir);if(!gop.some(x=>x[0]===q.kind&&x[1]===q.val)){q.kind='whole';q.val=0}const r=obQ(q.per),sa=surahAt(q.sp);
+    h+='<section class="card"><p class="lab">Qur’an</p><h2>Where do you start?</h2><div class="presets">'+Object.entries(PRESETS).map(([k,v])=>'<button class="chip'+(v[1]===q.sp&&v[2]===q.dir&&v[3]===q.kind&&v[4]===q.val?' on':'')+'" data-opre="'+k+'">'+esc(v[0])+'</button>').join('')+'</div>'
+     +'<div class="two-col"><label class="field"><span>Sūrah</span><select id="obS">'+NAMES.map((n,i)=>'<option value="'+(i+1)+'"'+(sa===i+1?' selected':'')+'>'+(i+1)+' · '+esc(n[0])+'</option>').join('')+'</select></label><label class="field"><span>or page</span><input type="number" id="obP" min="1" max="604" inputmode="numeric" value="'+q.sp+'"></label></div>'
+     +'<div class="field"><span>Direction</span><div class="seg three">'+Object.entries(DIRS).map(([k,v])=>'<button data-od="'+k+'" class="'+(q.dir===k?'on':'')+'">'+v[0]+'</button>').join('')+'</div><p class="note">'+esc(DIRS[q.dir][1])+'</p></div>'
+     +'<label class="field"><span>Goal</span><select id="obQG">'+gop.map(x=>'<option value="'+x[0]+':'+x[1]+'"'+(x[0]===q.kind&&x[1]===q.val?' selected':'')+'>'+esc(x[2])+'</option>').join('')+'</select></label>'
+     +'<div class="field"><span>New pages a day</span><div class="step big"><button data-ostep="q:-1" aria-label="Fewer pages">−</button><b>'+q.per+'</b><button data-ostep="q:1" aria-label="More pages">+</button><span class="note" style="margin:0">'+pl(r.len,'page')+' in this goal</span></div></div>'
+     +projHTML(r,'page',q.per)+'<p class="lab" style="margin-top:14px">Compare paces · tap one</p>'+paceTable('q',[1,2,3,5],q.per,obQ,'page')
+     +'<label class="field"><span>Or pick the date you want to finish</span><input type="date" id="obQD" min="'+ymd(add(parse(TODAY),1))+'" value="'+q.date+'"></label>'+(q.warn?'<p class="note warn">'+esc(q.warn)+'</p>':'')+'</section>'}
+  if(dm){if(!MI)h+='<section class="card"><p class="lab">Mutūn</p><p class="note">Loading the mutūn…</p></section>';
+    else{const m=O.m,r=obM(m.per),b=mInfo(m.sm),u=b.poem?'verse':'line',mo=mGoalOpts(m.sm);if(!mo.some(x=>x[0]===m.gk&&String(x[1])===String(m.gv))){m.gk='matn';m.gv=''}const uu=m.gk==='matn'?u:'line';
+      h+='<section class="card"><p class="lab">Mutūn</p><h2>Which matn first?</h2>'+(dq?'<p class="note">Your Qur’an pages come first each day, then your mutūn lines.</p>':'')+'<details class="adv"><summary>Ibn ʿUthaymīn on where to start</summary>'+qBlock(MFIRST)+'</details>'
+       +'<div class="presets">'+MPRESETS.map((x,k)=>'<button class="chip'+(x[1]===m.sm&&x[2]===m.gk&&x[3]===m.gv?' on':'')+'" data-ompre="'+k+'">'+esc(x[0])+'</button>').join('')+'</div>'
+       +'<label class="field"><span>Start with</span><select id="obM">'+MI.map((x,k)=>'<option value="'+x.id+'"'+(x.id===m.sm?' selected':'')+'>'+(k+1)+' · '+esc(x.en)+'</option>').join('')+'</select></label>'
+       +'<div><label class="field"><span>Start at '+u+' (1–'+b.n+')</span><input type="number" id="obMI" min="1" max="'+b.n+'" inputmode="numeric" value="'+(m.si+1)+'"></label><label class="field"><span>Goal</span><select id="obMG">'+mo.map(x=>'<option value="'+x[0]+':'+x[1]+'"'+(x[0]===m.gk&&String(x[1])===String(m.gv)?' selected':'')+'>'+esc(x[2])+'</option>').join('')+'</select></label></div>'
+       +'<div class="field"><span>New '+uu+'s a day</span><div class="step big"><button data-ostep="m:-1" aria-label="Fewer lines">−</button><b>'+m.per+'</b><button data-ostep="m:1" aria-label="More lines">+</button><span class="note" style="margin:0">'+pl(r.len,uu)+' in this goal</span></div></div>'
+       +projHTML(r,uu,m.per)+'<p class="lab" style="margin-top:14px">Compare paces · tap one</p>'+paceTable('m',[3,5,10,20],m.per,obM,uu)
+       +'<label class="field"><span>Or pick the date you want to finish</span><input type="date" id="obMD" min="'+ymd(add(parse(TODAY),1))+'" value="'+m.date+'"></label>'+(m.warn?'<p class="note warn">'+esc(m.warn)+'</p>':'')+'</section>'}}
+  h+='<section class="card"><h2>Days off</h2><p class="note">Revision only on these days. The dates above already count them.</p><div class="days" id="obOff">'+DAYS.map((d,i)=>'<label><input type="checkbox" value="'+i+'"'+(O.off.includes(i)?' checked':'')+'><span>'+d+'</span></label>').join('')+'</div></section></div>';
+  const sum=[];if(dq)sum.push(pl(O.q.per,'page')+' a day');if(dm&&MI)sum.push(pl(O.m.per,'line')+' a day');
+  h+='<div class="onb-foot"><p>'+esc(sum.join(' + '))+(sum.length?' · '+(7-O.off.length)+' days a week':'')+'</p><button class="btn wide" id="obStart">Bismillah, start my plan</button><button class="linkb" id="'+(O.first?'obSkip">Skip for now':'obX">Cancel')+'</button></div>';
+  el.innerHTML=h;el.scrollTop=y}
+function onbSave(){const O=OB,dq=O.tr!=='mutun',dm=O.tr!=='quran';S.g=O.g;S.track=O.tr;S.off=O.off;
+  if(dq){const q=O.q;S.sp=q.sp;S.dir=q.dir;S.gKind=q.kind;S.gVal=q.val;S.per=q.per;S.goal=q.date>TODAY?q.date:'';S.start=TODAY;S.lesson=null}
+  S.setup=1;if(dm&&MI){const m=O.m;S.mp={sm:m.sm,si:Math.max(0,m.si),gk:m.gk,gv:m.gv,per:m.per,goal:m.date>TODAY?m.date:'',start:TODAY,setup:1};S.mlesson=null}
+  save();onbClose();go('today');renderAll();toast('Bismillah, your plan is set ✓')}
+$('onb').addEventListener('click',e=>{const t=e.target.closest('button');if(!t||!OB)return;const d=t.dataset,O=OB;
+  if(t.id==='obStart'){onbSave();return}
+  if(t.id==='obSkip'){S.g=O.g;S.track=O.tr;S.setup=1;save();onbClose();renderAll();return}
+  if(t.id==='obX'){onbClose();return}
+  if(d.og)O.g=d.og;else if(d.ot){O.tr=d.ot;if(O.tr!=='quran'&&!MI)loadMI().then(()=>{if(OB)onbPaint()}).catch(()=>{})}
+  else if(d.opre){const v=PRESETS[d.opre];Object.assign(O.q,{sp:v[1],dir:v[2],kind:v[3],val:v[4]})}
+  else if(d.od)O.q.dir=d.od;
+  else if(d.ompre){const v=MPRESETS[+d.ompre];Object.assign(O.m,{sm:v[1],si:mFirstOpen(v[1]),gk:v[2],gv:v[3]})}
+  else if(d.ostep){const[k,s]=d.ostep.split(':'),P=O[k];P.per=Math.max(1,Math.min(k==='q'?20:40,P.per+(+s)));P.date='';P.warn=''}
+  else if(d.op){const[k,p]=d.op.split(':');O[k].per=+p;O[k].date='';O[k].warn=''}
+  else return;onbPaint()});
+$('onb').addEventListener('change',e=>{const t=e.target,O=OB;if(!O)return;
+  if(t.id==='obS')O.q.sp=SST[+t.value-1];
+  else if(t.id==='obP'){const v=Math.round(+t.value);if(v>=1&&v<=604)O.q.sp=v;else return}
+  else if(t.id==='obQG'){const[k,v]=t.value.split(':');O.q.kind=k;O.q.val=+v}
+  else if(t.id==='obM'){O.m.sm=t.value;O.m.si=mFirstOpen(t.value);O.m.gk='matn';O.m.gv=''}
+  else if(t.id==='obMI'){const v=Math.round(+t.value);if(v>=1&&v<=mInfo(O.m.sm).n)O.m.si=v-1;else return}
+  else if(t.id==='obMG'){const[k,v]=t.value.split(':');O.m.gk=k;O.m.gv=v||''}
+  else if(t.id==='obQD'||t.id==='obMD'){const k=t.id==='obQD'?'q':'m',P=O[k],mx=k==='q'?20:40;P.date=t.value;P.warn='';
+    if(P.date>TODAY){const r=k==='q'?obQ(1):obM(1),sd=studyDays(O.off,P.date),need=sd?Math.ceil(r.left/sd):r.left;if(need>mx)P.warn='That date needs '+need+(k==='q'?' pages':' lines')+' a day. The most a plan allows is '+mx+', so pick a later date.';P.per=Math.max(1,Math.min(mx,need))}}
+  else if(t.closest('#obOff')){const v=[...$('onb').querySelectorAll('#obOff input:checked')].map(i=>+i.value);if(v.length>6){t.checked=false;toast('Keep at least one study day');return}O.off=v}
+  else return;onbPaint()});
+document.addEventListener('click',e=>{if(e.target.closest('#newPlan'))openOnb(false)});
+
+/* ---------- nudges when a day is missed ---------- */
+const N_REPAIR={ar:'احرص على ما ينفعك، واستعن بالله ولا تعجز',en:'Be keen on what benefits you, seek Allah’s help, and do not give up.',src:'The Prophet ﷺ · narrated by Muslim, from Abū Hurayrah'};
+const N_DAWAM={ar:'أحب الأعمال إلى الله تعالى أدومها وإن قل',en:'The most beloved deeds to Allah are the most constant, even if they are small.',src:'The Prophet ﷺ · narrated by Muslim, from ʿĀʾishah'};
+const NUDGES=[
+ [Object.assign({h:'C’mon {a}, yesterday’s portion is still waiting for you.',b:'Missing a day happens. The Prophet ﷺ even gave a make-up time for a missed night portion: between Fajr and Ẓuhr. So make it up and carry on.'},
+   {ar:'من نام عن حزبه، أو عن شيء منه، فقرأه فيما بين صلاة الفجر وصلاة الظهر، كتب له كأنما قرأه من الليل',en:'Whoever sleeps through his portion, or part of it, and reads it between the Fajr prayer and the Ẓuhr prayer, it is written for him as though he read it at night.',src:'The Prophet ﷺ · narrated by Muslim, from ʿUmar ibn al-Khaṭṭāb'}),
+  Object.assign({h:'One day off the plan, {a}? No need for a heroic five pages.',b:'Just do today’s portion. Small and steady is what Allah loves.'},N_DAWAM),
+  Object.assign({h:'Yesterday slipped away. Today doesn’t have to, {a}.',b:'Skip the “if only I had…”. Ask Allah for help and open your mushaf.'},N_REPAIR)],
+ [Object.assign({h:'{A}… your camels are wandering off. 🐪',b:'The Prophet ﷺ said the Qur’an slips away faster than camels from their ropes. It’s been {n}. Time to round them up.',q:1},
+   {ar:'تعاهدوا القرآن، فوالذي نفسي بيده، لهو أشد تفصيا من الإبل من عقلها',en:'Keep up with the Qur’an. By the One in whose hand is my soul, it slips away faster than camels from their hobbles.',src:'The Prophet ﷺ · narrated by al-Bukhārī, from Abū Mūsā al-Ashʿarī'}),
+  Object.assign({h:'Don’t be like so-and-so, {a}.',b:'The Prophet ﷺ told a Companion not to be like a man who kept up a good deed and then dropped it. {n} missed. You’re not “so-and-so” yet, so let’s keep it that way.'},
+   {ar:'يا عبد الله، لا تكن مثل فلان، كان يقوم الليل فترك قيام الليل',en:'O ʿAbdullāh, do not be like so-and-so: he used to pray at night, then he gave up praying at night.',src:'The Prophet ﷺ · narrated by al-Bukhārī, from ʿAbdullāh ibn ʿAmr'}),
+  Object.assign({h:'Finding it hard, {a}? Good news: that pays double.',b:'Struggling through your portion still earns two rewards. Stumbling is allowed. Stopping is the problem.',q:1},
+   {ar:VIRTUES[1].ar,en:VIRTUES[1].en,src:VIRTUES[1].src}),
+  Object.assign({h:'{A}, the plan misses you. It said so. (It didn’t, but it would.)',b:'Don’t let a few missed days turn into a habit. Seek Allah’s help and start with today’s portion.'},N_REPAIR)],
+ [Object.assign({h:'Welcome back, {a}! The mushaf kept your seat warm.',b:'Don’t try to make up everything at once. That’s how plans break. Aim close, keep going, and start with today.'},
+   {ar:'إن الدين يسر، ولن يشاد الدين أحد إلا غلبه، فسددوا وقاربوا، وأبشروا',en:'The religion is easy, and no one makes it hard on himself except that it overwhelms him. So aim for what is right, come as close as you can, and rejoice.',src:'The Prophet ﷺ · narrated by al-Bukhārī, from Abū Hurayrah'}),
+  Object.assign({h:'{n} away? No lecture, {a}. Just Bismillah.',b:'Pick up from where you are. A small portion every day is what Allah loves most. If the pace was too much, make it lighter.'},N_DAWAM)]];
+function lastActive(){let l='';const f=d=>{if(d&&d!=='pre'&&d<TODAY&&d>l)l=d};Object.values(S.pages).forEach(f);for(const id in S.ml)Object.values(S.ml[id]).forEach(f);return l}
+function missedDays(){const st=[];if(doQ())st.push(S.start);if(doM()&&S.mp.setup)st.push(S.mp.start);if(!st.length)return 0;let from=st.sort()[0];const l=lastActive();if(l&&l>=from)from=ymd(add(parse(l),1));
+  const O=offSet();let n=0;for(let d=parse(from);ymd(d)<TODAY;d=add(d,1))if(!O.has(d.getDay()))n++;return n}
+function mDiff(){const G=mSeq(),per=S.mp.per,O=offSet();let prior=0,gDone=0,dt=0;for(const[id,i]of G){const d=(S.ml[id]||{})[i];if(d){gDone++;if(d==='pre'||d<S.mp.start)prior++;if(d===TODAY)dt++}}
+  let sched=0;for(let d=parse(S.mp.start);ymd(d)<TODAY;d=add(d,1))if(!O.has(d.getDay()))sched++;
+  return gDone-prior-Math.min(G.length-prior,sched*per+(O.has(parse(TODAY).getDay())?0:Math.min(per,dt)))}
+function nudgeHTML(allDone){if(allDone||S.nudged===TODAY)return '';const n=missedDays();if(n<1)return '';
+  const qd=doQ()?calc().diff:0,md=doM()&&MI&&S.mp.setup?mDiff():0;if(qd>=0&&md>=0)return '';
+  const tier=n===1?0:n<=4?1:2,pool=NUDGES[tier].filter(x=>!x.q||doQ()),x=pool[dayNo()%pool.length],sis=S.g==='s',
+    f=s=>s.replace(/\{a\}/g,sis?'ukhti':'akhi').replace(/\{A\}/g,sis?'Ukhti':'Akhi').replace(/\{n\}/g,pl(n,'study day')),
+    beh=[qd<0?pl(-qd,'page')+' behind':'',md<0?pl(-md,'line')+' behind':''].filter(Boolean).join(' · ');
+  return '<article class="nudge"><button class="nx" data-nudge="x" aria-label="Hide until tomorrow">×</button><p class="lab">'+pl(n,'missed day')+' · '+beh+'</p><h2>'+esc(f(x.h))+'</h2><p class="nb">'+esc(f(x.b))+'</p>'
+   +'<div class="nq"><p class="quote ar" lang="ar">«'+esc(x.ar)+'»</p><p class="mean">'+esc(x.en)+'</p><p class="src">'+esc(x.src)+'</p></div>'
+   +'<div class="btns"><button class="btn sm" data-nudge="go">Bismillah, let’s go</button><button class="btn sm ghost" data-nudge="plan">Make my pace lighter</button></div>'
+   +'<details class="why"><summary>Why the joke?</summary><p class="mean">The Companions said, “Messenger of Allah, you joke with us.” He ﷺ said <span class="ar" lang="ar">«إني لا أقول إلا حقا»</span>, “I only say what is true.” So the app jokes too, but only with the truth: you really did miss '+pl(n,'day')+'.</p><p class="src">al-Bayhaqī, al-Sunan al-Kubrā, from Abū Hurayrah</p></details></article>'}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');if(!b)return;const k=b.dataset.nudge;S.nudged=TODAY;save();
+  if(k==='plan'){openOnb(false);return}renderToday();if(k==='go'){deckScroll();const dk=$('deck');if(dk)dk.scrollIntoView({behavior:'smooth',block:'center'})}});
+
 /* ---------- routing ---------- */
 const TABS=['today','mushaf','mutun','progress','settings'];
 function go(tab,page){if(page){S.cur=page;save()}if(location.hash!=='#'+tab)location.hash=tab;else show()}
@@ -1210,7 +1359,7 @@ let deferredInstall=null;addEventListener('beforeinstallprompt',e=>{e.preventDef
 const restoring=location.hash.startsWith('#restore=');
 applyTheme();renderAll();show();
 if(!S.track&&S.setup)S.track=S.mp.setup?'both':'quran';
-if(!S.track&&!restoring)setTimeout(openWelcome,500);
+if(!S.track&&!restoring)openOnb(true);
 loadMI().then(()=>{renderToday();renderProgress()}).catch(()=>{});
 fetch('data/quran.json').then(r=>r.json()).then(d=>{Q=d.pages;renderAll();if(location.hash==='#mushaf')renderMushaf()}).catch(()=>{$('mPage').innerHTML='<div class="skel">Couldn’t load the mushaf. Connect to the internet once so it can be saved.</div>'});
 if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller,t0=Date.now();navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had)return;if(Date.now()-t0<8000)location.reload();else toast('App updated ✓ Reopen it to see what’s new',4000)})}
