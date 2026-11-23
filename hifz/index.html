@@ -457,7 +457,7 @@ body.onbon{overflow:hidden}
     <div class="rst"><b id="recSt">Tap the mic and recite this page</b><span id="recHeard" lang="ar"></span></div>
     <div class="rcount"><span id="recOk" style="color:var(--done)">✓ 0</span><span id="recBad" style="color:var(--warn)">✗ 0</span></div>
   </div>
-  <div class="tools" id="recTools" hidden><button class="chip" id="recShow">Show text</button><button class="chip" id="recReset">Restart page</button><button class="chip" id="recDone">Finish</button></div>
+  <div class="tools" id="recTools" hidden><button class="chip" id="recShow">Show text</button><button class="chip" id="recReset">Restart page</button><button class="chip" id="recDone">Finish</button><button class="chip" id="recDiag">Report a problem</button></div>
   <article class="mp" id="mPage"><div class="skel">Loading the mushaf…</div></article>
   <p class="note" id="mHint">Swipe to turn the page. With “Hide text” on, tap a verse to check yourself.</p>
 </section>
@@ -1000,16 +1000,36 @@ function recSaveAudio(){const n=MIC.recN,buf=new ArrayBuffer(44+n*2),v=new DataV
 function recExit(){recStop(false);REC.mode=false;REC.any=false;renderMushaf()}
 function recStart(){if(REC.hold){REC.wantStart=true;return}REC.wantStart=false;if(useAI())return aiRecStart();phoneStart();if(REC.listening&&useHyb())hybOn()}
 function phoneStart(){const SR=recSR();if(!SR)return;if(!navigator.onLine){toast('Checking recitation needs internet');return}
-  if(!REC.words.length||REC.pos>=REC.words.length)recBuild();
-  const r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
-  r.onresult=e=>{HY.heardAt=performance.now();HY.speech=0;let fin='',it='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=' '+x[0].transcript;else it+=' '+x[0].transcript}
-    REC.interim=it.trim();
-    if(fin.trim()){const hw=fin.trim().split(/\s+/),p0=REC.pos,was=REC.st.slice();if(!tryFind(hw)){skipAhead(REC,hw);alignWords(REC,hw);hybAfter(p0,was,performance.now())}if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}
-    REC.tent=new Set();if(REC.interim&&REC.listening){const iw=REC.interim.split(/\s+/);if(!REC.st.some(x=>x)&&tryFind(iw)){REC.interim=''}else{const C={words:REC.words,st:REC.st.slice(),heard:[],pos:REC.pos,miss:0};alignWords(C,iw);for(let k=REC.pos;k<C.pos;k++)if(C.st[k]===1)REC.tent.add(k)}}
+  if(!REC.words.length||REC.pos>=REC.words.length)recBuild();REC.listening=true;REC.interim='';REC.srN=0;
+  dlog('phone recognition start · '+(navigator.standalone?'home-screen app':'browser')+' · mode '+(S.asr||'hyb'));srStart();recPaint()}
+/* commit words once they settle. iPhone rarely marks results "final", so don't wait for that */
+function srCommit(words){if(!words.length)return;const hw=words,p0=REC.pos,was=REC.st.slice();
+  if(!tryFind(hw)){skipAhead(REC,hw);alignWords(REC,hw);hybAfter(p0,was,performance.now())}
+  if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}
+function srStart(){const SR=recSR(),r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;REC.srN++;
+  let timer=0,got=0,fins=0,li=0;const n=REC.srN,cm=[],lt=[],lf=[];
+  const words=t=>t?t.split(/\s+/).filter(Boolean):[];
+  const flush=()=>{if(REC.r!==r||lf[li])return;const w=words(lt[li]),c=cm[li]||0;if(w.length>c){srCommit(w.slice(c));cm[li]=w.length;REC.tent=new Set();REC.interim='';recPaint()}};
+  r.onresult=e=>{HY.heardAt=performance.now();HY.speech=0;got++;
+    for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i],t=x[0].transcript.trim(),fin=!!x.isFinal;
+      if(lf[i]&&t!==lt[i])cm[i]=0;                      // this slot now holds a new phrase
+      const w=words(t);let c=Math.min(cm[i]||0,w.length);if(fin){fins++;REC.srFinal=true}
+      const stable=fin?w.length:REC.srFinal?c:Math.max(c,w.length-2);   // iPhone rarely sends "final": commit all but the last 2 words
+      if(stable>c){srCommit(w.slice(c,stable));c=stable}cm[i]=c;lt[i]=t;lf[i]=fin}
+    li=e.results.length-1;
+    if(got<=3||got%15===0)dlog('phone heard #'+got+(lf[li]?' final':'')+': '+words(lt[li]).slice(-6).join(' '));
+    const rest=words(lt[li]).slice(cm[li]||0);REC.interim=rest.join(' ');REC.tent=new Set();
+    if(rest.length&&REC.listening){const C={words:REC.words,st:REC.st.slice(),heard:[],pos:REC.pos,miss:0};alignWords(C,rest);for(let k=REC.pos;k<C.pos;k++)if(C.st[k]===1)REC.tent.add(k)}
+    clearTimeout(timer);timer=setTimeout(flush,1200);
     recPaint();const cur=document.querySelector((REC.kind==='q'?'#mPage':'#mrText')+' .w.cur');if(cur&&REC.kind==='q')cur.scrollIntoView({block:'nearest',behavior:'smooth'})};
-  r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){REC.listening=false;toast('Microphone access is blocked. Allow it in your browser settings.',4000)}else if(e.error==='network'){REC.listening=false;toast('Checking recitation needs internet')}recPaint()};
-  r.onend=()=>{if(REC.listening&&REC.r===r)setTimeout(()=>{if(REC.listening&&REC.r===r)try{r.start()}catch(x){}},80);else recPaint()};
-  REC.r=r;REC.listening=true;REC.interim='';try{r.start()}catch(x){}recPaint()}
+  r.onerror=e=>{dlog('phone recognition error: '+e.error+' (session '+n+')');
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){if(n>1){REC.listening=false;REC.note='';recPaint();toast('Listening paused. Tap the mic to carry on.',3500)}else{REC.listening=false;toast('Microphone or speech recognition is blocked. Allow both for this app in your iPhone settings.',4500)}}
+    else if(e.error==='network'){REC.listening=false;toast('The phone’s recognition needs internet')}
+    else if(e.error==='audio-capture'&&HY.on){dlog('turning the AI double-check off: the phone could not share the mic');HY.off=true;hybOff()}
+    recPaint()};
+  r.onend=()=>{clearTimeout(timer);flush();dlog('phone recognition ended (session '+n+', '+got+' results, '+fins+' final)');
+    if(REC.listening&&REC.r===r)setTimeout(()=>{if(REC.listening&&REC.r===r){try{srStart()}catch(x){dlog('restart failed: '+x.message);REC.listening=false;recPaint();toast('Listening paused. Tap the mic to carry on.',3500)}}},120);else recPaint()};
+  REC.r=r;try{r.start()}catch(x){dlog('phone recognition could not start: '+x.message);if(n>1){REC.listening=false;recPaint();toast('Listening paused. Tap the mic to carry on.',3500)}}}
 function recStop(summary){hybOff();const ai=MIC.on||REC.aiWait;if(MIC.on&&MIC.sp&&MIC.voiced>=300)aiFlush();aiMicOff();REC.aiWait=false;REC.listening=false;REC.tent=new Set();if(REC.r){try{REC.r.stop()}catch(x){}}REC.r=null;
   if((ai&&aiPending)||HY.pend){REC.note='Checking the last part…';recPaint();Promise.all([aiChain,HY.chain]).then(()=>{REC.note='';recPaint();if(summary)recSummary()});return}
   REC.interim='';REC.note='';recPaint();if(summary)recSummary()}
@@ -1027,6 +1047,7 @@ $('mRec').onclick=()=>REC.mode?recExit():recEnter();
 $('recMic').onclick=()=>REC.listening?recStop(true):recStart();
 $('recShow').onclick=()=>{REC.show=!REC.show;recPaint()};
 $('recReset').onclick=()=>{recBuild();recPaint()};
+$('recDiag').onclick=()=>dlogCopy();
 $('recDone').onclick=()=>{recStop(true);REC.mode=false;REC.any=false;renderMushaf()};
 $('hdrMic').onclick=()=>{go('mushaf');if(recEnter(true))setTimeout(recStart,60)};
 /* matn test overlay */
@@ -1376,7 +1397,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v15';
+const APPV='v16';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifz diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
