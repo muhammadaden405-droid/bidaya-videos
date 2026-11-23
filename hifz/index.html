@@ -946,6 +946,12 @@ function alignWords(R,hw){const W=R.words,st=R.st,H=hw.map(w=>[w,norm(w)]).filte
     if(sim(h,W[R.pos].n)>=.34){st[R.pos]=2;R.heard[R.pos]=H[j][0];R.pos++}}
   return R}
 /*END*/
+function skipAhead(R,hw){const W=R.words,F=hw.map(norm).filter(Boolean),H=F.slice();while(H.length&&AR_IGN.has(H[0]))H.shift();const cut=F.length-H.length;if(H.length<3)return false;
+  const sc=(X,j)=>{let c=0;for(let q=0;q<X.length&&j+q<W.length;q++)if(sim(X[q],W[j+q].n)>=.7)c++;return c};
+  let loc=0;for(let j=R.pos;j<Math.min(W.length,R.pos+3+cut);j++)loc=Math.max(loc,sc(H,j),sc(F,j)-cut);
+  let best=-1,bs=0;for(let j=R.pos+3+cut;j<Math.min(W.length,R.pos+160);j++){const c=sc(H,j);if(c>bs){bs=c;best=j}}
+  if(best<0||bs<Math.max(3,Math.ceil(H.length*.7))||bs<=loc+1)return false;
+  for(let k=R.pos;k<best;k++)if(!R.st[k])R.st[k]=3;R.pos=best;R.miss=0;return true}
 const REC={mode:false,kind:'q',any:false,show:false,listening:false,words:[],st:[],heard:[],pos:0,interim:'',r:null,page:0,log:[],tent:new Set(),miss:0,mctx:null,recent:[]};
 const recSR=()=>window.SpeechRecognition||window.webkitSpeechRecognition;
 function recUI(){return REC.kind==='q'?{root:$('mPage'),mic:$('recMic'),st:$('recSt'),heard:$('recHeard'),ok:$('recOk'),bad:$('recBad'),show:$('recShow')}:{root:$('mrText'),mic:$('mrMic'),st:$('mrSt'),heard:$('mrHeard'),ok:$('mrOk'),bad:$('mrBad'),show:$('mrShow')}}
@@ -990,7 +996,7 @@ function phoneStart(){const SR=recSR();if(!SR)return;if(!navigator.onLine){toast
   const r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
   r.onresult=e=>{let fin='',it='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=' '+x[0].transcript;else it+=' '+x[0].transcript}
     REC.interim=it.trim();
-    if(fin.trim()){const hw=fin.trim().split(/\s+/);if(!tryFind(hw))alignWords(REC,hw);if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}
+    if(fin.trim()){const hw=fin.trim().split(/\s+/);if(!tryFind(hw)){skipAhead(REC,hw);alignWords(REC,hw)}if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}
     REC.tent=new Set();if(REC.interim&&REC.listening){const iw=REC.interim.split(/\s+/);if(!REC.st.some(x=>x)&&tryFind(iw)){REC.interim=''}else{const C={words:REC.words,st:REC.st.slice(),heard:[],pos:REC.pos,miss:0};alignWords(C,iw);for(let k=REC.pos;k<C.pos;k++)if(C.st[k]===1)REC.tent.add(k)}}
     recPaint();const cur=document.querySelector((REC.kind==='q'?'#mPage':'#mrText')+' .w.cur');if(cur&&REC.kind==='q')cur.scrollIntoView({block:'nearest',behavior:'smooth'})};
   r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){REC.listening=false;toast('Microphone access is blocked. Allow it in your browser settings.',4000)}else if(e.error==='network'){REC.listening=false;toast('Checking recitation needs internet')}recPaint()};
@@ -1360,7 +1366,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
   if(k==='plan'){openOnb(false);return}renderToday();if(k==='go'){deckScroll();const dk=$('deck');if(dk)dk.scrollIntoView({behavior:'smooth',block:'center'})}});
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
-const AIV='3',AI={restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
+const AIV='4',AI={restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
 const aiOk=()=>!!S.aiOk&&typeof Worker!=='undefined';
 const useAI=()=>(REC.kind==='q'?S.asr!=='phone':S.asrM==='ai')&&(aiOk()||AI.st==='ready');
 function aiQS(){return AI.QS?Promise.resolve():fetch('data/qsimple.json').then(r=>r.json()).then(d=>{AI.QS=d}).catch(()=>{})}
@@ -1406,16 +1412,20 @@ async function aiMicOn(){try{const st=await navigator.mediaDevices.getUserMedia(
     const ctx=MIC.ctx0&&MIC.ctx0.state!=='closed'?MIC.ctx0:new(window.AudioContext||window.webkitAudioContext)();MIC.ctx0=null;if(ctx.state==='suspended')await ctx.resume();
     const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(2048,1,1),bm=2048/ctx.sampleRate*1000;
     Object.assign(MIC,{on:true,st,ctx,src,pr,seg:[],pre:[],sp:false,sil:0,ms:0,voiced:0,lastPart:0});
-    pr.onaudioprocess=e=>{if(!MIC.on)return;const x=new Float32Array(e.inputBuffer.getChannelData(0));let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];r=Math.sqrt(r/x.length);const thr=Math.max(.008,MIC.floor*3);
-      if(!MIC.sp){MIC.floor=MIC.floor*.97+Math.min(r,.05)*.03;MIC.pre.push(x);if(MIC.pre.length>8)MIC.pre.shift();if(r>thr){MIC.sp=true;MIC.seg=MIC.pre;MIC.pre=[];MIC.ms=MIC.seg.length*bm;MIC.sil=0;MIC.voiced=bm}return}
-      MIC.seg.push(x);MIC.ms+=bm;if(r>thr){MIC.sil=0;MIC.voiced+=bm}else MIC.sil+=bm;
-      if(MIC.sil>=700){if(MIC.voiced>=300)aiFlush();else{MIC.sp=false;MIC.seg=[]}}
-      else if(MIC.ms>=25000)aiFlush();
-      else if(MIC.ms>=2500&&performance.now()-MIC.lastPart>1800&&!AI.busy&&!aiPending&&AI.ms<2600){MIC.lastPart=performance.now();aiSegment(MIC.seg.slice(),false)}};
+    const hist=[],pct=q=>{const x=hist.slice().sort((a,b)=>a-b);return x[Math.min(x.length-1,Math.floor(q*x.length))]};
+    pr.onaudioprocess=e=>{if(!MIC.on)return;const x=new Float32Array(e.inputBuffer.getChannelData(0));let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];const db=20*Math.log10(Math.sqrt(r/x.length)+1e-9);
+      hist.push(db);if(hist.length>230)hist.shift();const nz=pct(.1),spk=pct(.9),thr=nz+Math.max(6,.35*(spk-nz));
+      if(!MIC.sp){MIC.pre.push({x,db});if(MIC.pre.length>12)MIC.pre.shift();if(db>thr&&db>-55){MIC.sp=true;MIC.seg=MIC.pre;MIC.pre=[];MIC.ms=MIC.seg.length*bm;MIC.sil=0;MIC.voiced=bm}return}
+      MIC.seg.push({x,db});MIC.ms+=bm;if(db>thr-3){if(db>thr)MIC.voiced+=bm;MIC.sil=0}else MIC.sil+=bm;
+      if(MIC.sil>=350&&MIC.voiced>=1200)aiFlush();
+      else if(MIC.sil>=900){if(MIC.voiced>=150)aiFlush();else{MIC.sp=false;MIC.seg=[]}}
+      else if(MIC.ms>=12000)aiFlush(bm);
+      else if(MIC.ms>=2500&&performance.now()-MIC.lastPart>1800&&!AI.busy&&!aiPending&&AI.ms<2600){MIC.lastPart=performance.now();aiSegment(MIC.seg.map(b=>b.x),false)}};
     src.connect(pr);pr.connect(ctx.destination);REC.note='';recPaint()}
   catch(e){REC.listening=false;REC.note='';recPaint();toast('Microphone access is blocked. Allow it in your browser settings.',4000)}}
 function aiMicOff(){MIC.on=false;try{MIC.pr&&MIC.pr.disconnect();MIC.src&&MIC.src.disconnect()}catch(e){}try{MIC.st&&MIC.st.getTracks().forEach(t=>t.stop())}catch(e){}try{MIC.ctx&&MIC.ctx.close()}catch(e){}Object.assign(MIC,{st:null,ctx:null,pr:null,src:null,sp:false,seg:[]})}
-function aiFlush(){const seg=MIC.seg;MIC.sp=false;MIC.seg=[];MIC.pre=[];if(seg.length&&MIC.ctx)aiSegment(seg,true)}
+function aiFlush(bm){let seg=MIC.seg,rest=[];if(bm){let bi=seg.length-1,bv=1e9;for(let i=Math.max(0,seg.length-Math.round(4000/bm));i<seg.length;i++)if(seg[i].db<bv){bv=seg[i].db;bi=i}rest=seg.slice(bi+1);seg=seg.slice(0,bi+1)}
+  MIC.seg=rest;MIC.ms=rest.length*(bm||0);MIC.sil=0;MIC.voiced=MIC.ms;MIC.sp=rest.length>0;MIC.pre=[];if(seg.length&&MIC.ctx)aiSegment(seg.map(b=>b.x),true)}
 async function to16k(blocks,rate){const n=blocks.reduce((a,b)=>a+b.length,0),buf=new Float32Array(n);let o=0;for(const b of blocks){buf.set(b,o);o+=b.length}
   if(rate===16000)return buf;const len=Math.ceil(n*16000/rate);
   try{const oc=new OfflineAudioContext(1,len,16000),ab=oc.createBuffer(1,n,rate);ab.copyToChannel(buf,0);const s=oc.createBufferSource();s.buffer=ab;s.connect(oc.destination);s.start();return(await oc.startRendering()).getChannelData(0).slice()}
@@ -1427,12 +1437,12 @@ function aiSegment(blocks,final){const rate=MIC.ctx.sampleRate;
 const aiForm=k=>{const w=REC.words[k];return w&&AI.QS&&AI.QS[w.k]?AI.QS[w.k][w.x]:undefined};
 function aiExpected(max){if(REC.kind!=='q'||!AI.QS)return null;const exp=[],idx=[];for(let k=REC.pos;k<REC.words.length&&exp.length<max;k++){const f=aiForm(k);if(f===undefined)break;if(f){exp.push(f);idx.push(k)}}return exp.length?{exp,idx}:null}
 async function aiProcess(blocks,rate,final){if(!AI.w||AI.st!=='ready')return;AI.busy=true;const W=REC.words;try{
-  const a=await to16k(blocks,rate),E=aiExpected(Math.ceil(a.length/16000*3)+4);
+  const a=await to16k(blocks,rate),E=aiExpected(Math.ceil(a.length/16000*2.5)+4);
   const r=await aiCall({t:'check',audio:a,exp:E?E.exp:null,gen:final},[a.buffer]);if(r.ms)AI.ms=r.ms;if(r.err||REC.words!==W)return;
   if(!final){if(!REC.listening)return;REC.tent=new Set();if(r.ok&&E)for(let i=0;i<r.n;i++)REC.tent.add(E.idx[i]);recPaint();return}
   if(r.ok&&E){const end=E.idx[r.n-1];for(let k=REC.pos;k<=end;k++)REC.st[k]=1;REC.pos=end+1;while(REC.pos<REC.words.length&&aiForm(REC.pos)==='')REC.st[REC.pos++]=1;REC.miss=0;REC.recent=[];REC.interim=''}
   else if(r.hyp){REC.interim=r.hyp;const hw=r.hyp.split(/\s+/).filter(Boolean);
-    if(!tryFind(hw)){const C={words:REC.words,st:REC.st.slice(),heard:REC.heard.slice(),pos:REC.pos,miss:REC.miss},p0=C.pos;alignWords(C,hw);
+    if(!tryFind(hw)){const C={words:REC.words,st:REC.st.slice(),heard:REC.heard.slice(),pos:REC.pos,miss:REC.miss};skipAhead(C,hw);const p0=C.pos;alignWords(C,hw);
       if(REC.kind==='q'&&AI.QS){const subs=[];let from=0;for(let k=p0;k<C.pos;k++)if(C.st[k]===2){const f=aiForm(k),hi=hw.indexOf(C.heard[k],from);if(f&&hi>=0){subs.push([k,hi,f]);from=hi+1}}
         if(subs.length){const v=await aiCall({t:'verify',base:hw,alts:subs.map(([k,hi,f])=>{const x=hw.slice();x.splice(hi,1,...f.split(' '));return x})});
           if(v.d)v.d.forEach((d,i)=>{if(d>-9){const k=subs[i][0];C.st[k]=1;delete C.heard[k]}})}}
