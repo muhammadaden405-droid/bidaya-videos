@@ -377,6 +377,11 @@ body.onbon{overflow:hidden}
 .nudge .nx{position:absolute;top:8px;right:8px;width:40px;height:40px;border:0;border-radius:50%;background:color-mix(in srgb,var(--ht) 10%,transparent);color:var(--ht);font-size:22px}
 .nudge .why{margin-top:10px;font-size:14px}
 .nudge .why summary{color:var(--hm);cursor:pointer;min-height:32px}
+.ptabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.ptabs button{min-height:36px;padding:0 14px;border-radius:99px;border:1px solid color-mix(in srgb,var(--gold2) 40%,transparent);background:transparent;color:var(--ht);font-weight:700;font-size:14px}
+.ptabs button.on{background:var(--gold2);border-color:var(--gold2);color:#15110a}
+.ptabs button.ok:not(.on){color:var(--gold2)}
+.dcount{font-size:13px;font-weight:700;color:var(--gold2)}
 .dayhead{margin:2px 2px 10px}
 .dayhead .bar{margin-top:6px;height:6px}
 .dayhead b{font-size:14px}
@@ -618,7 +623,7 @@ function header(){const d=parse(TODAY);let h='';try{h=new Intl.DateTimeFormat('e
   $('hij').textContent=h;$('greg').textContent=fmt(d,{weekday:'short',day:'numeric',month:'short'})}
 
 /* ---------- today ---------- */
-let tipOpen=false;const dHide=new Set();
+let tipOpen=false,qSel=0,mSel=-1;const dHide=new Set();
 const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}};
 const IC_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>',IC_MIC='<svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg>',IC_OPEN='<svg viewBox="0 0 24 24"><path d="M12 6c-2-1.6-5-2-8-1.5v14c3-.5 6-.1 8 1.5 2-1.6 5-2 8-1.5v-14c-3-.5-6-.1-8 1.5z"/></svg>',IC_EYE='<svg viewBox="0 0 24 24"><path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>';
 const FIRST=[
@@ -635,20 +640,25 @@ function openWelcome(){sheet('<h2>What do you want to memorize?</h2><p class="no
   $('wTrack').onclick=e=>{const b=e.target.closest('[data-tr]');if(!b)return;S.track=b.dataset.tr;save();closeSheet();
     if(S.track==='mutun'){S.setup=1;save();setTimeout(()=>openMPlan(),250)}else{afterPlan=S.track==='both'?'mutun':'';setTimeout(()=>openPlan(true),250)}renderAll()}}
 function deckCards(){const cards=[];ensureLesson();const c=calc(),L=S.lesson;
-  if(doQ()){if(c.left===0)cards.push({t:'qinfo',k:'qdone'});else if(L.off&&!L.p.length)cards.push({t:'qinfo',k:'qoff'});else L.p.forEach(p=>cards.push({t:'q',p,d:!!S.pages[p]}))}
-  if(doM()&&MI){if(!S.mp.setup)cards.push({t:'minfo',k:'msetup'});else{const mc=mcalc();if(!mc.left)cards.push({t:'minfo',k:'mdone'});else{ensureMLesson();const ML=S.mlesson;if(!ML.items.length)cards.push({t:'minfo',k:'moff'});else{needMD([...new Set(ML.items.map(x=>x[0]))]);mBlocks(ML.items).forEach(x=>cards.push({t:'m',id:x.id,a:x.a,b:x.b,d:blkDone(x)}))}}}}
+  if(doQ()){if(c.left===0)cards.push({t:'qinfo',k:'qdone'});else if(L.off&&!L.p.length)cards.push({t:'qinfo',k:'qoff'});else if(L.p.length)cards.push({t:'q',ps:L.p.slice(),d:L.p.every(p=>!!S.pages[p])})}
+  if(doM()&&MI){if(!S.mp.setup)cards.push({t:'minfo',k:'msetup'});else{const mc=mcalc();if(!mc.left)cards.push({t:'minfo',k:'mdone'});else{ensureMLesson();const ML=S.mlesson;if(!ML.items.length)cards.push({t:'minfo',k:'moff'});else{needMD([...new Set(ML.items.map(x=>x[0]))]);{const bl=mBlocks(ML.items);cards.push({t:'m',bl,d:bl.every(blkDone)})}}}}}
   return cards}
 function cardHTML(x,ix){
-  if(x.t==='q'){const j=juzOf(x.p),i=pageInfo(x.p),txt=i?i.ay.map(a=>a[2]).join(' ').split(' ').slice(0,45).join(' '):'';
-    return '<article class="dcard'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Qur’an · Juz '+j+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':'')+'</div><div class="dt">Page '+x.p+'</div><div class="ds">'+esc(rangeLabel(x.p))+'</div><div class="dtext ar fade" lang="ar">'+esc(txt)+'</div>'
-     +'<div class="dact"><button data-open="'+x.p+'">'+IC_OPEN+'Open</button><button data-qlisten="'+x.p+'">'+IC_PLAY+'Listen</button><button data-qtest="'+x.p+'">'+IC_MIC+'Test</button></div><button class="dmark" data-chk="'+x.p+'" aria-pressed="'+x.d+'">'+ICON_CHECK+(x.d?'Memorized':'I memorized this page')+'</button></article>'}
-  if(x.t==='m'){const b=mInfo(x.id),key=x.id+':'+x.a+':'+x.b,hid=dHide.has(key)&&!x.d,u=b.poem?'verses':'lines';
-    return '<article class="dcard m'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Mutūn · '+esc(b.cat)+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':'')+'</div><div class="dt ar mt-ar" style="font-size:26px">'+esc(b.t)+'</div><div class="ds">'+esc(b.en)+' · '+u+' '+(x.a+1)+(x.b>x.a?'–'+(x.b+1):'')+' of '+b.n+'</div><div class="dtext ar'+(hid?' hid':'')+'" lang="ar">'+blockLines(x)+'</div>'
-     +'<div class="dact">'+(MREC[x.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Listen</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+x.id+':'+x.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+x.d+'">'+ICON_CHECK+(x.d?'Memorized':'I memorized these '+u)+'</button></article>'}
+  if(x.t==='q'){const ps=x.ps,sel=ps.includes(qSel)?qSel:(ps.find(p=>!S.pages[p])||ps[0]),sd=!!S.pages[sel],i=pageInfo(sel),txt=i?i.ay.map(a=>a[2]).join(' ').split(' ').slice(0,40).join(' '):'',nd=ps.filter(p=>S.pages[p]).length,cons=ps.every((p,k)=>!k||Math.abs(p-ps[k-1])===1);
+    return '<article class="dcard'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Qur’an · Juz '+[...new Set(ps.map(juzOf))].join(' & ')+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':ps.length>1?'<span class="dcount">'+nd+' of '+ps.length+' pages</span>':'')+'</div>'
+     +'<div class="dt">'+(ps.length>1?'Pages '+(cons?Math.min(...ps)+'–'+Math.max(...ps):ps.join(' & ')):'Page '+ps[0])+'</div>'
+     +(ps.length>1?'<div class="ptabs">'+ps.map(p=>'<button class="'+(p===sel?'on':'')+(S.pages[p]?' ok':'')+'" data-qsel="'+p+'" aria-pressed="'+(p===sel)+'">'+(S.pages[p]?'✓ ':'')+'Page '+p+'</button>').join('')+'</div>':'')
+     +'<div class="ds">'+esc(rangeLabel(sel))+'</div><div class="dtext ar fade" lang="ar">'+esc(txt)+'</div>'
+     +'<div class="dact"><button data-open="'+sel+'">'+IC_OPEN+'Open</button><button data-qlisten="'+sel+'">'+IC_PLAY+'Listen</button><button data-qtest="'+sel+'">'+IC_MIC+'Test</button></div><button class="dmark" data-chk="'+sel+'" aria-pressed="'+sd+'">'+ICON_CHECK+(sd?'Page '+sel+' memorized':'I memorized page '+sel)+'</button></article>'}
+  if(x.t==='m'){const bl=x.bl,si=bl[mSel]?mSel:Math.max(0,bl.findIndex(z=>!blkDone(z))),y=bl[si],yd=blkDone(y),b=mInfo(y.id),key=y.id+':'+y.a+':'+y.b,hid=dHide.has(key)&&!yd,u=b.poem?'verses':'lines',nd=bl.filter(blkDone).length;
+    return '<article class="dcard m'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Mutūn · '+esc(b.cat)+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':bl.length>1?'<span class="dcount">'+nd+' of '+bl.length+' parts</span>':'')+'</div><div class="dt ar mt-ar" style="font-size:26px">'+esc(b.t)+'</div>'
+     +(bl.length>1?'<div class="ptabs">'+bl.map((z,k)=>'<button class="'+(k===si?'on':'')+(blkDone(z)?' ok':'')+'" data-msel="'+k+'" aria-pressed="'+(k===si)+'">'+(blkDone(z)?'✓ ':'')+esc(mInfo(z.id).en.split(' ').slice(0,2).join(' '))+' '+(z.a+1)+(z.b>z.a?'–'+(z.b+1):'')+'</button>').join('')+'</div>':'')
+     +'<div class="ds">'+esc(b.en)+' · '+u+' '+(y.a+1)+(y.b>y.a?'–'+(y.b+1):'')+' of '+b.n+'</div><div class="dtext ar'+(hid?' hid':'')+'" lang="ar">'+blockLines(y)+'</div>'
+     +'<div class="dact">'+(MREC[y.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Listen</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+y.id+':'+y.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+yd+'">'+ICON_CHECK+(yd?'Memorized':'I memorized these '+u)+'</button></article>'}
   const I={qdone:['Qur’an · Alḥamdulillāh','Goal complete','Set your next Qur’an goal.','data-plan="1"','Set my next goal'],qoff:['Qur’an · revision day','No new pages today','Use today to revise what you have memorized.','id="anyway"','Memorize new pages anyway'],
    msetup:['Mutūn','Add the mutūn','Choose where to start, your goal and your pace.','data-mplan="1"','Set up my mutūn plan'],mdone:['Mutūn · Alḥamdulillāh','Goal complete','Set your next mutūn goal.','data-mplan="1"','Set my next goal'],moff:['Mutūn · revision day','No new portions today','Revise what you have memorized.','data-manyway="1"','Memorize anyway']}[x.k];
   return '<article class="dcard info" data-ix="'+ix+'"><div class="dhead"><span class="dk">'+I[0]+'</span></div><div class="dt">'+I[1]+'</div><div class="ds">'+I[2]+'</div><button class="dmark" '+I[3]+'>'+I[4]+'</button></article>'}
-function renderToday(){const cards=deckCards(),work=cards.filter(x=>x.t==='q'||x.t==='m'),dn=work.filter(x=>x.d).length,c=calc();let h='';
+function renderToday(){const cards=deckCards(),work=cards.flatMap(x=>x.t==='q'?x.ps.map(p=>({d:!!S.pages[p]})):x.t==='m'?x.bl.map(z=>({d:blkDone(z)})):[]),dn=work.filter(x=>x.d).length,c=calc();let h='';
   const all=work.length&&dn===work.length;
   h+=nudgeHTML(all);
   h+='<div class="dayhead"><div class="row"><span class="lab" style="margin:0">'+(work.length?(all?'Everything memorized today ✓':'Today’s memorization'):'Today')+'</span><b>'+(work.length?dn+' / '+work.length:'')+'</b></div>'+(work.length?'<div class="bar"><i style="width:'+(dn/work.length*100)+'%"></i></div>':'')+'</div>';
@@ -675,7 +685,8 @@ function deckScroll(){const dk=$('deck');if(!dk)return;const cs=[...dk.querySele
 $('v-today').addEventListener('click',e=>{const dt=e.target.closest('[data-dot]');if(dt){const dk=$('deck'),cs=dk.querySelectorAll('.dcard'),c=cs[+dt.dataset.dot];c&&dk.scrollTo({left:c.offsetLeft-cs[0].offsetLeft,behavior:'smooth'});return}
   const tx=e.target.closest('.dtext.hid');if(tx){tx.classList.remove('hid');return}
   const t=e.target.closest('button');if(!t)return;const d=t.dataset;
-  if(d.chk){const was=!!S.pages[+d.chk];const y=$('deck').scrollLeft;toggle(+d.chk);$('deck').scrollLeft=y;if(!was)deckScroll();return}
+  if(d.qsel||d.msel){if(d.qsel)qSel=+d.qsel;else mSel=+d.msel;const y=$('deck').scrollLeft;renderToday();$('deck').scrollLeft=y;return}
+  if(d.chk){const was=!!S.pages[+d.chk];if(!was){const nx=S.lesson.p.find(p=>p!==+d.chk&&!S.pages[p]);qSel=nx||+d.chk}const y=$('deck').scrollLeft;toggle(+d.chk);$('deck').scrollLeft=y;if(!was)deckScroll();return}
   if(d.open){go('mushaf',+d.open);return}
   if(d.qlisten){startPlay([+d.qlisten]);return}
   if(d.qtest){go('mushaf',+d.qtest);if(recEnter())setTimeout(recStart,60);return}
@@ -1111,7 +1122,7 @@ $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data
 document.addEventListener('click',e=>{const t=e.target.closest('[data-mpart],[data-mtest],[data-mmark]');if(!t)return;const d=t.dataset,[id,a,b]=(d.mpart||d.mtest||d.mmark).split(':');
   if(d.mpart){playPart(id,+a,+b);return}
   if(d.mtest){openMTest(id,+a,+b);return}
-  if(d.mmark){let all=true;for(let i=+a;i<=+b;i++)if(!isMem(id,i))all=false;mMark(id,+a,+b,!all);if(t.closest('#panel'))closeSheet();renderToday();if(location.hash==='#mutun'){const y=scrollY;renderMutun();scrollTo({top:y})}}});
+  if(d.mmark){mSel=-1;let all=true;for(let i=+a;i<=+b;i++)if(!isMem(id,i))all=false;mMark(id,+a,+b,!all);if(t.closest('#panel'))closeSheet();renderToday();if(location.hash==='#mutun'){const y=scrollY;renderMutun();scrollTo({top:y})}}});
 document.addEventListener('click',e=>{if(e.target.closest('[data-mplan]'))openMPlan()});
 const MPRESETS=[['Start of the ladder','thalatha','all',''],['The short ʿaqīdah texts','thalatha','thru','nawaqid'],['al-Arbaʿūn al-Nawawiyyah','arbain','matn',''],['Kitāb al-Tawḥīd','tawhid','matn','']];
 let PM=null;
