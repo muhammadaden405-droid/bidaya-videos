@@ -301,8 +301,10 @@ details.adv summary{min-height:46px;display:flex;align-items:center;font-weight:
 .hdr-r{display:flex;align-items:center;gap:10px}
 .dates{font-size:12px;line-height:1.35;white-space:nowrap}
 @media (max-width:430px){.brand p{display:none}}
-body:has(#mbar.on) .selbar,body:has(#player.on) .selbar{bottom:calc(152px + env(safe-area-inset-bottom))}
-body:has(#mbar.on) main,body:has(#player.on) main{padding-bottom:calc(170px + env(safe-area-inset-bottom))}
+body:has(#player.on) .selbar{bottom:calc(152px + env(safe-area-inset-bottom))}
+body:has(#mbar.on) .selbar{bottom:calc(196px + env(safe-area-inset-bottom))}
+body:has(#player.on) main{padding-bottom:calc(170px + env(safe-area-inset-bottom))}
+body:has(#mbar.on) main{padding-bottom:calc(214px + env(safe-area-inset-bottom))}
 .hmic{width:44px;height:44px;border-radius:50%;border:1px solid color-mix(in srgb,var(--gold2) 40%,transparent);background:var(--green);color:var(--onG);display:grid;place-items:center;flex:none}
 .hmic svg{width:22px;height:22px;fill:currentColor}
 .ln{margin:0 0 6px;display:flex;gap:8px;align-items:baseline}
@@ -329,8 +331,8 @@ body:has(#mbar.on) main,body:has(#player.on) main{padding-bottom:calc(170px + en
 .pact svg,.btn svg{width:16px;height:16px;fill:currentColor}
 .mpart .mx .ln{font-size:var(--mfs,24px);line-height:1.9}
 .mtest{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px;font-size:24px;line-height:2}
-.mtest .w{filter:blur(6px);opacity:.5;transition:filter .2s,opacity .2s;border-radius:6px}
-.mtest.show .w,.mtest .w.ok,.mtest .w.bad,.mtest .w.sk,.mtest .w.fx{filter:none;opacity:1}
+.mtest .w{color:transparent;background:color-mix(in srgb,var(--ink) 9%,transparent);transition:color .3s,background-color .3s;border-radius:6px}
+.mtest.show .w,.mtest .w.ok,.mtest .w.bad,.mtest .w.sk,.mtest .w.fx{color:inherit;background:transparent}
 .w.tent{opacity:.75!important}
 .mtest .w.bad{color:var(--warn);text-decoration:underline wavy var(--warn);text-underline-offset:8px}
 .mtest .w.sk{color:var(--warn);text-decoration:line-through}
@@ -383,7 +385,14 @@ body.onbon{overflow:hidden}
 .ptabs button.ok:not(.on){color:var(--gold2)}
 .dcount{font-size:13px;font-weight:700;color:var(--gold2)}
 #mPage .w.chk,#mrText .w.chk{text-decoration:underline dotted var(--gold2);text-underline-offset:8px}
-#recMic.live,#mrMic.live{box-shadow:0 0 0 calc(var(--lvl,0)*14px) color-mix(in srgb,var(--gold2) 45%,transparent);transition:box-shadow .08s}
+#recMic,#mrMic{position:relative}
+#recMic.live::after,#mrMic.live::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:3px solid var(--gold2);opacity:calc(.2 + var(--lvl,0)*.8);transform:scale(calc(1 + var(--lvl,0)*.3));transition:transform .12s linear,opacity .12s linear;pointer-events:none;will-change:transform}
+#mbar{flex-wrap:wrap;row-gap:8px;padding-top:10px}
+#mbar .pinfo{order:-2;flex:1 1 calc(100% - 60px);min-width:0}
+#mbar #mbClose{order:-1}
+#mbar .pp{margin-right:auto}
+.ln.playing,.mline.playing{background:color-mix(in srgb,var(--gold2) 24%,transparent);border-radius:10px;transition:background-color .3s}
+.btn.spd{flex:0 0 auto;min-width:52px}
 .dcard{cursor:pointer}
 .dayhead{margin:2px 2px 10px}
 .dayhead .bar{margin-top:6px;height:6px}
@@ -420,8 +429,8 @@ body.onbon{overflow:hidden}
 .rst b{display:block;font-size:15px}
 .rst span{display:block;font:18px/1.6 "Amiri Quran",serif;direction:rtl;color:var(--mute);min-height:1.6em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .rcount{display:flex;flex-direction:column;gap:2px;font-weight:800;font-size:14px;text-align:right;white-space:nowrap}
-.rec .w{filter:blur(6px);opacity:.5;transition:filter .25s,opacity .25s;border-radius:6px}
-.rec.show .w,.rec .w.ok,.rec .w.bad,.rec .w.sk,.rec .w.fx{filter:none;opacity:1}
+.rec .w{color:transparent;background:color-mix(in srgb,var(--ink) 9%,transparent);transition:color .3s,background-color .3s;border-radius:6px}
+.rec.show .w,.rec .w.ok,.rec .w.bad,.rec .w.sk,.rec .w.fx{color:inherit;background:transparent}
 .rec .w.bad{color:var(--warn);text-decoration:underline wavy var(--warn);text-underline-offset:8px}
 .rec .w.sk{color:var(--warn);text-decoration:line-through}
 .rec .w.fx{color:var(--gold)}
@@ -488,6 +497,7 @@ body.onbon{overflow:hidden}
 <div class="player" id="mbar" role="region" aria-label="Matn player">
   <button class="pp" id="mbPlay" aria-label="Play"><svg viewBox="0 0 24 24" id="mbIcon"><path d="M7 4l13 8-13 8z"/></svg></button>
   <div class="pinfo"><b id="mbName"></b><span id="mbSub"></span></div>
+  <button class="pb" id="mbSpd" aria-label="Playback speed">1×</button>
   <button class="pb" id="mbRep" aria-label="Times the part repeats">×3</button>
   <button class="pb" id="mbR" aria-label="Switch reader">⇄</button>
   <button class="pb" id="mbAdj" aria-label="Line up the timing"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
@@ -657,7 +667,7 @@ function cardHTML(x,ix){
     return '<article class="dcard m'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Mutūn · '+esc(b.cat)+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':bl.length>1?'<span class="dcount">'+nd+' of '+bl.length+' parts</span>':'')+'</div><div class="dt ar mt-ar" style="font-size:26px">'+esc(b.t)+'</div>'
      +(bl.length>1?'<div class="ptabs">'+bl.map((z,k)=>'<button class="'+(k===si?'on':'')+(blkDone(z)?' ok':'')+'" data-msel="'+k+'" aria-pressed="'+(k===si)+'">'+(blkDone(z)?'✓ ':'')+esc(mInfo(z.id).en.split(' ').slice(0,2).join(' '))+' '+(z.a+1)+(z.b>z.a?'–'+(z.b+1):'')+'</button>').join('')+'</div>':'')
      +'<div class="ds">'+esc(b.en)+' · '+u+' '+(y.a+1)+(y.b>y.a?'–'+(y.b+1):'')+' of '+b.n+'</div><div class="dtext ar'+(hid?' hid':'')+'" lang="ar">'+blockLines(y)+'</div>'
-     +'<div class="dact">'+(MREC[y.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Listen</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+y.id+':'+y.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+yd+'">'+ICON_CHECK+(yd?'Memorized':'I memorized these '+u)+'</button></article>'}
+     +'<div class="dact">'+(MREC[y.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Play</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+y.id+':'+y.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+yd+'">'+ICON_CHECK+(yd?'Memorized':'I memorized these '+u)+'</button></article>'}
   const I={qdone:['Qur’an · Alḥamdulillāh','Goal complete','Set your next Qur’an goal.','data-plan="1"','Set my next goal'],qoff:['Qur’an · revision day','No new pages today','Use today to revise what you have memorized.','id="anyway"','Memorize new pages anyway'],
    msetup:['Mutūn','Add the mutūn','Choose where to start, your goal and your pace.','data-mplan="1"','Set up my mutūn plan'],mdone:['Mutūn · Alḥamdulillāh','Goal complete','Set your next mutūn goal.','data-mplan="1"','Set my next goal'],moff:['Mutūn · revision day','No new portions today','Revise what you have memorized.','data-manyway="1"','Memorize anyway']}[x.k];
   return '<article class="dcard info" data-ix="'+ix+'"><div class="dhead"><span class="dk">'+I[0]+'</span></div><div class="dt">'+I[1]+'</div><div class="ds">'+I[2]+'</div><button class="dmark" '+I[3]+'>'+I[4]+'</button></article>'}
@@ -949,6 +959,7 @@ function alignWords(R,hw){const W=R.words,st=R.st,H=hw.map(w=>[w,norm(w)]).filte
     if(sim(h,W[R.pos].n)>=.34){st[R.pos]=2;R.heard[R.pos]=H[j][0];R.pos++}}
   return R}
 /*END*/
+let recScT=0;function recScroll(){const n=performance.now();if(n-recScT<700||REC.kind!=='q')return;setTimeout(()=>{const cur=document.querySelector('#mPage .w.cur');if(!cur)return;const r=cur.getBoundingClientRect();if(r.top<110||r.bottom>innerHeight-200){recScT=performance.now();cur.scrollIntoView({block:'center',behavior:'smooth'})}},40)}
 function skipAhead(R,hw){const W=R.words,F=hw.map(norm).filter(Boolean),H=F.slice();while(H.length&&AR_IGN.has(H[0]))H.shift();const cut=F.length-H.length;if(H.length<3)return false;
   const sc=(X,j)=>{let c=0;for(let q=0;q<X.length&&j+q<W.length;q++)if(sim(X[q],W[j+q].n)>=.7)c++;return c};
   let loc=0;for(let j=R.pos;j<Math.min(W.length,R.pos+3+cut);j++)loc=Math.max(loc,sc(H,j),sc(F,j)-cut);
@@ -962,10 +973,11 @@ function recReset(){REC.st=REC.words.map(()=>0);REC.heard=[];REC.pos=0;REC.miss=
 function recBuild(){REC.words=[];if(REC.kind==='q'){REC.page=S.cur;const i=pageInfo(S.cur);if(i)for(const[s,a,t]of i.ay){let x=0;for(const w of t.split(' ')){const n=norm(w);if(n)REC.words.push({w,n,k:s+':'+a,x:x++})}}}
   else{const{id,a,b}=REC.mctx,D=MD[id];for(let li=a;li<=b;li++)for(const w of mText(D,li).split(' ')){const n=norm(w);if(n)REC.words.push({w,n,k:'line '+(li+1),li})}}recReset()}
 function recCounts(){let ok=0,bad=0;REC.st.forEach(x=>{if(x===1||x===4)ok++;else if(x===2||x===3)bad++});return{ok,bad}}
-function recPaint(){const U=recUI();if(!U.root)return;
+let recRaf=0;function recPaint(){if(!recRaf)recRaf=requestAnimationFrame(()=>{recRaf=0;recPaintNow()})}
+function recPaintNow(){const U=recUI();if(!U.root)return;
   if(REC.kind==='q'){$('mPage').classList.toggle('rec',REC.mode);$('mPage').classList.toggle('show',REC.show);if(!REC.mode)return}
   else U.root.classList.toggle('show',REC.show);
-  U.root.querySelectorAll('.w').forEach(el=>{const i=+el.dataset.i,x=REC.st[i];el.className='w'+(x===1?' ok':x===2?' bad':x===3?' sk':x===4?' fx':REC.tent.has(i)?' ok tent':'')+(REC.chk.has(i)?' chk':'')+(i===REC.pos&&REC.listening?' cur':'')});
+  U.root.querySelectorAll('.w').forEach(el=>{const i=+el.dataset.i,x=REC.st[i],c='w'+(x===1?' ok':x===2?' bad':x===3?' sk':x===4?' fx':REC.tent.has(i)?' ok tent':'')+(REC.chk.has(i)?' chk':'')+(i===REC.pos&&REC.listening?' cur':'');if(el._c!==c){el._c=c;el.className=c}});
   const c=recCounts(),end=REC.words.length&&REC.pos>=REC.words.length;if(U.ok)U.ok.textContent='✓ '+c.ok;if(U.bad)U.bad.textContent='✗ '+c.bad;
   if(U.st)U.st.textContent=REC.note?REC.note:REC.listening?(end?'Done':(!c.ok&&!c.bad?(REC.any?'Listening… recite anything':'Listening… start reciting'):'Listening…')):end?'Done · '+pl(c.bad,'mistake'):(REC.kind==='q'?'Tap the mic and recite':'Tap the mic and recite these lines');
   if(U.heard)U.heard.textContent=REC.interim||'';if(U.mic){U.mic.classList.toggle('live',REC.listening);U.mic.setAttribute('aria-label',REC.listening?'Stop listening':'Start listening')}if(U.show)U.show.classList.toggle('on',REC.show)}
@@ -1021,7 +1033,7 @@ function srStart(){const SR=recSR(),r=new SR();r.lang='ar-SA';r.continuous=true;
     const rest=words(lt[li]).slice(cm[li]||0);REC.interim=rest.join(' ');REC.tent=new Set();
     if(rest.length&&REC.listening){const C={words:REC.words,st:REC.st.slice(),heard:[],pos:REC.pos,miss:0};alignWords(C,rest);for(let k=REC.pos;k<C.pos;k++)if(C.st[k]===1)REC.tent.add(k)}
     clearTimeout(timer);timer=setTimeout(flush,1200);
-    recPaint();const cur=document.querySelector((REC.kind==='q'?'#mPage':'#mrText')+' .w.cur');if(cur&&REC.kind==='q')cur.scrollIntoView({block:'nearest',behavior:'smooth'})};
+    recPaint();recScroll()};
   r.onerror=e=>{dlog('phone recognition error: '+e.error+' (session '+n+')');
     if(e.error==='not-allowed'||e.error==='service-not-allowed'){if(n>1){REC.listening=false;REC.note='';recPaint();toast('Listening paused. Tap the mic to carry on.',3500)}else{REC.listening=false;toast('Microphone or speech recognition is blocked. Allow both for this app in your iPhone settings.',4500)}}
     else if(e.error==='network'){REC.listening=false;toast('The phone’s recognition needs internet')}
@@ -1102,7 +1114,7 @@ function mMark(id,a,b,on){const m=S.ml[id]||(S.ml[id]={});for(let i=a;i<=b;i++){
   if(ML&&ML.d===TODAY&&ML.items.length&&ML.items.every(([x,y])=>isMem(x,y))&&S.mseen!==TODAY){S.mseen=TODAY;save();toast('Today’s mutūn lines are done ✓ Bāraka Allāhu fīk',3500)}
   else if(mDone(id)===bk.n)toast('Mā shāʾ Allāh! You finished '+bk.en+' ✓',4000);else toast((b>a?'Lines '+(a+1)+'–'+(b+1):'Line '+(a+1))+' memorized ✓')}
 function needMD(ids){ids.filter(id=>!MD[id]&&!mLoading.has(id)).forEach(id=>{mLoading.add(id);loadMatn(id).then(()=>{mLoading.delete(id);renderToday();if(location.hash==='#mutun')renderMutun()}).catch(()=>mLoading.delete(id))})}
-function blockLines(x,hid){const D=MD[x.id];if(!D)return '…';let h='';for(let i=x.a;i<=x.b;i++)h+='<p class="ln'+(mInfo(x.id).poem?' poem':'')+'"><span class="lno">'+(i+1)+'</span>'+lineHTML(D.L[i][2])+'</p>';return h}
+function blockLines(x,hid){const D=MD[x.id];if(!D)return '…';let h='';for(let i=x.a;i<=x.b;i++)h+='<p class="ln'+(mInfo(x.id).poem?' poem':'')+'" data-k="'+x.id+':'+i+'"><span class="lno">'+(i+1)+'</span>'+lineHTML(D.L[i][2])+'</p>';return h}
 function mGoalCard(full){const c=mcalc();let h='<div class="card"><div class="row"><div><p class="lab">Mutūn goal</p><h2>'+esc(mGoalLabel())+'</h2></div><button class="btn sm ghost" data-mplan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gLen?c.gDone/c.gLen*100:0)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'line')+' · '+pl(S.mp.per,'line')+' a day'+(c.left?'':' · complete')+'</p>';
   if(full&&c.left){const it=[['Your plan',pl(S.mp.per,'line')+' a day, '+(7-S.off.length)+' days a week',c.finish]];const rate=c.win>=7?c.r28/c.win:0;
     if(rate>0)it.push(['Your recent pace',(rate*7).toFixed(1).replace(/\.0$/,'')+' lines a week',add(parse(TODAY),Math.ceil(c.left/rate))]);
@@ -1129,18 +1141,18 @@ function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';render
    +'<div class="tools" style="justify-content:flex-start;margin:10px 0 0">'+(inPlan?'':'<button class="chip" data-mplanhere="1">Start my plan here</button>')+'<button class="chip'+(mHide?' on':'')+'" data-mhide="1">'+(mHide?'Text hidden':'Hide text')+'</button><button class="chip" data-mfs="-2" aria-label="Smaller text">A−</button><button class="chip" data-mfs="2" aria-label="Larger text">A+</button>'+(MREC[b.id]?'':'<a class="chip" href="'+ytLink(b.t)+'" target="_blank" rel="noopener">Find recorded readings</a>')+'</div>'
    +(MREC[b.id]&&Object.keys(MREC[b.id]).length>1?'<div class="field"><span>Reader</span><div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr))">'+Object.keys(MREC[b.id]).map(r=>'<button data-mrd="'+r+'" class="'+(mpSel(b.id).r===r?'on':'')+'">'+esc(MREADERS[r][0])+'</button>').join('')+'</div></div>':'')+'</div>';
   if(tb.length)h+='<div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:6px 0 10px"><button data-mseg="today" class="'+(mFocus==='today'?'on':'')+'">Today</button><button data-mseg="all" class="'+(mFocus!=='today'?'on':'')+'">Whole text · practise</button></div>';
-  if(mFocus==='today'&&tb.length){tb.forEach(x=>{const dn=blkDone(x);h+='<div class="mpart today'+(dn?' done':'')+'"><span class="tag">Today · '+(x.b>x.a?unit+'s '+(x.a+1)+'–'+(x.b+1):unit+' '+(x.a+1))+'</span><div class="mx ar'+(mHide&&!dn?' hid':'')+'" lang="ar" data-rv="1">'+blockLines(x)+'</div>'+partBtns(b.id,x.a,x.b,dn)+'</div>'});
+  if(mFocus==='today'&&tb.length){tb.forEach(x=>{const dn=blkDone(x);h+='<div class="mpart today'+(dn?' done':'')+'"><span class="tag">Today · '+(x.b>x.a?unit+'s '+(x.a+1)+'–'+(x.b+1):unit+' '+(x.a+1))+'</span>'+partBtns(b.id,x.a,x.b,dn)+'<div class="mx ar'+(mHide&&!dn?' hid':'')+'" lang="ar" data-rv="1">'+blockLines(x)+'</div></div>'});
     h+='<p class="note">Listen, repeat, then test yourself. Mark the lines when you have them.</p>'}
   else{h+='<p class="note">Tap a '+unit+' to practise from there. Choose how many '+unit+'s with − and +.</p>';
     if(mWin.a>0)h+='<button class="btn ghost wide" data-mmore="-1" style="margin-bottom:10px">Show earlier '+unit+'s</button>';
     let last=-1;h+='<div class="mlines'+(mHide?' hidall':'')+'">';for(let i=mWin.a;i<mWin.z;i++){const si=D.L[i][0];if(si!==last){last=si;if(D.secs[si])h+='<h3 class="mh ar" lang="ar">'+esc(D.secs[si])+'</h3>'}
-      const sel=MSEL&&i>=MSEL.a&&i<MSEL.a+MSEL.len,done=isMem(b.id,i);h+='<div class="mline'+(done?' done':'')+(sel?' sel':'')+(b.poem?' poem':'')+'" data-ml="'+i+'"><span class="lno">'+(i+1)+'</span><span class="ar lt" lang="ar">'+lineHTML(D.L[i][2])+'</span><button class="lchk" data-mln="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' '+unit+' '+(i+1)+'">'+ICON_CHECK+'</button></div>'}
+      const sel=MSEL&&i>=MSEL.a&&i<MSEL.a+MSEL.len,done=isMem(b.id,i);h+='<div class="mline'+(done?' done':'')+(sel?' sel':'')+(b.poem?' poem':'')+'" data-ml="'+i+'" data-k="'+b.id+':'+i+'"><span class="lno">'+(i+1)+'</span><span class="ar lt" lang="ar">'+lineHTML(D.L[i][2])+'</span><button class="lchk" data-mln="'+i+'" aria-pressed="'+done+'" aria-label="'+(done?'Unmark':'Mark')+' '+unit+' '+(i+1)+'">'+ICON_CHECK+'</button></div>'}
     h+='</div>';if(mWin.z<b.n)h+='<button class="btn ghost wide" data-mmore="1">Show more '+unit+'s</button>';
     if(MSEL){const a=MSEL.a,z=Math.min(b.n-1,a+MSEL.len-1);h+='<div class="selbar"><div class="row"><b>'+esc(unit[0].toUpperCase()+unit.slice(1))+'s '+(a+1)+'–'+(z+1)+'</b><div class="step"><button data-msl="-1" aria-label="Fewer '+unit+'s">−</button><b>'+MSEL.len+'</b><button data-msl="1" aria-label="More '+unit+'s">+</button></div><button class="pb2" data-msx="1" aria-label="Clear selection">✕</button></div>'+partBtns(b.id,a,z,(()=>{for(let i=a;i<=z;i++)if(!isMem(b.id,i))return false;return true})())+'</div>'}}
   h+=MREC[b.id]?'<details class="adv"><summary>Full recording</summary>'+mpCard(b.id)+'</details>':'';
   V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px');if(MREC[b.id]&&$('mpCard')){mpPaint();mpRefreshSaved(b.id)}
   if(mJump>=0){const j=mJump;mJump=-1;setTimeout(()=>{const el=document.querySelector('[data-ml="'+j+'"]');el&&el.scrollIntoView({block:'center',behavior:'smooth'})},300)}}
-function partBtns(id,a,b,dn){return '<div class="pact">'+(MREC[id]?'<button class="btn sm" data-mpart="'+id+':'+a+':'+b+'">'+IC_PLAY+'Listen</button>':'')+'<button class="btn sm ghost" data-mtest="'+id+':'+a+':'+b+'">'+IC_MIC+'Test</button><button class="btn sm '+(dn?'ghost':'gold')+'" data-mmark="'+id+':'+a+':'+b+'">'+(dn?'✓ Memorized':'Mark memorized')+'</button></div>'}
+function partBtns(id,a,b,dn){return '<div class="pact">'+(MREC[id]?'<button class="btn sm" data-mpart="'+id+':'+a+':'+b+'">'+IC_PLAY+'Play</button><button class="btn sm ghost spd" data-mspd="1" aria-label="Playback speed">'+MP.rate+'×</button>':'')+'<button class="btn sm ghost" data-mtest="'+id+':'+a+':'+b+'">'+IC_MIC+'Test</button><button class="btn sm '+(dn?'ghost':'gold')+'" data-mmark="'+id+':'+a+':'+b+'">'+(dn?'✓ Memorized':'Mark memorized')+'</button></div>'}
 $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data-rv],[data-ml]');if(!t)return;const d=t.dataset;
   if(d.mo){mOpen=d.mo;mWin=null;mHide=false;mFocus='today';MSEL=null;renderMutun();scrollTo({top:0});return}
   if(d.mback){mOpen='';MSEL=null;renderMutun();scrollTo({top:0});return}
@@ -1209,7 +1221,8 @@ const MREC={nawaqid:{ansari:[A1('02')],shaydhami:[A2('010-Nawaqid_al-islam_al-10
  kashf:{shaydhami:[A2('009-Kashf-ash-shobohaat.mp3')]},usulsunna:{shaydhami:[A2('045-Oussoul_assuna.mp3')]},lumca:{shaydhami:[A2('040-Lomaat_ali3tiqad.mp3')]},
  umdaahkam:{shaydhami:Array.from({length:8},(_,i)=>A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3'))},umdafiqh:{shaydhami:Array.from({length:6},(_,i)=>A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3'))}};
 const MA=new Audio();MA.preload='none';
-const MP={id:'',r:'',f:0,obj:null,a:null,b:null,rate:1,loaded:'',saved:{}};
+const MP={id:'',r:'',f:0,obj:null,a:null,b:null,rate:[1,1.5,2].includes(S.mrate)?S.mrate:1,loaded:'',saved:{}};
+const RATES=[1,1.5,2];function mRate(v){MP.rate=v;S.mrate=v;save();MA.playbackRate=v;mpPaint();mbarPaint();document.querySelectorAll('[data-mspd]').forEach(b=>b.textContent=v+'×')}
 const fmtT=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+':'+pad(m):m)+':'+pad(x)};
 const silentWav=()=>{const n=800,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i)};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);let s='';b.forEach(x=>s+=String.fromCharCode(x));return 'data:audio/wav;base64,'+btoa(s)};
 let maUnlocked=false;function maUnlock(){if(maUnlocked)return;maUnlocked=true;try{MA.src=silentWav();MA.play().catch(()=>{})}catch(e){}}
@@ -1246,19 +1259,25 @@ function mppSeek(g,play){const ds=S.mdur[MPP.id+':'+MPP.r],[f,lt]=g2f(ds,g);
   if(MP.id!==MPP.id||MP.r!==MPP.r||MP.f!==f||!MA.src||MA.src.startsWith('data:'))mpLoad(MPP.id,MPP.r,f,lt,play);else{MA.currentTime=lt;if(play)MA.play().catch(()=>{})}}
 let mpLast=0;
 MA.addEventListener('timeupdate',()=>{if(MA.src.startsWith('data:'))return;if(MP.a!=null&&MP.b!=null&&MA.currentTime>=MP.b){MA.currentTime=MP.a}
-  if(MPP.on&&MP.id===MPP.id&&MP.r===MPP.r){const ds=S.mdur[MPP.id+':'+MPP.r];if(ds){const g=fStart(ds,MP.f)+MA.currentTime;if(g>=MPP.te){MPP.count++;if(MPP.count<S.rep)mppSeek(MPP.ts,true);else{MA.pause();MPP.count=0;mbarPaint()}}}}
+  if(MPP.on&&MP.id===MPP.id&&MP.r===MPP.r){const ds=S.mdur[MPP.id+':'+MPP.r];if(ds){const g=fStart(ds,MP.f)+MA.currentTime;mppLine(g);if(g>=MPP.te){MPP.count++;if(MPP.count<S.rep)mppSeek(MPP.ts,true);else{MA.pause();MPP.count=0;mbarPaint()}}}}
   const now=Date.now();if(now-mpLast>4000&&MP.id&&!MPP.on){mpLast=now;S.mpos=S.mpos||{};S.mpos[MP.id]={r:MP.r,f:MP.f,t:Math.floor(MA.currentTime)};save()}mpPaint(true);mbarPaint(true)});
 MA.addEventListener('play',()=>{mpPaint();mbarPaint()});MA.addEventListener('pause',()=>{mpPaint();mbarPaint()});
 MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;const L=MREC[MP.id][MP.r];if(MP.f+1<L.length)mpLoad(MP.id,MP.r,MP.f+1,0,true);else{if(!MPP.on){S.mpos[MP.id]={r:MP.r,f:0,t:0};save()}MPP.on=false;mpPaint();mbarPaint()}});
 function mbarShow(){$('player').classList.remove('on');$('mbar').classList.add('on')}
-function mbarHide(){$('mbar').classList.remove('on');MPP.on=false;if(!MA.paused)MA.pause()}
+function mbarHide(){$('mbar').classList.remove('on');MPP.on=false;if(!MA.paused)MA.pause();mppMark(-1)}
+function mppMark(li){document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));MPP.cur=li;if(li<0)return;let vis=null;
+  document.querySelectorAll('[data-k="'+MPP.id+':'+li+'"]').forEach(e=>{e.classList.add('playing');if(e.offsetParent)vis=e});
+  if(vis){const r=vis.getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-170)vis.scrollIntoView({block:'center',behavior:'smooth'})}}
+function mppLine(g){const c=mCum(MPP.id);let li=MPP.a;for(let i=MPP.a;i<=MPP.b;i++){if(tAt(MPP.id,MPP.r,c[i])<=g+.15)li=i;else break}if(li!==MPP.cur)mppMark(li)}
 function mbarPaint(light){if(!$('mbar').classList.contains('on')||!MPP.id)return;const b=mInfo(MPP.id),playing=!MA.paused&&MP.id===MPP.id;
   $('mbIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mbPlay').setAttribute('aria-label',playing?'Pause':'Play');
-  if(light)return;$('mbName').textContent=(b?b.en:'')+' · '+(MPP.b>MPP.a?'lines '+(MPP.a+1)+'–'+(MPP.b+1):'line '+(MPP.a+1));$('mbSub').textContent=MREADERS[MPP.r][0].split(' ').slice(-1)[0]+(S.rep>1?' · repeats ×'+S.rep:'');$('mbRep').textContent='×'+S.rep;$('mbR').hidden=Object.keys(MREC[MPP.id]||{}).length<2}
+  if(light)return;$('mbName').textContent=(b?b.en:'')+' · '+(MPP.b>MPP.a?'lines '+(MPP.a+1)+'–'+(MPP.b+1):'line '+(MPP.a+1));$('mbSub').textContent=MREADERS[MPP.r][0]+' · '+MP.rate+'× · '+(S.rep>1?'repeats ×'+S.rep:'plays once');$('mbRep').textContent='×'+S.rep;$('mbSpd').textContent=MP.rate+'×';$('mbR').hidden=Object.keys(MREC[MPP.id]||{}).length<2}
 $('mbPlay').onclick=()=>{maUnlock();if(!MA.paused&&MP.id===MPP.id){MA.pause();return}if(MPP.id){if(MPP.on&&MP.id===MPP.id&&MA.src&&!MA.src.startsWith('data:'))MA.play().catch(()=>{});else playPart(MPP.id,MPP.a,MPP.b,MPP.r)}};
 $('mbRep').onclick=()=>{const r=[1,3,5,10];S.rep=r[(r.indexOf(S.rep)+1)%r.length];save();mbarPaint();setPI();toast(S.rep===1?'Plays once':'Repeats '+S.rep+' times')};
 $('mbR').onclick=()=>{const rs=Object.keys(MREC[MPP.id]);const r=rs[(rs.indexOf(MPP.r)+1)%rs.length];S.mpos=S.mpos||{};S.mpos[MPP.id]={r,f:0,t:0};save();playPart(MPP.id,MPP.a,MPP.b,r);toast(MREADERS[r][0])};
 $('mbClose').onclick=()=>mbarHide();
+$('mbSpd').onclick=()=>{const v=RATES[(RATES.indexOf(MP.rate)+1)%RATES.length];mRate(v);toast('Speed '+v+'×',1200)};
+MA.addEventListener('play',()=>{if(MA.playbackRate!==MP.rate)MA.playbackRate=MP.rate});MA.addEventListener('loadedmetadata',()=>{MA.playbackRate=MP.rate});
 $('mbAdj').onclick=()=>{if(!S.mdur||!S.mdur[MPP.id+':'+MPP.r]){toast('Play the part first');return}
   sheet('<h2>Line up the recording</h2><p class="note">Timing is worked out from the text, so it can be a little early or late. Nudge it here. The app remembers, and nearby lines get more accurate too.</p><div class="field"><span>Start of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="s:-2">−2 s</button><button class="chip" data-adj="s:-0.5">−½ s</button><button class="chip" data-adj="s:0.5">+½ s</button><button class="chip" data-adj="s:2">+2 s</button></div></div><div class="field"><span>End of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="e:-2">−2 s</button><button class="chip" data-adj="e:-0.5">−½ s</button><button class="chip" data-adj="e:0.5">+½ s</button><button class="chip" data-adj="e:2">+2 s</button></div></div><button class="btn wide" data-close>Done</button>');
   $('panel').onclick=e=>{const x=e.target.closest('[data-adj]');if(!x)return;const[w,v]=x.dataset.adj.split(':'),c=mCum(MPP.id),ch=w==='s'?c[MPP.a]:c[MPP.b+1],t0=tAt(MPP.id,MPP.r,ch);setAnchor(MPP.id,MPP.r,ch,t0+(+v));
@@ -1283,7 +1302,7 @@ async function mpSaveAll(){const id=mOpen,s=mpSel(id),L=MREC[id][s.r];let c;try{
 $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
   if(d.mpp){mpToggle();return}
   if(d.mps){if(MP.id===mOpen&&MA.src){MA.currentTime=Math.max(0,MA.currentTime+(+d.mps))}return}
-  if(d.mpx){const r=[0.75,1,1.25,1.5];MP.rate=r[(r.indexOf(MP.rate)+1)%r.length];MA.playbackRate=MP.rate;mpPaint();return}
+  if(d.mpx){mRate(RATES[(RATES.indexOf(MP.rate)+1)%RATES.length]);return}
   if(d.mpab){if(MP.id!==mOpen||!MA.src){toast('Play the recording first');return}if(MP.a==null){MP.a=MA.currentTime}else if(MP.b==null){if(MA.currentTime>MP.a+1){MP.b=MA.currentTime;MA.currentTime=MP.a}else toast('Let it play a little past the start first')}else{MP.a=MP.b=null}mpPaint();return}
   if(d.mpsave){mpSaveAll();return}},true);
 $('v-mutun').addEventListener('change',e=>{if(e.target.id==='mpTrack'){const f=+e.target.value,s=mpSel(mOpen);S.mpos=S.mpos||{};S.mpos[mOpen]={r:s.r,f,t:0};save();if(MP.id===mOpen){maUnlock();mpLoad(mOpen,s.r,f,0,!MA.paused)}else mpPaint()}});
@@ -1358,6 +1377,7 @@ $('onb').addEventListener('change',e=>{const t=e.target,O=OB;if(!O)return;
   else if(t.closest('#obOff')){const v=[...$('onb').querySelectorAll('#obOff input:checked')].map(i=>+i.value);if(v.length>6){t.checked=false;toast('Keep at least one study day');return}O.off=v}
   else return;onbPaint()});
 document.addEventListener('click',e=>{if(e.target.closest('#newPlan'))openOnb(false)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-mspd]');if(!b)return;e.stopPropagation();const v=RATES[(RATES.indexOf(MP.rate)+1)%RATES.length];mRate(v);toast('Speed '+v+'×',1200)},true);
 
 /* ---------- nudges when a day is missed ---------- */
 const N_REPAIR={ar:'احرص على ما ينفعك، واستعن بالله ولا تعجز',en:'Be keen on what benefits you, seek Allah’s help, and do not give up.',src:'The Prophet ﷺ · narrated by Muslim, from Abū Hurayrah'};
@@ -1397,7 +1417,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v16';
+const APPV='v17';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifz diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
@@ -1462,7 +1482,7 @@ async function aiMicOn(retry){let st;dlog('mic: asking');
   const ratio=ctx.sampleRate/16000;MIC.ph=0;
   pr.onaudioprocess=e=>{if(!MIC.on||MIC.ctx!==ctx)return;MIC.cb++;const x=new Float32Array(e.inputBuffer.getChannelData(0));{const out=new Int16Array(Math.ceil(x.length/ratio)+1);let k=0,p=MIC.ph;while(p+ratio<=x.length){const a=Math.max(0,Math.floor(p)),b=Math.max(a+1,Math.floor(p+ratio));let s=0;for(let i=a;i<b;i++)s+=x[i];out[k++]=Math.max(-32768,Math.min(32767,s/(b-a)*32767));p+=ratio}MIC.ph=p-x.length;MIC.rec.push(out.subarray(0,k));MIC.recN+=k;while(MIC.recN>16000*600&&MIC.rec.length)MIC.recN-=MIC.rec.shift().length}
     let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];const db=20*Math.log10(Math.sqrt(r/x.length)+1e-9);MIC.lvl=db;if(db>MIC.top)MIC.top=db;
-    hist.push(db);if(hist.length>230)hist.shift();const nz=pct(.1),spk=pct(.9),thr=nz+Math.max(6,.35*(spk-nz));
+    hist.push(db);if(hist.length>230)hist.shift();if(!(MIC.cb%6)||MIC.thr===undefined){const nz=pct(.1),spk=pct(.9);MIC.thr=nz+Math.max(6,.35*(spk-nz))}const thr=MIC.thr;
     if(!MIC.sp){MIC.pre.push({x,db});if(MIC.pre.length>12)MIC.pre.shift();if(db>thr&&db>-55){MIC.sp=true;MIC.seg=MIC.pre;MIC.pre=[];MIC.ms=MIC.seg.length*bm;MIC.sil=0;MIC.voiced=bm}return}
     MIC.seg.push({x,db});MIC.ms+=bm;if(db>thr-3){if(db>thr)MIC.voiced+=bm;MIC.sil=0}else MIC.sil+=bm;
     if(MIC.sil>=350&&MIC.voiced>=1200)aiFlush();
@@ -1470,7 +1490,7 @@ async function aiMicOn(retry){let st;dlog('mic: asking');
     else if(MIC.ms>=(S.aiLite?8000:12000))aiFlush(bm);
     else if(!S.aiLite&&AI.st==='ready'&&MIC.ms>=2500&&performance.now()-MIC.lastPart>1800&&!AI.busy&&!aiPending&&AI.ms<2600){MIC.lastPart=performance.now();aiSegment(MIC.seg.map(b=>b.x),false)}};
   src.connect(pr);pr.connect(ctx.destination);
-  const tick=()=>{if(!MIC.on||MIC.ctx!==ctx)return;const m=$(REC.kind==='q'?'recMic':'mrMic');if(m)m.style.setProperty('--lvl',Math.max(0,Math.min(1,(MIC.lvl+60)/45)).toFixed(2));MIC.raf=requestAnimationFrame(tick)};tick();
+  let lt=0;const tick=t=>{if(!MIC.on||MIC.ctx!==ctx)return;if(!t||t-lt>90){lt=t||0;const m=$(REC.kind==='q'?'recMic':'mrMic');if(m)m.style.setProperty('--lvl',Math.max(0,Math.min(1,(MIC.lvl+60)/45)).toFixed(2))}MIC.raf=requestAnimationFrame(tick)};tick();
   clearTimeout(MIC.wd);MIC.wd=setTimeout(()=>{if(!MIC.on||MIC.ctx!==ctx)return;
     if(!MIC.cb){dlog('no sound arriving from the microphone'+(retry?' (after retry)':''));if(!retry){aiMicOff();aiMicOn(true)}else aiTrouble('Your microphone isn’t sending any sound to the app. Close the app fully, open it again and allow the microphone.');return}
     MIC.wd=setTimeout(()=>{if(MIC.on&&MIC.ctx===ctx&&MIC.top<-58){dlog('mic very quiet: '+Math.round(MIC.top)+' dB');toast('I can’t hear you. Check that nothing is covering the microphone.',4000)}},6000)},2500);
@@ -1500,8 +1520,7 @@ async function aiProcess(blocks,rate,final){if(!AI.w||AI.st!=='ready')return;AI.
         if(subs.length){const v=await aiCall({t:'verify',base:hw,alts:subs.map(([k,hi,f])=>{const x=hw.slice();x.splice(hi,1,...f.split(' '));return x})});
           if(v.d)v.d.forEach((d,i)=>{if(d>-9){const k=subs[i][0];C.st[k]=1;delete C.heard[k]}})}}
       if(REC.words===W){REC.st=C.st;REC.heard=C.heard;REC.pos=C.pos;REC.miss=C.miss}}}
-  REC.tent=new Set();if(REC.words.length&&REC.pos>=REC.words.length)recPageDone();recPaint();
-  const cur=document.querySelector((REC.kind==='q'?'#mPage':'#mrText')+' .w.cur');if(cur&&REC.kind==='q')cur.scrollIntoView({block:'nearest',behavior:'smooth'})
+  REC.tent=new Set();if(REC.words.length&&REC.pos>=REC.words.length)recPageDone();recPaint();recScroll()
 }finally{AI.busy=false;aiLive(0)}}
 function aiRecStart(){AI.restarts=0;if(MIC.shown){MIC.rec=[];MIC.recN=0;MIC.shown=false}if(!REC.words.length||REC.pos>=REC.words.length)recBuild();REC.listening=true;REC.interim='';REC.tent=new Set();
   dlog('recite start · '+(REC.kind==='q'?'page '+S.cur:'matn')+' · ai '+AI.st);aiQS();if(AI.st!=='ready'){REC.aiWait=true;aiLoad();aiUI()}else{REC.note='';recPaint()}aiMicOn()}
@@ -1514,7 +1533,7 @@ async function hybOn(){if(HY.on)return;HY.last=performance.now();HY.f1=HY.f2={t:
   let st;try{st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:true}})}catch(e){dlog('hybrid mic error: '+e.name);return}
   if(!REC.listening){st.getTracks().forEach(t=>t.stop());return}
   let ctx;try{ctx=new(window.AudioContext||window.webkitAudioContext)();await ctx.resume()}catch(e){dlog('hybrid audio error: '+e.message);st.getTracks().forEach(t=>t.stop());return}
-  const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(2048,1,1),ratio=ctx.sampleRate/16000,R=HY.ring,L=R.length;
+  const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(4096,1,1),ratio=ctx.sampleRate/16000,R=HY.ring,L=R.length;
   Object.assign(HY,{on:true,st,ctx,src,pr,ph:0});dlog('hybrid on · audio '+ctx.state+' '+ctx.sampleRate+' Hz');
   ctx.onstatechange=()=>{if(HY.on&&HY.ctx===ctx&&ctx.state!=='running'&&ctx.state!=='closed')ctx.resume().catch(()=>{})};
   let floor=-50;
@@ -1522,11 +1541,11 @@ async function hybOn(){if(HY.on)return;HY.last=performance.now();HY.f1=HY.f2={t:
     while(p+ratio<=x.length){const a=Math.max(0,Math.floor(p)),b=Math.max(a+1,Math.floor(p+ratio));let s=0;for(let i=a;i<b;i++)s+=x[i];const v=s/(b-a);R[HY.N%L]=v;HY.N++;out[k++]=Math.max(-32768,Math.min(32767,v*32767));p+=ratio}
     HY.ph=p-x.length;HY.at=performance.now();HY.an=HY.N;MIC.rec.push(out.subarray(0,k));MIC.recN+=k;while(MIC.recN>16000*600&&MIC.rec.length)MIC.recN-=MIC.rec.shift().length;
     let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];const db=20*Math.log10(Math.sqrt(r/x.length)+1e-9);floor=db<floor?db:floor*.995+db*.005;
-    const m=$('recMic');if(m)m.style.setProperty('--lvl',Math.max(0,Math.min(1,(db+60)/45)).toFixed(2));
+    HY.lvl=db;
     if(db>floor+12)HY.speech+=x.length/ctx.sampleRate*1000;
     // the phone's recognition went quiet while the mic clearly hears recitation: this phone can't share the mic
     if(HY.speech>6000&&performance.now()-HY.heardAt>9000){dlog('phone recognition silent while the mic hears speech: turning the AI double-check off');HY.off=true;hybOff();toast('Your phone can’t share the microphone, so the AI double-check is off. Words still appear as you recite.',4500);if(REC.listening&&REC.r){try{REC.r.stop()}catch(x){}}}};
-  src.connect(pr);pr.connect(ctx.destination)}
+  src.connect(pr);pr.connect(ctx.destination);let lt=0;const tick=t=>{if(!HY.on||HY.ctx!==ctx)return;if(t-lt>90){lt=t;const m=$('recMic');if(m)m.style.setProperty('--lvl',Math.max(0,Math.min(1,((HY.lvl||-90)+60)/45)).toFixed(2))}requestAnimationFrame(tick)};requestAnimationFrame(tick)}
 function hybOff(){HY.on=false;try{HY.pr&&HY.pr.disconnect();HY.src&&HY.src.disconnect()}catch(e){}try{HY.st&&HY.st.getTracks().forEach(t=>t.stop())}catch(e){}try{HY.ctx&&HY.ctx.close()}catch(e){}Object.assign(HY,{st:null,ctx:null,src:null,pr:null});const m=$('recMic');if(m)m.style.setProperty('--lvl',0)}
 function hybAudio(t0,t1){const L=HY.ring.length,n1=Math.min(HY.an,Math.round(HY.an-(HY.at-t1)*16)),n0=Math.max(HY.an-L+1,Math.round(HY.an-(HY.at-t0)*16),n1-16000*14);
   if(n1-n0<8000)return null;const a=new Float32Array(n1-n0);for(let i=n0;i<n1;i++)a[i-n0]=HY.ring[((i%L)+L)%L];return a}
