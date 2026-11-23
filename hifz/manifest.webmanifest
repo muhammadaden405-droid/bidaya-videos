@@ -1,6 +1,6 @@
 {
-  "name": "Hifz – Qur'an memorization",
-  "short_name": "Hifz",
+  "name": "Hifdh – Qur'an memorization",
+  "short_name": "Hifdh",
   "description": "Two pages a day, revision and recitations, offline.",
   "start_url": "./#today",
   "scope": "./",

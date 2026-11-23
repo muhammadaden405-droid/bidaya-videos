@@ -7,13 +7,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Hifz">
+<meta name="apple-mobile-web-app-title" content="Hifdh">
 <meta name="description" content="Daily Qur'an memorization tracker: two pages a day, revision, recitations offline.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="preload" href="fonts/amiri-quran.woff2" as="font" type="font/woff2" crossorigin>
-<title>Hifz</title>
+<title>Hifdh</title>
+<meta name="robots" content="noindex,nofollow">
 <style>
 /* VOICE calm and devotional; a daily companion you open after Fajr
    IDEA the mushaf itself: green cover, gilt frame, cream page
@@ -441,7 +442,7 @@ body.onbon{overflow:hidden}
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="38" height="38"><div><h1>Hifz</h1><p id="greet">Qur'an memorization</p></div></div>
+  <div class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="38" height="38"><div><h1>Hifdh</h1><p id="greet">Qur'an memorization</p></div></div>
   <div class="hdr-r"><div class="dates"><div id="hij"></div><div id="greg"></div></div><button class="hmic" id="hdrMic" aria-label="Recite anything: the app finds where you are"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button></div>
 </header>
 
@@ -784,7 +785,7 @@ function setPI(){const t=PL.list[PL.i],r=RECITERS.find(x=>x[0]===S.reciter);$('p
   $('pAy').textContent=t?(t.bas?'Basmalah':sname(t.s)+' '+t.s+':'+t.a+(S.rep>1?' · '+(PL.r+1)+' of '+S.rep:'')):'';
   $('pIcon').innerHTML=PL.on?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('pPlay').setAttribute('aria-label',PL.on?'Pause':'Play');
   $('pRep').textContent='×'+S.rep;$('pLoop').classList.toggle('on',!!S.loop);$('pLoop').setAttribute('aria-pressed',!!S.loop);
-  if('mediaSession' in navigator&&t){try{navigator.mediaSession.metadata=new MediaMetadata({title:t.bas?'Basmalah':sname(t.s)+' '+t.s+':'+t.a,artist:r?r[1]:'',album:'Hifz'})}catch(e){}}}
+  if('mediaSession' in navigator&&t){try{navigator.mediaSession.metadata=new MediaMetadata({title:t.bas?'Basmalah':sname(t.s)+' '+t.s+':'+t.a,artist:r?r[1]:'',album:'Hifdh'})}catch(e){}}}
 function markPlaying(){document.querySelectorAll('.ay.play').forEach(x=>x.classList.remove('play'));const t=PL.list[PL.i];if(PL.on&&t){const el=document.querySelector('.ay[data-k="'+t.k+'"]');if(el){el.classList.add('play');el.scrollIntoView({block:'center',behavior:'smooth'})}}}
 $('pPlay').onclick=()=>{unlock();if(PL.on){AU.pause();PL.on=false;setPI()}else if(AU.src&&AU.currentTime>0&&!AU.ended){AU.play().then(()=>{PL.on=true;setPI()}).catch(()=>{})}else playCur()};
 $('pRep').onclick=()=>{const r=[1,3,5,10];S.rep=r[(r.indexOf(S.rep)+1)%r.length];save();setPI();toast(S.rep===1?'Each verse plays once':'Each verse repeats '+S.rep+' times')};
@@ -798,7 +799,7 @@ async function saveOffline(pages){if(!Q){toast('The mushaf is still loading');re
 async function downloadMp3(pages){if(!Q)return;const L=tracks(pages),parts=[];toast('Preparing the MP3…',4000);
   try{for(const t of L)parts.push(await getBlob(url(t.s,t.a)))}catch(e){toast('Couldn’t get every verse. Check your connection.');return}
   const r=RECITERS.find(x=>x[0]===S.reciter),b=new Blob(parts,{type:'audio/mpeg'}),a=document.createElement('a');
-  a.href=URL.createObjectURL(b);a.download='Hifz page '+pages.join('-')+' - '+(r?r[1].replace(/[ʿʾ]/g,''):'recitation')+'.mp3';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);toast('MP3 downloaded ✓')}
+  a.href=URL.createObjectURL(b);a.download='Hifdh page '+pages.join('-')+' - '+(r?r[1].replace(/[ʿʾ]/g,''):'recitation')+'.mp3';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);toast('MP3 downloaded ✓')}
 
 /* ---------- progress ---------- */
 let openJuz=0;
@@ -882,7 +883,8 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 /* ---------- backup ---------- */
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
-const backupLink=()=>location.origin+location.pathname+'#restore='+enc({start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,g:S.g,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const NEWHOME='https://hifdh-quran.netlify.app/',MOVED=false;
+const backupLink=base=>(base||location.origin+location.pathname)+'#restore='+enc({mrate:S.mrate,asr:S.asr,asrV:S.asrV,rep:S.rep,fs:S.fs,mfs:S.mfs,theme:S.theme,recInfo:S.recInfo,start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,g:S.g,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
 function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:''});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
@@ -1006,7 +1008,7 @@ function recEnter(any){if(!recSR()&&typeof Worker==='undefined'){sheet('<h2>Reci
 function recSaveAudio(){const n=MIC.recN,buf=new ArrayBuffer(44+n*2),v=new DataView(buf),W=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
   W(0,'RIFF');v.setUint32(4,36+n*2,true);W(8,'WAVE');W(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);W(36,'data');v.setUint32(40,n*2,true);
   let o=44;for(const c of MIC.rec){new Int16Array(buf,o,c.length).set(c);o+=c.length*2}
-  const f=new File([buf],'hifz-'+(REC.kind==='q'?'page-'+(REC.page||S.cur):'matn')+'-'+TODAY+'.wav',{type:'audio/wav'});
+  const f=new File([buf],'hifdh-'+(REC.kind==='q'?'page-'+(REC.page||S.cur):'matn')+'-'+TODAY+'.wav',{type:'audio/wav'});
   if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],title:'My recitation'}).catch(()=>{});
   else{const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}}
 function recExit(){recStop(false);REC.mode=false;REC.any=false;renderMushaf()}
@@ -1238,7 +1240,7 @@ async function mpLoad(id,r,f,t,play){if(!AU.paused){AU.pause();PL.on=false;setPI
   if(blob){MP.obj=URL.createObjectURL(blob);MA.src=MP.obj}else MA.src=u;
   MA.playbackRate=MP.rate;if(t)MA.addEventListener('loadedmetadata',()=>{try{MA.currentTime=t}catch(e){}},{once:true});
   if(play)MA.play().catch(()=>toast(navigator.onLine?'Couldn’t play this recording. Try again.':'You’re offline and this recording isn’t saved yet.'));
-  if('mediaSession' in navigator){try{const b=mInfo(id);navigator.mediaSession.metadata=new MediaMetadata({title:b?b.en:'Matn',artist:MREADERS[r][0],album:'Hifz · Mutūn'})}catch(e){}}
+  if('mediaSession' in navigator){try{const b=mInfo(id);navigator.mediaSession.metadata=new MediaMetadata({title:b?b.en:'Matn',artist:MREADERS[r][0],album:'Hifdh · Mutūn'})}catch(e){}}
   mpPaint();mbarPaint()}
 function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;MPP.on=false;
   if(MP.id===id&&MA.src&&!MA.src.startsWith('data:')){if(MA.paused)MA.play().catch(()=>{});else MA.pause();return}
@@ -1460,12 +1462,12 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v20';
+const APPV='v21';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
-function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifz diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
+function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
   $('dlogC').onclick=()=>{const ta=$('dlogT');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Copied ✓')).catch(()=>{ta.focus();ta.select();try{document.execCommand('copy');toast('Copied ✓')}catch(e){toast('Select the text and copy it')}})};
-  if($('dlogS'))$('dlogS').onclick=()=>navigator.share({title:'Hifz diagnostics',text:t}).catch(()=>{})}
+  if($('dlogS'))$('dlogS').onclick=()=>navigator.share({title:'Hifdh diagnostics',text:t}).catch(()=>{})}
 addEventListener('error',e=>dlog('page error: '+(e.message||'')+' line '+(e.lineno||'')));addEventListener('unhandledrejection',e=>dlog('page rejection: '+String(e.reason&&e.reason.message||e.reason)));
 const aiOk=()=>!!S.aiOk&&typeof Worker!=='undefined';
 const useAI=()=>!REC.phoneOnce&&(REC.kind==='q'?(S.asr==='ai'||(!recSR()&&S.asr!=='phone')):S.asrM==='ai'&&(aiOk()||AI.st==='ready'))&&typeof Worker!=='undefined';
@@ -1625,6 +1627,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){const t=y
 let deferredInstall=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(location.hash==='#settings')renderSettings()});
 
 const restoring=location.hash.startsWith('#restore=');
+if(MOVED&&location.hostname.endsWith('github.io')&&!restoring)setTimeout(()=>{sheet('<h2>Hifdh has a new address</h2><p class="mean">The app now lives at <b>hifdh-quran.netlify.app</b>. Tap below to open it. Your plan and progress come with you.</p><a class="btn wide" id="goNew" href="'+backupLink(NEWHOME)+'">Open the new app</a><p class="note" style="margin-top:12px">Then add it to your Home Screen (Share → Add to Home Screen) and delete this old one.</p><button class="btn ghost wide" data-close style="margin-top:8px">Not now</button>')},600);
 {let live=0;try{live=+localStorage.getItem('hifz-ai-live')||0;localStorage.removeItem('hifz-ai-live')}catch(e){}
  dlog('app open · '+APPV+(live?' · the last session closed while the AI was working':''));
  if(live&&Date.now()-live<20*60e3){S.aiCrash=(S.aiCrash||0)+1;S.aiFast=0;if(S.aiFast){S.aiFast=0;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses standard mode.',4500),1500)}else if(!S.aiLite){S.aiLite=1;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses a lighter setting.',4500),1500)}save()}}

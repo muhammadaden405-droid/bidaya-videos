@@ -1,4 +1,4 @@
-# Hifz – Qur'an memorization app
+# Hifdh – Qur'an memorization app
 
 A phone-first, offline web app for memorizing the Qur'an page by page (604-page Madinah Mushaf).
 
