@@ -1294,7 +1294,7 @@ async function mPauseMap(u,dur){S.mpz=S.mpz||{};if(S.mpz[u])return S.mpz[u];cons
   dlog('matn timing: '+Math.round(t/60)+' min analysed, '+out.length/2+' pauses, '+Math.round(performance.now()-t0)+' ms');return S.mpz[u]}
 function mppAnalyze(){const id=MPP.id,r=MPP.r,ds=S.mdur[id+':'+r];if(!ds)return;if(S.mlt&&S.mlt[id+':'+r])return;const L=MREC[id][r].length,f0=L<=3?0:g2f(ds,MPP.ts)[0],f1=L<=3?L-1:g2f(ds,MPP.te)[0];
   for(let f=f0;f<=f1;f++){const u=MREC[id][r][f];if((S.mpz&&S.mpz[u])||mpzBusy.has(u))continue;mpzBusy.add(u);
-    if(!S.mpzTip){S.mpzTip=1;save();toast('Lining the text up with this recording (once). The highlight gets exact in a moment.',4000)}
+    if(!S.mpzTip){S.mpzTip=1;save();toast('Getting this recording ready so parts start and stop on the right words (once).',4000)}
     mPauseMap(u,ds[f]).then(()=>{if(MREC[id][r].every(v=>S.mpz&&S.mpz[v]&&S.mpz[v].length)||MREC[id][r].length>3)mAlign(id,r);if(MPP.id===id&&MPP.r===r){mppSnap();MPP.cur=-2}}).catch(e=>{dlog('matn timing failed: '+(e&&e.message||e));S.mpz=S.mpz||{};S.mpz[u]=[];save()}).finally(()=>mpzBusy.delete(u))}}
 function mppSeek(g,play){const ds=S.mdur[MPP.id+':'+MPP.r],[f,lt]=g2f(ds,g);
   if(MP.id!==MPP.id||MP.r!==MPP.r||MP.f!==f||!MA.src||MA.src.startsWith('data:'))mpLoad(MPP.id,MPP.r,f,lt,play);else{MA.currentTime=lt;if(play)MA.play().catch(()=>{})}}
@@ -1306,15 +1306,12 @@ MA.addEventListener('play',()=>{mpPaint();mbarPaint()});MA.addEventListener('pau
 MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;const L=MREC[MP.id][MP.r];if(MP.f+1<L.length)mpLoad(MP.id,MP.r,MP.f+1,0,true);else{if(!MPP.on){S.mpos[MP.id]={r:MP.r,f:0,t:0};save()}MPP.on=false;mpPaint();mbarPaint()}});
 function mbarShow(){$('player').classList.remove('on');$('mbar').classList.add('on')}
 function mbarHide(){$('mbar').classList.remove('on');MPP.on=false;if(!MA.paused)MA.pause();mppMark(-1)}
-function mppMark(li){document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));MPP.cur=li;if(li<0)return;if(S.dbg){const ds=S.mdur&&S.mdur[MPP.id+':'+MPP.r];if(ds)dlog('hl '+li+' at '+(fStart(ds,MP.f)+MA.currentTime).toFixed(2)+(MPP.L?' snapped':' estimate'))}let vis=null;
-  document.querySelectorAll('[data-k="'+MPP.id+':'+li+'"]').forEach(e=>{e.classList.add('playing');if(e.offsetParent)vis=e});
-  if(vis){const r=vis.getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-170)vis.scrollIntoView({block:'center',behavior:'smooth'})}}
+function mppMark(li){MPP.cur=li;document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'))}
 function mppLine(g){let li=MPP.a;const c=mCum(MPP.id);for(let i=MPP.a;i<=MPP.b;i++){if(tAt(MPP.id,MPP.r,c[i])<=g+.05)li=i;else break}if(li!==MPP.cur)mppMark(li)}
 let mppRaf=0;function mppLoop(){cancelAnimationFrame(mppRaf);const step=()=>{if(MA.paused||!MPP.on||MP.id!==MPP.id||MP.r!==MPP.r)return;const ds=S.mdur&&S.mdur[MPP.id+':'+MPP.r];if(ds)mppLine(fStart(ds,MP.f)+MA.currentTime);mppRaf=requestAnimationFrame(step)};mppRaf=requestAnimationFrame(step)}
 /* tap the line the reader has just started: the timing snaps to it and is remembered for this recording */
 function mppSync(li){const ds=S.mdur[MPP.id+':'+MPP.r];if(!ds)return;const c=mCum(MPP.id),g=fStart(ds,MP.f)+MA.currentTime;setAnchor(MPP.id,MPP.r,c[li],Math.max(0,g-.2));
   const M=S.mlt&&S.mlt[MPP.id+':'+MPP.r];if(M){const d=Math.max(0,g-.2)-M.on[li];for(let i=li;i<=MPP.b+1&&i<M.on.length;i++){if(M.on[i]!=null)M.on[i]+=d;if(M.off[i]!=null&&i>li)M.off[i]+=d}save()}if(!mppSnap())MPP.te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3;MPP.cur=-2;mppMark(li);toast('Lined up with line '+(li+1)+' ✓ The app remembers',1800)}
-document.addEventListener('click',e=>{if(!MPP.on||MA.paused||MP.id!==MPP.id||e.target.closest('button'))return;const el=e.target.closest('[data-k]');if(!el)return;const[id,li]=el.dataset.k.split(':');if(id!==MPP.id)return;e.stopPropagation();e.preventDefault();mppSync(+li)},true);
 function mbarPaint(light){if(!$('mbar').classList.contains('on')||!MPP.id)return;const b=mInfo(MPP.id),playing=!MA.paused&&MP.id===MPP.id;
   $('mbIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mbPlay').setAttribute('aria-label',playing?'Pause':'Play');
   if(light)return;$('mbName').textContent=(b?b.en:'')+' · '+(MPP.b>MPP.a?'lines '+(MPP.a+1)+'–'+(MPP.b+1):'line '+(MPP.a+1));$('mbSub').textContent=MREADERS[MPP.r][0]+' · '+MP.rate+'× · '+(S.rep>1?'repeats ×'+S.rep:'plays once');$('mbRep').textContent='×'+S.rep;$('mbSpd').textContent=MP.rate+'×';$('mbR').hidden=Object.keys(MREC[MPP.id]||{}).length<2}
@@ -1323,7 +1320,7 @@ $('mbRep').onclick=()=>{const r=[1,3,5,10];S.rep=r[(r.indexOf(S.rep)+1)%r.length
 $('mbR').onclick=()=>{const rs=Object.keys(MREC[MPP.id]);const r=rs[(rs.indexOf(MPP.r)+1)%rs.length];S.mpos=S.mpos||{};S.mpos[MPP.id]={r,f:0,t:0};save();playPart(MPP.id,MPP.a,MPP.b,r);toast(MREADERS[r][0])};
 $('mbClose').onclick=()=>mbarHide();
 $('mbSpd').onclick=()=>{const v=RATES[(RATES.indexOf(MP.rate)+1)%RATES.length];mRate(v);toast('Speed '+v+'×',1200)};
-MA.addEventListener('play',()=>{if(MA.playbackRate!==MP.rate)MA.playbackRate=MP.rate;mppLoop();if(MPP.on&&!S.syncTip){S.syncTip=1;save();setTimeout(()=>toast('Highlight off? Tap the line the reader is starting and it lines up.',4500),2500)}});MA.addEventListener('loadedmetadata',()=>{MA.playbackRate=MP.rate});
+MA.addEventListener('play',()=>{if(MA.playbackRate!==MP.rate)MA.playbackRate=MP.rate});MA.addEventListener('loadedmetadata',()=>{MA.playbackRate=MP.rate});
 $('mbAdj').onclick=()=>{if(!S.mdur||!S.mdur[MPP.id+':'+MPP.r]){toast('Play the part first');return}
   sheet('<h2>Line up the recording</h2><p class="note">Timing is worked out from the text, so it can be a little early or late. Nudge it here. The app remembers, and nearby lines get more accurate too.</p><div class="field"><span>Start of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="s:-2">−2 s</button><button class="chip" data-adj="s:-0.5">−½ s</button><button class="chip" data-adj="s:0.5">+½ s</button><button class="chip" data-adj="s:2">+2 s</button></div></div><div class="field"><span>End of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="e:-2">−2 s</button><button class="chip" data-adj="e:-0.5">−½ s</button><button class="chip" data-adj="e:0.5">+½ s</button><button class="chip" data-adj="e:2">+2 s</button></div></div><button class="btn wide" data-close>Done</button>');
   $('panel').onclick=e=>{const x=e.target.closest('[data-adj]');if(!x)return;const[w,v]=x.dataset.adj.split(':'),c=mCum(MPP.id),ch=w==='s'?c[MPP.a]:c[MPP.b+1],t0=tAt(MPP.id,MPP.r,ch);setAnchor(MPP.id,MPP.r,ch,t0+(+v));
@@ -1463,7 +1460,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v19';
+const APPV='v20';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifz diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
