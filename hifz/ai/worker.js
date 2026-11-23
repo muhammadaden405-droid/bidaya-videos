@@ -28,7 +28,7 @@ async function forced(words){const sp=[],ids=PRE.slice();for(const w of words){c
   const{d,V,t}=await logits(ids),Z=new Float64Array(ids.length);for(let p=0;p<ids.length;p++)Z[p]=lse(d,V,p);const lp=(p,t)=>d[p*V+t]-Z[p];
   const ws=sp.map(([s,e])=>{let x=0;for(let p=s;p<e;p++)x+=lp(p-1,ids[p]);return x});
   let best=-Infinity,n=0,cum=0,be=0;for(let j=0;j<=words.length;j++){const e=lp((j?sp[j-1][1]:PRE.length)-1,EOS),s=cum+e;if(s>best){best=s;n=j;be=e}if(j<words.length)cum+=ws[j]}
-  free(t);return{n,ws:ws.slice(0,n).map(x=>Math.round(x*10)/10),eos:Math.round(be*10)/10}}
+  free(t);return{n,ws:ws.slice(0,n).map(x=>Math.round(x*10)/10),wa:ws.map(x=>Math.round(x*10)/10),eos:Math.round(be*10)/10,best:Math.round(best*10)/10}}
 async function seqScore(words){const ids=PRE.concat(enc(words.join(' '),true),[EOS]),{d,V,t}=await logits(ids);let s=0;for(let p=PRE.length;p<ids.length;p++)s+=d[(p-1)*V+ids[p]]-lse(d,V,p-1);free(t);return s}
 async function gen(pre){const init=PRE.concat(pre&&pre.length?enc(pre.join(' '),true):[]);const g=await M.generate({inputs:E.input_features,encoder_outputs:E.eo,decoder_input_ids:init,max_new_tokens:Math.max(8,Math.min(200,446-init.length))});const out=T.decode(Array.from(g.tolist()[0]).map(Number),{skip_special_tokens:true}).trim();free(g);return out}
 async function handle(m){try{
@@ -36,6 +36,7 @@ async function handle(m){try{
   if(m.t==='check'){const t0=performance.now();await encode(m.audio);const r={t:'res',id:m.id,te:Math.round(performance.now()-t0)};
     if(m.exp&&m.exp.length){const t1=performance.now();const f=await forced(m.exp);r.tf=Math.round(performance.now()-t1);Object.assign(r,f);r.ok=f.n>0&&f.eos>-4&&f.ws.every(x=>x>-5)}
     if(!r.ok&&m.gen!==false){let k=0;if(r.ws){k=r.ws.findIndex(x=>x<=-5);if(k<0)k=r.n}r.k=k;r.hyp=await gen(k?m.exp.slice(0,k):null)}r.ms=Math.round(performance.now()-t0);post(r);return}
+  if(m.t==='multi'){const t0=performance.now();await encode(m.audio);const rs=[];for(const x of m.exps)rs.push(await forced(x));post({t:'res',id:m.id,rs,ms:Math.round(performance.now()-t0)});return}
   if(m.t==='verify'){const b=await seqScore(m.base),d=[];for(const a of m.alts)d.push(Math.round(((await seqScore(a))-b)*10)/10);post({t:'res',id:m.id,d});return}
 }catch(e){log('error in '+m.t+': '+String(e&&e.message||e).slice(0,300));post({t:m.t==='load'?'err':'res',id:m.id,err:String(e&&e.message||e)})}}
 self.addEventListener('error',e=>log('worker error: '+(e.message||e)));self.addEventListener('unhandledrejection',e=>log('worker rejection: '+String(e.reason&&e.reason.message||e.reason).slice(0,300)));

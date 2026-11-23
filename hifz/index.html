@@ -382,6 +382,7 @@ body.onbon{overflow:hidden}
 .ptabs button.on{background:var(--gold2);border-color:var(--gold2);color:#15110a}
 .ptabs button.ok:not(.on){color:var(--gold2)}
 .dcount{font-size:13px;font-weight:700;color:var(--gold2)}
+#mPage .w.chk,#mrText .w.chk{text-decoration:underline dotted var(--gold2);text-underline-offset:8px}
 #recMic.live,#mrMic.live{box-shadow:0 0 0 calc(var(--lvl,0)*14px) color-mix(in srgb,var(--gold2) 45%,transparent);transition:box-shadow .08s}
 .dcard{cursor:pointer}
 .dayhead{margin:2px 2px 10px}
@@ -559,7 +560,7 @@ function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
   if(S.order==='juz30'){S.dir='juzback';S.sp=582}S.order='start';if(!DIRS[S.dir])S.dir='fwd';S.sp=Math.max(1,Math.min(604,Math.round(+S.sp)||1));if(!['whole','juz','surah'].includes(S.gKind)){S.gKind='whole';S.gVal=0}if(!RECITERS.some(r=>r[0]===S.reciter))S.reciter=RECITERS[0][0];
   S.pages=S.pages&&typeof S.pages==='object'?S.pages:{};S.rev=S.rev&&typeof S.rev==='object'?S.rev:{};
-  S.cur=Math.max(1,Math.min(604,+S.cur||1));S.mt=S.mt&&typeof S.mt==='object'?S.mt:{};if(S.asrV!==2){if(S.asr==='phone')S.asr='';S.asrV=2}S.ml=S.ml&&typeof S.ml==='object'?S.ml:{};S.mp=Object.assign({sm:S.mcur||'thalatha',si:0,gk:'matn',gv:'',per:+S.mper||1,goal:'',start:TODAY,setup:S.mcur?1:0},S.mp&&typeof S.mp==='object'?S.mp:{});S.mp.per=Math.max(1,Math.min(20,+S.mp.per||1));S.mper=Math.max(1,Math.min(10,+S.mper||1));S.mfs=Math.max(18,Math.min(40,+S.mfs||24));S.fs=Math.max(20,Math.min(44,+S.fs||28));if(![1,3,5,10].includes(S.rep))S.rep=3}
+  S.cur=Math.max(1,Math.min(604,+S.cur||1));S.mt=S.mt&&typeof S.mt==='object'?S.mt:{};if(S.asrV!==3){S.asr='';S.asrV=3}S.ml=S.ml&&typeof S.ml==='object'?S.ml:{};S.mp=Object.assign({sm:S.mcur||'thalatha',si:0,gk:'matn',gv:'',per:+S.mper||1,goal:'',start:TODAY,setup:S.mcur?1:0},S.mp&&typeof S.mp==='object'?S.mp:{});S.mp.per=Math.max(1,Math.min(20,+S.mp.per||1));S.mper=Math.max(1,Math.min(10,+S.mper||1));S.mfs=Math.max(18,Math.min(40,+S.mfs||24));S.fs=Math.max(20,Math.min(44,+S.fs||28));if(![1,3,5,10].includes(S.rep))S.rep=3}
 fix();
 const save=()=>{S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Could not save on this device')}};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
@@ -954,7 +955,7 @@ function skipAhead(R,hw){const W=R.words,F=hw.map(norm).filter(Boolean),H=F.slic
   let best=-1,bs=0;for(let j=R.pos+3+cut;j<Math.min(W.length,R.pos+160);j++){const c=sc(H,j);if(c>bs){bs=c;best=j}}
   if(best<0||bs<Math.max(3,Math.ceil(H.length*.7))||bs<=loc+1)return false;
   for(let k=R.pos;k<best;k++)if(!R.st[k])R.st[k]=3;R.pos=best;R.miss=0;return true}
-const REC={mode:false,kind:'q',any:false,show:false,listening:false,words:[],st:[],heard:[],pos:0,interim:'',r:null,page:0,log:[],tent:new Set(),miss:0,mctx:null,recent:[]};
+const REC={chk:new Set(),mode:false,kind:'q',any:false,show:false,listening:false,words:[],st:[],heard:[],pos:0,interim:'',r:null,page:0,log:[],tent:new Set(),miss:0,mctx:null,recent:[]};
 const recSR=()=>window.SpeechRecognition||window.webkitSpeechRecognition;
 function recUI(){return REC.kind==='q'?{root:$('mPage'),mic:$('recMic'),st:$('recSt'),heard:$('recHeard'),ok:$('recOk'),bad:$('recBad'),show:$('recShow')}:{root:$('mrText'),mic:$('mrMic'),st:$('mrSt'),heard:$('mrHeard'),ok:$('mrOk'),bad:$('mrBad'),show:$('mrShow')}}
 function recReset(){REC.st=REC.words.map(()=>0);REC.heard=[];REC.pos=0;REC.miss=0;REC.tent=new Set();REC.recent=[]}
@@ -964,7 +965,7 @@ function recCounts(){let ok=0,bad=0;REC.st.forEach(x=>{if(x===1||x===4)ok++;else
 function recPaint(){const U=recUI();if(!U.root)return;
   if(REC.kind==='q'){$('mPage').classList.toggle('rec',REC.mode);$('mPage').classList.toggle('show',REC.show);if(!REC.mode)return}
   else U.root.classList.toggle('show',REC.show);
-  U.root.querySelectorAll('.w').forEach(el=>{const i=+el.dataset.i,x=REC.st[i];el.className='w'+(x===1?' ok':x===2?' bad':x===3?' sk':x===4?' fx':REC.tent.has(i)?' ok tent':'')+(i===REC.pos&&REC.listening?' cur':'')});
+  U.root.querySelectorAll('.w').forEach(el=>{const i=+el.dataset.i,x=REC.st[i];el.className='w'+(x===1?' ok':x===2?' bad':x===3?' sk':x===4?' fx':REC.tent.has(i)?' ok tent':'')+(REC.chk.has(i)?' chk':'')+(i===REC.pos&&REC.listening?' cur':'')});
   const c=recCounts(),end=REC.words.length&&REC.pos>=REC.words.length;if(U.ok)U.ok.textContent='✓ '+c.ok;if(U.bad)U.bad.textContent='✗ '+c.bad;
   if(U.st)U.st.textContent=REC.note?REC.note:REC.listening?(end?'Done':(!c.ok&&!c.bad?(REC.any?'Listening… recite anything':'Listening… start reciting'):'Listening…')):end?'Done · '+pl(c.bad,'mistake'):(REC.kind==='q'?'Tap the mic and recite':'Tap the mic and recite these lines');
   if(U.heard)U.heard.textContent=REC.interim||'';if(U.mic){U.mic.classList.toggle('live',REC.listening);U.mic.setAttribute('aria-label',REC.listening?'Stop listening':'Start listening')}if(U.show)U.show.classList.toggle('on',REC.show)}
@@ -997,20 +998,20 @@ function recSaveAudio(){const n=MIC.recN,buf=new ArrayBuffer(44+n*2),v=new DataV
   if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],title:'My recitation'}).catch(()=>{});
   else{const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}}
 function recExit(){recStop(false);REC.mode=false;REC.any=false;renderMushaf()}
-function recStart(){if(REC.hold){REC.wantStart=true;return}REC.wantStart=false;if(useAI())return aiRecStart();phoneStart()}
+function recStart(){if(REC.hold){REC.wantStart=true;return}REC.wantStart=false;if(useAI())return aiRecStart();phoneStart();if(REC.listening&&useHyb())hybOn()}
 function phoneStart(){const SR=recSR();if(!SR)return;if(!navigator.onLine){toast('Checking recitation needs internet');return}
   if(!REC.words.length||REC.pos>=REC.words.length)recBuild();
   const r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
-  r.onresult=e=>{let fin='',it='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=' '+x[0].transcript;else it+=' '+x[0].transcript}
+  r.onresult=e=>{HY.heardAt=performance.now();HY.speech=0;let fin='',it='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=' '+x[0].transcript;else it+=' '+x[0].transcript}
     REC.interim=it.trim();
-    if(fin.trim()){const hw=fin.trim().split(/\s+/);if(!tryFind(hw)){skipAhead(REC,hw);alignWords(REC,hw)}if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}
+    if(fin.trim()){const hw=fin.trim().split(/\s+/),p0=REC.pos,was=REC.st.slice();if(!tryFind(hw)){skipAhead(REC,hw);alignWords(REC,hw);hybAfter(p0,was,performance.now())}if(REC.words.length&&REC.pos>=REC.words.length)recPageDone()}
     REC.tent=new Set();if(REC.interim&&REC.listening){const iw=REC.interim.split(/\s+/);if(!REC.st.some(x=>x)&&tryFind(iw)){REC.interim=''}else{const C={words:REC.words,st:REC.st.slice(),heard:[],pos:REC.pos,miss:0};alignWords(C,iw);for(let k=REC.pos;k<C.pos;k++)if(C.st[k]===1)REC.tent.add(k)}}
     recPaint();const cur=document.querySelector((REC.kind==='q'?'#mPage':'#mrText')+' .w.cur');if(cur&&REC.kind==='q')cur.scrollIntoView({block:'nearest',behavior:'smooth'})};
   r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){REC.listening=false;toast('Microphone access is blocked. Allow it in your browser settings.',4000)}else if(e.error==='network'){REC.listening=false;toast('Checking recitation needs internet')}recPaint()};
   r.onend=()=>{if(REC.listening&&REC.r===r)setTimeout(()=>{if(REC.listening&&REC.r===r)try{r.start()}catch(x){}},80);else recPaint()};
   REC.r=r;REC.listening=true;REC.interim='';try{r.start()}catch(x){}recPaint()}
-function recStop(summary){const ai=MIC.on||REC.aiWait;if(MIC.on&&MIC.sp&&MIC.voiced>=300)aiFlush();aiMicOff();REC.aiWait=false;REC.listening=false;REC.tent=new Set();if(REC.r){try{REC.r.stop()}catch(x){}}REC.r=null;
-  if(ai&&aiPending){REC.note='Checking the last part…';recPaint();aiChain.then(()=>{REC.note='';recPaint();if(summary)recSummary()});return}
+function recStop(summary){hybOff();const ai=MIC.on||REC.aiWait;if(MIC.on&&MIC.sp&&MIC.voiced>=300)aiFlush();aiMicOff();REC.aiWait=false;REC.listening=false;REC.tent=new Set();if(REC.r){try{REC.r.stop()}catch(x){}}REC.r=null;
+  if((ai&&aiPending)||HY.pend){REC.note='Checking the last part…';recPaint();Promise.all([aiChain,HY.chain]).then(()=>{REC.note='';recPaint();if(summary)recSummary()});return}
   REC.interim='';REC.note='';recPaint();if(summary)recSummary()}
 function recEntry(){const c=recCounts(),m=[],kc={};REC.words.forEach(w=>{kc[w.k]=(kc[w.k]||0)+1});REC.st.forEach((x,i)=>{if(x===2||x===3)m.push({w:REC.words[i].w,k:REC.words[i].k,h:REC.heard[i]||'',x,i})});return{kc,label:REC.kind==='q'?'Page '+REC.page:mInfo(REC.mctx.id).en+' · lines '+(REC.mctx.a+1)+'–'+(REC.mctx.b+1),ok:c.ok,bad:c.bad,m,mk:REC.kind==='m'?REC.mctx.id+':'+REC.mctx.a+':'+REC.mctx.b:''}}
 function recPageDone(){if(REC.kind==='m'){recStop(true);return}REC.log.push(recEntry());const c=recCounts(),cur=S.cur;
@@ -1375,7 +1376,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v14';
+const APPV='v15';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifz diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
@@ -1383,7 +1384,7 @@ function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p clas
   if($('dlogS'))$('dlogS').onclick=()=>navigator.share({title:'Hifz diagnostics',text:t}).catch(()=>{})}
 addEventListener('error',e=>dlog('page error: '+(e.message||'')+' line '+(e.lineno||'')));addEventListener('unhandledrejection',e=>dlog('page rejection: '+String(e.reason&&e.reason.message||e.reason)));
 const aiOk=()=>!!S.aiOk&&typeof Worker!=='undefined';
-const useAI=()=>!REC.phoneOnce&&(REC.kind==='q'?S.asr!=='phone':S.asrM==='ai'&&(aiOk()||AI.st==='ready'))&&typeof Worker!=='undefined';
+const useAI=()=>!REC.phoneOnce&&(REC.kind==='q'?(S.asr==='ai'||(!recSR()&&S.asr!=='phone')):S.asrM==='ai'&&(aiOk()||AI.st==='ready'))&&typeof Worker!=='undefined';
 function aiQS(){return AI.QS?Promise.resolve():fetch('data/qsimple.json').then(r=>r.json()).then(d=>{AI.QS=d}).catch(()=>{})}
 function aiLoad(){if(AI.st==='ready'||AI.st==='loading')return;AI.st='loading';AI.err='';AI.l=AI.tot=0;
   if(!AI.w){try{let h='';try{h=localStorage.getItem('hifz-ai-host')||''}catch(e){}AI.w=new Worker('ai/worker.js?v='+AIV+(h?'&host='+encodeURIComponent(h):''),{type:'module'})}catch(e){AI.st='error';AI.err='This browser can’t run the Qur’an AI.';aiUI();return}
@@ -1408,10 +1409,10 @@ function aiUI(){const pct=AI.tot?Math.min(99,Math.round(AI.l/AI.tot*100)):0;
 function aiCardHTML(){const pct=AI.tot?Math.min(99,Math.round(AI.l/AI.tot*100)):0,ld=AI.st==='loading';let h='<div class="card" id="aiCard"><h2>Recitation checker</h2>';
   if(!aiOk()&&AI.st!=='ready'){h+='<p class="note">Add the Qur’an AI for much more accurate checking. It is Tarteel’s free model, trained on Qur’an recitation, and it runs on your phone, so your voice never leaves it. It downloads about 105 MB once, then works offline.</p>'
     +(ld?'<div class="bar" style="margin-top:10px"><i style="width:'+pct+'%"></i></div><p class="note">Downloading… '+pct+'% · keep the app open</p>':'<div class="btns"><button class="btn sm" data-ai="dl">Download the Qur’an AI</button></div>')+(AI.st==='error'?'<p class="note warn">'+esc(AI.err)+'</p>':'')}
-  else{const q=S.asr==='phone'?'phone':'ai',m=S.asrM==='ai'?'ai':'phone';
+  else{const q=S.asr===''?'hyb':S.asr,m=S.asrM==='ai'?'ai':'phone';
     h+='<p class="note">'+(AI.st==='ready'?'Qur’an AI ready':ld?'Qur’an AI · starting…':'Qur’an AI downloaded · it starts when you recite')+'</p>'
-     +'<div class="field"><span>Checking the Qur’an</span><div class="seg two">'+[['ai','Qur’an AI'],['phone','Phone']].map(x=>'<button data-asr="'+x[0]+'" class="'+(q===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></div>'
-     +'<div class="field"><span>Checking the mutūn</span><div class="seg two">'+[['phone','Phone'],['ai','Qur’an AI (trial)']].map(x=>'<button data-asrm="'+x[0]+'" class="'+(m===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><p class="note">The AI learned from Qur’an recitation only, so on the mutūn it may mishear.</p></div>'
+     +'<div class="field"><span>Checking the Qur’an</span><div class="seg three">'+[['hyb','Phone + AI check'],['phone','Phone'],['ai','AI only']].map(x=>'<button data-asr="'+x[0]+'" class="'+(q===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></div>'
+     +'<p class="note">Phone + AI check: words appear instantly and the AI double-checks only the ones marked wrong.</p><div class="field"><span>Checking the mutūn</span><div class="seg two">'+[['phone','Phone'],['ai','Qur’an AI (trial)']].map(x=>'<button data-asrm="'+x[0]+'" class="'+(m===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><p class="note">The AI learned from Qur’an recitation only, so on the mutūn it may mishear.</p></div>'
      +'<div class="btns"><button class="btn sm ghost" data-ai="diag">Copy details for Claude</button><button class="btn sm ghost" data-ai="rm">Remove the Qur’an AI</button></div>'}
   return h+'<p class="src">Model: Tarteel whisper-base-ar-quran (Apache 2.0), run with Transformers.js and ONNX Runtime.</p></div>'}
 function aiOffer(then){sheet('<h2>Better recitation checking</h2><p class="mean">Add the <b>Qur’an AI</b>: Tarteel’s free model, trained on Qur’an recitation. It listens far more accurately than your phone’s normal speech recognition.</p><ul class="mean" style="padding-left:18px;margin:8px 0"><li>Runs on your phone, so your voice never leaves it</li><li>Works offline once downloaded</li><li>About 105 MB, downloaded once (Wi-Fi is best)</li></ul>'
@@ -1438,7 +1439,7 @@ async function aiMicOn(retry){let st;dlog('mic: asking');
   ctx.onstatechange=()=>{dlog('audio '+ctx.state);if(MIC.on&&MIC.ctx===ctx&&ctx.state!=='running'&&ctx.state!=='closed')ctx.resume().catch(()=>{})};
   const hist=[],pct=q=>{const x=hist.slice().sort((a,b)=>a-b);return x[Math.min(x.length-1,Math.floor(q*x.length))]};
   const ratio=ctx.sampleRate/16000;MIC.ph=0;
-  pr.onaudioprocess=e=>{if(!MIC.on||MIC.ctx!==ctx)return;MIC.cb++;const x=new Float32Array(e.inputBuffer.getChannelData(0));{const out=new Int16Array(Math.ceil(x.length/ratio)+1);let k=0,p=MIC.ph;while(p+ratio<=x.length){const a=Math.floor(p),b=Math.max(a+1,Math.floor(p+ratio));let s=0;for(let i=a;i<b;i++)s+=x[i];out[k++]=Math.max(-32768,Math.min(32767,s/(b-a)*32767));p+=ratio}MIC.ph=p-x.length;MIC.rec.push(out.subarray(0,k));MIC.recN+=k;while(MIC.recN>16000*600&&MIC.rec.length)MIC.recN-=MIC.rec.shift().length}
+  pr.onaudioprocess=e=>{if(!MIC.on||MIC.ctx!==ctx)return;MIC.cb++;const x=new Float32Array(e.inputBuffer.getChannelData(0));{const out=new Int16Array(Math.ceil(x.length/ratio)+1);let k=0,p=MIC.ph;while(p+ratio<=x.length){const a=Math.max(0,Math.floor(p)),b=Math.max(a+1,Math.floor(p+ratio));let s=0;for(let i=a;i<b;i++)s+=x[i];out[k++]=Math.max(-32768,Math.min(32767,s/(b-a)*32767));p+=ratio}MIC.ph=p-x.length;MIC.rec.push(out.subarray(0,k));MIC.recN+=k;while(MIC.recN>16000*600&&MIC.rec.length)MIC.recN-=MIC.rec.shift().length}
     let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];const db=20*Math.log10(Math.sqrt(r/x.length)+1e-9);MIC.lvl=db;if(db>MIC.top)MIC.top=db;
     hist.push(db);if(hist.length>230)hist.shift();const nz=pct(.1),spk=pct(.9),thr=nz+Math.max(6,.35*(spk-nz));
     if(!MIC.sp){MIC.pre.push({x,db});if(MIC.pre.length>12)MIC.pre.shift();if(db>thr&&db>-55){MIC.sp=true;MIC.seg=MIC.pre;MIC.pre=[];MIC.ms=MIC.seg.length*bm;MIC.sil=0;MIC.voiced=bm}return}
@@ -1483,6 +1484,49 @@ async function aiProcess(blocks,rate,final){if(!AI.w||AI.st!=='ready')return;AI.
 }finally{AI.busy=false;aiLive(0)}}
 function aiRecStart(){AI.restarts=0;if(MIC.shown){MIC.rec=[];MIC.recN=0;MIC.shown=false}if(!REC.words.length||REC.pos>=REC.words.length)recBuild();REC.listening=true;REC.interim='';REC.tent=new Set();
   dlog('recite start · '+(REC.kind==='q'?'page '+S.cur:'matn')+' · ai '+AI.st);aiQS();if(AI.st!=='ready'){REC.aiWait=true;aiLoad();aiUI()}else{REC.note='';recPaint()}aiMicOn()}
+
+/* ---------- hybrid: phone recognition shows words instantly, the AI double-checks only the words it flags ---------- */
+const HY={on:false,st:null,ctx:null,src:null,pr:null,ring:new Float32Array(16000*40),N:0,at:0,an:0,ph:0,last:0,chain:Promise.resolve(),pend:0,heardAt:0,speech:0,off:false};
+const useHyb=()=>REC.kind==='q'&&!REC.phoneOnce&&(S.asr===''||S.asr==='hyb')&&!!recSR()&&typeof Worker!=='undefined'&&!HY.off;
+async function hybOn(){if(HY.on)return;HY.last=performance.now();HY.f1=HY.f2={t:performance.now(),p:REC.pos};HY.heardAt=performance.now();HY.speech=0;
+  if(!S.aiOk||AI.st!=='ready')aiLoad();
+  let st;try{st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:true}})}catch(e){dlog('hybrid mic error: '+e.name);return}
+  if(!REC.listening){st.getTracks().forEach(t=>t.stop());return}
+  let ctx;try{ctx=new(window.AudioContext||window.webkitAudioContext)();await ctx.resume()}catch(e){dlog('hybrid audio error: '+e.message);st.getTracks().forEach(t=>t.stop());return}
+  const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(2048,1,1),ratio=ctx.sampleRate/16000,R=HY.ring,L=R.length;
+  Object.assign(HY,{on:true,st,ctx,src,pr,ph:0});dlog('hybrid on · audio '+ctx.state+' '+ctx.sampleRate+' Hz');
+  ctx.onstatechange=()=>{if(HY.on&&HY.ctx===ctx&&ctx.state!=='running'&&ctx.state!=='closed')ctx.resume().catch(()=>{})};
+  let floor=-50;
+  pr.onaudioprocess=e=>{if(!HY.on||HY.ctx!==ctx)return;const x=e.inputBuffer.getChannelData(0);let p=HY.ph,k=0;const out=new Int16Array(Math.ceil(x.length/ratio)+1);
+    while(p+ratio<=x.length){const a=Math.max(0,Math.floor(p)),b=Math.max(a+1,Math.floor(p+ratio));let s=0;for(let i=a;i<b;i++)s+=x[i];const v=s/(b-a);R[HY.N%L]=v;HY.N++;out[k++]=Math.max(-32768,Math.min(32767,v*32767));p+=ratio}
+    HY.ph=p-x.length;HY.at=performance.now();HY.an=HY.N;MIC.rec.push(out.subarray(0,k));MIC.recN+=k;while(MIC.recN>16000*600&&MIC.rec.length)MIC.recN-=MIC.rec.shift().length;
+    let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];const db=20*Math.log10(Math.sqrt(r/x.length)+1e-9);floor=db<floor?db:floor*.995+db*.005;
+    const m=$('recMic');if(m)m.style.setProperty('--lvl',Math.max(0,Math.min(1,(db+60)/45)).toFixed(2));
+    if(db>floor+12)HY.speech+=x.length/ctx.sampleRate*1000;
+    // the phone's recognition went quiet while the mic clearly hears recitation: this phone can't share the mic
+    if(HY.speech>6000&&performance.now()-HY.heardAt>9000){dlog('phone recognition silent while the mic hears speech: turning the AI double-check off');HY.off=true;hybOff();toast('Your phone can’t share the microphone, so the AI double-check is off. Words still appear as you recite.',4500);if(REC.listening&&REC.r){try{REC.r.stop()}catch(x){}}}};
+  src.connect(pr);pr.connect(ctx.destination)}
+function hybOff(){HY.on=false;try{HY.pr&&HY.pr.disconnect();HY.src&&HY.src.disconnect()}catch(e){}try{HY.st&&HY.st.getTracks().forEach(t=>t.stop())}catch(e){}try{HY.ctx&&HY.ctx.close()}catch(e){}Object.assign(HY,{st:null,ctx:null,src:null,pr:null});const m=$('recMic');if(m)m.style.setProperty('--lvl',0)}
+function hybAudio(t0,t1){const L=HY.ring.length,n1=Math.min(HY.an,Math.round(HY.an-(HY.at-t1)*16)),n0=Math.max(HY.an-L+1,Math.round(HY.an-(HY.at-t0)*16),n1-16000*14);
+  if(n1-n0<8000)return null;const a=new Float32Array(n1-n0);for(let i=n0;i<n1;i++)a[i-n0]=HY.ring[((i%L)+L)%L];return a}
+/* line up what the AI heard with the expected words around the flagged ones */
+function hybMap(H,a,b){const W=REC.words,n=H.length,m=b-a,D=[],P=[];for(let i=0;i<=n;i++){D.push(new Float32Array(m+1));P.push(new Int8Array(m+1))}
+  for(let i=1;i<=n;i++){D[i][0]=D[i-1][0]-.4;P[i][0]=1}for(let j=1;j<=m;j++){D[0][j]=D[0][j-1]-.4;P[0][j]=2}
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){const s=sim(H[i-1],W[a+j-1].n),d=D[i-1][j-1]+(s>=.5?s:-1),u=D[i-1][j]-.4,l=D[i][j-1]-.4;if(d>=u&&d>=l){D[i][j]=d;P[i][j]=0}else if(u>=l){D[i][j]=u;P[i][j]=1}else{D[i][j]=l;P[i][j]=2}}
+  const map={};let i=n,j=m;while(i>0&&j>0){if(P[i][j]===0){map[a+j-1]=i-1;i--;j--}else if(P[i][j]===1)i--;else j--}return map}
+function hybAfter(p0,was,t){HY.heardAt=performance.now();HY.speech=0;const W=REC.words,fl=[];for(let k=p0;k<REC.pos;k++)if((REC.st[k]===2||REC.st[k]===3)&&was[k]!==REC.st[k])fl.push(k);
+  const A=HY.f2||{t:t-8000,p:p0},B=HY.f1||A;HY.f2=B;HY.f1={t,p:p0};if(!fl.length||!HY.on||!AI.QS)return;
+  // the phone finalises words about a second late, so give the AI the previous phrase too and let it find the start
+  const end=Math.min(W.length,REC.pos+2),starts=[...new Set([B.p-1,B.p,B.p+1,p0-1,p0].map(x=>Math.max(0,Math.min(x,p0))))],exps=[],idxs=[];
+  for(const s0 of starts){const e=[],ix=[];for(let k=s0;k<end;k++){const f=aiForm(k);if(f){e.push(f);ix.push(k)}}if(e.length){exps.push(e);idxs.push(ix)}}
+  const audio=hybAudio(A.t-500,t+400);if(!audio||!exps.length)return;const sec=(audio.length/16000).toFixed(1);fl.forEach(k=>REC.chk.add(k));recPaint();HY.pend++;
+  HY.chain=HY.chain.then(()=>AI.st==='ready'?0:new Promise(r=>AI.waiters.push(r))).then(async()=>{
+    if(AI.st!=='ready'||REC.words!==W)return;AI.busy=true;aiLive(1);const t1=performance.now();
+    try{const r=await aiCall({t:'multi',audio,exps},[audio.buffer]);if(r.err||!r.rs||REC.words!==W)return;
+      let j=0;r.rs.forEach((x,i)=>{if(x.best>r.rs[j].best)j=i});const wa=r.rs[j].wa,idx=idxs[j];let cleared=0;
+      for(const k of fl){const i=idx.indexOf(k);if((REC.st[k]===2||REC.st[k]===3)&&i>=0&&i<wa.length&&wa[i]>-9){REC.st[k]=1;delete REC.heard[k];cleared++}}
+      dlog('AI double-check: '+fl.length+' flagged, '+cleared+' cleared · '+sec+' s audio · '+Math.round(performance.now()-t1)+' ms · best start '+idx[0]+' · '+r.rs.map((x,i)=>idxs[i][0]+':'+x.best+'/n'+x.n).join(' ')+' · scores '+idx.map((k,i)=>REC.words[k].n+'='+wa[i]).join(' '))}
+    finally{AI.busy=false;aiLive(0)}}).catch(()=>{}).then(()=>{fl.forEach(k=>REC.chk.delete(k));HY.pend--;recPaint()})}
 
 /* ---------- routing ---------- */
 const TABS=['today','mushaf','mutun','progress','settings'];
