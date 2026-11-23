@@ -15,21 +15,22 @@ async function load(prefer){
   const get=g=>WhisperForConditionalGeneration.from_pretrained(ID,g?{device:{encoder_model:'webgpu',decoder_model_merged:'wasm'},dtype:{encoder_model:'fp16',decoder_model_merged:'q8'},progress_callback}:{device:'wasm',dtype:'q8',progress_callback});
   try{M=await get(gpu);dev=gpu?'webgpu':'wasm'}catch(e){if(!gpu)throw e;M=await get(false);dev='wasm'}
   const t=performance.now();await encode(new Float32Array(16000));await forced(['بِسْمِ']);post({t:'ready',dev,warm:Math.round(performance.now()-t)})}
-async function encode(a){const{input_features}=await P(a);
+const free=t=>{try{t&&t.dispose&&t.dispose()}catch(e){}};
+async function encode(a){if(E){free(E.input_features);free(E.eo);E=null}const{input_features}=await P(a);
   const mi=await M._prepare_encoder_decoder_kwargs_for_generation({inputs_tensor:input_features,model_inputs:{input_features},model_input_name:'input_features',generation_config:M.generation_config});
   E={input_features,eo:mi.encoder_outputs}}
 async function logits(ids){const di=new Tensor('int64',BigInt64Array.from(ids.map(BigInt)),[1,ids.length]);
-  const o=await M({input_features:E.input_features,encoder_outputs:E.eo,decoder_input_ids:di});return{d:o.logits.data,V:o.logits.dims[2]}}
+  const o=await M({input_features:E.input_features,encoder_outputs:E.eo,decoder_input_ids:di});free(di);for(const k in o)if(k!=='logits'&&k!=='encoder_outputs')free(o[k]);return{d:o.logits.data,V:o.logits.dims[2],t:o.logits}}
 function lse(d,V,p){const o=p*V;let m=-Infinity;for(let v=0;v<V;v++)if(d[o+v]>m)m=d[o+v];let z=0;for(let v=0;v<V;v++)z+=Math.exp(d[o+v]-m);return m+Math.log(z)}
 const enc=(w,first)=>T.encode((first?'':' ')+w,{add_special_tokens:false});
 /* score the expected words in one pass: how many were recited, and how sure the model is of each */
 async function forced(words){const sp=[],ids=PRE.slice();for(const w of words){const x=enc(w,!sp.length);sp.push([ids.length,ids.length+x.length]);ids.push(...x)}
-  const{d,V}=await logits(ids),Z=new Float64Array(ids.length);for(let p=0;p<ids.length;p++)Z[p]=lse(d,V,p);const lp=(p,t)=>d[p*V+t]-Z[p];
+  const{d,V,t}=await logits(ids),Z=new Float64Array(ids.length);for(let p=0;p<ids.length;p++)Z[p]=lse(d,V,p);const lp=(p,t)=>d[p*V+t]-Z[p];
   const ws=sp.map(([s,e])=>{let x=0;for(let p=s;p<e;p++)x+=lp(p-1,ids[p]);return x});
   let best=-Infinity,n=0,cum=0,be=0;for(let j=0;j<=words.length;j++){const e=lp((j?sp[j-1][1]:PRE.length)-1,EOS),s=cum+e;if(s>best){best=s;n=j;be=e}if(j<words.length)cum+=ws[j]}
-  return{n,ws:ws.slice(0,n).map(x=>Math.round(x*10)/10),eos:Math.round(be*10)/10}}
-async function seqScore(words){const ids=PRE.concat(enc(words.join(' '),true),[EOS]),{d,V}=await logits(ids);let s=0;for(let p=PRE.length;p<ids.length;p++)s+=d[(p-1)*V+ids[p]]-lse(d,V,p-1);return s}
-async function gen(pre){const init=PRE.concat(pre&&pre.length?enc(pre.join(' '),true):[]);const g=await M.generate({inputs:E.input_features,encoder_outputs:E.eo,decoder_input_ids:init,max_new_tokens:200});return T.decode(Array.from(g.tolist()[0]).map(Number),{skip_special_tokens:true}).trim()}
+  free(t);return{n,ws:ws.slice(0,n).map(x=>Math.round(x*10)/10),eos:Math.round(be*10)/10}}
+async function seqScore(words){const ids=PRE.concat(enc(words.join(' '),true),[EOS]),{d,V,t}=await logits(ids);let s=0;for(let p=PRE.length;p<ids.length;p++)s+=d[(p-1)*V+ids[p]]-lse(d,V,p-1);free(t);return s}
+async function gen(pre){const init=PRE.concat(pre&&pre.length?enc(pre.join(' '),true):[]);const g=await M.generate({inputs:E.input_features,encoder_outputs:E.eo,decoder_input_ids:init,max_new_tokens:200});const out=T.decode(Array.from(g.tolist()[0]).map(Number),{skip_special_tokens:true}).trim();free(g);return out}
 async function handle(m){try{
   if(m.t==='load'){if(!M)await load(m.prefer);else post({t:'ready',dev,warm:0});return}
   if(m.t==='check'){const t0=performance.now();await encode(m.audio);const r={t:'res',id:m.id,te:Math.round(performance.now()-t0)};

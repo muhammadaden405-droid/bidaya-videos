@@ -1360,20 +1360,23 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
   if(k==='plan'){openOnb(false);return}renderToday();if(k==='go'){deckScroll();const dk=$('deck');if(dk)dk.scrollIntoView({behavior:'smooth',block:'center'})}});
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
-const AIV='2',AI={w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
+const AIV='3',AI={restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
 const aiOk=()=>!!S.aiOk&&typeof Worker!=='undefined';
 const useAI=()=>(REC.kind==='q'?S.asr!=='phone':S.asrM==='ai')&&(aiOk()||AI.st==='ready');
 function aiQS(){return AI.QS?Promise.resolve():fetch('data/qsimple.json').then(r=>r.json()).then(d=>{AI.QS=d}).catch(()=>{})}
 function aiLoad(){if(AI.st==='ready'||AI.st==='loading')return;AI.st='loading';AI.err='';AI.l=AI.tot=0;
   if(!AI.w){try{let h='';try{h=localStorage.getItem('hifz-ai-host')||''}catch(e){}AI.w=new Worker('ai/worker.js?v='+AIV+(h?'&host='+encodeURIComponent(h):''),{type:'module'})}catch(e){AI.st='error';AI.err='This browser can’t run the Qur’an AI.';aiUI();return}
-    AI.w.onmessage=e=>aiMsg(e.data);AI.w.onerror=()=>{AI.st='error';AI.err='The Qur’an AI couldn’t start. Check your connection and try again.';AI.w=null;aiUI();aiFail()}}
+    AI.w.onmessage=e=>aiMsg(e.data);AI.w.onerror=()=>aiCrash()}
   AI.w.postMessage({t:'load'});aiQS();aiUI()}
 function aiMsg(m){if(m.t==='prog'){AI.l=m.l;AI.tot=m.tot;aiUI();return}
   if(m.t==='ready'){AI.st='ready';AI.dev=m.dev;if(!S.aiOk){S.aiOk=1;save();toast('The Qur’an AI is ready ✓')}aiUI();if(REC.aiWait){REC.aiWait=false;if(REC.mode&&REC.listening)aiMicOn()}return}
   if(m.t==='err'){AI.st='error';AI.err='The Qur’an AI couldn’t load. Check your connection and try again.';aiUI();aiFail();return}
   const f=AI.cb[m.id];delete AI.cb[m.id];if(f)f(m)}
+function aiCrash(){const was=AI.st;try{AI.w&&AI.w.terminate()}catch(e){}AI.w=null;for(const k in AI.cb){const f=AI.cb[k];delete AI.cb[k];f({err:'crash'})}AI.busy=false;
+  if(was!=='ready'){AI.st='error';AI.err='The Qur’an AI couldn’t start. Check your connection and try again.';aiUI();aiFail();return}
+  AI.st='off';AI.restarts++;if(AI.restarts<=2&&REC.listening){REC.aiWait=true;MIC.on&&aiMicOff();aiLoad();toast('The Qur’an AI restarted',2500)}else if(REC.listening){aiMicOff();REC.listening=false;REC.note='';recPaint();toast('The Qur’an AI stopped. Using your phone’s recognition for now.',3500);if(recSR())phoneStart()}}
 function aiFail(){try{MIC.ctx0&&MIC.ctx0.close()}catch(e){}MIC.ctx0=null;if(!REC.aiWait)return;REC.aiWait=false;REC.listening=false;REC.note='';recPaint();if(recSR()){toast('Using your phone’s recognition for now',3000);phoneStart()}else toast(AI.err||'The Qur’an AI couldn’t load',3500)}
-const aiCall=(m,tr)=>new Promise(res=>{const id=++AI.seq;AI.cb[id]=res;m.id=id;AI.w.postMessage(m,tr||[])});
+const aiCall=(m,tr)=>new Promise(res=>{if(!AI.w){res({err:'off'});return}const id=++AI.seq;const to=setTimeout(()=>{if(AI.cb[id]){delete AI.cb[id];res({err:'timeout'});aiCrash()}},45000);AI.cb[id]=r=>{clearTimeout(to);res(r)};m.id=id;AI.w.postMessage(m,tr||[])});
 function aiUI(){const pct=AI.tot?Math.min(99,Math.round(AI.l/AI.tot*100)):0;
   if(REC.aiWait){REC.note=S.aiOk?'Starting the Qur’an AI…':'Downloading the Qur’an AI… '+pct+'%';recPaint()}
   const g=$('aiDlGo');if(g&&AI.st==='ready'&&!g.dataset.r){g.dataset.r=1;g.hidden=false;g.textContent='Start reciting';g.onclick=()=>{closeSheet();if(REC.mode)recStart()};const n=$('aiDlNo');if(n)n.hidden=true}
@@ -1398,7 +1401,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-ai],[data-
   else if(d.asr){S.asr=d.asr;save()}else if(d.asrm){S.asrM=d.asrm;save()}else return;const c=$('aiCard');if(c)c.outerHTML=aiCardHTML()});
 /* microphone: cut the recitation at each pause and check that part */
 const MIC={on:false,st:null,ctx:null,pr:null,src:null,seg:[],pre:[],sp:false,sil:0,ms:0,voiced:0,floor:.004,lastPart:0};
-async function aiMicOn(){try{const st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+async function aiMicOn(){try{const st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:true}});
     if(!REC.listening){st.getTracks().forEach(t=>t.stop());return}
     const ctx=MIC.ctx0&&MIC.ctx0.state!=='closed'?MIC.ctx0:new(window.AudioContext||window.webkitAudioContext)();MIC.ctx0=null;if(ctx.state==='suspended')await ctx.resume();
     const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(2048,1,1),bm=2048/ctx.sampleRate*1000;
