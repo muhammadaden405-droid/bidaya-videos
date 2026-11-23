@@ -1,6 +1,6 @@
 /* Qur'an AI recitation checker. Runs Tarteel's whisper-base-ar-quran (Apache-2.0) on the phone
    with transformers.js. Audio never leaves the device. */
-import {AutoProcessor,AutoTokenizer,WhisperForConditionalGeneration,Tensor,env} from './tf.js?v=2';
+import {AutoProcessor,AutoTokenizer,WhisperForConditionalGeneration,Tensor,env} from './tf.js?v=3';
 env.allowLocalModels=false;env.useBrowserCache=true;
 env.backends.onnx.wasm.wasmPaths=new URL('./',import.meta.url).href;
 env.backends.onnx.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||2):1;
@@ -8,12 +8,12 @@ const H=new URL(import.meta.url).searchParams.get('host');if(H)env.remoteHost=H;
 const ID='aaqibhabib/whisper-base-ar-quran-onnx',PRE=[50258,50272,50359,50363],EOS=50257;
 let P=null,T=null,M=null,E=null,dev='wasm',q=Promise.resolve();
 const post=m=>self.postMessage(m);
-async function load(prefer){
-  let gpu=false;if(prefer!=='wasm'&&navigator.gpu){try{const a=await navigator.gpu.requestAdapter();gpu=!!a&&a.features.has('shader-f16')}catch(e){}}
+const log=m=>post({t:'log',m});
+async function load(){const t0=performance.now();
   const files={},progress_callback=x=>{if(x.status==='progress'&&x.file){files[x.file]=[x.loaded||0,x.total||0];let l=0,t=0;for(const k in files){l+=files[k][0];t+=files[k][1]}post({t:'prog',l,tot:t})}};
-  P=await AutoProcessor.from_pretrained(ID,{progress_callback});T=await AutoTokenizer.from_pretrained(ID,{progress_callback});
-  const get=g=>WhisperForConditionalGeneration.from_pretrained(ID,g?{device:{encoder_model:'webgpu',decoder_model_merged:'wasm'},dtype:{encoder_model:'fp16',decoder_model_merged:'q8'},progress_callback}:{device:'wasm',dtype:'q8',progress_callback});
-  try{M=await get(gpu);dev=gpu?'webgpu':'wasm'}catch(e){if(!gpu)throw e;M=await get(false);dev='wasm'}
+  log('loading tokenizer');P=await AutoProcessor.from_pretrained(ID,{progress_callback});T=await AutoTokenizer.from_pretrained(ID,{progress_callback});
+  log('loading model');M=await WhisperForConditionalGeneration.from_pretrained(ID,{device:'wasm',dtype:'q8',progress_callback});dev='wasm';
+  log('model loaded in '+Math.round(performance.now()-t0)+' ms');
   const t=performance.now();await encode(new Float32Array(16000));await forced(['بِسْمِ']);post({t:'ready',dev,warm:Math.round(performance.now()-t)})}
 const free=t=>{try{t&&t.dispose&&t.dispose()}catch(e){}};
 async function encode(a){if(E){free(E.input_features);free(E.eo);E=null}const{input_features}=await P(a);
@@ -32,10 +32,11 @@ async function forced(words){const sp=[],ids=PRE.slice();for(const w of words){c
 async function seqScore(words){const ids=PRE.concat(enc(words.join(' '),true),[EOS]),{d,V,t}=await logits(ids);let s=0;for(let p=PRE.length;p<ids.length;p++)s+=d[(p-1)*V+ids[p]]-lse(d,V,p-1);free(t);return s}
 async function gen(pre){const init=PRE.concat(pre&&pre.length?enc(pre.join(' '),true):[]);const g=await M.generate({inputs:E.input_features,encoder_outputs:E.eo,decoder_input_ids:init,max_new_tokens:Math.max(8,Math.min(200,446-init.length))});const out=T.decode(Array.from(g.tolist()[0]).map(Number),{skip_special_tokens:true}).trim();free(g);return out}
 async function handle(m){try{
-  if(m.t==='load'){if(!M)await load(m.prefer);else post({t:'ready',dev,warm:0});return}
+  if(m.t==='load'){if(!M)await load();else post({t:'ready',dev,warm:0});return}
   if(m.t==='check'){const t0=performance.now();await encode(m.audio);const r={t:'res',id:m.id,te:Math.round(performance.now()-t0)};
     if(m.exp&&m.exp.length){const t1=performance.now();const f=await forced(m.exp);r.tf=Math.round(performance.now()-t1);Object.assign(r,f);r.ok=f.n>0&&f.eos>-4&&f.ws.every(x=>x>-5)}
     if(!r.ok&&m.gen!==false){let k=0;if(r.ws){k=r.ws.findIndex(x=>x<=-5);if(k<0)k=r.n}r.k=k;r.hyp=await gen(k?m.exp.slice(0,k):null)}r.ms=Math.round(performance.now()-t0);post(r);return}
   if(m.t==='verify'){const b=await seqScore(m.base),d=[];for(const a of m.alts)d.push(Math.round(((await seqScore(a))-b)*10)/10);post({t:'res',id:m.id,d});return}
-}catch(e){if(m.t==='check'&&dev==='webgpu'&&!m.retry&&!/bounds|indices|index/i.test(String(e&&e.message||e))){try{const old=M;M=null;try{await old.dispose()}catch(x){}await load('wasm');m.retry=1;return handle(m)}catch(x){}}post({t:m.t==='load'?'err':'res',id:m.id,err:String(e&&e.message||e)})}}
+}catch(e){log('error in '+m.t+': '+String(e&&e.message||e).slice(0,300));post({t:m.t==='load'?'err':'res',id:m.id,err:String(e&&e.message||e)})}}
+self.addEventListener('error',e=>log('worker error: '+(e.message||e)));self.addEventListener('unhandledrejection',e=>log('worker rejection: '+String(e.reason&&e.reason.message||e.reason).slice(0,300)));
 self.onmessage=e=>{const m=e.data;q=q.then(()=>handle(m))};

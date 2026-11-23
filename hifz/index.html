@@ -382,6 +382,7 @@ body.onbon{overflow:hidden}
 .ptabs button.on{background:var(--gold2);border-color:var(--gold2);color:#15110a}
 .ptabs button.ok:not(.on){color:var(--gold2)}
 .dcount{font-size:13px;font-weight:700;color:var(--gold2)}
+#recMic.live,#mrMic.live{box-shadow:0 0 0 calc(var(--lvl,0)*14px) color-mix(in srgb,var(--gold2) 45%,transparent);transition:box-shadow .08s}
 .dcard{cursor:pointer}
 .dayhead{margin:2px 2px 10px}
 .dayhead .bar{margin-top:6px;height:6px}
@@ -987,7 +988,7 @@ function tryFind(hw){if(!REC.find)return false;const fresh=!REC.st.some(x=>x),lo
 function findMatn(H){if(!MI)return null;let best=null;for(const b of MI){const IX=mIndex(b.id);if(!IX)continue;const f=seqSearch(IX,H);if(f&&(!best||f.sc>best.sc))best={sc:f.sc,id:b.id,li:IX.W[f.start].li}}return best}
 let allLoading=false;function loadAllMutun(){if(allLoading||!MI)return;allLoading=true;MI.forEach(b=>loadMatn(b.id).catch(()=>{}))}
 function recEnter(any){if(!recSR()&&typeof Worker==='undefined'){sheet('<h2>Recitation check isn’t available here</h2><p class="note">This browser can’t listen to recitation. Use Chrome on Android or a computer, or Safari on iPhone.</p><button class="btn wide" data-close>OK</button>');return false}
-  if(REC.listening)recStop(false);if(!REC.mode){MIC.rec=[];MIC.recN=0}REC.kind='q';REC.any=!!any;REC.find=true;REC.mode=true;REC.show=false;REC.page=0;REC.log=[];if(PL.on)stopPlay(true);mbarHide();hideMode=false;renderMushaf();if(any)loadMI().then(loadAllMutun).catch(()=>{});
+  if(REC.listening)recStop(false);REC.phoneOnce=false;if(!REC.mode){MIC.rec=[];MIC.recN=0}REC.kind='q';REC.any=!!any;REC.find=true;REC.mode=true;REC.show=false;REC.page=0;REC.log=[];if(PL.on)stopPlay(true);mbarHide();hideMode=false;renderMushaf();if(any)loadMI().then(loadAllMutun).catch(()=>{});
   if(!S.recInfo){S.recInfo=1;save();sheet('<h2>Recite and check</h2><p class="mean">Tap the mic and recite from memory. Words appear as you say them. Skipped or different words turn orange. If you start somewhere else, the app finds where you are and shows that part.</p><p class="note">It checks the words, not tajwīd, and it can mishear.</p><button class="btn wide" data-close>Start</button>')}return true}
 function recSaveAudio(){const n=MIC.recN,buf=new ArrayBuffer(44+n*2),v=new DataView(buf),W=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
   W(0,'RIFF');v.setUint32(4,36+n*2,true);W(8,'WAVE');W(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);W(36,'data');v.setUint32(40,n*2,true);
@@ -1373,23 +1374,33 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
   if(k==='plan'){openOnb(false);return}renderToday();if(k==='go'){deckScroll();const dk=$('deck');if(dk)dk.scrollIntoView({behavior:'smooth',block:'center'})}});
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
-const AIV='5',AI={restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
+const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
+const APPV='v14';
+function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
+function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifz diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
+function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
+  $('dlogC').onclick=()=>{const ta=$('dlogT');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Copied ✓')).catch(()=>{ta.focus();ta.select();try{document.execCommand('copy');toast('Copied ✓')}catch(e){toast('Select the text and copy it')}})};
+  if($('dlogS'))$('dlogS').onclick=()=>navigator.share({title:'Hifz diagnostics',text:t}).catch(()=>{})}
+addEventListener('error',e=>dlog('page error: '+(e.message||'')+' line '+(e.lineno||'')));addEventListener('unhandledrejection',e=>dlog('page rejection: '+String(e.reason&&e.reason.message||e.reason)));
 const aiOk=()=>!!S.aiOk&&typeof Worker!=='undefined';
-const useAI=()=>(REC.kind==='q'?S.asr!=='phone':S.asrM==='ai'&&(aiOk()||AI.st==='ready'))&&typeof Worker!=='undefined';
+const useAI=()=>!REC.phoneOnce&&(REC.kind==='q'?S.asr!=='phone':S.asrM==='ai'&&(aiOk()||AI.st==='ready'))&&typeof Worker!=='undefined';
 function aiQS(){return AI.QS?Promise.resolve():fetch('data/qsimple.json').then(r=>r.json()).then(d=>{AI.QS=d}).catch(()=>{})}
 function aiLoad(){if(AI.st==='ready'||AI.st==='loading')return;AI.st='loading';AI.err='';AI.l=AI.tot=0;
   if(!AI.w){try{let h='';try{h=localStorage.getItem('hifz-ai-host')||''}catch(e){}AI.w=new Worker('ai/worker.js?v='+AIV+(h?'&host='+encodeURIComponent(h):''),{type:'module'})}catch(e){AI.st='error';AI.err='This browser can’t run the Qur’an AI.';aiUI();return}
-    AI.w.onmessage=e=>aiMsg(e.data);AI.w.onerror=()=>aiCrash()}
-  try{localStorage.setItem('hifz-ai-live',Date.now())}catch(e){}AI.w.postMessage({t:'load',prefer:S.aiFast?'gpu':'wasm'});aiQS();aiUI()}
-function aiMsg(m){if(m.t==='prog'){AI.l=m.l;AI.tot=m.tot;aiUI();return}
-  if(m.t==='ready'){aiLive(0);AI.st='ready';AI.dev=m.dev;if(!S.aiOk){S.aiOk=1;save();toast('The Qur’an AI is ready ✓')}aiUI();if(REC.aiWait){REC.aiWait=false;if(REC.mode&&REC.listening)aiMicOn()}return}
-  if(m.t==='err'){AI.st='error';AI.err='The Qur’an AI couldn’t load. Check your connection and try again.';aiUI();aiFail();return}
+    AI.w.onmessage=e=>aiMsg(e.data);AI.w.onerror=e=>{dlog('worker crashed: '+(e&&e.message||'no message'));aiCrash()}}
+  try{localStorage.setItem('hifz-ai-live',Date.now())}catch(e){}dlog('ai load start · downloaded before: '+!!S.aiOk);AI.lastPct=-1;AI.w.postMessage({t:'load'});aiQS();aiUI()}
+function aiMsg(m){if(m.t==='log'){dlog('ai: '+m.m);return}if(m.t==='prog'){AI.l=m.l;AI.tot=m.tot;const q=AI.tot?Math.floor(AI.l/AI.tot*4)*25:0;if(q>AI.lastPct){AI.lastPct=q;dlog('ai download '+q+'% of '+Math.round(AI.tot/1e6)+' MB')}aiUI();return}
+  if(m.t==='ready'){aiLive(0);AI.st='ready';AI.dev=m.dev;dlog('ai ready · warm-up '+m.warm+' ms');if(!S.aiOk){S.aiOk=1;save();toast('The Qur’an AI is ready ✓')}if(REC.aiWait){REC.aiWait=false;REC.note=''}aiUI();recPaint();AI.waiters.splice(0).forEach(r=>r());return}
+  if(m.t==='err'){dlog('ai load error: '+(m.err||''));AI.st='error';AI.err='The Qur’an AI couldn’t load. Check your connection and try again.';aiUI();aiFail();return}
   const f=AI.cb[m.id];delete AI.cb[m.id];if(f)f(m)}
 function aiCrash(){const was=AI.st;try{AI.w&&AI.w.terminate()}catch(e){}AI.w=null;for(const k in AI.cb){const f=AI.cb[k];delete AI.cb[k];f({err:'crash'})}AI.busy=false;
   if(was!=='ready'){AI.st='error';AI.err='The Qur’an AI couldn’t start. Check your connection and try again.';aiUI();aiFail();return}
-  AI.st='off';AI.restarts++;if(AI.restarts<=2&&REC.listening){REC.aiWait=true;MIC.on&&aiMicOff();aiLoad();toast('The Qur’an AI restarted',2500)}else if(REC.listening){aiMicOff();REC.listening=false;REC.note='';recPaint();toast('The Qur’an AI stopped. Tap the mic to start again.',3500)}}
-function aiFail(){try{MIC.ctx0&&MIC.ctx0.close()}catch(e){}MIC.ctx0=null;if(!REC.aiWait)return;REC.aiWait=false;REC.listening=false;REC.note='';recPaint();toast((AI.err||'The Qur’an AI couldn’t load.')+' Tap the mic to try again.',4000)}
-const aiCall=(m,tr)=>new Promise(res=>{if(!AI.w){res({err:'off'});return}const id=++AI.seq;const to=setTimeout(()=>{if(AI.cb[id]){delete AI.cb[id];res({err:'timeout'});aiCrash()}},45000);AI.cb[id]=r=>{clearTimeout(to);res(r)};m.id=id;AI.w.postMessage(m,tr||[])});
+  AI.st='off';AI.restarts++;dlog('ai crashed while ready · restart '+AI.restarts);if(AI.restarts<=2&&REC.listening){REC.aiWait=true;aiLoad();toast('The Qur’an AI restarted',2500)}else if(REC.listening)aiTrouble('It stopped working several times in a row. This usually means the phone ran out of memory.')}
+function aiFail(){try{MIC.ctx0&&MIC.ctx0.close()}catch(e){}MIC.ctx0=null;if(!REC.aiWait&&!REC.listening)return;aiTrouble(AI.err||'It couldn’t load. The first download needs internet.')}
+function aiTrouble(msg){dlog('trouble: '+msg);aiMicOff();REC.aiWait=false;REC.listening=false;REC.note='';recPaint();AI.waiters.splice(0).forEach(r=>r());
+  sheet('<h2>The Qur’an AI couldn’t run</h2><p class="mean">'+esc(msg)+'</p><button class="btn wide" id="aiTry">Try again</button>'+(recSR()?'<button class="btn ghost wide" id="aiPhone" style="margin-top:8px">Use phone recognition this time</button>':'')+'<button class="btn ghost wide" id="aiDiag" style="margin-top:8px">Copy details to send to Claude</button>');
+  $('aiTry').onclick=()=>{closeSheet();recStart()};if($('aiPhone'))$('aiPhone').onclick=()=>{closeSheet();REC.phoneOnce=true;recStart()};$('aiDiag').onclick=dlogCopy}
+const aiCall=(m,tr)=>new Promise(res=>{if(!AI.w){res({err:'off'});return}const id=++AI.seq;const to=setTimeout(()=>{if(AI.cb[id]){delete AI.cb[id];dlog('ai timeout on '+m.t);res({err:'timeout'});aiCrash()}},45000);AI.cb[id]=r=>{clearTimeout(to);res(r)};m.id=id;AI.w.postMessage(m,tr||[])});
 function aiUI(){const pct=AI.tot?Math.min(99,Math.round(AI.l/AI.tot*100)):0;
   if(REC.aiWait){REC.note=S.aiOk?'Starting the Qur’an AI…':'Downloading the Qur’an AI (once, about 105 MB)… '+pct+'%';recPaint()}
   const g=$('aiDlGo');if(g&&AI.st==='ready'&&!g.dataset.r){g.dataset.r=1;g.hidden=false;g.textContent='Start reciting';g.onclick=()=>{closeSheet();if(REC.mode)recStart()};const n=$('aiDlNo');if(n)n.hidden=true}
@@ -1398,10 +1409,10 @@ function aiCardHTML(){const pct=AI.tot?Math.min(99,Math.round(AI.l/AI.tot*100)):
   if(!aiOk()&&AI.st!=='ready'){h+='<p class="note">Add the Qur’an AI for much more accurate checking. It is Tarteel’s free model, trained on Qur’an recitation, and it runs on your phone, so your voice never leaves it. It downloads about 105 MB once, then works offline.</p>'
     +(ld?'<div class="bar" style="margin-top:10px"><i style="width:'+pct+'%"></i></div><p class="note">Downloading… '+pct+'% · keep the app open</p>':'<div class="btns"><button class="btn sm" data-ai="dl">Download the Qur’an AI</button></div>')+(AI.st==='error'?'<p class="note warn">'+esc(AI.err)+'</p>':'')}
   else{const q=S.asr==='phone'?'phone':'ai',m=S.asrM==='ai'?'ai':'phone';
-    h+='<p class="note">'+(AI.st==='ready'?'Qur’an AI ready · '+(AI.dev==='webgpu'?'fast mode':'standard mode'):ld?'Qur’an AI · starting…':'Qur’an AI downloaded · it starts when you recite')+'</p>'
+    h+='<p class="note">'+(AI.st==='ready'?'Qur’an AI ready':ld?'Qur’an AI · starting…':'Qur’an AI downloaded · it starts when you recite')+'</p>'
      +'<div class="field"><span>Checking the Qur’an</span><div class="seg two">'+[['ai','Qur’an AI'],['phone','Phone']].map(x=>'<button data-asr="'+x[0]+'" class="'+(q===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></div>'
      +'<div class="field"><span>Checking the mutūn</span><div class="seg two">'+[['phone','Phone'],['ai','Qur’an AI (trial)']].map(x=>'<button data-asrm="'+x[0]+'" class="'+(m===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><p class="note">The AI learned from Qur’an recitation only, so on the mutūn it may mishear.</p></div>'
-     +'<div class="field"><span>Speed</span><div class="seg two">'+[['0','Standard'],['1','Fast']].map(x=>'<button data-aifast="'+x[0]+'" class="'+(String(S.aiFast?1:0)===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><p class="note">Fast uses your phone’s graphics chip. It can be unstable on some phones; if the app closes while reciting, use Standard.</p></div>'+'<div class="btns"><button class="btn sm ghost" data-ai="rm">Remove the Qur’an AI</button></div>'}
+     +'<div class="btns"><button class="btn sm ghost" data-ai="diag">Copy details for Claude</button><button class="btn sm ghost" data-ai="rm">Remove the Qur’an AI</button></div>'}
   return h+'<p class="src">Model: Tarteel whisper-base-ar-quran (Apache 2.0), run with Transformers.js and ONNX Runtime.</p></div>'}
 function aiOffer(then){sheet('<h2>Better recitation checking</h2><p class="mean">Add the <b>Qur’an AI</b>: Tarteel’s free model, trained on Qur’an recitation. It listens far more accurately than your phone’s normal speech recognition.</p><ul class="mean" style="padding-left:18px;margin:8px 0"><li>Runs on your phone, so your voice never leaves it</li><li>Works offline once downloaded</li><li>About 105 MB, downloaded once (Wi-Fi is best)</li></ul>'
   +'<div id="aiDlW" hidden><div class="bar"><i id="aiDlBar" style="width:0"></i></div><p class="note" id="aiDlTxt">Starting…</p></div><button class="btn wide" id="aiDlGo">Download the Qur’an AI</button><button class="btn ghost wide" id="aiDlNo" style="margin-top:8px">Use phone recognition for now</button>');
@@ -1409,30 +1420,40 @@ function aiOffer(then){sheet('<h2>Better recitation checking</h2><p class="mean"
   $('aiDlNo').onclick=()=>{closeSheet();if(then)then()}}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-ai],[data-asr],[data-asrm],[data-aifast]');if(!t)return;const d=t.dataset;
   if(d.aifast!==undefined){S.aiFast=+d.aifast;S.aiLite=0;save();if(AI.w&&!REC.listening){AI.w.terminate();AI.w=null;AI.st='off'}const c=$('aiCard');if(c)c.outerHTML=aiCardHTML();return}
+  if(d.ai==='diag'){dlogCopy();return}
   if(d.ai==='dl')aiLoad();
   else if(d.ai==='rm'){if(!confirm('Remove the Qur’an AI from this phone? You can download it again later.'))return;if(AI.w){AI.w.terminate();AI.w=null}AI.st='off';S.aiOk=0;save();
     if(window.caches){caches.delete('transformers-cache');caches.delete('hifz-ai-1')}toast('Removed')}
   else if(d.asr){S.asr=d.asr;save()}else if(d.asrm){S.asrM=d.asrm;save()}else return;const c=$('aiCard');if(c)c.outerHTML=aiCardHTML()});
 /* microphone: cut the recitation at each pause and check that part */
 const MIC={rec:[],recN:0,ph:0,on:false,st:null,ctx:null,pr:null,src:null,seg:[],pre:[],sp:false,sil:0,ms:0,voiced:0,floor:.004,lastPart:0};
-async function aiMicOn(){try{const st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:true}});
-    if(!REC.listening){st.getTracks().forEach(t=>t.stop());return}
-    const ctx=MIC.ctx0&&MIC.ctx0.state!=='closed'?MIC.ctx0:new(window.AudioContext||window.webkitAudioContext)();MIC.ctx0=null;if(ctx.state==='suspended')await ctx.resume();
-    const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(2048,1,1),bm=2048/ctx.sampleRate*1000;
-    Object.assign(MIC,{on:true,st,ctx,src,pr,seg:[],pre:[],sp:false,sil:0,ms:0,voiced:0,lastPart:0});
-    const hist=[],pct=q=>{const x=hist.slice().sort((a,b)=>a-b);return x[Math.min(x.length-1,Math.floor(q*x.length))]};
-    const ratio=ctx.sampleRate/16000;MIC.ph=0;
-    pr.onaudioprocess=e=>{if(!MIC.on)return;const x=new Float32Array(e.inputBuffer.getChannelData(0));{const out=new Int16Array(Math.ceil(x.length/ratio)+1);let k=0,p=MIC.ph;while(p+ratio<=x.length){const a=Math.floor(p),b=Math.max(a+1,Math.floor(p+ratio));let s=0;for(let i=a;i<b;i++)s+=x[i];out[k++]=Math.max(-32768,Math.min(32767,s/(b-a)*32767));p+=ratio}MIC.ph=p-x.length;MIC.rec.push(out.subarray(0,k));MIC.recN+=k;while(MIC.recN>16000*600&&MIC.rec.length)MIC.recN-=MIC.rec.shift().length}let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];const db=20*Math.log10(Math.sqrt(r/x.length)+1e-9);
-      hist.push(db);if(hist.length>230)hist.shift();const nz=pct(.1),spk=pct(.9),thr=nz+Math.max(6,.35*(spk-nz));
-      if(!MIC.sp){MIC.pre.push({x,db});if(MIC.pre.length>12)MIC.pre.shift();if(db>thr&&db>-55){MIC.sp=true;MIC.seg=MIC.pre;MIC.pre=[];MIC.ms=MIC.seg.length*bm;MIC.sil=0;MIC.voiced=bm}return}
-      MIC.seg.push({x,db});MIC.ms+=bm;if(db>thr-3){if(db>thr)MIC.voiced+=bm;MIC.sil=0}else MIC.sil+=bm;
-      if(MIC.sil>=350&&MIC.voiced>=1200)aiFlush();
-      else if(MIC.sil>=900){if(MIC.voiced>=150)aiFlush();else{MIC.sp=false;MIC.seg=[]}}
-      else if(MIC.ms>=(S.aiLite?8000:12000))aiFlush(bm);
-      else if(!S.aiLite&&MIC.ms>=2500&&performance.now()-MIC.lastPart>1800&&!AI.busy&&!aiPending&&AI.ms<2600){MIC.lastPart=performance.now();aiSegment(MIC.seg.map(b=>b.x),false)}};
-    src.connect(pr);pr.connect(ctx.destination);REC.note='';recPaint()}
-  catch(e){REC.listening=false;REC.note='';recPaint();toast('Microphone access is blocked. Allow it in your browser settings.',4000)}}
-function aiMicOff(){MIC.on=false;try{MIC.pr&&MIC.pr.disconnect();MIC.src&&MIC.src.disconnect()}catch(e){}try{MIC.st&&MIC.st.getTracks().forEach(t=>t.stop())}catch(e){}try{MIC.ctx&&MIC.ctx.close()}catch(e){}Object.assign(MIC,{st:null,ctx:null,pr:null,src:null,sp:false,seg:[]})}
+async function aiMicOn(retry){let st;dlog('mic: asking');
+  try{st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:true}})}
+  catch(e){dlog('mic error: '+e.name+' '+e.message);REC.listening=false;REC.aiWait=false;REC.note='';recPaint();toast(e.name==='NotAllowedError'?'Microphone access is blocked. Allow it for this app in your phone’s settings.':'Couldn’t start the microphone ('+e.name+')',4500);return}
+  if(!REC.listening){st.getTracks().forEach(t=>t.stop());return}
+  let ctx;try{ctx=new(window.AudioContext||window.webkitAudioContext)();await ctx.resume()}catch(e){dlog('audio error: '+e.message)}
+  const tr=st.getAudioTracks()[0];dlog('mic on · audio '+(ctx&&ctx.state)+' '+(ctx&&ctx.sampleRate)+' Hz · '+(tr&&tr.label||'mic'));
+  const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(2048,1,1),bm=2048/ctx.sampleRate*1000;
+  Object.assign(MIC,{on:true,st,ctx,src,pr,seg:[],pre:[],sp:false,sil:0,ms:0,voiced:0,lastPart:0,cb:0,lvl:-90,top:-90});
+  ctx.onstatechange=()=>{dlog('audio '+ctx.state);if(MIC.on&&MIC.ctx===ctx&&ctx.state!=='running'&&ctx.state!=='closed')ctx.resume().catch(()=>{})};
+  const hist=[],pct=q=>{const x=hist.slice().sort((a,b)=>a-b);return x[Math.min(x.length-1,Math.floor(q*x.length))]};
+  const ratio=ctx.sampleRate/16000;MIC.ph=0;
+  pr.onaudioprocess=e=>{if(!MIC.on||MIC.ctx!==ctx)return;MIC.cb++;const x=new Float32Array(e.inputBuffer.getChannelData(0));{const out=new Int16Array(Math.ceil(x.length/ratio)+1);let k=0,p=MIC.ph;while(p+ratio<=x.length){const a=Math.floor(p),b=Math.max(a+1,Math.floor(p+ratio));let s=0;for(let i=a;i<b;i++)s+=x[i];out[k++]=Math.max(-32768,Math.min(32767,s/(b-a)*32767));p+=ratio}MIC.ph=p-x.length;MIC.rec.push(out.subarray(0,k));MIC.recN+=k;while(MIC.recN>16000*600&&MIC.rec.length)MIC.recN-=MIC.rec.shift().length}
+    let r=0;for(let i=0;i<x.length;i++)r+=x[i]*x[i];const db=20*Math.log10(Math.sqrt(r/x.length)+1e-9);MIC.lvl=db;if(db>MIC.top)MIC.top=db;
+    hist.push(db);if(hist.length>230)hist.shift();const nz=pct(.1),spk=pct(.9),thr=nz+Math.max(6,.35*(spk-nz));
+    if(!MIC.sp){MIC.pre.push({x,db});if(MIC.pre.length>12)MIC.pre.shift();if(db>thr&&db>-55){MIC.sp=true;MIC.seg=MIC.pre;MIC.pre=[];MIC.ms=MIC.seg.length*bm;MIC.sil=0;MIC.voiced=bm}return}
+    MIC.seg.push({x,db});MIC.ms+=bm;if(db>thr-3){if(db>thr)MIC.voiced+=bm;MIC.sil=0}else MIC.sil+=bm;
+    if(MIC.sil>=350&&MIC.voiced>=1200)aiFlush();
+    else if(MIC.sil>=900){if(MIC.voiced>=150)aiFlush();else{MIC.sp=false;MIC.seg=[]}}
+    else if(MIC.ms>=(S.aiLite?8000:12000))aiFlush(bm);
+    else if(!S.aiLite&&AI.st==='ready'&&MIC.ms>=2500&&performance.now()-MIC.lastPart>1800&&!AI.busy&&!aiPending&&AI.ms<2600){MIC.lastPart=performance.now();aiSegment(MIC.seg.map(b=>b.x),false)}};
+  src.connect(pr);pr.connect(ctx.destination);
+  const tick=()=>{if(!MIC.on||MIC.ctx!==ctx)return;const m=$(REC.kind==='q'?'recMic':'mrMic');if(m)m.style.setProperty('--lvl',Math.max(0,Math.min(1,(MIC.lvl+60)/45)).toFixed(2));MIC.raf=requestAnimationFrame(tick)};tick();
+  clearTimeout(MIC.wd);MIC.wd=setTimeout(()=>{if(!MIC.on||MIC.ctx!==ctx)return;
+    if(!MIC.cb){dlog('no sound arriving from the microphone'+(retry?' (after retry)':''));if(!retry){aiMicOff();aiMicOn(true)}else aiTrouble('Your microphone isn’t sending any sound to the app. Close the app fully, open it again and allow the microphone.');return}
+    MIC.wd=setTimeout(()=>{if(MIC.on&&MIC.ctx===ctx&&MIC.top<-58){dlog('mic very quiet: '+Math.round(MIC.top)+' dB');toast('I can’t hear you. Check that nothing is covering the microphone.',4000)}},6000)},2500);
+  REC.note=AI.st==='ready'?'':REC.note;recPaint()}
+function aiMicOff(){MIC.on=false;clearTimeout(MIC.wd);cancelAnimationFrame(MIC.raf||0);['recMic','mrMic'].forEach(i=>{const m=$(i);if(m)m.style.setProperty('--lvl',0)});try{MIC.pr&&MIC.pr.disconnect();MIC.src&&MIC.src.disconnect()}catch(e){}try{MIC.st&&MIC.st.getTracks().forEach(t=>t.stop())}catch(e){}try{MIC.ctx&&MIC.ctx.close()}catch(e){}Object.assign(MIC,{st:null,ctx:null,pr:null,src:null,sp:false,seg:[]})}
 function aiFlush(bm){let seg=MIC.seg,rest=[];if(bm){let bi=seg.length-1,bv=1e9;for(let i=Math.max(0,seg.length-Math.round(4000/bm));i<seg.length;i++)if(seg[i].db<bv){bv=seg[i].db;bi=i}rest=seg.slice(bi+1);seg=seg.slice(0,bi+1)}
   MIC.seg=rest;MIC.ms=rest.length*(bm||0);MIC.sil=0;MIC.voiced=MIC.ms;MIC.sp=rest.length>0;MIC.pre=[];if(seg.length&&MIC.ctx)aiSegment(seg.map(b=>b.x),true)}
 async function to16k(blocks,rate){const n=blocks.reduce((a,b)=>a+b.length,0),buf=new Float32Array(n);let o=0;for(const b of blocks){buf.set(b,o);o+=b.length}
@@ -1441,14 +1462,14 @@ async function to16k(blocks,rate){const n=blocks.reduce((a,b)=>a+b.length,0),buf
   catch(e){const out=new Float32Array(len),k=rate/16000;for(let i=0;i<len;i++){const a=Math.floor(i*k),b=Math.min(n,Math.floor((i+1)*k));let s=0;for(let j=a;j<b;j++)s+=buf[j];out[i]=b>a?s/(b-a):0}return out}}
 let aiChain=Promise.resolve(),aiPending=0;
 function aiSegment(blocks,final){const rate=MIC.ctx.sampleRate;
-  if(final){aiPending++;REC.note='Checking…';recPaint();aiChain=aiChain.then(()=>aiProcess(blocks,rate,true)).catch(()=>{}).then(()=>{aiPending--;if(!aiPending){REC.note='';recPaint()}});return}
-  aiProcess(blocks,rate,false).catch(()=>{})}
+  if(final){aiPending++;if(AI.st==='ready'){REC.note='Checking…';recPaint()}aiChain=aiChain.then(()=>AI.st==='ready'?0:new Promise(r=>AI.waiters.push(r))).then(()=>aiProcess(blocks,rate,true)).catch(()=>{}).then(()=>{aiPending--;if(!aiPending){REC.note='';recPaint()}});return}
+  if(AI.st==='ready')aiProcess(blocks,rate,false).catch(()=>{})}
 const aiForm=k=>{const w=REC.words[k];return w&&AI.QS&&AI.QS[w.k]?AI.QS[w.k][w.x]:undefined};
 function aiExpected(max){if(REC.kind!=='q'||!AI.QS)return null;const exp=[],idx=[];for(let k=REC.pos;k<REC.words.length&&exp.length<max;k++){const f=aiForm(k);if(f===undefined)break;if(f){exp.push(f);idx.push(k)}}return exp.length?{exp,idx}:null}
 function aiLive(on){try{if(on)localStorage.setItem('hifz-ai-live',Date.now());else localStorage.removeItem('hifz-ai-live')}catch(e){}}
 async function aiProcess(blocks,rate,final){if(!AI.w||AI.st!=='ready')return;AI.busy=true;aiLive(1);const W=REC.words;try{
   const a=await to16k(blocks,rate),E=aiExpected(Math.ceil(a.length/16000*2.5)+4);
-  const r=await aiCall({t:'check',audio:a,exp:E?E.exp:null,gen:final},[a.buffer]);if(r.ms)AI.ms=r.ms;if(r.err||REC.words!==W)return;
+  const sec=(a.length/16000).toFixed(1),r=await aiCall({t:'check',audio:a,exp:E?E.exp:null,gen:final},[a.buffer]);if(r.ms)AI.ms=r.ms;if(final)dlog('checked '+sec+' s → '+(r.err?'error '+r.err:r.ok?'matched '+r.n+' words':'heard '+(r.hyp||'').split(' ').length+' words')+' · '+(r.ms||'?')+' ms');if(r.err||REC.words!==W)return;
   if(!final){if(!REC.listening)return;REC.tent=new Set();if(r.ok&&E)for(let i=0;i<r.n;i++)REC.tent.add(E.idx[i]);recPaint();return}
   if(r.ok&&E){const end=E.idx[r.n-1];for(let k=REC.pos;k<=end;k++)REC.st[k]=1;REC.pos=end+1;while(REC.pos<REC.words.length&&aiForm(REC.pos)==='')REC.st[REC.pos++]=1;REC.miss=0;REC.recent=[];REC.interim=''}
   else if(r.hyp){REC.interim=r.hyp;const hw=r.hyp.split(/\s+/).filter(Boolean);
@@ -1460,8 +1481,8 @@ async function aiProcess(blocks,rate,final){if(!AI.w||AI.st!=='ready')return;AI.
   REC.tent=new Set();if(REC.words.length&&REC.pos>=REC.words.length)recPageDone();recPaint();
   const cur=document.querySelector((REC.kind==='q'?'#mPage':'#mrText')+' .w.cur');if(cur&&REC.kind==='q')cur.scrollIntoView({block:'nearest',behavior:'smooth'})
 }finally{AI.busy=false;aiLive(0)}}
-function aiRecStart(){AI.restarts=0;if(MIC.shown){MIC.rec=[];MIC.recN=0;MIC.shown=false}try{if(!MIC.ctx0||MIC.ctx0.state==='closed')MIC.ctx0=new(window.AudioContext||window.webkitAudioContext)();MIC.ctx0.resume()}catch(e){}if(!REC.words.length||REC.pos>=REC.words.length)recBuild();REC.listening=true;REC.interim='';REC.tent=new Set();
-  if(AI.st!=='ready'){REC.aiWait=true;aiLoad();aiUI();return}aiQS();REC.note='';recPaint();aiMicOn()}
+function aiRecStart(){AI.restarts=0;if(MIC.shown){MIC.rec=[];MIC.recN=0;MIC.shown=false}if(!REC.words.length||REC.pos>=REC.words.length)recBuild();REC.listening=true;REC.interim='';REC.tent=new Set();
+  dlog('recite start · '+(REC.kind==='q'?'page '+S.cur:'matn')+' · ai '+AI.st);aiQS();if(AI.st!=='ready'){REC.aiWait=true;aiLoad();aiUI()}else{REC.note='';recPaint()}aiMicOn()}
 
 /* ---------- routing ---------- */
 const TABS=['today','mushaf','mutun','progress','settings'];
@@ -1478,7 +1499,8 @@ let deferredInstall=null;addEventListener('beforeinstallprompt',e=>{e.preventDef
 
 const restoring=location.hash.startsWith('#restore=');
 {let live=0;try{live=+localStorage.getItem('hifz-ai-live')||0;localStorage.removeItem('hifz-ai-live')}catch(e){}
- if(live&&Date.now()-live<20*60e3){S.aiCrash=(S.aiCrash||0)+1;if(S.aiFast){S.aiFast=0;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses standard mode.',4500),1500)}else if(!S.aiLite){S.aiLite=1;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses a lighter setting.',4500),1500)}save()}}
+ dlog('app open · '+APPV+(live?' · the last session closed while the AI was working':''));
+ if(live&&Date.now()-live<20*60e3){S.aiCrash=(S.aiCrash||0)+1;S.aiFast=0;if(S.aiFast){S.aiFast=0;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses standard mode.',4500),1500)}else if(!S.aiLite){S.aiLite=1;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses a lighter setting.',4500),1500)}save()}}
 applyTheme();renderAll();show();
 if(!S.track&&S.setup)S.track=S.mp.setup?'both':'quran';
 if(!S.track&&!restoring)openOnb(true);
