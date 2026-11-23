@@ -1529,7 +1529,7 @@ function mPrepare(id,r){const k=id+':'+r;if(MAL[k])return Promise.resolve(MAL[k]
     if(!R){R=AL.estimate(U,pz,off);dlog('matn could not be matched to this recording: timing estimated from the text');toast('This recording reads the text quite differently, so the timing is only approximate.',5000)}
     const j={on:R.on,off:R.off,q:+R.q.toFixed(2),ds:ds.map(x=>+x.toFixed(3)),skip:R.skip||{},est:!!R.est};MAL[k]=j;S.mdur=S.mdur||{};S.mdur[k]=j.ds;save();
     try{await c.put(ck,new Response(JSON.stringify(j)))}catch(e){}
-    dlog('matn lined up: '+k+' · '+Math.round(j.q*100)+'% of sentence ends found · '+Math.round(performance.now()-t0)+' ms');return j})().finally(()=>{delete MPREP[k];delete PREPROG[k]})}
+    dlog('matn lined up: '+k+' · '+Math.round(j.q*100)+'% of sentence ends found · '+pz.length+' pauses · '+Math.round(off)+' s audio · first lines at '+j.on.slice(0,3).map(x=>x.toFixed(1)).join(', ')+' s · '+Math.round(performance.now()-t0)+' ms');return j})().finally(()=>{delete MPREP[k];delete PREPROG[k]})}
 /* get a matn ready in the background when its recording is already saved */
 async function mPrepIdle(id){const s=mpSel(id);if(!s||MAL[id+':'+s.r]||MPREP[id+':'+s.r])return;for(const u of MREC[id][s.r])if(!(await mpCached(u)))return;setTimeout(()=>{mPrepare(id,s.r).catch(()=>{})},1200)}
 /* highlight the line being read */
@@ -1552,12 +1552,10 @@ async function mppUse(f,tok){const u=MREC[PP.id][PP.r][f];if(MP.loaded===u&&MA.s
   if(!PP.noBlob){try{const c=await caches.open(AC),m=await c.match(u);if(m){const b=await m.blob();if(PP.tok!==tok)return false;if(MP.obj)URL.revokeObjectURL(MP.obj);MP.obj=URL.createObjectURL(b);src=MP.obj}}catch(e){}}
   if(PP.tok!==tok)return false;MP.id=PP.id;MP.r=PP.r;MP.f=f;MP.loaded=u;MP.src=src;return 'new'}
 const mpKind=()=>MA.src.startsWith('blob:')?'saved copy':MA.src.startsWith('data:')?'unlock':'online file';
-/* load a file and put it at t (seconds) without any sound before the right place */
-async function mppLoadAt(t,tok){MA.preload='auto';MA.muted=false;MA.volume=1;MA.src=MP.src;MA.playbackRate=MP.rate;
-  if(MA.readyState<1)await mpOnce(MA,'loadedmetadata',2500);if(PP.tok!==tok)return false;
-  if(MA.readyState>=1){if(Math.abs(MA.currentTime-t)>.03){PP.seeking=true;MA.currentTime=t;await mpOnce(MA,'seeked',4000);PP.seeking=false}}
-  else{try{MA.currentTime=t}catch(e){}}            // the phone reads the file only once it plays: start there
-  return PP.tok===tok}
+/* load a file so it starts at t: the time is set once the phone has read the file's header (what iPhones need) */
+async function mppLoadAt(t,tok){MA.preload='auto';MA.muted=false;MA.volume=1;
+  MA.addEventListener('loadedmetadata',()=>{try{if(Math.abs(MA.currentTime-t)>.03)MA.currentTime=t}catch(e){}},{once:true});
+  MA.src=MP.src;MA.playbackRate=MP.rate;return PP.tok===tok}
 async function mppSeekTo(t,tok){if(Math.abs(MA.currentTime-t)>.03){PP.seeking=true;MA.currentTime=t;await mpOnce(MA,'seeked',4000);PP.seeking=false}return PP.tok===tok}
 /* play the part from its first line */
 async function mppGo(tok){const ds=S.mdur[mppKey()],[f,lt]=g2f(ds,PP.ts);clearTimeout(PP.gapT);clearTimeout(PP.endT);PP.st='seek';mbarPaint();
@@ -1565,7 +1563,10 @@ async function mppGo(tok){const ds=S.mdur[mppKey()],[f,lt]=g2f(ds,PP.ts);clearTi
   try{aSess('playback');const fresh=await mppUse(f,tok);if(!fresh)return;
     if(fresh==='new'){if(!(await mppLoadAt(lt,tok)))return}else if(!(await mppSeekTo(lt,tok)))return;
     MA.muted=false;MA.playbackRate=MP.rate;await MA.play();if(PP.tok!==tok)return;
+    if(MA.seeking)await mpOnce(MA,'seeked',4000);if(PP.tok!==tok)return;
     if(Math.abs(MA.currentTime-lt)>.5){if(!(await mppSeekTo(lt,tok)))return}
+    {const p0=performance.now(),r0=MA.playbackRate||1;setTimeout(()=>{if(PP.tok!==tok||PP.st!=='play'||MA.paused)return;const exp=lt+(performance.now()-p0)/1000*r0,at=MA.currentTime;
+      dlog('part check: at '+at.toFixed(1)+' s, expected '+exp.toFixed(1)+' s ('+mpKind()+')');if(Math.abs(at-exp)>1.5){MA.currentTime=exp}},1200)}
     clearTimeout(PP.wd);PP.f=f;PP.st='play';mppHi(PP.a);mppLoop();mbarPaint();
     if(fresh==='new')dlog('part: playing the '+mpKind()+' from '+lt.toFixed(1)+' s'+(MA.readyState<2?' (loading)':''));
     const t1=MA.currentTime;setTimeout(()=>{if(PP.tok===tok&&PP.st==='play'&&!MA.paused&&Math.abs(MA.currentTime-t1)<.05){dlog('playback is not moving ('+mpKind()+', state '+MA.readyState+')');if(MA.src.startsWith('blob:')&&!PP.noBlob){PP.noBlob=true;MP.loaded='';mppGo(tok)}}},3000);
@@ -1578,7 +1579,7 @@ function mppAudioFailed(tok,e){if(PP.tok!==tok||PP.st==='idle')return;clearTimeo
 /* a part that runs on into the next file: carry on there, past that file's spoken opening */
 async function mppNext(tok){const f=MP.f+1,sk=((MAL[mppKey()]||{}).skip||{})[f]||0;try{const fresh=await mppUse(f,tok);if(!fresh)return;
   if(fresh==='new'){if(!(await mppLoadAt(sk,tok)))return}else if(!(await mppSeekTo(sk,tok)))return;
-  MA.muted=false;await MA.play();if(PP.tok!==tok)return;PP.f=f;mppLoop()}catch(e){if(PP.tok===tok)mppFail(e)}}
+  MA.muted=false;await MA.play();if(PP.tok!==tok)return;if(MA.seeking)await mpOnce(MA,'seeked',4000);if(Math.abs(MA.currentTime-sk)>.5)MA.currentTime=sk;PP.f=f;mppLoop()}catch(e){if(PP.tok===tok)mppFail(e)}}
 const mppNow=()=>fStart(S.mdur[mppKey()],MP.f)+MA.currentTime;
 function mppLoop(){cancelAnimationFrame(PP.raf);const step=()=>{if(!PP.on||PP.st!=='play')return;mppCheck();PP.raf=requestAnimationFrame(step)};PP.raf=requestAnimationFrame(step)}
 function mppCheck(){if(!PP.on||PP.st!=='play'||PP.seeking||MA.paused||MP.id!==PP.id||MP.r!==PP.r)return;const g=mppNow();mppHi(mppLineAt(g));
@@ -1780,7 +1781,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v25';
+const APPV='v26';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
