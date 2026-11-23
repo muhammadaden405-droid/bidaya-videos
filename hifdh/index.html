@@ -1355,7 +1355,7 @@ const AL = (() => {
     for (let k = 0; k < K; k++) {
       const [lo, hi] = band[k], w = Math.max(0, hi - lo + 1), c = new Float64Array(w).fill(INF), bk = new Int32Array(w).fill(-1);
       cost.push(c); back.push(bk);
-      if (k === 0) { for (let j = lo; j <= hi; j++) if (P[j][1] <= opt.introMax) c[j - lo] = 0; continue }
+      if (k === 0) { for (let j = lo; j <= hi; j++) if (P[j][1] <= opt.introMax) c[j - lo] = (opt.head ? opt.head(P[j][1]) : 0) + (opt.prior ? opt.prior(0, j) : 0); continue }
       for (let j = lo; j <= hi; j++) {
         const mc = matchCost(B[k].st, len[j]); let best = INF, bi = -1;
         for (let k2 = Math.max(0, k - DK); k2 < k; k2++) {
@@ -1369,7 +1369,7 @@ const AL = (() => {
             if (v < best) { best = v; bi = (k - k2) * 1e6 + j2 }
           }
         }
-        c[j - lo] = best; bk[j - lo] = bi;
+        c[j - lo] = best < INF && opt.prior ? best + opt.prior(k, j) : best; bk[j - lo] = bi;
       }
     }
     // the text ends at a pause; whatever follows is the reader's closing words or silence
@@ -1394,7 +1394,7 @@ const AL = (() => {
     };
   }
   // main: U = units(D); pz = [[s,e],...] pauses; T = total audio length; files = [start times of each file] (multi-part sets)
-  function align(U, pz, T, files) {
+  function align(U, pz, T, files, anc) {
     const P = [Object.assign([0, 0], { v: 1 })];
     const fs = (files || [0]).slice(1);
     for (const p of pz) P.push(p);
@@ -1407,10 +1407,8 @@ const AL = (() => {
     const SM = speechMap(P, T), Wt = U.W, r0 = SM.total / Wt;
     const intro = Math.min(240, T * .25);
     const tail = t => .4 * Math.max(0, SM.total - SM.toSpeech(t) - 6);   // only a few closing words may follow the text
-    // pass 1: strong breakpoints only, longer pauses only
-    const idx1 = U.bp.map((b, k) => k).filter(k => k === 0 || k === U.bp.length - 1 || U.bp[k].st === 2);
-    const P1 = P.filter(p => p.v || p[1] - p[0] >= .28);
-    const B1 = idx1.map(k => U.bp[k]);
+    const head = t => .3 * Math.max(0, SM.toSpeech(t) - 15);              // and only a short opening (title, author, basmala) may come before it
+    const spAt = [];
     const bandAround = (Bs, Ps, center, half) => Bs.map((b, k) => {
       const c = center(b, k); let lo = 0, hi = Ps.length - 1;
       const tlo = c - half, thi = c + half;
@@ -1419,6 +1417,15 @@ const AL = (() => {
       if (hi < lo) { const m = Math.max(0, Math.min(Ps.length - 1, lo)); return [m, m] }
       return [lo, hi];
     });
+    const heard = anc && anc.length >= 2;
+    if (heard) {                                         // places already heard in the recording: [[cw, time], ...]
+      for (const a of anc) spAt.push([a[0], SM.toSpeech(a[1])]);
+      spAt.sort((x, y) => x[0] - y[0]);
+    } else {
+    // pass 1: strong breakpoints only, longer pauses only
+    const idx1 = U.bp.map((b, k) => k).filter(k => k === 0 || k === U.bp.length - 1 || U.bp[k].st === 2);
+    const P1 = P.filter(p => p.v || p[1] - p[0] >= .28);
+    const B1 = idx1.map(k => U.bp[k]);
     const half1 = Math.max(60, Math.min(420, SM.total * .12)) + intro * .5;
     const band1 = bandAround(B1, P1, b => SM.toTime(b.cw / Wt * SM.total) + intro * .25, half1);
     band1[0] = [0, Math.max(0, P1.findIndex(p => p[1] > intro)) || P1.length - 1];
@@ -1426,12 +1433,13 @@ const AL = (() => {
     let gapMax = 0; const dens = P1.length / Math.max(1, T);
     for (let k = 1; k < B1.length; k++) gapMax = Math.max(gapMax, (B1[k].cw - B1[k - 1].cw) * r0 * dens);
     let R1 = null;
-    for (const dj of [Math.max(10, Math.min(80, Math.ceil(gapMax * 1.8) + 4)), 160]) { R1 = dp(B1, P1, band1, { r: r0, introMax: intro, dk: 6, dj, tail }); if (R1) break }
+    for (const dj of [Math.max(10, Math.min(80, Math.ceil(gapMax * 1.8) + 4)), 160]) { R1 = dp(B1, P1, band1, { r: r0, introMax: intro, dk: 6, dj, tail, head }); if (R1) break }
     if (!R1) return null;
     // the reader's local pace from pass 1 (smoothed), for pass 2
     const anchors = [];
     for (let k = 0; k < B1.length; k++) if (R1.match[k] >= 0) anchors.push([B1[k].cw, k === 0 ? P1[R1.match[k]][1] : P1[R1.match[k]][0], P1[R1.match[k]][1]]);
-    const spAt = []; for (const a of anchors) spAt.push([a[0], SM.toSpeech(a[2])]);
+    for (const a of anchors) spAt.push([a[0], SM.toSpeech(a[2])]);
+    }
     const rateAt = cw => {                               // local seconds-per-weight around cw, from anchors ±~300 weight
       let lo = 0; while (lo + 1 < spAt.length && spAt[lo + 1][0] < cw - 400) lo++;
       let hi = spAt.length - 1; while (hi - 1 > 0 && spAt[hi - 1][0] > cw + 400) hi--;
@@ -1439,7 +1447,10 @@ const AL = (() => {
       const r = (spAt[hi][1] - spAt[lo][1]) / Math.max(1, spAt[hi][0] - spAt[lo][0]);
       return r > 0 ? Math.max(r0 * .5, Math.min(r0 * 2, r)) : r0;
     };
-    const expTime = cw => {                              // where pass 1 says this weight is spoken
+    const L = spAt[spAt.length - 1], rg = L[0] > spAt[0][0] ? Math.max(r0 * .5, Math.min(r0 * 2, (L[1] - spAt[0][1]) / (L[0] - spAt[0][0]))) : r0;
+    const expTime = cw => {                              // where pass 1 (or the anchors) say this weight is spoken
+      if (cw <= spAt[0][0]) return SM.toTime(Math.max(0, spAt[0][1] + (cw - spAt[0][0]) * rg));
+      if (cw >= L[0]) return SM.toTime(Math.max(0, L[1] + (cw - L[0]) * rg));
       let i = 0; while (i + 1 < spAt.length && spAt[i + 1][0] <= cw) i++;
       const a = spAt[i], b = spAt[Math.min(spAt.length - 1, i + 1)];
       const s = b[0] > a[0] ? a[1] + (cw - a[0]) / (b[0] - a[0]) * (b[1] - a[1]) : a[1] + (cw - a[0]) * r0;
@@ -1449,7 +1460,15 @@ const AL = (() => {
     const B2 = U.bp, rate2 = (k2, k) => rateAt((B2[k2].cw + B2[k].cw) / 2);
     const band2 = bandAround(B2, P, b => expTime(b.cw), 14);
     band2[0] = [0, Math.max(band2[0][1], 0)];
-    const R2 = dp(B2, P, band2, { rate: rate2, introMax: intro, dk: 7, dj: 9, tail });
+    // with heard anchors: every breakpoint is drawn towards where the anchors say it is (more loosely far from any anchor)
+    let prior = null;
+    if (heard) {
+      const at = anc.map(a => a[1]).sort((x, y) => x - y);
+      const far = t => { let lo = 0, hi = at.length - 1; while (lo < hi) { const m = (lo + hi) >> 1; if (at[m] < t) lo = m + 1; else hi = m } let d = Math.abs(at[lo] - t); if (lo > 0) d = Math.min(d, Math.abs(at[lo - 1] - t)); return d };
+      const EK = B2.map(b => expTime(b.cw)), SK = EK.map(t => Math.min(8, 1.5 + .07 * far(t)));
+      prior = (k, j) => { const z = ((k === 0 ? P[j][1] : P[j][0]) - EK[k]) / SK[k]; return .5 * z * z };
+    }
+    const R2 = dp(B2, P, band2, { rate: rate2, introMax: intro, dk: 7, dj: 9, tail, head: heard ? null : head, prior });
     if (!R2) return null;
     // times of every breakpoint: speech ends (a) and starts again (b)
     const K = B2.length, ta = new Float64Array(K), tb = new Float64Array(K), got = new Uint8Array(K);
@@ -1517,10 +1536,17 @@ async function mAnalyse(u,prog){const c=await caches.open(AC),ck=AKEY+'pz/'+enco
     t+=x.length/buf.sampleRate;if(prog)prog(.7+.3*e/blob.size);await mpTick()}
   const j={d:+t.toFixed(3),p:out.map(v=>Math.round(v*100)/100)};try{await c.put(ck,new Response(JSON.stringify(j)))}catch(e){}
   dlog('matn audio analysed: '+Math.round(t/60)+' min, '+out.length/2+' pauses, '+Math.round(performance.now()-t0)+' ms');return j}
-/* the line times for one matn and reader (worked out once, then kept) */
+/* line times worked out ahead of time from the real recordings (each one listened to and checked), shipped with the app */
+const MSHIP={};
+function mShipped(id,r,D){const p=MSHIP[id]||(MSHIP[id]=fetch('data/mutun/'+id+'.time.json').then(x=>x.ok?x.json():null).catch(()=>null));
+  return p.then(j=>{if(!j){delete MSHIP[id];return null}const t=j[r];if(!t||!t.on||t.on.length!==D.L.length||j.n!==D.L.length||(j.v||1)!==(D.v||1))return null;
+    return{on:t.on,off:t.off,q:t.q||1,ds:t.ds,skip:t.skip||{},est:false,heard:true}})}
+/* the line times for one matn and reader (shipped, or worked out once on the phone and kept) */
 function mPrepare(id,r){const k=id+':'+r;if(MAL[k])return Promise.resolve(MAL[k]);if(MPREP[k])return MPREP[k];
   const prog=(p,ph)=>{PREPROG[k]={p,ph};if(PP.on&&mppKey()===k)mbarPaint()};
-  return MPREP[k]=(async()=>{if(!MD[id])await loadMatn(id);const D=MD[id],L=MREC[id][r],c=await caches.open(AC),ck=AKEY+'al/'+k+'/'+(D.v||1);
+  return MPREP[k]=(async()=>{if(!MD[id])await loadMatn(id);const D=MD[id],L=MREC[id][r];
+    const sh=await mShipped(id,r,D);if(sh){MAL[k]=sh;S.mdur=S.mdur||{};S.mdur[k]=sh.ds;dlog('matn timing (checked against the recording): '+k+' · first lines at '+sh.on.filter(x=>x!=null).slice(0,3).map(x=>x.toFixed(1)).join(', ')+' s');return sh}
+    const c=await caches.open(AC),ck=AKEY+'al/'+k+'/'+(D.v||1);
     const hit=await c.match(ck);if(hit){try{const j=await hit.json();if(j&&j.on&&j.on.length===D.L.length&&j.ds){MAL[k]=j;S.mdur=S.mdur||{};S.mdur[k]=j.ds;return j}}catch(e){}}
     const ds=[],pz=[],files=[];let off=0;prog(0,'get');
     for(let f=0;f<L.length;f++){files.push(off);const A=await mAnalyse(L[f],p=>prog((f+p)/L.length,'get'));ds.push(A.d);for(let i=0;i+1<A.p.length;i+=2)pz.push([A.p[i]+off,A.p[i+1]+off]);off+=A.d}
@@ -1533,7 +1559,7 @@ function mPrepare(id,r){const k=id+':'+r;if(MAL[k])return Promise.resolve(MAL[k]
 /* get a matn ready in the background when its recording is already saved */
 async function mPrepIdle(id){const s=mpSel(id);if(!s||MAL[id+':'+s.r]||MPREP[id+':'+s.r])return;for(const u of MREC[id][s.r])if(!(await mpCached(u)))return;setTimeout(()=>{mPrepare(id,s.r).catch(()=>{})},1200)}
 /* highlight the line being read */
-function mppLineAt(g){const A=MAL[mppKey()];if(!A)return PP.a;let li=PP.a;for(let i=PP.a+1;i<=PP.b;i++){if(A.on[i]-.1<=g)li=i;else break}return li}
+function mppLineAt(g){const A=MAL[mppKey()];if(!A)return PP.a;let li=-1;for(let i=PP.a;i<=PP.b;i++){if(A.on[i]==null)continue;if(li<0||A.on[i]-.1<=g)li=i;else break}return li<0?PP.a:li}
 function mppHi(li){if(li===PP.cur)return;PP.cur=li;document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));if(li<0||!PP.on)return;
   const els=document.querySelectorAll('[data-k="'+PP.id+':'+li+'"]');els.forEach(e=>e.classList.add('playing'));
   if(performance.now()-PP.usT>2500)for(const e of els){const q=e.getBoundingClientRect();if(!q.height||!q.width||q.right<0||q.left>innerWidth)continue;
@@ -1611,8 +1637,11 @@ async function playPart(id,a,b,r,again){maUnlock();aSess('playback');r=r&&MREC[i
     if(!A){PP.st='idle';mbarPaint();toast('Couldn’t get the recording ready. Tap play to try again.',5000);return}
     S.mdur=S.mdur||{};S.mdur[id+':'+r]=A.ds;toast('This phone couldn’t line the text up with the recording, so parts may start a little early or late.',5000)}
   if(PP.tok!==tok)return;mpRefreshSaved(id);
-  const n=A.on.length,gapB=a>0?Math.max(0,A.on[a]-A.off[a-1]):A.on[0],gapA=b+1<n?Math.max(0,A.on[b+1]-A.off[b]):1;
-  PP.ts=Math.max(0,A.on[a]-Math.min(.22,gapB*.6));PP.te=A.off[b]+Math.min(.4,gapA*.6);if(PP.te<PP.ts+.4)PP.te=PP.ts+.4;
+  const n=A.on.length;let a2=a,b2=b;while(a2<=b&&A.on[a2]==null)a2++;while(b2>=a2&&A.on[b2]==null)b2--;   // lines this reader doesn't read have no time
+  if(a2>b2){PP.st='idle';mbarPaint();toast('This reader’s recording doesn’t include these lines.',5000);return}
+  let pv=null,nx=null;for(let i=a2-1;i>=0&&pv==null;i--)pv=A.off[i];for(let i=b2+1;i<n&&nx==null;i++)nx=A.on[i];
+  const gapB=pv!=null?Math.max(0,A.on[a2]-pv):A.on[a2],gapA=nx!=null?Math.max(0,nx-A.off[b2]):1;
+  PP.ts=Math.max(0,A.on[a2]-Math.min(.22,gapB*.6));PP.te=A.off[b2]+Math.min(.4,gapA*.6);if(PP.te<PP.ts+.4)PP.te=PP.ts+.4;
   mppGo(tok)}
 let mpLast=0;
 MA.addEventListener('timeupdate',()=>{if(MA.src.startsWith('data:'))return;if(PP.on){mppCheck();return}
@@ -1645,7 +1674,7 @@ $('mbSpd').onclick=()=>{const v=RATES[(RATES.indexOf(MP.rate)+1)%RATES.length];m
 /* lock-screen play/pause go to whichever player is in use */
 if('mediaSession' in navigator){try{const ms=want=>{if(PP.on){if((want==='play')!==(PP.st==='play'))mppToggle();return}if(!PL.on&&MP.id&&MA.src&&!MA.src.startsWith('data:')){if(want==='play')MA.play().catch(()=>{});else MA.pause();return}$('pPlay').click()};
   navigator.mediaSession.setActionHandler('play',()=>ms('play'));navigator.mediaSession.setActionHandler('pause',()=>ms('pause'))}catch(e){}}
-if(localStorage.getItem('hifz-test'))window.__H={PP,MA,MAL,MP,get S(){return S},mPrepare,AL};
+if(localStorage.getItem('hifz-test'))window.__H={PP,MA,MAL,MP,get S(){return S},mPrepare,AL,playPart,mppLineAt};
 function mpCard(id){const R=MREC[id];if(!R)return '';const s=mpSel(id),L=R[s.r];
   return '<div class="card mplay" id="mpCard" style="margin:8px 0"><div class="row"><p class="lab" style="margin:0">'+esc(MREADERS[s.r][0])+'</p><span class="pill" id="mpSaved"></span></div>'
    +(L.length>1?'<label class="field" style="margin-top:8px"><span>Part</span><select id="mpTrack">'+L.map((u,i)=>'<option value="'+i+'"'+(i===s.f?' selected':'')+'>Part '+(i+1)+' of '+L.length+'</option>').join('')+'</select></label>':'')
@@ -1781,7 +1810,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v26';
+const APPV='v27';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
