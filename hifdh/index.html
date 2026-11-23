@@ -392,7 +392,8 @@ body.onbon{overflow:hidden}
 #mbar .pinfo{order:-2;flex:1 1 calc(100% - 60px);min-width:0}
 #mbar #mbClose{order:-1}
 #mbar .pp{margin-right:auto}
-.ln.playing,.mline.playing{background:color-mix(in srgb,var(--gold2) 24%,transparent);border-radius:10px;transition:background-color .3s}
+.ln#mbIcon .spin{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:28 16;transform-origin:12px 12px;animation:mbspin .9s linear infinite}@keyframes mbspin{to{transform:rotate(360deg)}}
+.playing,.mline.playing{background:color-mix(in srgb,var(--gold2) 36%,transparent)!important;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--gold) 70%,transparent);border-radius:12px;transition:background-color .25s,box-shadow .25s}
 .btn.spd{flex:0 0 auto;min-width:52px}
 .dcard{cursor:pointer}
 .dayhead{margin:2px 2px 10px}
@@ -501,7 +502,6 @@ body.onbon{overflow:hidden}
   <button class="pb" id="mbSpd" aria-label="Playback speed">1×</button>
   <button class="pb" id="mbRep" aria-label="Times the part repeats">×3</button>
   <button class="pb" id="mbR" aria-label="Switch reader">⇄</button>
-  <button class="pb" id="mbAdj" aria-label="Line up the timing"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
   <button class="pb" id="mbClose" aria-label="Close player"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div>
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbT"></div>
@@ -566,7 +566,7 @@ const dayNo=()=>Math.floor(parse(TODAY).getTime()/864e5);
 /* ---------- state ---------- */
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,track:'',g:'b',asr:'',asrM:'',aiOk:0,aiAsk:0,nudged:'',mt:{},ml:{},mlen:5,mcur:'',mper:1,mfs:24,mpos:{},goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
-function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});
+function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});delete S.mpz;delete S.mlt;delete S.anch;
   if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=Math.max(1,Math.min(20,Math.round(+S.per||2)));
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
   if(S.order==='juz30'){S.dir='juzback';S.sp=582}S.order='start';if(!DIRS[S.dir])S.dir='fwd';S.sp=Math.max(1,Math.min(604,Math.round(+S.sp)||1));if(!['whole','juz','surah'].includes(S.gKind)){S.gKind='whole';S.gVal=0}if(!RECITERS.some(r=>r[0]===S.reciter))S.reciter=RECITERS[0][0];
@@ -639,7 +639,7 @@ function header(){const d=parse(TODAY);let h='';try{h=new Intl.DateTimeFormat('e
 /* ---------- today ---------- */
 let tipOpen=false,qSel=0,mSel=-1;const dHide=new Set();
 const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}};
-const IC_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>',IC_MIC='<svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg>',IC_OPEN='<svg viewBox="0 0 24 24"><path d="M12 6c-2-1.6-5-2-8-1.5v14c3-.5 6-.1 8 1.5 2-1.6 5-2 8-1.5v-14c-3-.5-6-.1-8 1.5z"/></svg>',IC_EYE='<svg viewBox="0 0 24 24"><path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>';
+const IC_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>',IC_PAUSE='<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>',IC_MIC='<svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg>',IC_OPEN='<svg viewBox="0 0 24 24"><path d="M12 6c-2-1.6-5-2-8-1.5v14c3-.5 6-.1 8 1.5 2-1.6 5-2 8-1.5v-14c-3-.5-6-.1-8 1.5z"/></svg>',IC_EYE='<svg viewBox="0 0 24 24"><path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>';
 const FIRST=[
  {who:'Ibn ʿUthaymīn',ar:'أنا أرى أن الأولى أن يحفظ القرآن لاشك، القرآن هو أصل العلم، فحفظ القرآن أولى، لكن بإمكانه أن يجمع بينهما… يجعل أول النهار لحفظ القرآن، وآخر النهار لمراجعة بعض المتون… وإذا لم يستطع فالقرآن أولى، نحن لا نفضل شيئاً على القرآن إطلاقاً',en:'I see that it is better, without doubt, to memorize the Qur’an. The Qur’an is the foundation of knowledge. But he can combine the two: the start of the day for memorizing the Qur’an and the end of the day for revising some mutūn. If he cannot, the Qur’an comes first. We do not put anything above the Qur’an at all.',src:'Liqāʾ al-Bāb al-Maftūḥ (156)'},
  {who:'Ibn ʿUthaymīn',ar:'أرى أن يجمع بين الأمرين، ويجعل الأكثر للقرآن، طالب العلم يبدأ بالقرآن أولاً قبل كل شيء فيحفظه ويتفهم معناه؛ ويجعل معه جزءاً من وقته للعلوم الأخرى',en:'I see that he should combine the two and give most of it to the Qur’an. The student of knowledge begins with the Qur’an before everything else, memorizing it and understanding its meaning, and gives part of his time to the other sciences.',src:'Liqāʾ al-Bāb al-Maftūḥ (125)'},
@@ -687,7 +687,7 @@ function renderToday(){const cards=deckCards(),work=cards.flatMap(x=>x.t==='q'?x
     h+='<div class="card"><div class="row"><div><p class="lab">Qur’an goal</p><h2>'+esc(goalLabel())+'</h2></div><button class="btn sm ghost" data-plan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gDone/c.gLen*100)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'page')+(c.finish?' · finish about '+fmt(c.finish):'')+(S.goal?' · target '+fmt(parse(S.goal)):'')+'</p></div>';
     h+='<div class="stats"><div class="stat"><b>'+c.tot+'</b><span>of 604 pages</span></div><div class="stat"><b>'+pl(c.streak,'day')+'</b><span>streak</span></div><div class="stat"><b'+(c.diff<0?' class="warn"':'')+'>'+st+'</b><span>schedule</span></div></div>'}
   if(doM()&&MI&&S.mp.setup)h+=mGoalCard(false);
-  $('v-today').innerHTML=h;deckInit()}
+  $('v-today').innerHTML=h;deckInit();mppDom()}
 function deckInit(){const dk=$('deck');if(!dk)return;const cs=[...dk.querySelectorAll('.dcard')];
   const paint=()=>{const w=dk.clientWidth,ix=Math.round(dk.scrollLeft/Math.max(1,(cs[1]?cs[1].offsetLeft-cs[0].offsetLeft:w)));document.querySelectorAll('#dots i').forEach((d,k)=>{d.className=(cs[k]&&cs[k].classList.contains('done')?'ok':'')+(k===ix?' cur':'')})};
   dk.addEventListener('scroll',()=>requestAnimationFrame(paint),{passive:true});
@@ -771,7 +771,7 @@ const AU=new Audio();AU.preload='auto';
 const PL={list:[],i:0,r:0,pages:[],on:false,obj:null};
 let unlocked=false;function unlock(){if(unlocked)return;unlocked=true;try{const n=800,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i)};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);
   let bin='';b.forEach(x=>bin+=String.fromCharCode(x));AU.src='data:audio/wav;base64,'+btoa(bin);AU.play().catch(()=>{})}catch(e){}}
-function startPlay(pages){unlock();if(!MA.paused)MA.pause();$('mbar').classList.remove('on');MPP.on=false;if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
+function startPlay(pages){unlock();if(!MA.paused)MA.pause();$('mbar').classList.remove('on');mppStop();if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
 async function playCur(){const t=PL.list[PL.i];if(!t){stopPlay(true);return}
   PL.on=true;setPI();markPlaying();if(t.p&&t.p!==S.cur&&location.hash==='#mushaf'){S.cur=t.p;save();renderMushaf()}
   try{const u=url(t.s,t.a);let b=null;try{const c=await caches.open(AC),m=await c.match(u);if(m)b=await m.blob()}catch(x){}
@@ -884,7 +884,7 @@ $('v-settings').addEventListener('change',e=>{const t=e.target;
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
 const NEWHOME='https://hifdh-quran.netlify.app/',MOVED=false;
-const backupLink=base=>(base||location.origin+location.pathname)+'#restore='+enc({mrate:S.mrate,asr:S.asr,asrV:S.asrV,rep:S.rep,fs:S.fs,mfs:S.mfs,theme:S.theme,recInfo:S.recInfo,start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,g:S.g,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mtv:S.mtv||1,mp:S.mp,mpos:S.mpos,anch:S.anch,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
+const backupLink=base=>(base||location.origin+location.pathname)+'#restore='+enc({mrate:S.mrate,asr:S.asr,asrV:S.asrV,rep:S.rep,fs:S.fs,mfs:S.mfs,theme:S.theme,recInfo:S.recInfo,start:S.start,per:S.per,off:S.off,sp:S.sp,dir:S.dir,gKind:S.gKind,gVal:S.gVal,g:S.g,setup:1,mt:S.mt,ml:S.ml,mlv:S.mlv,mtv:S.mtv||1,mp:S.mp,mpos:S.mpos,track:S.track,goal:S.goal,pages:S.pages,rev:S.rev,reciter:S.reciter});
 function askRestore(code){let o;try{o=dec(code)}catch(e){toast('That backup link is damaged');return}const n=o&&o.pages?Object.keys(o.pages).length:0;
   sheet('<h2>Restore this backup?</h2><p class="note">It has '+pl(n,'memorized page')+'. This replaces the '+pl(total(),'page')+' on this device.</p><div class="btns"><button class="btn" id="doRestore" data-v="'+esc(code)+'">Restore</button><button class="btn ghost" data-close>Cancel</button></div>')}
 function applyRestore(code){try{const o=dec(code);S=Object.assign({},S,o,{lesson:null,seen:'',mtv:o.mtv||1});fix();save();closeSheet();history.replaceState(null,'',location.pathname+'#today');renderAll();mTextMigrate().then(()=>{if(MI)renderAll()});toast('Progress restored ✓')}catch(e){toast('Couldn’t restore that backup')}}
@@ -1070,7 +1070,7 @@ function mtRender(){const{id,a,b}=REC.mctx,D=MD[id],bk=mInfo(id);let wi=0,h='';
     h+='<p class="ln'+(bk.poem?' poem':'')+'"><span class="lno">'+(li+1)+'</span>'+(Array.isArray(x)?'<span class="vh">'+wr(x[0])+'</span><span class="vh">'+wr(x[1])+'</span>':'<span>'+wr(x)+'</span>')+'</p>'}
   $('mrText').innerHTML=h;$('mrTitle').textContent=bk.en+' · lines '+(a+1)+'–'+(b+1);recBuild();recPaint()}
 function openMTest(id,a,b,auto){if(!recSR()){sheet('<h2>Testing needs the phone’s speech recognition</h2><p class="note">This browser doesn’t offer it. On iPhone, open Hifdh in Safari; on Android, use Chrome.</p><button class="btn wide" data-close>OK</button>');return}if(!MD[id]){loadMatn(id).then(()=>openMTest(id,a,b,auto));return}
-  if(REC.listening)recStop(false);if(PL.on)stopPlay(true);if(!MA.paused)MA.pause();
+  if(REC.listening)recStop(false);if(PL.on)stopPlay(true);mbarHide();if(!MA.paused)MA.pause();
   REC.kind='m';REC.mode=true;REC.any=false;REC.find=true;REC.show=false;REC.log=[];REC.mctx={id,a,b};
   sheet('<div class="row"><div><p class="lab" style="margin:0">Test your memorization</p><h2 id="mrTitle"></h2></div></div><div class="recp on" style="margin-top:10px"><button class="mic" id="mrMic" aria-label="Start listening"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button><div class="rst"><b id="mrSt"></b><span id="mrHeard" lang="ar"></span></div><div class="rcount"><span id="mrOk" style="color:var(--done)">✓ 0</span><span id="mrBad" style="color:var(--warn)">✗ 0</span></div></div>'
    +'<div class="tools" style="margin:0 0 8px"><button class="chip" id="mrShow">Show text</button><button class="chip" id="mrRe">Restart</button><button class="chip" data-close>Close</button></div><div class="mtest rec ar" lang="ar" id="mrText"></div>');
@@ -1164,7 +1164,7 @@ function renderMatn(){const V=$('v-mutun'),b=mInfo(mOpen);if(!b){mOpen='';render
     h+='</div>';if(mWin.z<b.n)h+='<button class="btn ghost wide" data-mmore="1">Show more '+unit+'s</button>';
     if(MSEL){const a=MSEL.a,z=Math.min(b.n-1,a+MSEL.len-1);h+='<div class="selbar"><div class="row"><b>'+esc(unit[0].toUpperCase()+unit.slice(1))+'s '+(a+1)+'–'+(z+1)+'</b><div class="step"><button data-msl="-1" aria-label="Fewer '+unit+'s">−</button><b>'+MSEL.len+'</b><button data-msl="1" aria-label="More '+unit+'s">+</button></div><button class="pb2" data-msx="1" aria-label="Clear selection">✕</button></div>'+partBtns(b.id,a,z,(()=>{for(let i=a;i<=z;i++)if(!isMem(b.id,i))return false;return true})())+'</div>'}}
   h+=MREC[b.id]?'<details class="adv"><summary>Full recording</summary>'+mpCard(b.id)+'</details>':'';
-  V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px');if(MREC[b.id]&&$('mpCard')){mpPaint();mpRefreshSaved(b.id)}
+  V.innerHTML=h;document.documentElement.style.setProperty('--mfs',S.mfs+'px');if(MREC[b.id]&&$('mpCard')){mpPaint();mpRefreshSaved(b.id)}mppDom();if(MREC[b.id])mPrepIdle(b.id);
   if(mJump>=0){const j=mJump;mJump=-1;setTimeout(()=>{const el=document.querySelector('[data-ml="'+j+'"]');el&&el.scrollIntoView({block:'center',behavior:'smooth'})},300)}}
 function partBtns(id,a,b,dn){return '<div class="pact">'+(MREC[id]?'<button class="btn sm" data-mpart="'+id+':'+a+':'+b+'">'+IC_PLAY+'Play</button><button class="btn sm ghost spd" data-mspd="1" aria-label="Playback speed">'+MP.rate+'×</button>':'')+'<button class="btn sm ghost" data-mtest="'+id+':'+a+':'+b+'">'+IC_MIC+'Test</button><button class="btn sm '+(dn?'ghost':'gold')+'" data-mmark="'+id+':'+a+':'+b+'">'+(dn?'✓ Memorized':'Mark memorized')+'</button></div>'}
 $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button,[data-rv],[data-ml]');if(!t)return;const d=t.dataset;
@@ -1234,12 +1234,6 @@ const MREC={nawaqid:{ansari:[A1('02')],shaydhami:[A2('010-Nawaqid_al-islam_al-10
  tawhid:{ansari:[A1('08')],shaydhami:[A2('008-Ketab_tawheed_full.mp3')]},ajurrumiyya:{ansari:[A1('11')],shaydhami:[A2('085-Ajroumiah.mp3')]},wasitiyya:{ansari:[A1('12')],shaydhami:[A2('041-Alwassitiah.mp3')]},
  kashf:{shaydhami:[A2('009-Kashf-ash-shobohaat.mp3')]},usulsunna:{shaydhami:[A2('045-Oussoul_assuna.mp3')]},lumca:{shaydhami:[A2('040-Lomaat_ali3tiqad.mp3')]},
  umdaahkam:{shaydhami:Array.from({length:8},(_,i)=>A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3'))},umdafiqh:{shaydhami:Array.from({length:6},(_,i)=>A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3'))}};
-/* the recordings' lengths (archive.org), so a part can start at once: iPhones often won't read a file's length before it plays */
-const MDUR={[A1('02')]:244.08,[A1('03')]:581.04,[A1('04')]:1786.97,[A1('05')]:2564.06,[A1('06')]:487.12,[A1('07')]:1318.57,[A1('08')]:7157.7,[A1('11')]:1520.46,[A1('12')]:3449.38,
- [A2('010-Nawaqid_al-islam_al-10.mp3')]:210.61,[A2('003-Qawaid_4.mp3')]:425.08,[A2('001-Osoul_3.mp3')]:1335.94,[A2('068-Arbaoun-nawawiah.mp3')]:2446.68,[A2('091-Tohfat_al-atfaal.mp3')]:416.82,[A2('002-Chorout-assalah.mp3')]:1034.27,
- [A2('008-Ketab_tawheed_full.mp3')]:10331.77,[A2('085-Ajroumiah.mp3')]:1350.55,[A2('041-Alwassitiah.mp3')]:3269.56,[A2('009-Kashf-ash-shobohaat.mp3')]:3248.46,[A2('045-Oussoul_assuna.mp3')]:997.22,[A2('040-Lomaat_ali3tiqad.mp3')]:2254.42};
-[1772.07,1743.99,1942.12,1845.21,1492.32,1765.54,1428.24,1759.71].forEach((v,i)=>MDUR[A2('069-Omdat-al-ahkam-0'+(i+1)+'.mp3')]=v);
-[2982.08,2962.09,3126.14,3481.75,3101.3,3269.84].forEach((v,i)=>MDUR[A2('075-Omdat_al-fiqh_ibn_qodaamah_'+(i+1)+'.mp3')]=v);
 const MA=new Audio();MA.preload='none';
 const MP={id:'',r:'',f:0,obj:null,a:null,b:null,rate:[1,1.5,2].includes(S.mrate)?S.mrate:1,loaded:'',saved:{}};
 const RATES=[1,1.5,2];function mRate(v){MP.rate=v;S.mrate=v;save();MA.playbackRate=v;mpPaint();mbarPaint();document.querySelectorAll('[data-mspd]').forEach(b=>b.textContent=v+'×')}
@@ -1258,101 +1252,375 @@ async function mpLoad(id,r,f,t,play){if(!AU.paused){AU.pause();PL.on=false;setPI
   if(play)MA.play().catch(()=>toast(navigator.onLine?'Couldn’t play this recording. Try again.':'You’re offline and this recording isn’t saved yet.'));
   if('mediaSession' in navigator){try{const b=mInfo(id);navigator.mediaSession.metadata=new MediaMetadata({title:b?b.en:'Matn',artist:MREADERS[r][0],album:'Hifdh · Mutūn'})}catch(e){}}
   mpPaint();mbarPaint()}
-function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;MPP.on=false;
+function mpToggle(){const id=mOpen,s=mpSel(id);if(!s)return;if(PP.on)mbarHide();
   if(MP.id===id&&MA.src&&!MA.src.startsWith('data:')){if(MA.paused)MA.play().catch(()=>{});else MA.pause();return}
   maUnlock();mpLoad(id,s.r,s.f,s.t,true)}
-/* part player: plays just the chosen lines, timed from the text */
-const MPP={on:false,id:'',a:0,b:0,r:'',ts:0,te:0,count:0};
-function mCum(id){const D=MD[id];if(D.cum)return D.cum;const c=[];let pos=D.pre||0,ps=-1;for(let i=0;i<D.L.length;i++){if(D.L[i][0]!==ps){ps=D.L[i][0];pos+=(D.secs[ps]||'').length}c.push(pos);pos+=mText(D,i).length+1}c.push(pos);return D.cum=c}
-function mDurs(id,r){S.mdur=S.mdur||{};const k=id+':'+r;if(S.mdur[k])return Promise.resolve(S.mdur[k]);const H=MREC[id][r].map(u=>MDUR[u]);if(H.every(x=>x>0)){S.mdur[k]=H;save();return Promise.resolve(H)}
-  return Promise.all(MREC[id][r].map(u=>new Promise(res=>{const a=new Audio();a.preload='metadata';let done=false;const fin=v=>{if(!done){done=true;res(v||0)}};a.onloadedmetadata=()=>fin(a.duration);a.onerror=()=>fin(0);setTimeout(()=>fin(0),20000);
-    caches.open(AC).then(c=>c.match(u)).then(m=>m?m.blob():null).catch(()=>null).then(b=>{a.src=b?URL.createObjectURL(b):u})}))).then(ds=>{if(ds.every(x=>x>0&&isFinite(x))){S.mdur[k]=ds;save()}return ds})}
-function tAt(id,r,ch){const M=S.mlt&&S.mlt[id+':'+r];if(M){const c=mCum(id);let lo=0,hi=c.length-1;while(lo<hi){const md=(lo+hi+1)>>1;if(c[md]<=ch)lo=md;else hi=md-1}
-  if(M.on[lo]!=null){if(lo+1<c.length&&M.on[lo+1]!=null){const end=M.off[lo+1]!=null&&M.off[lo+1]>M.on[lo]?M.off[lo+1]:M.on[lo+1];return M.on[lo]+(ch-c[lo])/((c[lo+1]-c[lo])||1)*(end-M.on[lo])}return M.on[lo]}}return tEst(id,r,ch)}
-function tEst(id,r,ch){const ds=S.mdur[id+':'+r],c=mCum(id),T=c[c.length-1],D=ds.reduce((x,y)=>x+y,0),P=[[0,0],...(((S.anch||{})[id+':'+r])||[]),[T,D]].sort((x,y)=>x[0]-y[0]);
-  for(let k=1;k<P.length;k++)if(ch<=P[k][0]){const[a0,t0]=P[k-1],[a1,t1]=P[k];return t0+(a1>a0?(ch-a0)/(a1-a0)*(t1-t0):0)}return D}
-function setAnchor(id,r,ch,t){S.anch=S.anch||{};const k=id+':'+r;let A=(S.anch[k]||[]).filter(([c,x])=>c!==ch&&!(c<ch&&x>=t)&&!(c>ch&&x<=t));A.push([ch,Math.max(0,t)]);A.sort((x,y)=>x[0]-y[0]);S.anch[k]=A;save()}
+/* ---------- part player: exactly the chosen lines, lined up with the reader's voice ---------- */
+/* The recording is saved once and analysed on the phone: where the reader pauses is matched to where the text
+   has line ends and punctuation (align.js). Parts then start and stop on those pauses, and the line being read is highlighted. */
+/* Lining a matn up with its recording, on the phone, without any network or AI.
+   1. loudness every 10 ms -> the reader's pauses
+   2. the text is cut where it has punctuation and at every line end ("breakpoints")
+   3. a dynamic-programming search matches breakpoints to pauses so that the speech between them has
+      the length the text predicts; pauses may stay unmatched (breaths) and so may breakpoints (no pause)
+   4. a rough pass on the strong breakpoints first, then a fine pass close to it with the reader's local pace */
+const AL = (() => {
+  const HOP = 0.01;
+  // ---------- audio ----------
+  function env(x, sr) {                                   // dB loudness per 10 ms
+    const hs = Math.max(1, Math.round(sr * HOP)), n = Math.floor(x.length / hs), d = new Float32Array(n);
+    for (let i = 0, o = 0; i < n; i++, o += hs) { let q = 0; for (let k = 0; k < hs; k++) { const v = x[o + k]; q += v * v } d[i] = 10 * Math.log10(q / hs + 1e-12) }
+    return d;
+  }
+  function pauses(db, t0) {                               // [[start,end],...] in seconds (t0 = time of db[0])
+    t0 = t0 || 0; const n = db.length; if (!n) return [];
+    const step = 500, win = 3000, nb = Math.ceil(n / step), th = new Float32Array(nb);
+    for (let b = 0; b < nb; b++) {
+      const c = b * step + (step >> 1), lo = Math.max(0, c - (win >> 1)), hi = Math.min(n, c + (win >> 1)), s = [];
+      for (let i = lo; i < hi; i += 2) s.push(db[i]);
+      s.sort((x, y) => x - y);
+      const nz = s[Math.floor(s.length * .08)], sp = s[Math.floor(s.length * .9)];
+      th[b] = nz + Math.max(7, .32 * (sp - nz));
+    }
+    const thr = i => { const f = i / step - .5, b = Math.max(0, Math.min(nb - 1, Math.floor(f))), b2 = Math.min(nb - 1, b + 1), w = Math.max(0, Math.min(1, f - b)); return th[b] * (1 - w) + th[b2] * w };
+    // smooth a little so single noisy frames don't split a pause
+    const sm = new Float32Array(n);
+    for (let i = 0; i < n; i++) { let a = db[i]; if (i > 0) a = Math.max(a, (db[i - 1] + db[i]) / 2); if (i + 1 < n) a = Math.max(a, (db[i + 1] + db[i]) / 2); sm[i] = a }
+    const raw = []; let st = -1;
+    for (let i = 0; i < n; i++) {
+      const q = sm[i] < thr(i);
+      if (q && st < 0) st = i; else if (!q && st >= 0) { raw.push([st, i]); st = -1 }
+    }
+    if (st >= 0) raw.push([st, n]);
+    const out = [];                                       // join silences split by a blip shorter than 60 ms
+    for (const r of raw) { const l = out[out.length - 1]; if (l && r[0] - l[1] <= 6) l[1] = r[1]; else out.push(r.slice()) }
+    return out.filter(r => r[1] - r[0] >= 12).map(r => [t0 + r[0] * HOP, t0 + r[1] * HOP]);
+  }
+  // ---------- text ----------
+  const LETTER = /[ء-ي]/g, MARK = /[ً-ْ]/g, HASL = /[ء-ي]/;
+  function weight(t, quran) {
+    const L = (t.match(LETTER) || []).length, H = (t.match(MARK) || []).length, W = t.split(/\s+/).filter(x => HASL.test(x)).length;
+    return (L + .2 * H + 1.3 * W) * (quran ? 1.3 : 1);
+  }
+  const lastMark = t => { const m = t.replace(/[\s»«"'()\[\]﴾﴿\-–—]+$/g, ''); return m.slice(-1) };
+  // segments and breakpoints of a matn (D = {L:[[sec,portion,text|[h1,h2]]], secs:[...]})
+  function units(D) {
+    const seg = [], bp = [{ cw: 0, st: 2, line: 0, ls: true }], lineStart = [], lineEnd = [];
+    let cw = 0, ps = -1, q = 0;
+    const push = (t, line, kind) => {
+      const qq = q > 0 || t.includes('﴿'); q += (t.match(/﴿/g) || []).length - (t.match(/﴾/g) || []).length; if (q < 0) q = 0;
+      const w = weight(t, qq); cw += w; seg.push({ w, line, kind, t });
+    };
+    const mark = (st, line, ls) => bp.push({ cw, st, line, ls: !!ls });
+    for (let i = 0; i < D.L.length; i++) {
+      const si = D.L[i][0], x = D.L[i][2];
+      if (si !== ps) { ps = si; const h = (D.secs && D.secs[si]) || ''; if (h && /[ء-ي]/.test(h)) { push(h, i, 'h'); mark(2, i, true) } }
+      lineStart[i] = bp.length - 1;
+      const parts = Array.isArray(x) ? [x[0] + ' …', x[1]] : x.split(/(?<=[،؛:.!؟?…])\s+/).filter(s => s.trim());
+      parts.forEach((p, k) => {
+        push(p, i, 't');
+        if (k < parts.length - 1) { const m = lastMark(p); mark(/[.:!؟?]/.test(m) ? 1 : 0, i, false) }
+      });
+      const m = lastMark(parts[parts.length - 1] || ''), nextIsLine = i + 1 < D.L.length;
+      mark(/[،؛,]/.test(m) && !Array.isArray(x) ? 1 : 2, i + 1, nextIsLine);   // a line ends a sentence unless it stops at a comma
+      lineEnd[i] = bp.length - 1;
+    }
+    return { seg, bp, lineStart, lineEnd, W: cw };
+  }
+  // ---------- matching ----------
+  function skipBp(st) { return st === 2 ? 2.6 : st === 1 ? 1.1 : .35 }
+  function skipP(len) { return len >= .8 ? 3.2 : len >= .5 ? 1.9 : len >= .3 ? .9 : .3 }
+  function matchCost(st, len) { return st === 2 ? (len < .25 ? .9 : len < .4 ? .3 : 0) : st === 0 ? (len > .9 ? .7 : len > .6 ? .3 : 0) : (len > 1.2 ? .3 : 0) }
+  // K breakpoints (cw, st, rate), M pauses P[j]=[s,e] (P[0] = audio start, P[M-1] = audio end), band[k]=[jlo,jhi]
+  function dp(B, P, band, opt) {
+    const K = B.length, M = P.length, DK = opt.dk || 7, DJ = opt.dj || 9, INF = 1e18;
+    const len = P.map(p => Math.max(0, p[1] - p[0])), SB = new Float64Array(K + 1);
+    // real pauses (not the virtual ones at the audio's ends or a part's start) in time order; for every candidate:
+    // rS = real pauses that end before it starts, rE = real pauses that end by its end -> pauses strictly between two candidates
+    const R = P.filter(p => !p.v), RC = new Float64Array(R.length + 1), RSP = new Float64Array(R.length + 1);
+    for (let i = 0; i < R.length; i++) { RC[i + 1] = RC[i] + (R[i][1] - R[i][0]); RSP[i + 1] = RSP[i] + skipP(R[i][1] - R[i][0]) }
+    const cntEnd = t => { let lo = 0, hi = R.length; while (lo < hi) { const m = (lo + hi) >> 1; if (R[m][1] <= t + 1e-6) lo = m + 1; else hi = m } return lo };
+    const rS = P.map(p => cntEnd(p[0])), rE = P.map(p => cntEnd(p[1]));
+    for (let k = 0; k < K; k++) SB[k + 1] = SB[k] + skipBp(B[k].st);
+    const cost = [], back = [];
+    for (let k = 0; k < K; k++) {
+      const [lo, hi] = band[k], w = Math.max(0, hi - lo + 1), c = new Float64Array(w).fill(INF), bk = new Int32Array(w).fill(-1);
+      cost.push(c); back.push(bk);
+      if (k === 0) { for (let j = lo; j <= hi; j++) if (P[j][1] <= opt.introMax) c[j - lo] = 0; continue }
+      for (let j = lo; j <= hi; j++) {
+        const mc = matchCost(B[k].st, len[j]); let best = INF, bi = -1;
+        for (let k2 = Math.max(0, k - DK); k2 < k; k2++) {
+          const [lo2, hi2] = band[k2], c2 = cost[k2], E = (B[k].cw - B[k2].cw) * (opt.rate ? opt.rate(k2, k) : opt.r), wk = B[k].cw - B[k2].cw;
+          const sig = .11 + .65 / Math.sqrt(Math.max(wk, 4)), sbk = SB[k] - SB[k2 + 1];
+          for (let j2 = Math.max(lo2, j - DJ); j2 <= Math.min(hi2, j - 1); j2++) {
+            const pv = c2[j2 - lo2]; if (pv >= INF) continue;
+            const a0 = rE[j2], a1 = rS[j]; if (a1 < a0) continue;
+            const A = P[j][0] - P[j2][1] - (RC[a1] - RC[a0]); if (A <= .05) continue;
+            const z = Math.log(A / E) / sig, v = pv + .5 * z * z + sbk + (RSP[a1] - RSP[a0]) + mc;
+            if (v < best) { best = v; bi = (k - k2) * 1e6 + j2 }
+          }
+        }
+        c[j - lo] = best; bk[j - lo] = bi;
+      }
+    }
+    // the text ends at a pause; whatever follows is the reader's closing words or silence
+    const [loE, hiE] = band[K - 1]; let e = -1, ev = INF;
+    for (let j = loE; j <= hiE; j++) { const v = cost[K - 1][j - loE] + (opt.tail ? opt.tail(P[j][0]) : 0); if (v < ev) { ev = v; e = j } }
+    const match = new Int32Array(K).fill(-1); if (e < 0) return null;
+    let k = K - 1, j = e;
+    while (k >= 0 && j >= 0) { match[k] = j; const b = back[k][j - band[k][0]]; if (b < 0) break; k = k - Math.floor(b / 1e6); j = b % 1e6 }
+    return { match, cost: ev };
+  }
+  // speech-time position <-> real time, with the pauses taken out
+  function speechMap(P, T) {
+    const st = [], acc = [];               // st: speech interval starts; acc: speech time before them
+    let t = 0, a = 0; const sp = [];
+    for (const p of P) { if (p.v) continue; if (p[0] > t) sp.push([t, p[0]]); t = Math.max(t, p[1]) }
+    if (T > t) sp.push([t, T]);
+    for (const s of sp) { st.push(s); acc.push(a); a += s[1] - s[0] }
+    return {
+      total: a,
+      toTime(x) { let lo = 0, hi = st.length - 1; if (hi < 0) return 0; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (acc[m] <= x) lo = m; else hi = m - 1 } return Math.min(st[lo][1], st[lo][0] + (x - acc[lo])) },
+      toSpeech(t) { let lo = 0, hi = st.length - 1; if (hi < 0) return 0; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (st[m][0] <= t) lo = m; else hi = m - 1 } return acc[lo] + Math.max(0, Math.min(t, st[lo][1]) - st[lo][0]) }
+    };
+  }
+  // main: U = units(D); pz = [[s,e],...] pauses; T = total audio length; files = [start times of each file] (multi-part sets)
+  function align(U, pz, T, files) {
+    const P = [Object.assign([0, 0], { v: 1 })];
+    const fs = (files || [0]).slice(1);
+    for (const p of pz) P.push(p);
+    for (const f of fs) {                                 // a later part may open with a few spoken words of its own
+      P.push(Object.assign([f, f], { v: 1, fs: f }));
+      let n = 0; for (const p of pz) if (p[1] > f && p[1] <= f + 45 && p[1] - p[0] >= .3 && n < 6) { P.push(Object.assign([f, p[1]], { v: 1, fs: f })); n++ }
+    }
+    P.push(Object.assign([T, T], { v: 1 }));
+    P.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const SM = speechMap(P, T), Wt = U.W, r0 = SM.total / Wt;
+    const intro = Math.min(240, T * .25);
+    const tail = t => .4 * Math.max(0, SM.total - SM.toSpeech(t) - 6);   // only a few closing words may follow the text
+    // pass 1: strong breakpoints only, longer pauses only
+    const idx1 = U.bp.map((b, k) => k).filter(k => k === 0 || k === U.bp.length - 1 || U.bp[k].st === 2);
+    const P1 = P.filter(p => p.v || p[1] - p[0] >= .28);
+    const B1 = idx1.map(k => U.bp[k]);
+    const bandAround = (Bs, Ps, center, half) => Bs.map((b, k) => {
+      const c = center(b, k); let lo = 0, hi = Ps.length - 1;
+      const tlo = c - half, thi = c + half;
+      while (lo < Ps.length - 1 && Ps[lo][1] < tlo) lo++;
+      while (hi > 0 && Ps[hi][0] > thi) hi--;
+      if (hi < lo) { const m = Math.max(0, Math.min(Ps.length - 1, lo)); return [m, m] }
+      return [lo, hi];
+    });
+    const half1 = Math.max(60, Math.min(420, SM.total * .12)) + intro * .5;
+    const band1 = bandAround(B1, P1, b => SM.toTime(b.cw / Wt * SM.total) + intro * .25, half1);
+    band1[0] = [0, Math.max(0, P1.findIndex(p => p[1] > intro)) || P1.length - 1];
+    // allow as many skipped pauses between two strong breakpoints as their distance needs
+    let gapMax = 0; const dens = P1.length / Math.max(1, T);
+    for (let k = 1; k < B1.length; k++) gapMax = Math.max(gapMax, (B1[k].cw - B1[k - 1].cw) * r0 * dens);
+    let R1 = null;
+    for (const dj of [Math.max(10, Math.min(80, Math.ceil(gapMax * 1.8) + 4)), 160]) { R1 = dp(B1, P1, band1, { r: r0, introMax: intro, dk: 6, dj, tail }); if (R1) break }
+    if (!R1) return null;
+    // the reader's local pace from pass 1 (smoothed), for pass 2
+    const anchors = [];
+    for (let k = 0; k < B1.length; k++) if (R1.match[k] >= 0) anchors.push([B1[k].cw, k === 0 ? P1[R1.match[k]][1] : P1[R1.match[k]][0], P1[R1.match[k]][1]]);
+    const spAt = []; for (const a of anchors) spAt.push([a[0], SM.toSpeech(a[2])]);
+    const rateAt = cw => {                               // local seconds-per-weight around cw, from anchors ±~300 weight
+      let lo = 0; while (lo + 1 < spAt.length && spAt[lo + 1][0] < cw - 400) lo++;
+      let hi = spAt.length - 1; while (hi - 1 > 0 && spAt[hi - 1][0] > cw + 400) hi--;
+      if (hi <= lo) return r0;
+      const r = (spAt[hi][1] - spAt[lo][1]) / Math.max(1, spAt[hi][0] - spAt[lo][0]);
+      return r > 0 ? Math.max(r0 * .5, Math.min(r0 * 2, r)) : r0;
+    };
+    const expTime = cw => {                              // where pass 1 says this weight is spoken
+      let i = 0; while (i + 1 < spAt.length && spAt[i + 1][0] <= cw) i++;
+      const a = spAt[i], b = spAt[Math.min(spAt.length - 1, i + 1)];
+      const s = b[0] > a[0] ? a[1] + (cw - a[0]) / (b[0] - a[0]) * (b[1] - a[1]) : a[1] + (cw - a[0]) * r0;
+      return SM.toTime(Math.max(0, s));
+    };
+    // pass 2: every breakpoint, every pause, near pass 1
+    const B2 = U.bp, rate2 = (k2, k) => rateAt((B2[k2].cw + B2[k].cw) / 2);
+    const band2 = bandAround(B2, P, b => expTime(b.cw), 14);
+    band2[0] = [0, Math.max(band2[0][1], 0)];
+    const R2 = dp(B2, P, band2, { rate: rate2, introMax: intro, dk: 7, dj: 9, tail });
+    if (!R2) return null;
+    // times of every breakpoint: speech ends (a) and starts again (b)
+    const K = B2.length, ta = new Float64Array(K), tb = new Float64Array(K), got = new Uint8Array(K);
+    for (let k = 0; k < K; k++) { const j = R2.match[k]; if (j >= 0) { ta[k] = P[j][0]; tb[k] = P[j][1]; got[k] = 1 } }
+    let prev = 0;
+    for (let k = 1; k < K; k++) {
+      if (!got[k]) continue;
+      for (let g = prev + 1; g < k; g++) {               // breakpoints the reader didn't pause at: share the speech by weight
+        const s0 = SM.toSpeech(tb[prev]), s1 = SM.toSpeech(ta[k]), f = (B2[g].cw - B2[prev].cw) / Math.max(1e-9, B2[k].cw - B2[prev].cw);
+        let t = SM.toTime(s0 + f * (s1 - s0));
+        // a short gap close by is probably where it falls
+        let bj = -1, bd = .45; for (let j = band2[g][0]; j <= band2[g][1]; j++) { const m = (P[j][0] + P[j][1]) / 2, d = Math.abs(m - t); if (!P[j].v && d < bd && P[j][0] > tb[prev] && P[j][1] < ta[k]) { bd = d; bj = j } }
+        if (bj >= 0) { ta[g] = P[bj][0]; tb[g] = P[bj][1] } else { ta[g] = tb[g] = t }
+      }
+      prev = k;
+    }
+    const n = U.lineStart.length, on = new Array(n), off = new Array(n);
+    for (let i = 0; i < n; i++) { on[i] = +tb[U.lineStart[i]].toFixed(2); off[i] = +ta[U.lineEnd[i]].toFixed(2) }
+    let hit = 0, strong = 0; for (let k = 0; k < K; k++) if (B2[k].st === 2) { strong++; if (got[k]) hit++ }
+    const skip = {};                                     // where each later part's own text starts (after its spoken opening)
+    for (let k = 0; k < K; k++) { const j = R2.match[k]; if (j >= 0 && P[j].fs != null) { const f = (files || [0]).indexOf(P[j].fs); if (f > 0) skip[f] = +(P[j][1] - P[j][0]).toFixed(2) } }
+    return { on, off, q: strong ? hit / strong : 0, cost: R2.cost / K, skip };
+  }
+  // when the recording can't be matched (a very different reading): share the speech out by text length, ending lines at pauses nearby
+  function estimate(U, pz, T) {
+    const P = pz.slice().sort((a, b) => a[0] - b[0]), SM = speechMap(P, T), n = U.lineStart.length, on = new Array(n), off = new Array(n);
+    const near = t => { let best = null, bd = .6; for (const p of P) { const d = Math.abs((p[0] + p[1]) / 2 - t); if (d < bd) { bd = d; best = p } } return best };
+    for (let i = 0; i < n; i++) {
+      const a = SM.toTime(U.bp[U.lineStart[i]].cw / U.W * SM.total), b = SM.toTime(U.bp[U.lineEnd[i]].cw / U.W * SM.total);
+      const pa = near(a), pb = near(b); on[i] = +(pa ? pa[1] : a).toFixed(2); off[i] = +(pb ? pb[0] : b).toFixed(2);
+    }
+    for (let i = 1; i < n; i++) { if (on[i] < on[i - 1]) on[i] = on[i - 1]; if (off[i - 1] > on[i]) off[i - 1] = on[i] }
+    return { on, off, q: 0, est: true, skip: {} };
+  }
+  return { env, pauses, units, align, estimate, weight, HOP };
+})();
+
+
+const PP={on:false,id:'',r:'',a:0,b:0,ts:0,te:0,n:0,st:'idle',f:-1,tok:0,cur:-1,gapT:0,endT:0,raf:0,self:false,seeking:false,fromStart:false,usT:0};
+const MAL={},MPREP={},PREPROG={},ANV=3,AKEY='https://hifdh.app/align/'+ANV+'/';
+const mppKey=()=>PP.id+':'+PP.r;
 function g2f(ds,g){let s=0;for(let f=0;f<ds.length;f++){if(g<s+ds[f]||f===ds.length-1)return[f,Math.max(0,g-s)];s+=ds[f]}return[0,0]}
 const fStart=(ds,f)=>ds.slice(0,f).reduce((x,y)=>x+y,0);
-async function playPart(id,a,b,r){maUnlock();if(!MD[id])await loadMatn(id);MPP.on=true;MPP.id=id;MPP.a=a;MPP.b=b;MPP.r=r||mpSel(id).r;MPP.count=0;mbarShow();$('mbName').textContent='Loading the recording…';
-  const ds=await mDurs(id,MPP.r);if(!ds.every(x=>x>0)){MPP.on=false;toast(navigator.onLine?'Couldn’t load the recording. Try again.':'You’re offline and this recording isn’t saved.');mbarPaint();return}
-  mppEst();mppSnap();mppSeek(MPP.ts,true);mppAnalyze()}
-function mppEst(){const c=mCum(MPP.id);MPP.ts=Math.max(0,tAt(MPP.id,MPP.r,c[MPP.a])-.4);MPP.te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3}
-/* the reader's pauses, found once per recording file, line the text up with the real speech */
-const mpzBusy=new Set();
-function mPauses(id,r){const ds=S.mdur&&S.mdur[id+':'+r];if(!ds||!S.mpz)return null;const P=[];let any=false;
-  MREC[id][r].forEach((u,f)=>{const z=S.mpz[u];if(!z||!z.length)return;any=true;const o=fStart(ds,f);for(let i=0;i+1<z.length;i+=2)P.push([z[i]+o,z[i+1]+o])});return any?P:null}
-/* line the whole text up with the reader's pauses: the pattern of short and long gaps has to match the pattern of short and long lines */
-function mAlign(id,r){const k=id+':'+r,P=mPauses(id,r);if(!P||P.length<3)return false;const t0=performance.now();
-  const c=mCum(id),n=c.length,B=new Float64Array(n);for(let i=0;i<n;i++)B[i]=tEst(id,r,c[i]);
-  const lo=P[0][1]-30,hi=P[P.length-1][1]+30;let i0=0;while(i0<n-1&&B[i0]<lo)i0++;let i1=n-1;while(i1>i0&&B[i1]>hi)i1--;
-  const m=P.length,Q=P.map(p=>p[1]),O=P.map(p=>p[0]),N=i1-i0+1,INF=1e18,dp=new Float64Array(N*m).fill(INF),bk=new Int32Array(N*m).fill(-1),band=Math.max(40,Math.round(m/N*8)+25);
-  for(let i=0;i<N;i++){const jm=Math.round((B[i0+i]-B[i0])/((B[i1]-B[i0])||1)*(m-1)),ja=Math.max(0,jm-band),jb=Math.min(m-1,jm+band);
-    for(let j=ja;j<=jb;j++){let best=i<3&&j<8?Math.abs(Q[j]-B[i0+i])*.3+2.5*i:INF,bi=-1;
-      for(let di=1;di<=3&&i-di>=0;di++)for(let dj=1;dj<=4&&j-dj>=0;dj++){const pv=dp[(i-di)*m+j-dj];if(pv>=INF)continue;
-        const v=pv+Math.abs((Q[j]-Q[j-dj])-(B[i0+i]-B[i0+i-di]))+2.5*(di-1)+.8*(dj-1);if(v<best){best=v;bi=(i-di)*m+j-dj}}
-      dp[i*m+j]=best;bk[i*m+j]=bi}}
-  let e=-1,ev=INF;for(let i=Math.max(0,N-3);i<N;i++)for(let j=0;j<m;j++){const v=dp[i*m+j]+2.5*(N-1-i);if(v<ev){ev=v;e=i*m+j}}if(e<0)return false;
-  const on=new Array(n).fill(null),off=new Array(n).fill(null);let x=e,hit=0;while(x>=0){const i=Math.floor(x/m),j=x%m;on[i0+i]=Q[j];off[i0+i]=O[j];hit++;x=bk[x]}
-  let pv=-1;for(let i=i0;i<=i1;i++){if(on[i]==null)continue;if(pv>=0)for(let g=pv+1;g<i;g++){on[g]=on[pv]+(B[g]-B[pv])/((B[i]-B[pv])||1)*(on[i]-on[pv]);off[g]=on[g]-.3}pv=i}
-  const r2=v=>v==null?null:Math.round(v*100)/100;S.mlt=S.mlt||{};S.mlt[k]={on:on.map(r2),off:off.map(r2)};save();
-  dlog('matn lined up: '+hit+' of '+N+' lines matched to pauses · '+Math.round(performance.now()-t0)+' ms');return true}
-function mppSnap(){const M=S.mlt&&S.mlt[MPP.id+':'+MPP.r];if(!M||M.on[MPP.a]==null)return false;
-  MPP.ts=Math.max(M.off[MPP.a]!=null?M.off[MPP.a]+.05:0,M.on[MPP.a]-.3);const e=M.off[MPP.b+1]!=null?M.off[MPP.b+1]:M.on[MPP.b+1];if(e!=null)MPP.te=e+.25;return true}
-async function mPauseMap(u,dur){S.mpz=S.mpz||{};if(S.mpz[u])return S.mpz[u];const t0=performance.now();
-  const c=await caches.open(AC);let m=await c.match(u);if(!m){const r=await fetch(u);if(!r.ok)throw new Error('download '+r.status);await c.put(u,r.clone());m=await c.match(u)||r}
-  const blob=await m.blob();let oc;try{oc=new OfflineAudioContext(1,1,16000)}catch(e){oc=new OfflineAudioContext(1,1,44100)}
-  const CH=2*1024*1024,hop=.02,out=[];let t=0,run=0,rs=0;
-  /* cut the file where an MP3 frame starts: Safari won't decode a piece that begins halfway through a frame */
+const mpTick=()=>new Promise(r=>setTimeout(r,0));
+/* the recording file, downloaded once into the app's storage */
+/* archive.org only lets an app read a file's sound through its /cors/ address (its /download/ address blocks that) */
+const corsUrl=u=>u.replace('https://archive.org/download/','https://archive.org/cors/');
+async function mFile(u,prog){const c=await caches.open(AC);const m=await c.match(u);if(m)return await m.blob();
+  let r=null;try{r=await fetch(corsUrl(u),{mode:'cors'})}catch(e){dlog('cors address failed: '+(e&&e.message||e))}
+  if(!r||!r.ok)r=await fetch(u,{mode:'cors'});if(!r.ok)throw new Error('download '+r.status);
+  const n=+r.headers.get('content-length')||0;let blob;
+  if(r.body&&r.body.getReader){const rd=r.body.getReader(),parts=[];let got=0;for(;;){const{done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(prog)prog(n?Math.min(1,got/n):Math.min(.95,got/3e7))}blob=new Blob(parts,{type:'audio/mpeg'})}
+  else blob=await r.blob();
+  try{await c.put(u,new Response(blob,{headers:{'Content-Type':'audio/mpeg'}}))}catch(e){dlog('keeping the recording failed: '+(e&&e.message||e))}
+  return blob}
+/* where the reader pauses: decoded piece by piece (cut where an MP3 frame starts, which Safari needs) */
+async function mAnalyse(u,prog){const c=await caches.open(AC),ck=AKEY+'pz/'+encodeURIComponent(u);const hit=await c.match(ck);if(hit){try{const j=await hit.json();if(j&&j.d>0)return j}catch(e){}}
+  const blob=await mFile(u,p=>prog&&prog(p*.7));let oc;try{oc=new OfflineAudioContext(1,1,16000)}catch(e){oc=new OfflineAudioContext(1,1,44100)}
   const frameAt=async o=>{if(o<=0||o>=blob.size)return Math.min(o,blob.size);const b=new Uint8Array(await blob.slice(o,Math.min(blob.size,o+16384)).arrayBuffer());
     for(let i=0;i+3<b.length;i++)if(b[i]===255&&(b[i+1]&224)===224&&(b[i+1]>>3&3)!==1&&(b[i+1]>>1&3)!==0&&(b[i+2]>>4)!==15&&(b[i+2]>>4)!==0&&(b[i+2]>>2&3)!==3)return o+i;return o};
-  for(let o=0,e;o<blob.size;o=e){e=await frameAt(Math.min(blob.size,o+CH));if(e<=o)e=Math.min(blob.size,o+CH);const buf=await oc.decodeAudioData(await blob.slice(o,e).arrayBuffer());
-    const x=buf.getChannelData(0),sr=buf.sampleRate,hs=Math.round(sr*hop),db=[];for(let i=0;i+hs<=x.length;i+=hs){let q=0;for(let k=i;k<i+hs;k++)q+=x[k]*x[k];db.push(10*Math.log10(q/hs+1e-12))}
-    const so=db.slice().sort((a,b)=>a-b),nz=so[Math.floor(so.length*.1)],sp=so[Math.floor(so.length*.9)],thr=nz+Math.max(8,.35*(sp-nz));
-    for(let i=0;i<db.length;i++){const tt=t+i*hop;if(db[i]<thr){if(!run)rs=tt;run++}else{if(run*hop>=.22)out.push(rs,tt);run=0}}
-    t+=x.length/sr}
-  const k=dur&&t?dur/t:1;S.mpz[u]=out.map(v=>Math.round(v*k*100)/100);save();
-  dlog('matn timing: '+Math.round(t/60)+' min analysed, '+out.length/2+' pauses, '+Math.round(performance.now()-t0)+' ms');return S.mpz[u]}
-function mppAnalyze(){const id=MPP.id,r=MPP.r,ds=S.mdur[id+':'+r];if(!ds)return;if(S.mlt&&S.mlt[id+':'+r])return;const L=MREC[id][r].length,f0=L<=3?0:g2f(ds,MPP.ts)[0],f1=L<=3?L-1:g2f(ds,MPP.te)[0];
-  for(let f=f0;f<=f1;f++){const u=MREC[id][r][f];if((S.mpz&&S.mpz[u])||mpzBusy.has(u))continue;mpzBusy.add(u);
-    if(!S.mpzTip){S.mpzTip=1;save();toast('Getting this recording ready so parts start and stop on the right words (once).',4000)}
-    mPauseMap(u,ds[f]).then(()=>{if(MREC[id][r].every(v=>S.mpz&&S.mpz[v]&&S.mpz[v].length)||MREC[id][r].length>3)mAlign(id,r);if(MPP.id===id&&MPP.r===r){mppSnap();MPP.cur=-2}}).catch(e=>{dlog('matn timing failed: '+(e&&e.message||e));S.mpz=S.mpz||{};S.mpz[u]=[];save()}).finally(()=>mpzBusy.delete(u))}}
-function mppSeek(g,play){const ds=S.mdur[MPP.id+':'+MPP.r],[f,lt]=g2f(ds,g);
-  if(MP.id!==MPP.id||MP.r!==MPP.r||MP.f!==f||!MA.src||MA.src.startsWith('data:'))mpLoad(MPP.id,MPP.r,f,lt,play);else{MA.currentTime=lt;if(play)MA.play().catch(()=>{})}}
+  const CH=2*1024*1024,out=[];let t=0;const t0=performance.now();
+  for(let o=0,e;o<blob.size;o=e){e=await frameAt(Math.min(blob.size,o+CH));if(e<=o)e=Math.min(blob.size,o+CH);
+    const buf=await oc.decodeAudioData(await blob.slice(o,e).arrayBuffer()),x=buf.getChannelData(0);
+    for(const p of AL.pauses(AL.env(x,buf.sampleRate),t)){const l=out.length;if(l&&p[0]-out[l-1]<=.03)out[l-1]=p[1];else out.push(p[0],p[1])}
+    t+=x.length/buf.sampleRate;if(prog)prog(.7+.3*e/blob.size);await mpTick()}
+  const j={d:+t.toFixed(3),p:out.map(v=>Math.round(v*100)/100)};try{await c.put(ck,new Response(JSON.stringify(j)))}catch(e){}
+  dlog('matn audio analysed: '+Math.round(t/60)+' min, '+out.length/2+' pauses, '+Math.round(performance.now()-t0)+' ms');return j}
+/* the line times for one matn and reader (worked out once, then kept) */
+function mPrepare(id,r){const k=id+':'+r;if(MAL[k])return Promise.resolve(MAL[k]);if(MPREP[k])return MPREP[k];
+  const prog=(p,ph)=>{PREPROG[k]={p,ph};if(PP.on&&mppKey()===k)mbarPaint()};
+  return MPREP[k]=(async()=>{if(!MD[id])await loadMatn(id);const D=MD[id],L=MREC[id][r],c=await caches.open(AC),ck=AKEY+'al/'+k+'/'+(D.v||1);
+    const hit=await c.match(ck);if(hit){try{const j=await hit.json();if(j&&j.on&&j.on.length===D.L.length&&j.ds){MAL[k]=j;S.mdur=S.mdur||{};S.mdur[k]=j.ds;return j}}catch(e){}}
+    const ds=[],pz=[],files=[];let off=0;prog(0,'get');
+    for(let f=0;f<L.length;f++){files.push(off);const A=await mAnalyse(L[f],p=>prog((f+p)/L.length,'get'));ds.push(A.d);for(let i=0;i+1<A.p.length;i+=2)pz.push([A.p[i]+off,A.p[i+1]+off]);off+=A.d}
+    prog(1,'line');await mpTick();const t0=performance.now();
+    const U=AL.units(D);let R=AL.align(U,pz,off,files);
+    if(!R){R=AL.estimate(U,pz,off);dlog('matn could not be matched to this recording: timing estimated from the text');toast('This recording reads the text quite differently, so the timing is only approximate.',5000)}
+    const j={on:R.on,off:R.off,q:+R.q.toFixed(2),ds:ds.map(x=>+x.toFixed(3)),skip:R.skip||{},est:!!R.est};MAL[k]=j;S.mdur=S.mdur||{};S.mdur[k]=j.ds;save();
+    try{await c.put(ck,new Response(JSON.stringify(j)))}catch(e){}
+    dlog('matn lined up: '+k+' · '+Math.round(j.q*100)+'% of sentence ends found · '+Math.round(performance.now()-t0)+' ms');return j})().finally(()=>{delete MPREP[k];delete PREPROG[k]})}
+/* get a matn ready in the background when its recording is already saved */
+async function mPrepIdle(id){const s=mpSel(id);if(!s||MAL[id+':'+s.r]||MPREP[id+':'+s.r])return;for(const u of MREC[id][s.r])if(!(await mpCached(u)))return;setTimeout(()=>{mPrepare(id,s.r).catch(()=>{})},1200)}
+/* highlight the line being read */
+function mppLineAt(g){const A=MAL[mppKey()];if(!A)return PP.a;let li=PP.a;for(let i=PP.a+1;i<=PP.b;i++){if(A.on[i]-.1<=g)li=i;else break}return li}
+function mppHi(li){if(li===PP.cur)return;PP.cur=li;document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));if(li<0||!PP.on)return;
+  const els=document.querySelectorAll('[data-k="'+PP.id+':'+li+'"]');els.forEach(e=>e.classList.add('playing'));
+  if(performance.now()-PP.usT>2500)for(const e of els){const q=e.getBoundingClientRect();if(!q.height||!q.width||q.right<0||q.left>innerWidth)continue;
+    const[vt,vb]=mppView();if(q.top<vt+4||q.bottom>vb-4){const se=document.scrollingElement||document.documentElement,top=Math.max(0,Math.min(se.scrollHeight-innerHeight,scrollY+q.top-vt-Math.max(8,(vb-vt-q.height)*.3)));scrollTo({top,behavior:'smooth'})}break}}
+/* the part of the screen not covered by the header, the selection bar, the player and the tabs */
+function mppView(){let t=0,b=innerHeight;const h=document.querySelector('header.top'),m=document.querySelector('#v-mutun.on .mbar2,#v-mutun:not([hidden]) .mbar2');
+  if(h){const r=h.getBoundingClientRect();if(r.height)t=Math.max(0,r.bottom)}
+  if(m&&m.offsetHeight){const st=parseFloat(getComputedStyle(m).top)||0;t=Math.max(t,st+m.offsetHeight)}
+  for(const e of document.querySelectorAll('#mbar.on,.selbar,nav.tabs')){const r=e.getBoundingClientRect();if(r.height&&r.top>t+40)b=Math.min(b,r.top)}return[t,b]}
+function mppDom(){const li=PP.cur;PP.cur=-2;if(PP.on&&li>=0)mppHi(li);if(PP.on)mppBtns()}
+['touchmove','wheel'].forEach(ev=>addEventListener(ev,()=>{PP.usT=performance.now()},{passive:true}));
+const mpOnce=(el,ev,ms)=>new Promise(res=>{let d=false;const f=()=>{if(d)return;d=true;el.removeEventListener(ev,f);res(true)};el.addEventListener(ev,f);setTimeout(()=>{if(!d){d=true;el.removeEventListener(ev,f);res(false)}},ms)});
+function mppFail(e){PP.st='idle';PP.seeking=false;MA.muted=false;mbarPaint();dlog('part play failed: '+(e&&e.message||e));toast(navigator.onLine?'Couldn’t play the recording. Tap play to try again.':'You’re offline and this recording isn’t saved yet.',4000)}
+async function mppUse(f,tok){const u=MREC[PP.id][PP.r][f];if(MP.loaded===u&&MP.obj&&MA.src.startsWith('blob:'))return true;
+  const blob=await mFile(u);if(PP.tok!==tok)return false;if(MP.obj)URL.revokeObjectURL(MP.obj);MP.obj=URL.createObjectURL(blob);MP.id=PP.id;MP.r=PP.r;MP.f=f;MP.loaded=u;return 'new'}
+/* play the part from its first line */
+async function mppGo(tok){const ds=S.mdur[mppKey()],[f,lt]=g2f(ds,PP.ts);clearTimeout(PP.gapT);clearTimeout(PP.endT);PP.st='seek';mbarPaint();
+  try{const fresh=await mppUse(f,tok);if(!fresh)return;
+    if(fresh==='new'){MA.muted=true;MA.preload='auto';MA.src=MP.obj+'#t='+lt.toFixed(2);MA.playbackRate=MP.rate;await MA.play();if(PP.tok!==tok)return;
+      if(Math.abs(MA.currentTime-lt)>.25){PP.seeking=true;MA.currentTime=lt;await mpOnce(MA,'seeked',2000);PP.seeking=false}}
+    else{if(Math.abs(MA.currentTime-lt)>.03){PP.seeking=true;MA.currentTime=lt;await mpOnce(MA,'seeked',2000);PP.seeking=false}if(PP.tok!==tok)return;MA.playbackRate=MP.rate;await MA.play()}
+    if(PP.tok!==tok)return;MA.muted=false;PP.f=f;PP.st='play';mppHi(PP.a);mppLoop();mbarPaint();
+    if('mediaSession' in navigator){try{const b=mInfo(PP.id);navigator.mediaSession.metadata=new MediaMetadata({title:(b?b.en:'Matn')+' · '+(PP.b>PP.a?'lines '+(PP.a+1)+'–'+(PP.b+1):'line '+(PP.a+1)),artist:MREADERS[PP.r][0],album:'Hifdh · Mutūn'})}catch(e){}}}
+  catch(e){if(PP.tok===tok)mppFail(e)}}
+/* a part that runs on into the next file: carry on there, past that file's spoken opening */
+async function mppNext(tok){const f=MP.f+1,sk=((MAL[mppKey()]||{}).skip||{})[f]||0;try{const fresh=await mppUse(f,tok);if(!fresh)return;
+  if(fresh==='new'){MA.muted=true;MA.src=MP.obj+(sk?'#t='+sk.toFixed(2):'');MA.playbackRate=MP.rate;await MA.play();if(PP.tok!==tok)return;if(Math.abs(MA.currentTime-sk)>.25){PP.seeking=true;MA.currentTime=sk;await mpOnce(MA,'seeked',2000);PP.seeking=false}}
+  else{PP.seeking=true;MA.currentTime=sk;await mpOnce(MA,'seeked',2000);PP.seeking=false;await MA.play()}
+  if(PP.tok!==tok)return;MA.muted=false;PP.f=f;mppLoop()}catch(e){if(PP.tok===tok)mppFail(e)}}
+const mppNow=()=>fStart(S.mdur[mppKey()],MP.f)+MA.currentTime;
+function mppLoop(){cancelAnimationFrame(PP.raf);const step=()=>{if(!PP.on||PP.st!=='play')return;mppCheck();PP.raf=requestAnimationFrame(step)};PP.raf=requestAnimationFrame(step)}
+function mppCheck(){if(!PP.on||PP.st!=='play'||PP.seeking||MA.paused||MP.id!==PP.id||MP.r!==PP.r)return;const g=mppNow();mppHi(mppLineAt(g));
+  if(g>=PP.te){mppDone();return}
+  const rem=(PP.te-g)/(MA.playbackRate||1);clearTimeout(PP.endT);if(rem<1.5)PP.endT=setTimeout(mppCheck,Math.max(4,rem*1000-10))}
+function mppDone(){clearTimeout(PP.endT);cancelAnimationFrame(PP.raf);if(!MA.paused){PP.self=true;MA.pause()}PP.n++;
+  if(PP.n<S.rep){PP.st='gap';mbarPaint();const tok=PP.tok;PP.gapT=setTimeout(()=>{if(PP.tok===tok&&PP.st==='gap')mppGo(tok)},Math.round(850/(MP.rate||1)))}
+  else{PP.st='done';PP.n=0;mppHi(-1);mbarPaint()}}
+function mppToggle(){if(!PP.on)return;maUnlock();
+  if(PP.st==='play'){if(!MA.paused){PP.self=true;MA.pause()}PP.st='pause';mbarPaint();return}
+  if(PP.st==='gap'){clearTimeout(PP.gapT);PP.st='pause';PP.fromStart=true;mbarPaint();return}
+  if(PP.st==='pause'){if(PP.fromStart||MP.id!==PP.id||MP.r!==PP.r){PP.fromStart=false;mppGo(PP.tok);return}MA.muted=false;MA.play().then(()=>{if(PP.on){PP.st='play';mppLoop();mbarPaint()}}).catch(mppFail);return}
+  if(PP.st==='done'||PP.st==='idle'){PP.n=0;if(MAL[mppKey()])mppGo(PP.tok);else playPart(PP.id,PP.a,PP.b,PP.r,true)}}
+function mppStop(){PP.tok++;clearTimeout(PP.gapT);clearTimeout(PP.endT);cancelAnimationFrame(PP.raf);const was=PP.on;PP.on=false;PP.st='idle';PP.seeking=false;MA.muted=false;if(was&&!MA.paused){PP.self=true;MA.pause()}mppHi(-1);mppBtns()}
+/* start a part (tapping Play again on the same part pauses or resumes it) */
+async function playPart(id,a,b,r,again){maUnlock();r=r&&MREC[id]&&MREC[id][r]?r:mpSel(id).r;
+  if(!again&&PP.on&&PP.id===id&&PP.a===a&&PP.b===b&&PP.r===r&&PP.st!=='prep'&&PP.st!=='seek'){mppToggle();return}
+  const tok=++PP.tok;clearTimeout(PP.gapT);clearTimeout(PP.endT);cancelAnimationFrame(PP.raf);
+  if(!AU.paused){AU.pause();PL.on=false;setPI();$('player').classList.remove('on')}
+  if(!MA.paused){PP.self=true;MA.pause()}MP.a=MP.b=null;
+  Object.assign(PP,{on:true,id,a,b,r,n:0,st:'prep',fromStart:false,seeking:false});mppHi(-1);mbarShow();mbarPaint();
+  let A;try{A=await mPrepare(id,r)}
+  catch(e){if(PP.tok!==tok)return;PP.st='idle';mbarPaint();const m=String(e&&e.message||e);dlog('matn prepare failed: '+m);
+    toast(!navigator.onLine?'You’re offline and this recording isn’t saved yet.':/fetch|download|network|load/i.test(m)?'Couldn’t download the recording. Check the connection and tap play again.':'Couldn’t read this recording on this phone. Tap play to try again.',5000);return}
+  if(PP.tok!==tok)return;mpRefreshSaved(id);
+  const n=A.on.length,gapB=a>0?Math.max(0,A.on[a]-A.off[a-1]):A.on[0],gapA=b+1<n?Math.max(0,A.on[b+1]-A.off[b]):1;
+  PP.ts=Math.max(0,A.on[a]-Math.min(.22,gapB*.6));PP.te=A.off[b]+Math.min(.4,gapA*.6);if(PP.te<PP.ts+.4)PP.te=PP.ts+.4;
+  mppGo(tok)}
 let mpLast=0;
-MA.addEventListener('timeupdate',()=>{if(MA.src.startsWith('data:'))return;if(MP.a!=null&&MP.b!=null&&MA.currentTime>=MP.b){MA.currentTime=MP.a}
-  if(MPP.on&&MP.id===MPP.id&&MP.r===MPP.r){const ds=S.mdur[MPP.id+':'+MPP.r];if(ds){const g=fStart(ds,MP.f)+MA.currentTime;if(g>=MPP.te){MPP.count++;if(MPP.count<S.rep)mppSeek(MPP.ts,true);else{MA.pause();MPP.count=0;mbarPaint()}}}}
-  const now=Date.now();if(now-mpLast>4000&&MP.id&&!MPP.on){mpLast=now;S.mpos=S.mpos||{};S.mpos[MP.id]={r:MP.r,f:MP.f,t:Math.floor(MA.currentTime)};save()}mpPaint(true);mbarPaint(true)});
-MA.addEventListener('play',()=>{mpPaint();mbarPaint()});MA.addEventListener('pause',()=>{mpPaint();mbarPaint()});
-MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;const L=MREC[MP.id][MP.r];if(MP.f+1<L.length)mpLoad(MP.id,MP.r,MP.f+1,0,true);else{if(!MPP.on){S.mpos[MP.id]={r:MP.r,f:0,t:0};save()}MPP.on=false;mpPaint();mbarPaint()}});
+MA.addEventListener('timeupdate',()=>{if(MA.src.startsWith('data:'))return;if(PP.on){mppCheck();return}
+  if(MP.a!=null&&MP.b!=null&&MA.currentTime>=MP.b){MA.currentTime=MP.a}
+  const now=Date.now();if(now-mpLast>4000&&MP.id){mpLast=now;S.mpos=S.mpos||{};S.mpos[MP.id]={r:MP.r,f:MP.f,t:Math.floor(MA.currentTime)};save()}mpPaint(true)});
+MA.addEventListener('play',()=>{if(MA.playbackRate!==MP.rate)MA.playbackRate=MP.rate;if(PP.on&&PP.st==='pause'&&!PP.fromStart){PP.st='play';mppLoop()}mpPaint();mbarPaint()});
+MA.addEventListener('pause',()=>{if(PP.self)PP.self=false;else if(PP.on&&PP.st==='play'){PP.st='pause';cancelAnimationFrame(PP.raf)}mpPaint();mbarPaint()});
+MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;
+  if(PP.on){if(PP.st==='play'){const ds=S.mdur[mppKey()],nf=MP.f+1;if(nf<ds.length&&PP.te>fStart(ds,nf)+.05)mppNext(PP.tok);else mppDone()}return}
+  const L=MREC[MP.id][MP.r];if(MP.f+1<L.length)mpLoad(MP.id,MP.r,MP.f+1,0,true);else{S.mpos=S.mpos||{};S.mpos[MP.id]={r:MP.r,f:0,t:0};save();mpPaint()}});
+MA.addEventListener('loadedmetadata',()=>{MA.playbackRate=MP.rate});
 function mbarShow(){$('player').classList.remove('on');$('mbar').classList.add('on')}
-function mbarHide(){$('mbar').classList.remove('on');MPP.on=false;if(!MA.paused)MA.pause();mppMark(-1)}
-function mppMark(li){MPP.cur=li;document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'))}
-function mppLine(g){let li=MPP.a;const c=mCum(MPP.id);for(let i=MPP.a;i<=MPP.b;i++){if(tAt(MPP.id,MPP.r,c[i])<=g+.05)li=i;else break}if(li!==MPP.cur)mppMark(li)}
-let mppRaf=0;function mppLoop(){cancelAnimationFrame(mppRaf);const step=()=>{if(MA.paused||!MPP.on||MP.id!==MPP.id||MP.r!==MPP.r)return;const ds=S.mdur&&S.mdur[MPP.id+':'+MPP.r];if(ds)mppLine(fStart(ds,MP.f)+MA.currentTime);mppRaf=requestAnimationFrame(step)};mppRaf=requestAnimationFrame(step)}
-/* tap the line the reader has just started: the timing snaps to it and is remembered for this recording */
-function mppSync(li){const ds=S.mdur[MPP.id+':'+MPP.r];if(!ds)return;const c=mCum(MPP.id),g=fStart(ds,MP.f)+MA.currentTime;setAnchor(MPP.id,MPP.r,c[li],Math.max(0,g-.2));
-  const M=S.mlt&&S.mlt[MPP.id+':'+MPP.r];if(M){const d=Math.max(0,g-.2)-M.on[li];for(let i=li;i<=MPP.b+1&&i<M.on.length;i++){if(M.on[i]!=null)M.on[i]+=d;if(M.off[i]!=null&&i>li)M.off[i]+=d}save()}if(!mppSnap())MPP.te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3;MPP.cur=-2;mppMark(li);toast('Lined up with line '+(li+1)+' ✓ The app remembers',1800)}
-function mbarPaint(light){if(!$('mbar').classList.contains('on')||!MPP.id)return;const b=mInfo(MPP.id),playing=!MA.paused&&MP.id===MPP.id;
-  $('mbIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mbPlay').setAttribute('aria-label',playing?'Pause':'Play');
-  if(light)return;$('mbName').textContent=(b?b.en:'')+' · '+(MPP.b>MPP.a?'lines '+(MPP.a+1)+'–'+(MPP.b+1):'line '+(MPP.a+1));$('mbSub').textContent=MREADERS[MPP.r][0]+' · '+MP.rate+'× · '+(S.rep>1?'repeats ×'+S.rep:'plays once');$('mbRep').textContent='×'+S.rep;$('mbSpd').textContent=MP.rate+'×';$('mbR').hidden=Object.keys(MREC[MPP.id]||{}).length<2}
-$('mbPlay').onclick=()=>{maUnlock();if(!MA.paused&&MP.id===MPP.id){MA.pause();return}if(MPP.id){if(MPP.on&&MP.id===MPP.id&&MA.src&&!MA.src.startsWith('data:'))MA.play().catch(()=>{});else playPart(MPP.id,MPP.a,MPP.b,MPP.r)}};
-$('mbRep').onclick=()=>{const r=[1,3,5,10];S.rep=r[(r.indexOf(S.rep)+1)%r.length];save();mbarPaint();setPI();toast(S.rep===1?'Plays once':'Repeats '+S.rep+' times')};
-$('mbR').onclick=()=>{const rs=Object.keys(MREC[MPP.id]);const r=rs[(rs.indexOf(MPP.r)+1)%rs.length];S.mpos=S.mpos||{};S.mpos[MPP.id]={r,f:0,t:0};save();playPart(MPP.id,MPP.a,MPP.b,r);toast(MREADERS[r][0])};
+function mbarHide(){$('mbar').classList.remove('on');mppStop()}
+function mbarPaint(light){if(!$('mbar').classList.contains('on')||!PP.id)return;const b=mInfo(PP.id),busy=PP.st==='prep'||PP.st==='seek',playing=PP.st==='play';
+  $('mbIcon').innerHTML=busy?'<circle class="spin" cx="12" cy="12" r="7"/>':playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';
+  $('mbPlay').setAttribute('aria-label',playing?'Pause':busy?'Getting ready':'Play');if(light)return;
+  $('mbName').textContent=(b?b.en:'')+' · '+(PP.b>PP.a?'lines '+(PP.a+1)+'–'+(PP.b+1):'line '+(PP.a+1));
+  const pr=PREPROG[mppKey()],rd=MREADERS[PP.r]?MREADERS[PP.r][0]:'',rp=S.rep>1?' · '+Math.min(PP.n+1,S.rep)+' of '+S.rep:'';
+  $('mbSub').textContent=PP.st==='prep'?(pr&&pr.ph==='line'?'Lining the text up with the reader…':'Getting the recording ready'+(pr&&pr.p?' · '+Math.round(pr.p*100)+'%':'')+' · once')
+    :PP.st==='done'?'Done · tap play to hear it again':PP.st==='gap'?'Again in a moment'+rp:PP.st==='idle'?'Tap play to try again':rd+' · '+MP.rate+'×'+rp;
+  $('mbRep').textContent='×'+S.rep;$('mbSpd').textContent=MP.rate+'×';$('mbR').hidden=Object.keys(MREC[PP.id]||{}).length<2;mppBtns()}
+/* the part's own Play button says Pause while that part plays */
+function mppBtns(){const key=PP.id+':'+PP.a+':'+PP.b,live=PP.on&&['prep','seek','play','gap'].includes(PP.st);
+  document.querySelectorAll('[data-mpart]').forEach(x=>{const on=live&&x.dataset.mpart===key,w=on?'Pause':'Play';if(x.dataset.lab!==w){x.dataset.lab=w;x.innerHTML=(on?IC_PAUSE:IC_PLAY)+w}})}
+$('mbPlay').onclick=()=>{maUnlock();if(PP.on)mppToggle();else if(PP.id)playPart(PP.id,PP.a,PP.b,PP.r,true)};
+$('mbRep').onclick=()=>{const r=[1,3,5,10];S.rep=r[(r.indexOf(S.rep)+1)%r.length];save();if(PP.n>=S.rep)PP.n=S.rep-1;mbarPaint();setPI();toast(S.rep===1?'Plays once':'Repeats '+S.rep+' times')};
+$('mbR').onclick=()=>{const rs=Object.keys(MREC[PP.id]);const r=rs[(rs.indexOf(PP.r)+1)%rs.length];S.mpos=S.mpos||{};S.mpos[PP.id]={r,f:0,t:0};save();toast(MREADERS[r][0]);playPart(PP.id,PP.a,PP.b,r,true)};
 $('mbClose').onclick=()=>mbarHide();
 $('mbSpd').onclick=()=>{const v=RATES[(RATES.indexOf(MP.rate)+1)%RATES.length];mRate(v);toast('Speed '+v+'×',1200)};
-MA.addEventListener('play',()=>{if(MA.playbackRate!==MP.rate)MA.playbackRate=MP.rate});MA.addEventListener('loadedmetadata',()=>{MA.playbackRate=MP.rate});
-$('mbAdj').onclick=()=>{if(!S.mdur||!S.mdur[MPP.id+':'+MPP.r]){toast('Play the part first');return}
-  sheet('<h2>Line up the recording</h2><p class="note">Timing is worked out from the text, so it can be a little early or late. Nudge it here. The app remembers, and nearby lines get more accurate too.</p><div class="field"><span>Start of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="s:-2">−2 s</button><button class="chip" data-adj="s:-0.5">−½ s</button><button class="chip" data-adj="s:0.5">+½ s</button><button class="chip" data-adj="s:2">+2 s</button></div></div><div class="field"><span>End of the part</span><div class="tools" style="justify-content:flex-start"><button class="chip" data-adj="e:-2">−2 s</button><button class="chip" data-adj="e:-0.5">−½ s</button><button class="chip" data-adj="e:0.5">+½ s</button><button class="chip" data-adj="e:2">+2 s</button></div></div><button class="btn wide" data-close>Done</button>');
-  $('panel').onclick=e=>{const x=e.target.closest('[data-adj]');if(!x)return;const[w,v]=x.dataset.adj.split(':'),c=mCum(MPP.id),ch=w==='s'?c[MPP.a]:c[MPP.b+1],t0=tAt(MPP.id,MPP.r,ch);setAnchor(MPP.id,MPP.r,ch,t0+(+v));
-    const ts=Math.max(0,tAt(MPP.id,MPP.r,c[MPP.a])-.4),te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3;MPP.ts=ts;MPP.te=te;MPP.on=true;MPP.count=0;mppSeek(w==='s'?ts:Math.max(ts,te-3),true);toast(w==='s'?'Start moved':'End moved — playing the last seconds')}};
+/* lock-screen play/pause go to whichever player is in use */
+if('mediaSession' in navigator){try{const ms=want=>{if(PP.on){if((want==='play')!==(PP.st==='play'))mppToggle();return}if(!PL.on&&MP.id&&MA.src&&!MA.src.startsWith('data:')){if(want==='play')MA.play().catch(()=>{});else MA.pause();return}$('pPlay').click()};
+  navigator.mediaSession.setActionHandler('play',()=>ms('play'));navigator.mediaSession.setActionHandler('pause',()=>ms('pause'))}catch(e){}}
+if(localStorage.getItem('hifz-test'))window.__H={PP,MA,MAL,MP,get S(){return S},mPrepare,AL};
 function mpCard(id){const R=MREC[id];if(!R)return '';const s=mpSel(id),L=R[s.r];
   return '<div class="card mplay" id="mpCard" style="margin:8px 0"><div class="row"><p class="lab" style="margin:0">'+esc(MREADERS[s.r][0])+'</p><span class="pill" id="mpSaved"></span></div>'
    +(L.length>1?'<label class="field" style="margin-top:8px"><span>Part</span><select id="mpTrack">'+L.map((u,i)=>'<option value="'+i+'"'+(i===s.f?' selected':'')+'>Part '+(i+1)+' of '+L.length+'</option>').join('')+'</select></label>':'')
    +'<div class="mpc"><button class="pb2" data-mps="-10" aria-label="Back 10 seconds">−10</button><button class="pp" data-mpp="1" id="mpPlay" aria-label="Play"><svg viewBox="0 0 24 24" id="mpIcon"><path d="M7 4l13 8-13 8z"/></svg></button><button class="pb2" data-mps="10" aria-label="Forward 10 seconds">+10</button><button class="pb2" data-mpx="1" id="mpRate">1×</button><button class="pb2" data-mpab="1" id="mpAB" aria-label="Loop a section">A–B</button></div>'
    +'<input type="range" id="mpSeek" min="0" max="1000" value="0" aria-label="Position"><div class="row mptime"><span id="mpCur">0:00</span><span id="mpABl"></span><span id="mpDur">–:–</span></div>'
    +'<div class="btns"><button class="btn sm ghost" data-mpsave="1" id="mpSave">Save for offline</button></div><p class="src">Plays from archive.org.</p></div>'}
-function mpPaint(light){const c=$('mpCard');if(!c||!mOpen)return;const on=MP.id===mOpen&&MA.src&&!MA.src.startsWith('data:')&&!MPP.on,playing=on&&!MA.paused;
+function mpPaint(light){const c=$('mpCard');if(!c||!mOpen)return;const on=MP.id===mOpen&&MA.src&&!MA.src.startsWith('data:')&&!PP.on,playing=on&&!MA.paused;
   $('mpIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mpPlay').setAttribute('aria-label',playing?'Pause':'Play');
   const d=on&&isFinite(MA.duration)?MA.duration:0,s=mpSel(mOpen),t=on?MA.currentTime:s.t;$('mpCur').textContent=fmtT(t);$('mpDur').textContent=d?fmtT(d):'–:–';
   const sk=$('mpSeek');if(sk&&document.activeElement!==sk)sk.value=d?Math.round(t/d*1000):0;
@@ -1360,9 +1628,9 @@ function mpPaint(light){const c=$('mpCard');if(!c||!mOpen)return;const on=MP.id=
   $('mpABl').textContent=MP.a!=null?(MP.b!=null?'Repeating '+fmtT(MP.a)+'–'+fmtT(MP.b):'A at '+fmtT(MP.a)+' · tap A–B at the end'):'';
   const sv=MP.saved[mOpen+':'+s.r];$('mpSaved').textContent=sv?'Saved offline ✓':'Streams online';$('mpSave').hidden=!!sv}
 async function mpSaveAll(){const id=mOpen,s=mpSel(id),L=MREC[id][s.r];let c;try{c=await caches.open(AC)}catch(e){toast('Offline saving isn’t available in this browser');return}
-  for(let i=0;i<L.length;i++){if(await c.match(L[i]))continue;toast('Saving '+(L.length>1?'part '+(i+1)+' of '+L.length:'the recording')+'… keep the app open',60000);
-    try{const r=await fetch(L[i],{mode:'cors'});if(!r.ok)throw 0;await c.put(L[i],r)}catch(e){toast('Couldn’t save it. It will still play online.',4000);mpRefreshSaved(id);return}}
-  toast('Saved for offline ✓',3000);mpRefreshSaved(id)}
+  for(let i=0;i<L.length;i++){if(await c.match(L[i]))continue;const lab='Saving '+(L.length>1?'part '+(i+1)+' of '+L.length:'the recording');toast(lab+'… keep the app open',60000);
+    try{let last=0;await mFile(L[i],p=>{const q=Math.round(p*100);if(q>=last+5){last=q;toast(lab+' · '+q+'%… keep the app open',60000)}})}catch(e){toast('Couldn’t save it. It will still play online.',4000);mpRefreshSaved(id);return}}
+  toast('Saved for offline ✓',3000);mpRefreshSaved(id);mPrepare(id,s.r).catch(()=>{})}
 $('v-mutun').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
   if(d.mpp){mpToggle();return}
   if(d.mps){if(MP.id===mOpen&&MA.src){MA.currentTime=Math.max(0,MA.currentTime+(+d.mps))}return}
@@ -1481,7 +1749,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v23';
+const APPV='v24';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
