@@ -16,3 +16,9 @@ A phone-first, offline web app for memorizing the Qur'an page by page (604-page 
 - Hadith and scholars' words were checked against al-Maktabah al-Shāmilah.
 
 `index.src.html` is the source; `build.py` fills in the surah names and verses to produce `index.html`.
+
+## Qur'an AI recitation checker
+Optional, downloaded once from Settings (about 105 MB) and run on the phone:
+- Model: [tarteel-ai/whisper-base-ar-quran](https://huggingface.co/tarteel-ai/whisper-base-ar-quran) (Apache-2.0), ONNX export by aaqibhabib, loaded from Hugging Face.
+- Runtime: Transformers.js (Apache-2.0) and ONNX Runtime Web (MIT), bundled in `ai/`.
+- `data/qsimple.json`: Tanzil's simple-script Qur'an text (tanzil.net, used verbatim with attribution), word-aligned to the Uthmani text by `build_ai.py` so the model can double-check a word before calling it a mistake.
