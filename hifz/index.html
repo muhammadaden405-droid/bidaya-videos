@@ -1249,14 +1249,53 @@ function mCum(id){const D=MD[id];if(D.cum)return D.cum;const c=[];let pos=D.pre|
 function mDurs(id,r){S.mdur=S.mdur||{};const k=id+':'+r;if(S.mdur[k])return Promise.resolve(S.mdur[k]);
   return Promise.all(MREC[id][r].map(u=>new Promise(res=>{const a=new Audio();a.preload='metadata';let done=false;const fin=v=>{if(!done){done=true;res(v||0)}};a.onloadedmetadata=()=>fin(a.duration);a.onerror=()=>fin(0);setTimeout(()=>fin(0),20000);
     caches.open(AC).then(c=>c.match(u)).then(m=>m?m.blob():null).catch(()=>null).then(b=>{a.src=b?URL.createObjectURL(b):u})}))).then(ds=>{if(ds.every(x=>x>0&&isFinite(x))){S.mdur[k]=ds;save()}return ds})}
-function tAt(id,r,ch){const ds=S.mdur[id+':'+r],c=mCum(id),T=c[c.length-1],D=ds.reduce((x,y)=>x+y,0),P=[[0,0],...(((S.anch||{})[id+':'+r])||[]),[T,D]].sort((x,y)=>x[0]-y[0]);
+function tAt(id,r,ch){const M=S.mlt&&S.mlt[id+':'+r];if(M){const c=mCum(id);let lo=0,hi=c.length-1;while(lo<hi){const md=(lo+hi+1)>>1;if(c[md]<=ch)lo=md;else hi=md-1}
+  if(M.on[lo]!=null){if(lo+1<c.length&&M.on[lo+1]!=null){const end=M.off[lo+1]!=null&&M.off[lo+1]>M.on[lo]?M.off[lo+1]:M.on[lo+1];return M.on[lo]+(ch-c[lo])/((c[lo+1]-c[lo])||1)*(end-M.on[lo])}return M.on[lo]}}return tEst(id,r,ch)}
+function tEst(id,r,ch){const ds=S.mdur[id+':'+r],c=mCum(id),T=c[c.length-1],D=ds.reduce((x,y)=>x+y,0),P=[[0,0],...(((S.anch||{})[id+':'+r])||[]),[T,D]].sort((x,y)=>x[0]-y[0]);
   for(let k=1;k<P.length;k++)if(ch<=P[k][0]){const[a0,t0]=P[k-1],[a1,t1]=P[k];return t0+(a1>a0?(ch-a0)/(a1-a0)*(t1-t0):0)}return D}
 function setAnchor(id,r,ch,t){S.anch=S.anch||{};const k=id+':'+r;let A=(S.anch[k]||[]).filter(([c,x])=>c!==ch&&!(c<ch&&x>=t)&&!(c>ch&&x<=t));A.push([ch,Math.max(0,t)]);A.sort((x,y)=>x[0]-y[0]);S.anch[k]=A;save()}
 function g2f(ds,g){let s=0;for(let f=0;f<ds.length;f++){if(g<s+ds[f]||f===ds.length-1)return[f,Math.max(0,g-s)];s+=ds[f]}return[0,0]}
 const fStart=(ds,f)=>ds.slice(0,f).reduce((x,y)=>x+y,0);
 async function playPart(id,a,b,r){maUnlock();if(!MD[id])await loadMatn(id);MPP.on=true;MPP.id=id;MPP.a=a;MPP.b=b;MPP.r=r||mpSel(id).r;MPP.count=0;mbarShow();$('mbName').textContent='Loading the recording…';
   const ds=await mDurs(id,MPP.r);if(!ds.every(x=>x>0)){MPP.on=false;toast(navigator.onLine?'Couldn’t load the recording. Try again.':'You’re offline and this recording isn’t saved.');mbarPaint();return}
-  const c=mCum(id);MPP.ts=Math.max(0,tAt(id,MPP.r,c[a])-.4);MPP.te=tAt(id,MPP.r,c[b+1])+.3;mppSeek(MPP.ts,true)}
+  mppEst();mppSnap();mppSeek(MPP.ts,true);mppAnalyze()}
+function mppEst(){const c=mCum(MPP.id);MPP.ts=Math.max(0,tAt(MPP.id,MPP.r,c[MPP.a])-.4);MPP.te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3}
+/* the reader's pauses, found once per recording file, line the text up with the real speech */
+const mpzBusy=new Set();
+function mPauses(id,r){const ds=S.mdur&&S.mdur[id+':'+r];if(!ds||!S.mpz)return null;const P=[];let any=false;
+  MREC[id][r].forEach((u,f)=>{const z=S.mpz[u];if(!z||!z.length)return;any=true;const o=fStart(ds,f);for(let i=0;i+1<z.length;i+=2)P.push([z[i]+o,z[i+1]+o])});return any?P:null}
+/* line the whole text up with the reader's pauses: the pattern of short and long gaps has to match the pattern of short and long lines */
+function mAlign(id,r){const k=id+':'+r,P=mPauses(id,r);if(!P||P.length<3)return false;const t0=performance.now();
+  const c=mCum(id),n=c.length,B=new Float64Array(n);for(let i=0;i<n;i++)B[i]=tEst(id,r,c[i]);
+  const lo=P[0][1]-30,hi=P[P.length-1][1]+30;let i0=0;while(i0<n-1&&B[i0]<lo)i0++;let i1=n-1;while(i1>i0&&B[i1]>hi)i1--;
+  const m=P.length,Q=P.map(p=>p[1]),O=P.map(p=>p[0]),N=i1-i0+1,INF=1e18,dp=new Float64Array(N*m).fill(INF),bk=new Int32Array(N*m).fill(-1),band=Math.max(40,Math.round(m/N*8)+25);
+  for(let i=0;i<N;i++){const jm=Math.round((B[i0+i]-B[i0])/((B[i1]-B[i0])||1)*(m-1)),ja=Math.max(0,jm-band),jb=Math.min(m-1,jm+band);
+    for(let j=ja;j<=jb;j++){let best=i<3&&j<8?Math.abs(Q[j]-B[i0+i])*.3+2.5*i:INF,bi=-1;
+      for(let di=1;di<=3&&i-di>=0;di++)for(let dj=1;dj<=4&&j-dj>=0;dj++){const pv=dp[(i-di)*m+j-dj];if(pv>=INF)continue;
+        const v=pv+Math.abs((Q[j]-Q[j-dj])-(B[i0+i]-B[i0+i-di]))+2.5*(di-1)+.8*(dj-1);if(v<best){best=v;bi=(i-di)*m+j-dj}}
+      dp[i*m+j]=best;bk[i*m+j]=bi}}
+  let e=-1,ev=INF;for(let i=Math.max(0,N-3);i<N;i++)for(let j=0;j<m;j++){const v=dp[i*m+j]+2.5*(N-1-i);if(v<ev){ev=v;e=i*m+j}}if(e<0)return false;
+  const on=new Array(n).fill(null),off=new Array(n).fill(null);let x=e,hit=0;while(x>=0){const i=Math.floor(x/m),j=x%m;on[i0+i]=Q[j];off[i0+i]=O[j];hit++;x=bk[x]}
+  let pv=-1;for(let i=i0;i<=i1;i++){if(on[i]==null)continue;if(pv>=0)for(let g=pv+1;g<i;g++){on[g]=on[pv]+(B[g]-B[pv])/((B[i]-B[pv])||1)*(on[i]-on[pv]);off[g]=on[g]-.3}pv=i}
+  const r2=v=>v==null?null:Math.round(v*100)/100;S.mlt=S.mlt||{};S.mlt[k]={on:on.map(r2),off:off.map(r2)};save();
+  dlog('matn lined up: '+hit+' of '+N+' lines matched to pauses · '+Math.round(performance.now()-t0)+' ms');return true}
+function mppSnap(){const M=S.mlt&&S.mlt[MPP.id+':'+MPP.r];if(!M||M.on[MPP.a]==null)return false;
+  MPP.ts=Math.max(M.off[MPP.a]!=null?M.off[MPP.a]+.05:0,M.on[MPP.a]-.3);const e=M.off[MPP.b+1]!=null?M.off[MPP.b+1]:M.on[MPP.b+1];if(e!=null)MPP.te=e+.25;return true}
+async function mPauseMap(u,dur){S.mpz=S.mpz||{};if(S.mpz[u])return S.mpz[u];const t0=performance.now();
+  const c=await caches.open(AC);let m=await c.match(u);if(!m){const r=await fetch(u);if(!r.ok)throw new Error('download '+r.status);await c.put(u,r.clone());m=await c.match(u)||r}
+  const blob=await m.blob();let oc;try{oc=new OfflineAudioContext(1,1,16000)}catch(e){oc=new OfflineAudioContext(1,1,44100)}
+  const CH=2*1024*1024,hop=.02,out=[];let t=0,run=0,rs=0;
+  for(let o=0;o<blob.size;o+=CH){const buf=await oc.decodeAudioData(await blob.slice(o,Math.min(blob.size,o+CH)).arrayBuffer());
+    const x=buf.getChannelData(0),sr=buf.sampleRate,hs=Math.round(sr*hop),db=[];for(let i=0;i+hs<=x.length;i+=hs){let q=0;for(let k=i;k<i+hs;k++)q+=x[k]*x[k];db.push(10*Math.log10(q/hs+1e-12))}
+    const so=db.slice().sort((a,b)=>a-b),nz=so[Math.floor(so.length*.1)],sp=so[Math.floor(so.length*.9)],thr=nz+Math.max(8,.35*(sp-nz));
+    for(let i=0;i<db.length;i++){const tt=t+i*hop;if(db[i]<thr){if(!run)rs=tt;run++}else{if(run*hop>=.22)out.push(rs,tt);run=0}}
+    t+=x.length/sr}
+  const k=dur&&t?dur/t:1;S.mpz[u]=out.map(v=>Math.round(v*k*100)/100);save();
+  dlog('matn timing: '+Math.round(t/60)+' min analysed, '+out.length/2+' pauses, '+Math.round(performance.now()-t0)+' ms');return S.mpz[u]}
+function mppAnalyze(){const id=MPP.id,r=MPP.r,ds=S.mdur[id+':'+r];if(!ds)return;if(S.mlt&&S.mlt[id+':'+r])return;const L=MREC[id][r].length,f0=L<=3?0:g2f(ds,MPP.ts)[0],f1=L<=3?L-1:g2f(ds,MPP.te)[0];
+  for(let f=f0;f<=f1;f++){const u=MREC[id][r][f];if((S.mpz&&S.mpz[u])||mpzBusy.has(u))continue;mpzBusy.add(u);
+    if(!S.mpzTip){S.mpzTip=1;save();toast('Lining the text up with this recording (once). The highlight gets exact in a moment.',4000)}
+    mPauseMap(u,ds[f]).then(()=>{if(MREC[id][r].every(v=>S.mpz&&S.mpz[v]&&S.mpz[v].length)||MREC[id][r].length>3)mAlign(id,r);if(MPP.id===id&&MPP.r===r){mppSnap();MPP.cur=-2}}).catch(e=>{dlog('matn timing failed: '+(e&&e.message||e));S.mpz=S.mpz||{};S.mpz[u]=[];save()}).finally(()=>mpzBusy.delete(u))}}
 function mppSeek(g,play){const ds=S.mdur[MPP.id+':'+MPP.r],[f,lt]=g2f(ds,g);
   if(MP.id!==MPP.id||MP.r!==MPP.r||MP.f!==f||!MA.src||MA.src.startsWith('data:'))mpLoad(MPP.id,MPP.r,f,lt,play);else{MA.currentTime=lt;if(play)MA.play().catch(()=>{})}}
 let mpLast=0;
@@ -1267,14 +1306,14 @@ MA.addEventListener('play',()=>{mpPaint();mbarPaint()});MA.addEventListener('pau
 MA.addEventListener('ended',()=>{if(MA.src.startsWith('data:'))return;const L=MREC[MP.id][MP.r];if(MP.f+1<L.length)mpLoad(MP.id,MP.r,MP.f+1,0,true);else{if(!MPP.on){S.mpos[MP.id]={r:MP.r,f:0,t:0};save()}MPP.on=false;mpPaint();mbarPaint()}});
 function mbarShow(){$('player').classList.remove('on');$('mbar').classList.add('on')}
 function mbarHide(){$('mbar').classList.remove('on');MPP.on=false;if(!MA.paused)MA.pause();mppMark(-1)}
-function mppMark(li){document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));MPP.cur=li;if(li<0)return;let vis=null;
+function mppMark(li){document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));MPP.cur=li;if(li<0)return;if(S.dbg){const ds=S.mdur&&S.mdur[MPP.id+':'+MPP.r];if(ds)dlog('hl '+li+' at '+(fStart(ds,MP.f)+MA.currentTime).toFixed(2)+(MPP.L?' snapped':' estimate'))}let vis=null;
   document.querySelectorAll('[data-k="'+MPP.id+':'+li+'"]').forEach(e=>{e.classList.add('playing');if(e.offsetParent)vis=e});
   if(vis){const r=vis.getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-170)vis.scrollIntoView({block:'center',behavior:'smooth'})}}
-function mppLine(g){const c=mCum(MPP.id);let li=MPP.a;for(let i=MPP.a;i<=MPP.b;i++){if(tAt(MPP.id,MPP.r,c[i])<=g+.3)li=i;else break}if(li!==MPP.cur)mppMark(li)}
+function mppLine(g){let li=MPP.a;const c=mCum(MPP.id);for(let i=MPP.a;i<=MPP.b;i++){if(tAt(MPP.id,MPP.r,c[i])<=g+.05)li=i;else break}if(li!==MPP.cur)mppMark(li)}
 let mppRaf=0;function mppLoop(){cancelAnimationFrame(mppRaf);const step=()=>{if(MA.paused||!MPP.on||MP.id!==MPP.id||MP.r!==MPP.r)return;const ds=S.mdur&&S.mdur[MPP.id+':'+MPP.r];if(ds)mppLine(fStart(ds,MP.f)+MA.currentTime);mppRaf=requestAnimationFrame(step)};mppRaf=requestAnimationFrame(step)}
 /* tap the line the reader has just started: the timing snaps to it and is remembered for this recording */
 function mppSync(li){const ds=S.mdur[MPP.id+':'+MPP.r];if(!ds)return;const c=mCum(MPP.id),g=fStart(ds,MP.f)+MA.currentTime;setAnchor(MPP.id,MPP.r,c[li],Math.max(0,g-.2));
-  MPP.te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3;MPP.cur=-2;mppMark(li);toast('Lined up with line '+(li+1)+' ✓ The app remembers',1800)}
+  const M=S.mlt&&S.mlt[MPP.id+':'+MPP.r];if(M){const d=Math.max(0,g-.2)-M.on[li];for(let i=li;i<=MPP.b+1&&i<M.on.length;i++){if(M.on[i]!=null)M.on[i]+=d;if(M.off[i]!=null&&i>li)M.off[i]+=d}save()}if(!mppSnap())MPP.te=tAt(MPP.id,MPP.r,c[MPP.b+1])+.3;MPP.cur=-2;mppMark(li);toast('Lined up with line '+(li+1)+' ✓ The app remembers',1800)}
 document.addEventListener('click',e=>{if(!MPP.on||MA.paused||MP.id!==MPP.id||e.target.closest('button'))return;const el=e.target.closest('[data-k]');if(!el)return;const[id,li]=el.dataset.k.split(':');if(id!==MPP.id)return;e.stopPropagation();e.preventDefault();mppSync(+li)},true);
 function mbarPaint(light){if(!$('mbar').classList.contains('on')||!MPP.id)return;const b=mInfo(MPP.id),playing=!MA.paused&&MP.id===MPP.id;
   $('mbIcon').innerHTML=playing?'<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>':'<path d="M7 4l13 8-13 8z"/>';$('mbPlay').setAttribute('aria-label',playing?'Pause':'Play');
@@ -1424,7 +1463,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v18';
+const APPV='v19';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifz diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
