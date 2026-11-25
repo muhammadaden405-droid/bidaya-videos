@@ -72,7 +72,9 @@ M = WhisperModel("small.en", device="cpu", compute_type="int8")
 norm = lambda s: re.sub(r"[^a-z0-9' ]", " ", s.lower().replace("musa", "moosa")).split()
 rows, bad = [], 0
 for p, i, who, text in D["lines"]:
-    seg, _ = M.transcribe(os.path.join(OUT, f"{i}.wav"), beam_size=5, initial_prompt="Musa, Allah, Prophet")
+    from scipy.signal import resample_poly
+    _w = wave.open(os.path.join(OUT, f"{i}.wav")); _x = np.frombuffer(_w.readframes(_w.getnframes()), np.int16).astype(np.float32) / 32768
+    seg, _ = M.transcribe(resample_poly(_x, 2, 3).astype(np.float32), beam_size=5, initial_prompt="Musa, Allah, Prophet")
     heard = " ".join(s.text.strip() for s in seg)
     a, b = norm(text), norm(heard)
     ok = [w for w in a if w not in ("moosa", "allah")] == [w for w in b if w not in ("moosa", "moose", "musa", "allah", "allah's")] or a == b
