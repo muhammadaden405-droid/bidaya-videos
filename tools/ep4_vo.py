@@ -9,11 +9,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = json.load(open(os.path.join(ROOT, "tools/ep4_lines.json")))
 OUT = os.path.join(ROOT, "public/ep4/vo"); os.makedirs(OUT, exist_ok=True)
 KEY = os.environ["GEMINI_API_KEY"]; SR = 24000; BATCH = 6
+TAG = {"N": "[fast, intense, steady storyteller]", "NE": "[loud raw grief]", "P": "[firm, angry]", "OLD": "[hoarse, weak, slow]"}
 URL = f"https://generativelanguage.googleapis.com/v1beta/models/{D['model']}:generateContent?key={KEY}"
 
 def tts(text, who):
-    body = {"systemInstruction": {"parts": [{"text": D["style"][who]}]},
-            "contents": [{"parts": [{"text": text}]}],
+    body = {"contents": [{"parts": [{"text": TAG[who] + " " + text}]}],
             "generationConfig": {"responseModalities": ["AUDIO"],
                 "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": D["voices"][who]}}}}}
     for attempt in range(3):
