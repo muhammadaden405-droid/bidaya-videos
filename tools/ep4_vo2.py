@@ -105,6 +105,9 @@ def cut(name, lines, x):
         s0, e0, r = b
         c = [rs for rs, re in runs if rs >= prev_end - 0.01 and s0 - 0.8 <= rs <= s0 + 0.6]
         ns = min(c, key=lambda t: abs(t - s0)) if c else s0
+        lo = 0.015 * np.percentile(env0, 95); q = int(ns * SR)  # keep soft word starts ("And", "Allah")
+        while q > int(max(prev_end, ns - 0.3) * SR) and env0[q] > lo: q -= int(0.005 * SR)
+        ns = q / SR
         c = [re for rs, re in runs if re > ns + 0.05 and e0 - 0.5 <= re <= e0 + 0.6]
         ne = min(c, key=lambda t: abs(t - e0)) if c else e0
         best[k] = (ns, max(ne, ns + 0.1), r); prev_end = best[k][1]

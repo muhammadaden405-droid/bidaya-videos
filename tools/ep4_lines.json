@@ -29,7 +29,7 @@
    "1",
    "N1_03",
    "N",
-   "And everyone says his family did it."
+   "And now his family is accused of murder."
   ],
   [
    "1",
@@ -84,30 +84,6 @@
    "N1_10",
    "N",
    "And why?"
-  ],
-  [
-   "1",
-   "N1_11",
-   "N",
-   "What they don't know: the killer carried him here in the dark."
-  ],
-  [
-   "1",
-   "N1_12",
-   "N",
-   "He didn't bury him. He didn't hide him."
-  ],
-  [
-   "1",
-   "N1_13",
-   "N",
-   "He left him at another man's door."
-  ],
-  [
-   "1",
-   "N1_14",
-   "N",
-   "Why would a killer do that?"
   ],
   [
    "1",
@@ -185,7 +161,7 @@
    "2",
    "N33",
    "N",
-   "They carry the body to him."
+   "They bring the case to him."
   ],
   [
    "2",
@@ -269,7 +245,7 @@
    "3",
    "N45b",
    "N",
-   "And the answer makes them furious."
+   "And the answer shocks them."
   ],
   [
    "3",
@@ -323,7 +299,7 @@
    "3",
    "N57",
    "N",
-   "Anger spreads from face to face."
+   "Shock spreads from face to face."
   ],
   [
    "3",
@@ -671,7 +647,7 @@
    "5",
    "N108",
    "N",
-   "They drag him to Musa."
+   "They take him to Musa."
   ],
   [
    "5",
@@ -885,6 +861,12 @@
   ],
   [
    "7",
+   "N142b",
+   "N",
+   "Allah brings him back to life."
+  ],
+  [
+   "7",
    "N143",
    "N",
    "Musa asks him: Who killed you?"
@@ -911,7 +893,7 @@
    "7",
    "N144",
    "N",
-   "The man who blamed his neighbours..."
+   "The man who blamed that family..."
   ],
   [
    "7",
@@ -1298,15 +1280,44 @@
    "N25",
    "N",
    "And hands reach for weapons."
+  ],
+  [
+   "1",
+   "N1_11",
+   "N",
+   "What they don't know: the killer carried him here in the dark."
+  ],
+  [
+   "1",
+   "N1_12",
+   "N",
+   "He didn't bury him. He didn't hide him."
+  ],
+  [
+   "1",
+   "N1_13",
+   "N",
+   "He left him at another man's door."
+  ],
+  [
+   "1",
+   "N1_14",
+   "N",
+   "Why would a killer do that?"
   ]
  ],
  "changed": {
   "N45": "A murder. No witnesses. No one talking.",
-  "N45b": "So they ask Musa to ask his Lord.",
+  "N45b": "And the answer makes them furious.",
   "N89a": "One cow can expose a killer.",
   "N89b": "Now they have to find it.",
   "N78": "How many cows like that could there be?",
   "N88": "But does a cow like that even exist?",
-  "N159": "No witness. No confession. Allah brought the truth out, from the mouth of a dead man."
+  "N159": "No witness. No confession. Allah brought the truth out, from the mouth of a dead man.",
+  "N1_03": "And everyone says his family did it.",
+  "N33": "They carry the body to him.",
+  "N57": "Anger spreads from face to face.",
+  "N108": "They drag him to Musa.",
+  "N144": "The man who blamed his neighbours..."
  }
 }

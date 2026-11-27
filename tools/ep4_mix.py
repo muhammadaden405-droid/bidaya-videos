@@ -7,8 +7,8 @@ import numpy as np
 sys.argv = sys.argv[:1] + [a for a in sys.argv[1:]]
 import ep4_vo2 as V
 SR = V.SR
-CAP_PRE, CAP_POST = 0.08, 0.22  # most a natural gap can be: 0.30 s
-LONG = {"N1_01": .3, "N1_03": .4, "N1_08": .5, "N1_11": .3, "N1_15": .4, "N1_17": .3, "N23": .5, "N39": .5, "N43": .4, "N44": .6, "N48": .5, "N54": .4,
+CAP_PRE, CAP_POST = 0.10, 0.22  # most a natural gap can be: 0.30 s
+LONG = {"N1_01": .3, "N1_03": .4, "N1_08": .5, "N1_11": .3, "N1_17": .3, "N142b": .4, "N23": .5, "N39": .5, "N43": .4, "N44": .6, "N48": .5, "N54": .4,
         "N55": .4, "N66": .6, "N81": .3, "N88": .6, "N87b": .3, "N68b": .2, "N91": .3, "N96": .4, "N116": .6, "N130": .4, "N137": .4, "N141": .6,
         "N143": .4, "N143b": 1.6, "OLD1": .8, "N147": .5, "N147a": .5, "N148": .4, "N159": .3}
 T = V.takes(); tl = json.load(open(os.path.join(V.OUT, "timeline.json"))) if os.path.exists(os.path.join(V.OUT, "timeline.json")) else {}
@@ -38,7 +38,8 @@ for p in (sys.argv[1:] or "1234567"):
         starts.append([l[1], round(t, 2)]); out.append(y); t += len(y) / SR
         g = LONG.get(l[1], 0.3 if l[3].rstrip().endswith("?") else 0)  # a beat after every question
         if g: out.append(np.zeros(int(g * SR))); t += g
-    y = np.concatenate(out); on = np.argmax(np.abs(y) > 400); y = y[max(0, on - int(.02 * SR)):]  # speak from frame one
+    y = np.concatenate(out); on = max(0, int(np.argmax(np.abs(y) > 400)) - int(.02 * SR)); y = y[on:]  # speak from frame one
+    starts = [[i, round(max(0.0, s - on / SR), 2)] for i, s in starts]
     f = int(.01 * SR); y[:f] *= np.linspace(0, 1, f); y[-4 * f:] *= np.linspace(1, 0, 4 * f)
     tmp = os.path.join(V.OUT, f"_raw{p}.wav"); V.wr(tmp, np.clip(y, -32767, 32767))
     import subprocess  # even, phone-friendly loudness: TikTok level, gentle compression
