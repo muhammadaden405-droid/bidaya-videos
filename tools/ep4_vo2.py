@@ -14,6 +14,8 @@ SR = 24000
 STYLE = {
     "N": "Tell this story in your own natural voice, like an engaging storyteller, at a calm, unhurried pace, "
          "with a short pause between lines. Say Musa as Moo-saa and Allah as Allaah.",
+    "N_slow": "Tell this story in your own natural voice, like an engaging storyteller. Speak slowly and clearly, about three words a second. "
+         "Let each short sentence land, a little quicker in the action, slower on the dramatic lines. Say Musa as Moo-saa and Allah as Allaah.",
     "NE": "A young man of about 25, plain American accent. The first two lines he is wailing over his uncle's body; "
           "the last two he is still crying but speaking clearly to the Prophet. It is the same man the whole time, same voice. "
           "Real grief, not theatrical. Pause between lines.",
@@ -33,7 +35,7 @@ def takes():
 def tts(name, lines):
     key = os.environ["GEMINI_API_KEY"]; who = lines[0][2]
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{D['model']}:generateContent?key={key}"
-    text = STYLE[who] + "\n\n" + "\n".join(l[3] for l in lines)
+    text = STYLE[os.environ.get("STYLE_N", who) if who == "N" else who] + "\n\n" + "\n".join(l[3] for l in lines)
     body = {"contents": [{"parts": [{"text": text}]}],
             "generationConfig": {"responseModalities": ["AUDIO"],
                 "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE[who]}}}}}
@@ -85,6 +87,27 @@ def cut(name, lines, x):
             mi = [i for i in idx if i in m and m[i] in hits]  # widen for unmatched first/last words
             s0 -= 0.32 * idx.index(mi[0]); e0 += 0.32 * (len(idx) - 1 - idx.index(mi[-1]))
             if best[k] is None or r > best[k][2]: best[k] = (s0, e0, r)
+    # snap Whisper's times to where the voice really starts and stops (its timings can be ~0.5 s off)
+    env0 = np.convolve(np.abs(x.astype(np.float32)), np.ones(480) / 480, "same")
+    v = env0 > 0.06 * np.percentile(env0, 95); runs = []; i = 0; n = len(v)
+    while i < n:
+        if v[i]:
+            j = i
+            while j < n and v[j]: j += 1
+            if runs and i - runs[-1][1] < int(0.12 * SR): runs[-1][1] = j
+            else: runs.append([i, j])
+            i = j
+        else: i += 1
+    runs = [(a / SR, b / SR) for a, b in runs if b - a > int(0.05 * SR)]
+    prev_end = 0.0
+    for k, b in enumerate(best):
+        if not b: continue
+        s0, e0, r = b
+        c = [rs for rs, re in runs if rs >= prev_end - 0.01 and s0 - 0.8 <= rs <= s0 + 0.6]
+        ns = min(c, key=lambda t: abs(t - s0)) if c else s0
+        c = [re for rs, re in runs if re > ns + 0.05 and e0 - 0.5 <= re <= e0 + 0.6]
+        ne = min(c, key=lambda t: abs(t - e0)) if c else e0
+        best[k] = (ns, max(ne, ns + 0.1), r); prev_end = best[k][1]
     hw = []; span = []
     for k, b in enumerate(best):  # store times directly as pseudo-words
         if b: hw += [(b[0], b[0], ""), (b[1], b[1], "")]; span.append((len(hw) - 2, len(hw) - 1, b[2]))
