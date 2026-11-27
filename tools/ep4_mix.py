@@ -40,6 +40,18 @@ for p in (sys.argv[1:] or "1234567"):
         if g: out.append(np.zeros(int(g * SR))); t += g
     y = np.concatenate(out); on = max(0, int(np.argmax(np.abs(y) > 400)) - int(.02 * SR)); y = y[on:]  # speak from frame one
     starts = [[i, round(max(0.0, s - on / SR), 2)] for i, s in starts]
+    # the hook: no pause longer than 0.12 s in the first 6 seconds (inside lines too)
+    ev = np.convolve(np.abs(y), np.ones(240) / 240, "same"); quiet_ = ev < 0.02 * np.percentile(ev, 95)
+    keep = np.ones(len(y), bool); k = 0; H = int(6 * SR); runs_ = []
+    while k < min(H, len(y)):
+        if quiet_[k]:
+            j = k
+            while j < len(y) and quiet_[j]: j += 1
+            if j - k > int(.2 * SR): keep[k + int(.06 * SR): j - int(.06 * SR)] = False
+            k = j
+        else: k += 1
+    cum = np.cumsum(~keep) / SR; y = y[keep]
+    starts = [[i, round(s - cum[min(len(cum) - 1, int(s * SR))], 2)] for i, s in starts]
     f = int(.01 * SR); y[:f] *= np.linspace(0, 1, f); y[-4 * f:] *= np.linspace(1, 0, 4 * f)
     tmp = os.path.join(V.OUT, f"_raw{p}.wav"); V.wr(tmp, np.clip(y, -32767, 32767))
     import subprocess  # even, phone-friendly loudness: TikTok level, gentle compression
