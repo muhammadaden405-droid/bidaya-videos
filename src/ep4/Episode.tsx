@@ -32,7 +32,7 @@ const SCENES: Cue[] = [
   { C: Family, from: lf("N36"), to: lf("N37") },
   { C: Silence, from: lf("N37"), to: pe(2), props: { flareAt: "N37", cuts: ["N39", "N40", "N41", "N42", "N43", "N44"] } },
   // Part 3
-  { C: Silence, from: ps(3), to: lf("N52"), props: { flareAt: "N45b", cuts: ["N45b", "N47", "N50", "N51"] } },
+  { C: Silence, from: ps(3), to: lf("N52"), props: { flareAt: "N45b", cuts: ["N45b", "N47", "N48"] } },
   { C: Answer, from: lf("N52"), to: lf("N62") },
   { C: AnyCow, from: lf("N62"), to: pe(3) },
   // Part 4
@@ -64,11 +64,8 @@ const SFX: Sfx[] = [];
 for (const c of SCENES) if (c.from > 0 && !P.some((p) => p.start === c.from)) SFX.push({ src: lib("short-video-whoosh-01"), from: c.from - 3, len: 30, vol: 0.14 });
 for (const p of P) if (p.n < 7) SFX.push(one("impact-slam-35", V.lines[p.lastLine].f1 + 4, 0.5, 40, 10));
 SFX.push(
-  one("door-creak-01", 2, 0.35, 40, 10), one("crowd-ooh-01", lf("N1_03"), 0.16, 60),
-  bed("angry-crowd-01", lf("N1_04"), lf("N1_06"), 0.09), bed("night-ambience-01", lf("N1_15"), lf("N1_16"), 0.14),
-  one("horror-wind-whisper-04", lf("N1_15"), 0.1, 70), one("horror-heartbeat-34", lf("N1_16"), 0.22, 70),
-  bed("angry-crowd-01", lf("N1_17"), pe(1) - 40, 0.1), one("steel-spike-scrape-01", lf("N1_19") + 4, 0.28, 40), one("chainmail-01", lf("N1_19") + 8, 0.2, 40),
-  bed("angry-crowd-01", ps(2), lf("N31"), 0.08), one("steel-spike-scrape-01", ps(2) + 2, 0.22, 40),
+  one("door-creak-01", 2, 0.35, 40, 10), one("crowd-ooh-01", lf("N1_03"), 0.16, 60), bed("night-ambience-01", lf("N1_15"), lf("N1_16"), 0.14),
+  one("horror-wind-whisper-04", lf("N1_15"), 0.1, 70), one("horror-heartbeat-34", lf("N1_16"), 0.22, 70), one("steel-spike-scrape-01", lf("N1_19") + 4, 0.28, 40), one("chainmail-01", lf("N1_19") + 8, 0.2, 40), one("steel-spike-scrape-01", ps(2) + 2, 0.22, 40),
   one("own-air-swell", lf("N31") - 10, 0.16, 90, 40), bed("footsteps-stone-01", lf("N33"), lf("N35"), 0.18),
   one("own-air-swell", lf("N37") - 6, 0.16, 80, 40), bed("daily-20260923-hushed-crowd-walla-short", lf("N37"), lf("N39"), 0.06), one("horror-heartbeat-34", lf("N42"), 0.18, 80),
   one("own-air-swell", lf("N52") - 8, 0.2, 90, 40), one("crowd-groan-01", lf("N57"), 0.18, 60), one("cow-moo-a", lf("N62") + 10, 0.22, 70),
@@ -92,12 +89,19 @@ const vol = (s: Sfx) => (f: number) => {
 };
 
 // ───────── on-screen text ─────────
+const nextF = (id: string) => { const f0 = V.lines[id].f0; let b = Infinity; for (const l of Object.values(V.lines)) if (l.f0 > f0 && l.f0 < b) b = l.f0; return b; };
+const BIG: [number, number][] = [
+  [lf("N1_15"), lf("N1_16")], [lf("N42"), lf("N44") - 2], [lf("N54"), lf("N57") - 2],
+  ...["N68b", "N78", "N87b"].map((id) => [lf(id) - 2, nextF(id) - 2] as [number, number]),
+  [lf("N95"), lf("N96") - 2], [lf("N97"), lf("N99")], [lf("N101"), lf("N106") + 25], [lf("N133"), lf("N137") + 40],
+  [lf("N142b") + 8, lf("N143") - 4], [lf("N147"), lf("N148") - 2], [lf("N158"), lf("N159")],
+];
 const Captions: React.FC = () => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const v = height > width;
   const cap = V.caps.find((c) => frame >= c.from && frame < c.to);
-  if (!cap || (frame >= lf("N143a") && frame < lf("OLD1"))) return null;
+  if (!cap || (frame >= lf("N143a") && frame < lf("OLD1")) || BIG.some(([a, b]) => frame >= a && frame < b)) return null;
   const pop = interpolate(frame, [cap.from, cap.from + 5], [0.86, 1], clamp);
   return (
     <div style={{ position: "absolute", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", ...(v ? { top: "70%" } : { bottom: 64 }) }}>

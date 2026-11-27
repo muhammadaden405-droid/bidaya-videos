@@ -255,18 +255,6 @@
   ],
   [
    "3",
-   "N50",
-   "N",
-   "The accused family can't look up."
-  ],
-  [
-   "3",
-   "N51",
-   "N",
-   "And somewhere in the crowd, the killer waits too."
-  ],
-  [
-   "3",
    "N52",
    "N",
    "Then the answer comes."
@@ -1304,6 +1292,18 @@
    "N152",
    "N",
    "Nearly started a war."
+  ],
+  [
+   "3",
+   "N50",
+   "N",
+   "The accused family can't look up."
+  ],
+  [
+   "3",
+   "N51",
+   "N",
+   "And somewhere in the crowd, the killer waits too."
   ]
  ],
  "changed": {

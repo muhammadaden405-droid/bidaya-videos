@@ -24,14 +24,15 @@ export const FATHER: Outfit = { skin: "#a87650", robe: "#6b4a32", robeShade: "#4
 export const MERCHANT: Outfit = { skin: "#8d5a3b", robe: "#8e1b2b", robeShade: "#64121e", sash: "#e3b341", wrap: "#2a2a40", beard: "#2a1c12" };
 
 // poses (angles: 0 = hanging down, −90 = straight forward; R = near arm)
-export const POINT: Pose = { ...STAND, armRU: -98, armRL: -4, lean: 3 };
-export const PLEAD: Pose = { ...STAND, armLU: -70, armLL: -30, armRU: -76, armRL: -34, lean: 8, head: 6 };
-export const ARMS_UP: Pose = { ...STAND, armLU: -150, armLL: -10, armRU: -156, armRL: -12, head: -6 };
+// gestures use the FAR arm (drawn behind the body) so no arm ever seems to come out of a beard
+export const POINT: Pose = { ...STAND, armLU: -96, armLL: -4, lean: 3 };
+export const PLEAD: Pose = { ...STAND, armLU: -78, armLL: -30, armRU: -38, armRL: -40, lean: 8, head: 6 };
+export const ARMS_UP: Pose = { ...STAND, armLU: -160, armLL: -10, armRU: -20, armRL: -20, head: -6 };
 export const SWORD_UP: Pose = { ...STAND, armRU: -160, armRL: -8, armLU: -30, armLL: -40, lean: -2 };
-export const SWORD_READY: Pose = { ...STAND, armRU: -60, armRL: -40, lean: 4 };
+export const SWORD_READY: Pose = { ...STAND, armRU: -44, armRL: -46, lean: 4 };
 export const KNEEL: Pose = { bob: 58, lean: 14, head: 10, armLU: -40, armLL: -40, armRU: -60, armRL: -30, legLU: -80, legLL: 150, legRU: -20, legRL: 100 };
-export const HANDS_HEAD: Pose = { ...STAND, armLU: -150, armLL: -120, armRU: -150, armRL: -120, head: 10, lean: 8 };
+export const HANDS_HEAD: Pose = { ...STAND, armLU: -150, armLL: -120, armRU: -10, armRL: -10, head: 10, lean: 8 };
 export const BOW_HEAD: Pose = { ...STAND, head: 26, lean: 6 };
-export const OFFER: Pose = { ...STAND, armRU: -70, armRL: -20, lean: 4 };
-export const REFUSE: Pose = { ...STAND, armRU: -84, armRL: -80, armLU: 10, head: -4, lean: -4 };
+export const OFFER: Pose = { ...STAND, armRU: -44, armRL: -46, lean: 4 };
+export const REFUSE: Pose = { ...STAND, armLU: -86, armLL: -80, armRU: -10, head: -4, lean: -4 };
 export const SLEEP: Pose = { bob: 0, lean: 0, head: 0, armLU: -10, armLL: -20, armRU: -12, armRL: -24, legLU: 0, legLL: 0, legRU: 0, legRL: 0 };

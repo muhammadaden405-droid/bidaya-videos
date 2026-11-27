@@ -3,11 +3,11 @@ import { AbsoluteFill, random, useCurrentFrame } from "remotion";
 import { STAND, Pose, Outfit, Mood } from "../cartoon/Rig";
 import { FOLK } from "../cartoon/Trailer";
 import { sans } from "../fonts";
-import { Meadow, House } from "../ep3/env";
+import { Oasis as Meadow, MudHouse } from "./env";
 import { Herd, Animal } from "../ep3/animals";
 import {
   Actor, V, Cam, Layer, Defs, iv, ease, easeOut, useShot, useView, aim, Vignette, Grade, Flash, Dust,
-  FLOOR, Shot, useL, cutCam, shook, walkBy, Sword, useAbs,
+  FLOOR, Shot, useL, cutCam, shook, walkBy, Sword, useAbs, SITG, sitY,
 } from "./kit";
 import { OLD, NEPHEW, ACCUSED, ACCUSED_W, ACCUSED_SON, ELDER, SON, FATHER, MERCHANT, POINT, PLEAD, ARMS_UP, SWORD_UP, SWORD_READY, KNEEL, HANDS_HEAD, BOW_HEAD, OFFER, REFUSE } from "./cast";
 
@@ -67,7 +67,7 @@ export const crowd = (n: number, x0: number, x1: number, seed: string, o: { flip
 /** the town: green valley, a row of houses behind, optional big house (front) with a door that opens */
 export const Town: React.FC<{ cam: Cam; sky?: Sky; seed?: string; door?: number; houseX?: number; children?: React.ReactNode; back?: boolean }> = ({ cam, sky = "day", seed = "t", door, houseX, children, back = true }) => {
   const night = sky === "night";
-  const row = back ? <g>{[-420, 300, 1020, 1740, 2460].map((x, i) => <g key={i} transform={`translate(${x} 1290) scale(0.62) translate(0 ${-FLOOR})`}><House x={0} poor={i % 2 === 0} /></g>)}</g> : null;
+  const row = back ? <g>{[-420, 300, 1020, 1740, 2460].map((x, i) => <g key={i} transform={`translate(${x} 1290) scale(0.62) translate(0 ${-FLOOR})`}><MudHouse x={0} tone={i} night={night} /></g>)}</g> : null;
   return (
     <>
       <Meadow cam={cam} sky={night ? "night" : sky} seed={seed} sunX={night ? 1500 : sky === "dawn" ? 420 : 1480} sunY={night ? 420 : sky === "dawn" ? 1000 : 760} river={!night} mid={row} />
@@ -83,7 +83,7 @@ export const Town: React.FC<{ cam: Cam; sky?: Sky; seed?: string; door?: number;
 /** a house at full size; its door swings open (open 0..1) onto a dark room */
 const BigHouse: React.FC<{ x: number; open: number; night?: boolean }> = ({ x, open, night }) => (
   <g>
-    <House x={x} />
+    <MudHouse x={x} night={night} />
     <path d={`M ${x - 160} ${FLOOR - 4} L ${x - 160} ${FLOOR - 544} Q ${x} ${FLOOR - 764} ${x + 160} ${FLOOR - 544} L ${x + 160} ${FLOOR - 4} Z`} fill={night ? "#0b0806" : "#1a120c"} />
     <g transform={`translate(${x - 160} 0) scale(${1 - 0.86 * open} 1) translate(${-(x - 160)} 0)`}>
       <path d={`M ${x - 160} ${FLOOR - 4} L ${x - 160} ${FLOOR - 544} Q ${x} ${FLOOR - 764} ${x + 160} ${FLOOR - 544} L ${x + 160} ${FLOOR - 4} Z`} fill="#6b4a2e" stroke="#3a2a1e" strokeWidth={7} />
@@ -111,6 +111,14 @@ export const Body: React.FC<{ x: number; y?: number; s?: number; sit?: number; m
       <ellipse cx={-266} cy={-80} rx={7 + mouth * 4} ry={3 + mouth * 9} fill="#4a1e18" transform="rotate(90 -266 -80)" />
       {point > 0 ? <g transform={`translate(-206 -70) rotate(${-90 * point})`}><rect x={-12} y={-14} width={150} height={28} rx={12} fill={OLD.robe} stroke="#3a2a1e" strokeWidth={4} /><circle cx={150} cy={0} r={15} fill={OLD.skin} /></g> : null}
     </g>
+  </g>
+);
+/** the dead man alive again, sitting on the floor where he lay (feet toward the right); he can speak and point */
+export const Seated: React.FC<{ x: number; mouth?: number; point?: number; mood?: Mood; o?: number }> = ({ x, mouth = 0, point = 0, mood = "neutral", o = 1 }) => (
+  <g opacity={o}>
+    <ellipse cx={x + 60} cy={FLOOR + 178} rx={200} ry={20} fill="#000" opacity={0.22} />
+    <Actor x={x} y={sitY(FLOOR + 175, S, true)} s={S} outfit={{ ...OLD, aura: "#fff1c9" }} seat="ground" mood={mood} mouth={mouth}
+      pose={{ ...SITG, lean: 4, armLU: -24 - 70 * point, armLL: -56 + 52 * point }} />
   </g>
 );
 /** a piece of the cow's flesh, held in the hand */
@@ -501,7 +509,7 @@ export const Questions: React.FC = () => {
     const fc = cc(frame - L(id) + 2, [{ at: 0, a: A(vertical, 960, 1150, 0.95), b: A(vertical, 960, 1150, 1.08) }], L(nextOf(id)) - L(id));
     return (
       <AbsoluteFill>
-        <Meadow cam={fc} sky="day" seed={`fd${id}`} trees={4} />
+        <Meadow cam={fc} sky="day" seed={`fd${id}`} trees={4} town={false} />
         <Layer d={1} cam={fc}><Herd kind="cow" n={n} x0={-300} x1={2300} y0={1150} y1={1340} frame={frame} seed="cnt" s={0.4} /></Layer>
         <Punch at={L(id)} text={n > 20 ? "THOUSANDS STILL FIT" : n > 0 ? "ONLY A HANDFUL" : "MAYBE NONE"} y={0.18} size={0.8} color={n > 0 ? "#fff" : "#ff6a5a"} />
         <Vignette s={0.35} />
@@ -551,7 +559,7 @@ export const Search: React.FC = () => {
     const cam = cc(frame - st, [{ at: 0, a: A(vertical, 960, 1080, 1.5), b: A(vertical, 960, 1070, 1.7) }], ends[bi] - st);
     return (
       <AbsoluteFill>
-        <Meadow cam={cam} sky="day" seed={`s${id}`} trees={5} />
+        <Meadow cam={cam} sky="day" seed={`s${id}`} trees={5} town={false} />
         <Layer d={1} cam={cam}><Defs />
           {id === "N92" ? <g transform={`translate(960 ${FLOOR})`}><Animal kind="cow" s={1.1} /></g> : null}
           {id === "N93" ? <g><YellowCow x={960} s={1.1} tone="brown" /><path d="M 1180 1010 L 1420 1060 L 1440 1200 M 1300 1040 L 1280 1240" stroke="#5a3e28" strokeWidth={14} fill="none" strokeLinecap="round" /></g> : null}
@@ -569,7 +577,7 @@ export const Search: React.FC = () => {
   ], dur);
   return (
     <AbsoluteFill>
-      <Meadow cam={cam} sky={none ? "dusk" : "day"} seed="se" trees={6} />
+      <Meadow cam={cam} sky={none ? "dusk" : "day"} seed="se" trees={6} town={false} />
       <Layer d={1} cam={cam}><Defs />
         {reveal ? <YellowCow x={960} glow={iv(frame, [L("N96"), L("N96") + 20], [0, 1])} /> : none ? null : <Cast acts={[...crowd(5, 200, 1700, "sw", { mood: "tight" }).map((a, i) => ({ ...a, walk: { f0: 0, f1: L("N92"), x0: a.x - 400, x1: a.x + 200 + i * 10 } })), { x: 800, o: ELDER, mood: "tight", walk: { f0: 0, f1: L("N92"), x0: 500, x1: 1000 } }]} />}
       </Layer>
@@ -798,8 +806,8 @@ const P7Cast = (mood: Mood, extra: Act[] = []): Act[] => [
 export const Revival: React.FC = () => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL(); const abs = useAbs();
   const hit = L("N142") + 28;
-  const swing = iv(frame, [hit - 14, hit, hit + 10], [-20, -62, -40], ease);
-  const sit = iv(frame, [L("N142b") + 6, L("N142b") + 40], [0, 1], ease);
+  const swing = iv(frame, [hit - 14, hit, hit + 10], [-10, -42, -30], ease);
+  const sit = frame >= L("N142b") + 10 ? 1 : 0; // the swap happens under the flash
   const cam = cc(frame, [
     { at: 0, a: A(vertical, 900, 1330, 1.7), b: A(vertical, 900, 1320, 1.9) },
     { at: hit - 2, a: A(vertical, 760, 1400, 2.6), b: A(vertical, 760, 1390, 2.8) },
@@ -814,10 +822,10 @@ export const Revival: React.FC = () => {
           { x: 1250, o: NEPHEW, mood: sit > 0.3 ? "shock" : "tight" },
           ...(frame < L("N142b") + 30 ? [{ x: 700, y: FLOOR + 120, o: ELDER, pose: { ...KNEEL, armRU: swing, armRL: -10 }, mood: "tight" as Mood, hold: <Flesh /> }] : []),
         ])} />
-        <Body x={900} sit={sit} glow={iv(frame, [L("N142b"), L("N142b") + 14, L("N142b") + 70], [0, 1, 0.3])} mouth={sit > 0.9 ? 0.15 + 0.15 * Math.abs(Math.sin(abs * 0.3)) * iv(frame, [L("N142b") + 40, L("N142b") + 70], [1, 0]) : 0} />
+        {sit < 0.5 ? <Body x={900} glow={iv(frame, [L("N142b"), L("N142b") + 10], [0, 1])} /> : <Seated x={820} mood="shock" mouth={0.2 * Math.abs(Math.sin(abs * 0.25)) * iv(frame, [L("N142b") + 30, L("N142b") + 60], [1, 0])} />}
       </Town>
       <Flash at={hit} len={6} color="#fff" max={0.25} />
-      <Flash at={L("N142b") + 4} len={20} color="#fff6d8" max={0.85} />
+      <Flash at={L("N142b") + 2} len={24} color="#fff6d8" max={1} />
       <Punch at={L("N142b") + 8} out={L("N143") - 4} text="HE'S ALIVE" y={0.24} size={0.9} color="#ffe39a" />
       <Vignette s={0.4} />
     </AbsoluteFill>
@@ -834,7 +842,7 @@ export const Suspects: React.FC = () => {
         <Town cam={cam} sky="day" seed="rv" back={false}>
           <MusaLight x={260} y={FLOOR - 320} />
           <Cast acts={P7Cast("shock", [{ x: 1250, o: NEPHEW, mood: "shock" }])} />
-          <Body x={900} sit={1} />
+          <Seated x={820} mood="shock" />
         </Town>
       </AbsoluteFill>
       <Grade color="#000" opacity={0.35} mode="multiply" />
@@ -885,7 +893,7 @@ export const Reveal: React.FC = () => {
     { at: L("N147") - 2, a: A(vertical, 1250, 960, 1.8), b: A(vertical, 1250, 950, 2.1) },
     { at: L("N148") - 2, a: A(vertical, 900, 1250, 1.5), b: A(vertical, 900, 1250, 1.7) },
   ], dur);
-  const sit = 1 - iv(frame, [L("N148") + 6, L("N148") + 30], [0, 1], ease);
+  const sit = frame < L("N148") + 16 ? 1 : 0;
   const m = V.mouth["OLD1"]; const i = abs - (V.lines["OLD1"]?.f0 ?? 0);
   const mouth = m && i >= 0 && i < m.length ? Math.max(0, Math.min(1, (m[i] - 0.1) * 1.3)) : 0;
   return (
@@ -893,9 +901,10 @@ export const Reveal: React.FC = () => {
       <Town cam={shook(cam, frame, [L("OLD1") + 26], 16)} sky="day" seed="rv" back={false}>
         <MusaLight x={260} y={FLOOR - 320} />
         <Cast acts={P7Cast("shock", [{ x: 1250, o: NEPHEW, mood: "shock", pose: frame > L("OLD1") + 26 ? HANDS_HEAD : STAND, flip: true }])} />
-        <Body x={900} sit={sit} mouth={mouth} point={iv(frame, [L("OLD1") + 14, L("OLD1") + 24, L("N148") - 4, L("N148") + 4], [0, 1, 1, 0])} />
+        {sit > 0.5 ? <Seated x={820} mood={frame > L("OLD1") + 26 ? "frown" : "neutral"} mouth={mouth} point={iv(frame, [L("OLD1") + 14, L("OLD1") + 24, L("N148") - 4, L("N148") + 4], [0, 1, 1, 0])} /> : <Body x={900} />}
       </Town>
       <Flash at={L("OLD1") + 26} len={6} color="#ff2a1a" max={0.3} />
+      <Flash at={L("N148") + 14} len={10} color="#000" max={0.6} />
       <Punch at={L("N147")} out={L("N147a") - 2} text="THE KILLER." color="#ff4a3a" y={0.24} size={1.1} />
       <Punch at={L("N147a")} text="HE WAS THERE THE WHOLE TIME" y={0.24} size={0.7} out={L("N148") - 2} />
       <Vignette s={0.45} />
@@ -914,7 +923,7 @@ export const Inherit: React.FC = () => {
   ], dur);
   return (
     <AbsoluteFill>
-      <Town cam={cam} sky="dusk" seed="in" houseX={1500} door={1} back={false}>
+      <Town cam={cam} sky="dusk" seed="in" back>
         <g opacity={1 - gone}>{new Array(30).fill(0).map((_, i) => <ellipse key={i} cx={1000 + (i % 10) * 26 + (Math.floor(i / 10) % 2) * 12} cy={FLOOR - 10 - Math.floor(i / 10) * 14} rx={14} ry={7} fill="#e3b341" stroke="#8a6414" strokeWidth={2} />)}</g>
         <Cast acts={[
           { x: 760, o: NEPHEW, mood: frame > L("N157") ? "frown" : "neutral", pose: frame > L("N156") && frame < L("N157") + 10 ? OFFER : STAND },
