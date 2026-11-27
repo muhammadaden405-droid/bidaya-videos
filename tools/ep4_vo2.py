@@ -12,9 +12,8 @@ OUT = os.path.join(ROOT, "public/ep4/vo"); TAKES = os.path.join(OUT, "takes"); o
 SR = 24000
 
 STYLE = {
-    "N": "Read this like a gripping mystery storyteller on a true-crime video. Measured pace, about 185 words a minute: "
-         "a little quicker in the action and arguing, slower and tense in the suspense moments, with a short pause between lines. "
-         "Same warm, steady voice from start to finish. No whispering. Say Musa as Moo-saa and Allah as Allaah.",
+    "N": "Tell this story in your own natural voice, like an engaging storyteller, at a calm, unhurried pace, "
+         "with a short pause between lines. Say Musa as Moo-saa and Allah as Allaah.",
     "NE": "A young man of about 25, plain American accent. The first two lines he is wailing over his uncle's body; "
           "the last two he is still crying but speaking clearly to the Prophet. It is the same man the whole time, same voice. "
           "Real grief, not theatrical. Pause between lines.",
@@ -57,7 +56,7 @@ num = {"seventy thousand": "70,000", "eighty thousand": "80,000", "thirty thousa
 def toks(s):
     s = s.lower().replace(",000", " thousand")
     for a, b in [("70", "seventy"), ("80", "eighty"), ("30", "thirty"), ("100", "hundred"), ("60", "sixty"), ("10", "ten"),
-                 ("colour", "color"), ("plough", "plow"), ("neighbours", "neighbors"), ("bye", "by"), ("qur'an", "quran")]:
+                 ("colour", "color"), ("plough", "plow"), ("neighbours", "neighbors"), ("bye", "by"), ("don", "dawn"), ("qur'an", "quran")]:
         s = re.sub(r"\b" + a + r"\b", b, s)
     return re.sub(r"[^a-z' ]", " ", s).split()
 
@@ -67,20 +66,29 @@ def cut(name, lines, x):
     if M is None:
         from faster_whisper import WhisperModel
         M = WhisperModel("small.en", device="cpu", compute_type="int8")
-    seg, _ = M.transcribe(resample_poly(x.astype(np.float32) / 32768, 2, 3).astype(np.float32),
-                          beam_size=5, word_timestamps=True, initial_prompt="Musa, Allah, Prophet")
-    hw = [(w.start, w.end, (toks(w.word) or [""])[0]) for s in seg for w in s.words]
     st, own = [], []
     for k, l in enumerate(lines):
         t = toks(l[3]); st += t; own += [k] * len(t)
-    sm = difflib.SequenceMatcher(None, st, [h[2] for h in hw], autojunk=False)
-    m = {a + j: b + j for a, b, n in sm.get_matching_blocks() for j in range(n)}
-    span = []
-    for k, l in enumerate(lines):
-        idx = [i for i, o in enumerate(own) if o == k]; hits = sorted(m[i] for i in idx if i in m)
-        if hits:  # drop stray matches far from the line's main run
-            med = hits[len(hits) // 2]; hits = [h for h in hits if abs(h - med) <= len(idx) + 3]
-        span.append((hits[0], hits[-1], len(hits) / len(idx)) if hits else None)
+    a16 = resample_poly(x.astype(np.float32) / 32768, 2, 3).astype(np.float32)
+    best = [None] * len(lines)
+    for prompt in (None, "Musa, Allah, Prophet"):  # two passes: Whisper skips different bits each time
+        seg, _ = M.transcribe(a16, beam_size=5, word_timestamps=True, condition_on_previous_text=False, initial_prompt=prompt)
+        hw0 = [(w.start, w.end, (toks(w.word) or [""])[0]) for s_ in seg for w in s_.words]
+        sm = difflib.SequenceMatcher(None, st, [h[2] for h in hw0], autojunk=False)
+        m = {a + j: b + j for a, b, n in sm.get_matching_blocks() for j in range(n)}
+        for k, l in enumerate(lines):
+            idx = [i for i, o in enumerate(own) if o == k]; hits = sorted(m[i] for i in idx if i in m)
+            if hits:
+                med = hits[len(hits) // 2]; hits = [h for h in hits if abs(h - med) <= len(idx) + 3]
+            if not hits: continue
+            r = len(hits) / len(idx); s0, e0 = hw0[hits[0]][0], hw0[hits[-1]][1]
+            mi = [i for i in idx if i in m and m[i] in hits]  # widen for unmatched first/last words
+            s0 -= 0.32 * idx.index(mi[0]); e0 += 0.32 * (len(idx) - 1 - idx.index(mi[-1]))
+            if best[k] is None or r > best[k][2]: best[k] = (s0, e0, r)
+    hw = []; span = []
+    for k, b in enumerate(best):  # store times directly as pseudo-words
+        if b: hw += [(b[0], b[0], ""), (b[1], b[1], "")]; span.append((len(hw) - 2, len(hw) - 1, b[2]))
+        else: span.append(None)
     env = np.convolve(np.abs(x.astype(np.float32)), np.ones(240) / 240, "same")
     def quiet(a, b):  # quietest sample between a and b seconds
         a, b = int(a * SR), int(b * SR)
@@ -89,8 +97,9 @@ def cut(name, lines, x):
     for k, l in enumerate(lines):
         if span[k] is None or span[k][2] < 0.6:
             pv = span[k - 1] if k else None; nx = span[k + 1] if k + 1 < len(lines) else None
-            if not (pv and nx and nx[0] - pv[1] - 1 <= len(toks(l[3])) + 2): res[l[1]] = None; continue
-            span[k] = (pv[1] + 1, nx[0] - 1, 1.0)  # the words between its neighbours
+            if not (pv and nx and hw[nx[0]][0] - hw[pv[1]][1] < 0.6 * len(toks(l[3])) + 1.5): res[l[1]] = None; continue
+            hw += [(hw[pv[1]][1] + 0.05, hw[pv[1]][1] + 0.05, ""), (hw[nx[0]][0] - 0.05, hw[nx[0]][0] - 0.05, "")]
+            span[k] = (len(hw) - 2, len(hw) - 1, 1.0)  # the time between its neighbours
         s, e = hw[span[k][0]][0], hw[span[k][1]][1]
         prev = next((span[j] for j in range(k - 1, -1, -1) if span[j]), None)
         nxt = next((span[j] for j in range(k + 1, len(lines)) if span[j]), None)
@@ -101,7 +110,7 @@ def cut(name, lines, x):
         if len(on): y = y[max(0, on[0] - int(0.03 * SR)): on[-1] + int(0.12 * SR)]
         fi, fo = int(0.008 * SR), int(0.04 * SR)
         y[:fi] *= np.linspace(0, 1, fi); y[-fo:] *= np.linspace(1, 0, fo)
-        res[l[1]] = (y, span[k][2])
+        res[l[1]] = (y, span[k][2], s, e)
     return res
 
 if __name__ == "__main__":

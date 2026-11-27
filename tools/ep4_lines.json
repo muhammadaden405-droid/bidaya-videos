@@ -15,111 +15,27 @@
  "lines": [
   [
    "1",
-   "N01",
-   "N",
-   "Someone wants this old man dead."
-  ],
-  [
-   "1",
-   "N02",
-   "N",
-   "Tonight, they come for him."
-  ],
-  [
-   "1",
-   "N03",
-   "N",
-   "He's dead."
-  ],
-  [
-   "1",
-   "N04",
-   "N",
-   "Very old."
-  ],
-  [
-   "1",
-   "N05",
-   "N",
-   "Who would kill a man this old?"
-  ],
-  [
-   "1",
-   "N06",
-   "N",
-   "And why?"
-  ],
-  [
-   "1",
-   "N07",
-   "N",
-   "The killer isn't done."
-  ],
-  [
-   "1",
-   "N08",
-   "N",
-   "He carries the body out into the dark."
-  ],
-  [
-   "1",
-   "N09",
-   "N",
-   "One sound, and he's caught."
-  ],
-  [
-   "1",
-   "N10",
-   "N",
-   "He doesn't bury it. He doesn't hide it."
-  ],
-  [
-   "1",
-   "N11",
-   "N",
-   "He leaves it at another man's door."
-  ],
-  [
-   "1",
-   "N13",
-   "N",
-   "Why would a killer do that?"
-  ],
-  [
-   "1",
-   "N15",
-   "N",
-   "No one saw. No one heard. No trace."
-  ],
-  [
-   "1",
-   "N16",
-   "N",
-   "Inside, a man sleeps. No idea what's at his door."
-  ],
-  [
-   "1",
-   "N17",
+   "N1_01",
    "N",
    "Dawn."
   ],
   [
    "1",
-   "N18",
+   "N1_02",
    "N",
-   "A dead man on his doorstep."
+   "A man opens his door... and there's a dead body on his doorstep."
   ],
   [
    "1",
-   "N19",
+   "N1_03",
    "N",
-   "Soon, they're all blaming each other."
+   "And everyone says his family did it."
   ],
   [
    "1",
-   "N20",
+   "N1_04",
    "N",
-   "And the old man's nephew is screaming for justice."
+   "The dead man's nephew is screaming for justice."
   ],
   [
    "1",
@@ -135,31 +51,91 @@
   ],
   [
    "1",
-   "N21",
+   "N1_05",
    "N",
    "He's pointing at the family who live here."
   ],
   [
    "1",
-   "N22",
+   "N1_06",
    "N",
    "Did they do it?"
   ],
   [
    "1",
-   "N23",
+   "N1_07",
    "N",
    "Nobody knows."
   ],
   [
    "1",
-   "N24",
+   "N1_08",
+   "N",
+   "The dead man is very old."
+  ],
+  [
+   "1",
+   "N1_09",
+   "N",
+   "Who would kill a man this old?"
+  ],
+  [
+   "1",
+   "N1_10",
+   "N",
+   "And why?"
+  ],
+  [
+   "1",
+   "N1_11",
+   "N",
+   "What they don't know: the killer carried him here in the dark."
+  ],
+  [
+   "1",
+   "N1_12",
+   "N",
+   "He didn't bury him. He didn't hide him."
+  ],
+  [
+   "1",
+   "N1_13",
+   "N",
+   "He left him at another man's door."
+  ],
+  [
+   "1",
+   "N1_14",
+   "N",
+   "Why would a killer do that?"
+  ],
+  [
+   "1",
+   "N1_15",
+   "N",
+   "No one saw. No one heard. No trace."
+  ],
+  [
+   "1",
+   "N1_16",
+   "N",
+   "And the killer could be anyone here."
+  ],
+  [
+   "1",
+   "N1_17",
+   "N",
+   "Soon, they're all blaming each other."
+  ],
+  [
+   "1",
+   "N1_18",
    "N",
    "The crowd splits in two."
   ],
   [
    "1",
-   "N25",
+   "N1_19",
    "N",
    "And hands reach for weapons."
   ],
@@ -287,13 +263,13 @@
    "3",
    "N45",
    "N",
-   "A murder. No witnesses. No one talking."
+   "They ask Musa to ask his Lord: who is the killer?"
   ],
   [
    "3",
    "N45b",
    "N",
-   "So they ask Musa to ask his Lord."
+   "And the answer makes them furious."
   ],
   [
    "3",
@@ -435,6 +411,12 @@
   ],
   [
    "4",
+   "N68b",
+   "N",
+   "Thousands of cows still fit."
+  ],
+  [
+   "4",
    "N72",
    "N",
    "But they don't."
@@ -473,7 +455,7 @@
    "4",
    "N78",
    "N",
-   "How many cows like that could there be?"
+   "Now only a handful still fit."
   ],
   [
    "4",
@@ -543,6 +525,12 @@
   ],
   [
    "4",
+   "N87b",
+   "N",
+   "Now maybe none fit at all."
+  ],
+  [
+   "4",
    "N87a",
    "N",
    "They say:"
@@ -557,19 +545,19 @@
    "4",
    "N88",
    "N",
-   "But does a cow like that even exist?"
+   "Does a cow like that even exist?"
   ],
   [
    "5",
    "N89a",
    "N",
-   "One cow can expose a killer."
+   "Find this one cow... or the killer stays hidden."
   ],
   [
    "5",
    "N89b",
    "N",
-   "Now they have to find it."
+   "So they search."
   ],
   [
    "5",
@@ -1007,7 +995,7 @@
    "7",
    "N159",
    "N",
-   "No witness. No confession. Allah brought the truth out, from the mouth of a dead man."
+   "Allah brought the truth out... from the mouth of a dead man."
   ],
   [
    "7",
@@ -1172,6 +1160,153 @@
    "N153",
    "N",
    "Then asked a Prophet to catch the killer... himself."
+  ],
+  [
+   "1",
+   "N01",
+   "N",
+   "Someone wants this old man dead."
+  ],
+  [
+   "1",
+   "N02",
+   "N",
+   "Tonight, they come for him."
+  ],
+  [
+   "1",
+   "N03",
+   "N",
+   "He's dead."
+  ],
+  [
+   "1",
+   "N04",
+   "N",
+   "Very old."
+  ],
+  [
+   "1",
+   "N05",
+   "N",
+   "Who would kill a man this old?"
+  ],
+  [
+   "1",
+   "N06",
+   "N",
+   "And why?"
+  ],
+  [
+   "1",
+   "N07",
+   "N",
+   "The killer isn't done."
+  ],
+  [
+   "1",
+   "N08",
+   "N",
+   "He carries the body out into the dark."
+  ],
+  [
+   "1",
+   "N09",
+   "N",
+   "One sound, and he's caught."
+  ],
+  [
+   "1",
+   "N10",
+   "N",
+   "He doesn't bury it. He doesn't hide it."
+  ],
+  [
+   "1",
+   "N11",
+   "N",
+   "He leaves it at another man's door."
+  ],
+  [
+   "1",
+   "N13",
+   "N",
+   "Why would a killer do that?"
+  ],
+  [
+   "1",
+   "N15",
+   "N",
+   "No one saw. No one heard. No trace."
+  ],
+  [
+   "1",
+   "N16",
+   "N",
+   "Inside, a man sleeps. No idea what's at his door."
+  ],
+  [
+   "1",
+   "N17",
+   "N",
+   "Dawn."
+  ],
+  [
+   "1",
+   "N18",
+   "N",
+   "A dead man on his doorstep."
+  ],
+  [
+   "1",
+   "N19",
+   "N",
+   "Soon, they're all blaming each other."
+  ],
+  [
+   "1",
+   "N20",
+   "N",
+   "And the old man's nephew is screaming for justice."
+  ],
+  [
+   "1",
+   "N21",
+   "N",
+   "He's pointing at the family who live here."
+  ],
+  [
+   "1",
+   "N22",
+   "N",
+   "Did they do it?"
+  ],
+  [
+   "1",
+   "N23",
+   "N",
+   "Nobody knows."
+  ],
+  [
+   "1",
+   "N24",
+   "N",
+   "The crowd splits in two."
+  ],
+  [
+   "1",
+   "N25",
+   "N",
+   "And hands reach for weapons."
   ]
- ]
+ ],
+ "changed": {
+  "N45": "A murder. No witnesses. No one talking.",
+  "N45b": "So they ask Musa to ask his Lord.",
+  "N89a": "One cow can expose a killer.",
+  "N89b": "Now they have to find it.",
+  "N78": "How many cows like that could there be?",
+  "N88": "But does a cow like that even exist?",
+  "N159": "No witness. No confession. Allah brought the truth out, from the mouth of a dead man."
+ }
 }
