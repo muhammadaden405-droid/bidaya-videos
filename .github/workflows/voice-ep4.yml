@@ -1,11 +1,6 @@
 name: voice-ep4
 on:
   workflow_dispatch:
-  push:
-    branches: [ep4]
-    paths: [tools/ep4_lines.json, tools/ep4_vo.py, .github/workflows/voice-ep4.yml]
-permissions:
-  contents: write
 jobs:
   voice:
     runs-on: ubuntu-latest

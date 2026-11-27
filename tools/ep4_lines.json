@@ -921,12 +921,6 @@
   ],
   [
    "7",
-   "N152",
-   "N",
-   "Nearly started a war."
-  ],
-  [
-   "7",
    "N154",
    "N",
    "Why did he do it?"
@@ -1304,6 +1298,12 @@
    "N1_01",
    "N",
    "Dawn."
+  ],
+  [
+   "7",
+   "N152",
+   "N",
+   "Nearly started a war."
   ]
  ],
  "changed": {
