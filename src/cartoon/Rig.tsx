@@ -198,6 +198,18 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
           ) : null}
           {mouth !== undefined || mood ? <Mouth open={mouth ?? 0} mood={mood ?? "neutral"} /> : null}
         </g>
+        {/* a raised near arm is drawn in front of the beard (it is closer to us) */}
+        {outfit.beard && p.armRU < -45 ? (
+          <g transform={`translate(0 -232) rotate(${p.head})`}>
+            {outfit.longBeard ? (
+              // a long beard hangs straight down under the chin, whatever the tilt of the head or body
+              <g transform={`rotate(${-(p.head + p.lean)} 12 14)`}><path d="M -4 10 Q 10 22 28 12 Q 30 40 22 66 Q 17 82 12 96 Q 7 82 2 66 Q -6 40 -4 10 Z" fill={outfit.beard} /></g>
+            ) : (
+              <path d="M -4 10 Q 10 24 28 12 Q 28 30 14 40 Q 2 44 -6 32 Q -10 20 -4 10 Z" fill={outfit.beard} />
+            )}
+            {mouth !== undefined || mood ? <Mouth open={mouth ?? 0} mood={mood ?? "neutral"} /> : null}
+          </g>
+        ) : null}
         {/* near arm, optionally holding a spear */}
         <Limb x={6} y={-196} a1={p.armRU} a2={p.armRL} l1={52} l2={48} w={16} color={outfit.robe} hand={outfit.skin}>
           {/* anything held in the near hand, kept upright */}
@@ -218,7 +230,7 @@ export const Person: React.FC<{ pose: Pose; outfit: Outfit; flip?: boolean; mout
             </g>
           ) : null}
         </Limb>
-        {outfit.beard ? (
+        {outfit.beard && p.armRU >= -45 ? (
           <g transform={`translate(0 -232) rotate(${p.head})`}>
             {outfit.longBeard ? (
               // a long beard hangs straight down under the chin, whatever the tilt of the head or body

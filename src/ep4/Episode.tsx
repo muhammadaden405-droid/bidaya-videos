@@ -79,9 +79,12 @@ SFX.push(
   one("own-air-swell", lf("N110") - 6, 0.12, 70, 30), one("own-air-swell", lf("N113") - 6, 0.12, 70, 30),
   bed("busy-market-crowd-murmur-walla-01", ps(6), lf("N119"), 0.06), one("cow-moo-b", lf("N131") + 14, 0.22, 70), one("own-air-swell", lf("N131") - 6, 0.18, 90, 40),
   one("own-air-swell", lf("N132") - 6, 0.12, 70, 30), bed("sand-pour-01", lf("N135"), lf("N137"), 0.16),
-  one("own-air-swell", lf("N142b") - 10, 0.24, 100, 40), one("crowd-ooh-01", lf("N142b") + 18, 0.2, 60),
-  bed("horror-heartbeat-34", lf("N143a"), lf("OLD1"), 0.24), one("crowd-ooh-01", lf("OLD1") + 30, 0.22, 60), one("body-fall-01", lf("N148") + 22, 0.3, 40),
+  one("own-air-swell", lf("N142b") - 10, 0.24, 100, 40), one("sack-drop-01", lf("N142") + 28, 0.24, 26, 8), one("own-air-swell", lf("N142b"), 0.14, 90, 40),
+  bed("horror-heartbeat-34", lf("N143a"), lf("OLD1"), 0.24), bed("daily-20260923-hushed-crowd-walla-short", lf("OLD1") + 40, lf("N144"), 0.05), one("sack-drop-01", lf("N147"), 0.28, 26, 8), one("body-fall-01", lf("N148") + 22, 0.3, 40),
   bed("animal-bird-03", lf("N160"), VERSE_AT, 0.12),
+  one("short-video-whoosh-01", lf("N1_15"), 0.08, 20), one("short-video-whoosh-01", lf("N55"), 0.08, 20), one("sack-drop-01", lf("N57") - 14, 0.2, 24, 8),
+  one("horror-heartbeat-34", lf("N42"), 0.2, 80), one("sack-drop-01", lf("N95"), 0.22, 24, 8),
+  one("own-air-swell", lf("N131d") - 14, 0.16, 80, 30), one("short-video-whoosh-01", lf("N131d") - 6, 0.12, 24),
 );
 const vol = (s: Sfx) => (f: number) => {
   const len = s.len ?? 99999;
