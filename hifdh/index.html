@@ -490,13 +490,37 @@ h2{letter-spacing:-.015em}
 .rcx{width:36px;height:36px;border-radius:50%;border:0;background:var(--soft);color:var(--mute);font-size:14px}
 .dact:has(>:nth-child(4)) button{flex-direction:column;gap:3px;font-size:12px;min-height:52px;padding:4px 2px}
 .dact:has(>:nth-child(4)) svg{width:18px;height:18px}
+
+/* language button */
+.hlang{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;font-size:17px;display:grid;place-items:center;flex:none;box-shadow:var(--sh)}
+:root[lang=ar] .hlang{font-size:13px}
+.hdr-r{gap:8px}
+/* Arabic */
+:root[lang=ar] body{font-family:"SF Arabic",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Arabic",Tahoma,sans-serif}
+:root[lang=ar] *{letter-spacing:0!important}
+:root[lang=ar] .quote.ar+.mean{display:none}
+:root[dir=rtl] .dates{text-align:left}
+:root[dir=rtl] .deck,:root[dir=rtl] .dots{direction:ltr}
+:root[dir=rtl] .dcard{direction:rtl}
+/* Netlify badge: lift everything at the bottom above it */
+body.nfb{--nb:max(68px,calc(env(safe-area-inset-bottom) + 34px))}
+body.nfb .tabs{bottom:var(--nb)}
+body.nfb .app{padding-bottom:calc(var(--nb) + 74px)}
+body.nfb .player{bottom:calc(var(--nb) + 64px)}
+body.nfb .toast{bottom:calc(var(--nb) + 74px)}
+body.nfb .selbar{bottom:calc(var(--nb) + 66px)}
+body.nfb:has(#player.on) .selbar{bottom:calc(var(--nb) + 146px)}
+body.nfb:has(#mbar.on) .selbar{bottom:calc(var(--nb) + 190px)}
+body.nfb:has(#player.on) main{padding-bottom:calc(var(--nb) + 164px)}
+body.nfb:has(#mbar.on) main{padding-bottom:calc(var(--nb) + 208px)}
+.onb-hero{position:relative}.onbl{position:absolute;top:calc(env(safe-area-inset-top) + 14px);inset-inline-end:16px;background:rgba(255,255,255,.1);color:var(--ht);border-color:rgba(227,192,99,.35)}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
   <div class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="38" height="38"><div><h1>Hifdh</h1><p id="greet">Qur'an memorization</p></div></div>
-  <div class="hdr-r"><div class="dates"><div id="hij"></div><div id="greg"></div></div><button class="hmic" id="hdrMic" aria-label="Recite anything: the app finds where you are"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button></div>
+  <div class="hdr-r"><div class="dates"><div id="hij"></div><div id="greg"></div></div><button class="hlang" id="hdrLang" aria-label="العربية">ع</button><button class="hmic" id="hdrMic" aria-label="Recite anything: the app finds where you are"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button></div>
 </header>
 
 <section class="view" id="v-today" aria-label="Today"></section>
@@ -561,6 +585,7 @@ h2{letter-spacing:-.015em}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
+var LANG=(()=>{try{return (JSON.parse(localStorage.getItem('hifz-app-v1'))||{}).lang==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const QPACE=[1/8,1/5,1/3,1/2,1,2,3,4,5,6,7,8,9,10,12,15,20];
 const qSnap=v=>{v=+v||2;let b=QPACE[0];for(const x of QPACE)if(Math.abs(Math.log(x/v))<Math.abs(Math.log(b/v)))b=x;return b};
 
@@ -609,7 +634,7 @@ const pad=n=>String(n).padStart(2,'0'),p3=n=>String(n).padStart(3,'0');
 const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
 const add=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
-const fmt=(d,o)=>d.toLocaleDateString('en-GB',o||{day:'numeric',month:'short',year:'numeric'});
+const fmt=(d,o)=>d.toLocaleDateString(LANG==='ar'?'ar-u-ca-gregory-nu-arab':'en-GB',o||{day:'numeric',month:'short',year:'numeric'});
 const pl=(n,w)=>n+' '+w+(n===1?'':'s');
 const arn=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -707,6 +732,12 @@ const lessonDone=()=>S.lesson&&S.lesson.p.length>0&&(S.lesson.part?qPartDone():S
 let tt;function toast(m,ms){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms||2600)}
 function sheet(html){$('panel').innerHTML='<div class="grab"></div>'+html;$('scrim').classList.add('on');$('panel').scrollTop=0;const f=$('panel').querySelector('button');if(f)f.focus({preventScroll:true})}
 const closeSheet=()=>{if(RC){if(RC.mr&&RC.mr.state==='recording')rcStop();if(RC.a)RC.a.pause()}REC.hold=false;$('scrim').classList.remove('on');$('panel').onclick=null;if(REC.kind==='m'){if(REC.listening)recStop(false);REC.mode=false;REC.kind='q'}};
+$('hdrLang').addEventListener('click',()=>{LANG=LANG==='ar'?'en':'ar';S.lang=LANG;save();location.reload()});
+setTimeout(()=>{if(LANG==='ar'){applyLang();try{header()}catch(e){}}},0);
+/* the Powered by Netlify badge sits at the bottom: lift the tab bar above it */
+if(/\.netlify\.app$/.test(location.hostname)){document.body.classList.add('nfb');let n=0;
+  const own=e=>e.closest('.app,#player,.tabs,#mbar,#toast'),chk=()=>{const e=document.elementFromPoint(innerWidth-70,innerHeight-30);
+    if(e&&!own(e)&&e!==document.body&&e!==document.documentElement&&!e.closest('#scrim,#onb'))document.body.classList.add('nfb');else if(!e||e===document.body||e===document.documentElement||(own(e)&&!e.closest('.tabs')))document.body.classList.remove('nfb');if(++n<10)setTimeout(chk,3000)};setTimeout(chk,2000)}
 $('mSelf').addEventListener('click',()=>openRec('q:'+S.cur,'Page '+S.cur+' · '+rangeLabel(S.cur)));
 $('scrim').addEventListener('click',e=>{if(e.target.id==='scrim'||e.target.closest('[data-close]'))closeSheet()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
@@ -715,7 +746,7 @@ function ring(v,max,size,stroke,col){const r=(size-stroke)/2,c=2*Math.PI*r,f=max
 const quoteBlock=(x,cls)=>'<div class="'+(cls||'vcard')+'"><p class="quote ar" lang="ar">'+(x.quran?'﴿'+esc(x.ar)+'﴾':'«'+esc(x.ar)+'»')+'</p><p class="mean">'+esc(x.en)+'</p><p class="src">'+esc(x.src)+'</p></div>';
 
 /* ---------- header ---------- */
-function header(){const d=parse(TODAY);let h='';try{h=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch(e){}
+function header(){const d=parse(TODAY);let h='';try{h=new Intl.DateTimeFormat(LANG==='ar'?'ar-u-ca-islamic-umalqura-nu-arab':'en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch(e){}
   $('hij').textContent=h;$('greg').textContent=fmt(d,{weekday:'short',day:'numeric',month:'short'})}
 
 /* ---------- today ---------- */
@@ -739,6 +770,143 @@ function deckCards(){const cards=[];ensureLesson();const c=calc(),L=S.lesson;
   if(doQ()){if(c.left===0)cards.push({t:'qinfo',k:'qdone'});else if(L.off&&!L.p.length)cards.push({t:'qinfo',k:'qoff'});else if(L.p.length)cards.push({t:'q',ps:L.p.slice(),part:L.part,d:L.part?qPartDone():L.p.every(p=>!!S.pages[p])})}
   if(doM()&&MI){if(!S.mp.setup)cards.push({t:'minfo',k:'msetup'});else{const mc=mcalc();if(!mc.left)cards.push({t:'minfo',k:'mdone'});else{ensureMLesson();const ML=S.mlesson;if(!ML.items.length)cards.push({t:'minfo',k:'moff'});else{needMD([...new Set(ML.items.map(x=>x[0]))]);{const bl=mBlocks(ML.items);cards.push({t:'m',bl,d:bl.every(blkDone)})}}}}}
   return cards}
+/* ---------- Arabic: the whole interface, switched from the button at the top ---------- */
+const AR={'Today':'اليوم','Mushaf':'المصحف','Mutūn':'المتون','Progress':'التقدّم','Settings':'الإعدادات','Hifdh':'حفظ','Qur’an memorization':'حفظ القرآن',
+'Qur’an':'القرآن','Qur’an + mutūn':'القرآن والمتون','Both':'كلاهما','Brother':'أخ','Sister':'أخت','Who’s memorizing?':'من يحفظ؟','What will you memorize?':'ماذا ستحفظ؟',
+'Make your plan':'ضع خطتك','Choose your pace and see when you’ll finish, in shāʾ Allāh. You can change it any time.':'اختر وتيرتك وانظر متى تختم إن شاء الله. يمكنك تغييرها في أي وقت.',
+'What the scholars say to memorize first':'ماذا يقول العلماء نحفظ أولًا','What the scholars say to start with':'ماذا يقول العلماء نبدأ به','What to memorize first':'ماذا نحفظ أولًا','Ibn ʿUthaymīn on where to start':'ابن عثيمين: من أين نبدأ',
+'Where do you start?':'من أين تبدأ؟','Where do you want to start?':'من أين تريد أن تبدأ؟','Which way?':'في أي اتجاه؟','Which matn do you start with?':'بأي متن تبدأ؟','Which matn first?':'أي متن أولًا؟',
+'Your goal':'هدفك','Your pace':'وتيرتك','Your level':'مستواك','Beginner':'مبتدئ','Intermediate':'متوسط','Advanced':'متقدّم','A few lines':'أسطر قليلة','Half a page':'نصف صفحة','Pages a day':'صفحات يوميًا','half a page':'نصف صفحة',
+'New memorization a day':'الحفظ الجديد يوميًا','New lines a day':'أسطر جديدة يوميًا','new lines a day':'أسطر جديدة يوميًا','new a day':'جديد يوميًا','Lines a day':'أسطر يوميًا',
+'Compare paces · tap one':'قارن بين الوتيرات · اختر واحدة','Or pick the date you want to finish':'أو اختر التاريخ الذي تريد أن تختم فيه','Finish by a date':'الختم بتاريخ','Finish by':'الختم بحلول','Finish by (optional)':'الختم بحلول (اختياري)','pick a date':'اختر تاريخًا',
+'Days off':'أيام الراحة','Days off (revision only)':'أيام الراحة (مراجعة فقط)','Days off (shared with the Qur’an)':'أيام الراحة (مشتركة مع القرآن)','Revision only on these days. The dates above already count them.':'مراجعة فقط في هذه الأيام، والتواريخ أعلاه تحسبها.',
+'Sun':'الأحد','Mon':'الاثنين','Tue':'الثلاثاء','Wed':'الأربعاء','Thu':'الخميس','Fri':'الجمعة','Sat':'السبت',
+'Bismillah, start my plan':'بسم الله، ابدأ خطتي','Bismillah, your plan is set ✓':'بسم الله، خطتك جاهزة ✓','Skip for now':'تخطَّ الآن','Popular plans':'خطط شائعة',
+'Al-Fātiḥah → An-Nās':'من الفاتحة إلى الناس','Juz ʿAmma from An-Nās':'جزء عمّ من الناس','Sūrat al-Baqarah':'سورة البقرة','Sūrah':'السورة','or page':'أو صفحة','Direction':'الاتجاه','Forward':'تقدّمًا','Backward':'رجوعًا','Juz by juz, backwards':'جزءًا جزءًا، من الآخر',
+'Page after page, towards An-Nās':'صفحة بعد صفحة نحو الناس','Page before page, towards Al-Fātiḥah (like starting from An-Nās)':'صفحة قبل صفحة نحو الفاتحة (كالبدء من الناس)','Goal':'الهدف','The whole Qur’an':'القرآن كاملًا',
+'Start with':'ابدأ بـ','Start of the ladder':'بداية السلّم','The short ʿaqīdah texts':'متون العقيدة القصيرة','Your Qur’an pages come first each day, then your mutūn lines.':'صفحات القرآن أولًا كل يوم، ثم أسطر المتون.',
+'Today’s memorization':'حفظ اليوم','Everything memorized today ✓':'حُفظ كل شيء اليوم ✓','Open':'افتح','Listen':'استمع','Test':'اختبر','Record':'سجّل','Play':'شغّل','Hide':'إخفاء','Show':'إظهار',
+'I memorized these verses':'حفظتُ هذه الآيات','These verses are memorized':'حُفظت هذه الآيات','I memorized these lines':'حفظتُ هذه الأسطر','I memorized these verses ':'حفظتُ هذه الآيات','Memorized':'محفوظ','✓ Memorized':'✓ محفوظ',
+'Before you start · Ibn ʿUthaymīn':'قبل أن تبدأ · ابن عثيمين','Next tip':'الفائدة التالية','All tips':'كل الفوائد','Advice for memorizing':'نصائح للحفظ','Revision':'المراجعة','Alḥamdulillāh':'الحمد لله','All done for today':'انتهيت لهذا اليوم',
+'May Allah make it firm in your heart.':'ثبّته الله في قلبك.','Today’s reminder':'تذكرة اليوم','+ One more page':'+ صفحة أخرى','+ The next part':'+ القسم التالي','+ More lines':'+ أسطر أخرى',
+'Memorize little by little':'احفظ شيئًا فشيئًا','Give it your full attention, and keep revising':'تفرّغ للحفظ وداوم على المراجعة','Revision is part of memorizing':'المراجعة من الحفظ','Ten verses, with knowledge and action':'عشر آيات بالعلم والعمل','Understand what you memorize':'افهم ما تحفظ','Put the Qur’an first':'قدّم القرآن','The first step of knowledge':'أول العلم','It is never too late':'لم يفت الأوان',
+'Goal complete':'اكتمل الهدف','Set your next Qur’an goal.':'حدّد هدفك القادم في القرآن.','Set my next goal':'حدّد هدفي القادم','No new pages today':'لا حفظ جديد اليوم','Use today to revise what you have memorized.':'اجعل اليوم للمراجعة.','Memorize new pages anyway':'احفظ جديدًا على أي حال',
+'Add the mutūn':'أضف المتون','Choose where to start, your goal and your pace.':'اختر البداية والهدف والوتيرة.','Set up my mutūn plan':'ضع خطة المتون','Set your next mutūn goal.':'حدّد هدفك القادم في المتون.','No new portions today':'لا حفظ جديد اليوم','Revise what you have memorized.':'راجع ما حفظت.','Memorize anyway':'احفظ على أي حال',
+'Qur’an · Alḥamdulillāh':'القرآن · الحمد لله','Qur’an · revision day':'القرآن · يوم مراجعة','Mutūn · Alḥamdulillāh':'المتون · الحمد لله','Mutūn · revision day':'المتون · يوم مراجعة',
+'Mark memorized':'علّمها محفوظة','Hide text':'أخفِ النص','Show text':'أظهر النص','A−':'A−','A+':'A+','▶ Listen':'▶ استمع','🎙 Recite':'🎙 سمّع','● Record':'● سجّل','Loading the mushaf…':'جارٍ تحميل المصحف…',
+'Swipe to turn the page. With “Hide text” on, tap a verse to check yourself.':'اسحب لتقليب الصفحة. ومع «أخفِ النص» اضغط على آية لتختبر نفسك.','Restart page':'أعد الصفحة','Recite and check':'سمّع وتحقّق','Tap the mic and recite':'اضغط الميكروفون وسمّع','Tap the mic and recite this page':'اضغط الميكروفون وسمّع هذه الصفحة','Listening… recite anything':'أستمع… سمّع أي موضع',
+'Tap the mic and recite from memory. Words appear as you say them. Skipped or different words turn orange. If you start somewhere else, the app finds where you are and shows that part.':'اضغط الميكروفون وسمّع من حفظك. تظهر الكلمات وأنت تقرؤها، وما تركته أو خالفت فيه يتلوّن بالبرتقالي. وإن بدأت من موضع آخر وجده التطبيق وعرضه.',
+'It checks the words, not tajwīd, and it can mishear.':'يتحقق من الكلمات لا من التجويد، وقد يخطئ السماع.',
+'Mutūn goal':'هدف المتون','Change':'تغيير','Study ladder':'سلّم الطلب','in your goal':'ضمن هدفك','Full recording':'التسجيل كاملًا','Whole text · practise':'النص كاملًا · تدرّب','Reader':'القارئ','Plays from archive.org.':'يُشغَّل من archive.org.','Streams online':'يعمل عبر الإنترنت',
+'Listen, repeat, then test yourself. Mark the lines when you have them.':'استمع وكرّر ثم اختبر نفسك، وعلّم الأسطر إذا حفظتها.','Text: Shaykh ʿAbd al-Muḥsin al-Qāsim’s edition (Mutūn Ṭālib al-ʿIlm), fully voweled':'النص: طبعة الشيخ عبد المحسن القاسم («متون طالب العلم») مشكولة',
+'Part of Shaykh ʿAbd al-Muḥsin al-Qāsim’s Mutūn Ṭālib al-ʿIlm':'من «متون طالب العلم» للشيخ عبد المحسن القاسم','Recommended by Ibn ʿUthaymīn':'أوصى به ابن عثيمين','Ibrāhīm al-Anṣārī':'إبراهيم الأنصاري','Abū Aḥmad Rashīd al-Shayẓamī':'أبو أحمد رشيد الشيظمي',
+'ʿAqīdah':'العقيدة','Fiqh':'الفقه','Ḥadīth':'الحديث','Naḥw':'النحو','Tajwīd':'التجويد','Juz complete':'أجزاء مكتملة','Streak':'المواظبة','streak':'المواظبة','Schedule':'الجدول','schedule':'الجدول','On track':'على الخطة','Qur’an goal':'هدف القرآن','Your plan':'خطتك','Your recent pace':'وتيرتك الأخيرة','plan':'الخطة','recent pace':'الوتيرة الأخيرة',
+'Tap a juz':'اضغط على جزء','Known before plan':'محفوظ قبل الخطة','I already know this juz':'أحفظ هذا الجزء من قبل','Memorized juz appear here so you can keep them fresh.':'تظهر هنا الأجزاء المحفوظة لتراجعها.','Oldest first. A juz turns orange after a week without review.':'الأقدم أولًا. يتلوّن الجزء بالبرتقالي بعد أسبوع بلا مراجعة.',
+'Tap a page to mark it memorized today. “I already know this juz” records pages you knew before starting, so they don’t count toward today.':'اضغط على صفحة لتعلّمها محفوظة اليوم. و«أحفظ هذا الجزء من قبل» يسجّل ما حفظته قبل البدء فلا يُحسب لليوم.',
+'What I memorize':'ماذا أحفظ','Make a new plan':'ضع خطة جديدة','Mutūn plan':'خطة المتون','Qur’an plan':'خطة القرآن','Start':'البداية','Pace':'الوتيرة','Change plan':'غيّر الخطة','Save plan':'احفظ الخطة','Your mutūn plan':'خطة المتون','Save my mutūn plan':'احفظ خطة المتون',
+'Start wherever you like, choose your own goal and pace. You can change it any time.':'ابدأ من حيث شئت واختر هدفك ووتيرتك، ويمكنك التغيير في أي وقت.','Start with any matn, choose how many lines a day and your goal. Lines you already memorized are skipped.':'ابدأ بأي متن واختر عدد الأسطر يوميًا وهدفك، ويُتخطّى ما حفظته.',
+'Start:':'البداية:','Goal:':'الهدف:','Pace:':'الوتيرة:','Finish:':'الختم:','Finish':'الختم','Recitation checker':'مدقّق التلاوة','Download the Qur’an AI':'نزّل ذكاء القرآن','Better recitation checking':'تدقيق أدق للتلاوة',
+'Add the Qur’an AI for much more accurate checking. It is Tarteel’s free model, trained on Qur’an recitation, and it runs on your phone, so your voice never leaves it. It downloads about 105 MB once, then works offline.':'أضف ذكاء القرآن لتدقيق أدق بكثير. هو نموذج «ترتيل» المجاني المدرَّب على تلاوة القرآن، ويعمل على هاتفك فلا يخرج صوتك منه. يُنزَّل مرة واحدة (نحو ١٠٥ ميغابايت) ثم يعمل دون إنترنت.',
+'Model: Tarteel whisper-base-ar-quran (Apache 2.0), run with Transformers.js and ONNX Runtime.':'النموذج: Tarteel whisper-base-ar-quran (Apache 2.0)، يعمل بـ Transformers.js وONNX Runtime.',
+'Reciter':'القارئ','Teaching recitation':'تلاوة تعليمية','Teaching recitation · slow and clear, best for memorizing':'تلاوة تعليمية · بطيئة وواضحة، الأفضل للحفظ','Murattal':'مرتّل','Imam of al-Masjid al-Ḥarām':'إمام المسجد الحرام','Imam of al-Masjid an-Nabawī':'إمام المسجد النبوي',
+'Maḥmūd Khalīl al-Ḥuṣarī':'محمود خليل الحصري','Muḥammad Ṣiddīq al-Minshāwī':'محمد صديق المنشاوي','ʿAlī al-Ḥudhayfī':'علي الحذيفي','Muḥammad Ayyūb':'محمد أيوب','ʿAbdullāh Baṣfar':'عبد الله بصفر','ʿAbd al-Raḥmān al-Sudays':'عبد الرحمن السديس','Saʿūd al-Shuraym':'سعود الشريم','ʿAbdullāh al-Juhanī':'عبد الله الجهني','Māhir al-Muʿayqlī':'ماهر المعيقلي','Yāsir al-Dawsarī':'ياسر الدوسري',
+'Save for offline':'احفظ للاستخدام دون إنترنت','No recitations saved yet':'لم تُحفظ تلاوات بعد','Delete saved recitations':'احذف التلاوات المحفوظة','Delete saved recitations?':'حذف التلاوات المحفوظة؟','Recitations come from EveryAyah.com, which offers them free to download. Save them once and they play without internet.':'التلاوات من EveryAyah.com وهي مجانية. احفظها مرة وتعمل دون إنترنت.',
+'Appearance':'المظهر','Theme':'السمة','Auto':'تلقائي','Light':'فاتح','Dark':'داكن','No blue':'بلا أزرق','“No blue” uses only warm amber colours, for reading at night.':'«بلا أزرق» يستخدم ألوانًا كهرمانية دافئة فقط للقراءة ليلًا.',
+'Backup and move devices':'النسخ الاحتياطي ونقل الجهاز','Copy backup link':'انسخ رابط النسخة','Restore from link':'استعد من رابط','Restore from a backup link':'الاستعادة من رابط نسخة','Restore this backup?':'استعادة هذه النسخة؟','Your backup link':'رابط نسختك',
+'Copy your backup link and open it on another phone or computer to bring your progress there.':'انسخ رابط النسخة وافتحه على هاتف أو حاسوب آخر لتنقل تقدّمك إليه.','Your progress is saved on this device. On iPhone, the home-screen app keeps its own copy, so install it first and track from there.':'يُحفظ تقدّمك على هذا الجهاز. وفي الآيفون لتطبيق الشاشة الرئيسية نسخته الخاصة، فثبّته أولًا وتابع منه.',
+'Install on your phone':'ثبّته على هاتفك','iPhone:':'آيفون:','Android:':'أندرويد:','open this page in Safari, tap Share, then “Add to Home Screen”.':'افتح الصفحة في سفاري، واضغط «مشاركة» ثم «إضافة إلى الشاشة الرئيسية».','tap the ⋮ menu in Chrome, then “Install app”.':'اضغط قائمة ⋮ في كروم ثم «تثبيت التطبيق».',
+'Clear all progress':'امسح كل التقدّم','Clear all progress?':'مسح كل التقدّم؟','Clears every memorized page and revision mark on this device.':'يمسح كل الصفحات المحفوظة وعلامات المراجعة من هذا الجهاز.','Reset':'إعادة ضبط','Report a problem':'أبلغ عن مشكلة','Sources':'المصادر','Cancel':'إلغاء','Done':'تم','Close':'إغلاق','Delete':'حذف',
+'Qur’an text: Tanzil Project, Uthmani text (tanzil.net), used under its terms. Page layout follows the 604-page Madinah Mushaf. Recitations: EveryAyah.com. Hadith and scholars’ words were checked against al-Maktabah al-Shāmilah.':'نص القرآن: مشروع تنزيل، الرسم العثماني (tanzil.net) وفق شروطه. ترتيب الصفحات على مصحف المدينة (٦٠٤ صفحات). التلاوات: EveryAyah.com. والأحاديث وأقوال العلماء موثّقة من المكتبة الشاملة.',
+'Texts: Shaykh ʿAbd al-Muḥsin al-Qāsim’s voweled editions (Mutūn Ṭālib al-ʿIlm) and other al-Maktabah al-Shāmilah editions. Recordings: archive.org.':'النصوص: طبعات الشيخ عبد المحسن القاسم المشكولة («متون طالب العلم») وطبعات أخرى من المكتبة الشاملة. التسجيلات: archive.org.',
+'Record yourself':'سجّل نفسك','Tap to record':'اضغط للتسجيل','Recording… tap to stop':'جارٍ التسجيل… اضغط للإيقاف','Listen to yourself':'استمع إلى نفسك','Latest take':'آخر تسجيل','The last 5 takes are kept on this phone only.':'تُحفظ آخر ٥ تسجيلات على هذا الهاتف فقط.','Your takes will appear here, ready to play back. They stay on this phone.':'ستظهر تسجيلاتك هنا جاهزة للاستماع، وتبقى على هذا الهاتف.',
+'Mā shāʾ Allāh, today’s lesson is done':'ما شاء الله، أتممت درس اليوم','Mutūn memorized':'حُفظت المتون','What do you want to memorize?':'ماذا تريد أن تحفظ؟','Hifdh has a new address':'لحفظ عنوان جديد','Recitation check isn’t available here':'التسميع غير متاح هنا','Testing needs the phone’s speech recognition':'الاختبار يحتاج التعرّف على الكلام في الهاتف','The Qur’an AI couldn’t run':'تعذّر تشغيل ذكاء القرآن',
+'All progress cleared':'مُسح كل التقدّم','Allow the microphone to record yourself':'اسمح بالميكروفون لتسجّل نفسك','App updated ✓ It loads next time you open it':'حُدّث التطبيق ✓ يظهر التحديث عند فتحه مرة أخرى','Backup link copied ✓':'نُسخ رابط النسخة ✓','Copied ✓':'نُسخ ✓','Could not save on this device':'تعذّر الحفظ على هذا الجهاز',
+'Couldn’t get every verse. Check your connection.':'تعذّر جلب كل الآيات. تحقّق من الاتصال.','Couldn’t get the recording ready. Tap play to try again.':'تعذّر تجهيز التسجيل. اضغط تشغيل لتعيد المحاولة.','Couldn’t load this matn':'تعذّر تحميل هذا المتن','Couldn’t restore that backup':'تعذّرت استعادة النسخة','Couldn’t save the recording':'تعذّر حفظ التسجيل',
+'I can’t hear you. Check that nothing is covering the microphone.':'لا أسمعك. تأكّد أن الميكروفون غير مغطّى.','Keep at least one study day':'أبقِ يوم حفظ واحدًا على الأقل','Listening paused. Tap the mic to carry on.':'توقّف الاستماع. اضغط الميكروفون للمتابعة.','Loading the mutūn…':'جارٍ تحميل المتون…','MP3 downloaded ✓':'نُزّل ملف MP3 ✓',
+'Offline saving isn’t available in this browser':'الحفظ دون إنترنت غير متاح في هذا المتصفح','Pick a finish date':'اختر تاريخ الختم','Play the recording first':'شغّل التسجيل أولًا','Preparing the MP3…':'جارٍ تجهيز ملف MP3…','Progress restored ✓':'استُعيد التقدّم ✓','Reciter changed':'تغيّر القارئ','Removed':'أُزيل',
+'Saved for offline ✓':'حُفظ للاستخدام دون إنترنت ✓','Saved recitations deleted':'حُذفت التلاوات المحفوظة','Starting from this word':'البدء من هذه الكلمة','Tap play again to listen':'اضغط تشغيل مرة أخرى لتستمع','That backup link is damaged':'رابط النسخة تالف','That doesn’t look like a backup link':'هذا لا يبدو رابط نسخة',
+'That recording is no longer on this phone':'هذا التسجيل لم يعد على الهاتف','That was too short to keep':'كان قصيرًا جدًا فلم يُحفظ','The Qur’an AI is ready ✓':'ذكاء القرآن جاهز ✓','The mushaf is still loading':'المصحف ما زال يُحمَّل','This browser can’t record. Try Safari or Chrome.':'هذا المتصفح لا يسجّل. جرّب سفاري أو كروم.',
+'This reader’s recording doesn’t include these lines.':'تسجيل هذا القارئ لا يتضمن هذه الأسطر.','You’re offline and this recording isn’t saved yet.':'أنت غير متصل وهذا التسجيل لم يُحفظ بعد.','Today’s mutūn lines are done ✓ Bāraka Allāhu fīk':'أتممت أسطر المتون اليوم ✓ بارك الله فيك',
+'The Prophet ﷺ':'النبي ﷺ','Ibn ʿUthaymīn':'ابن عثيمين','Ibn ʿAbd al-Barr':'ابن عبد البر','Ibn Taymiyyah':'ابن تيمية','Ibn al-Qayyim':'ابن القيم','Abū ʿAbd al-Raḥmān al-Sulamī':'أبو عبد الرحمن السلمي',
+'Narrated by al-Bukhārī and Muslim, from Abū Mūsā':'متفق عليه، عن أبي موسى','Quoted by Ibn Taymiyyah, Majmūʿ al-Fatāwā 17/407':'نقله ابن تيمية، مجموع الفتاوى ١٧/٤٠٧','Quoted in Durar Ramaḍāniyyah min Kalām Ibn al-Qayyim, p. 13':'«درر رمضانية من كلام ابن القيم»، ص ١٣','Tafsīr Sūrat Sabaʾ, p. 143':'تفسير سورة سبأ، ص ١٤٣',
+'Jāmiʿ Bayān al-ʿIlm, quoted in Min Hady al-Salaf, p. 40':'جامع بيان العلم، نقلًا عن «من هدي السلف»، ص ٤٠','Jāmiʿ Bayān al-ʿIlm, quoted in Min Hady al-Salaf fī Ṭalab al-ʿIlm, p. 40':'جامع بيان العلم، نقلًا عن «من هدي السلف في طلب العلم»، ص ٤٠','Al-Qamar 54:17':'القمر ٥٤:١٧',
+'First, ʿaqīdah: Thalāthat al-Uṣūl, al-Qawāʿid al-Arbaʿ, Kashf al-Shubuhāt and Kitāb al-Tawḥīd, all four by Shaykh al-Islām Muḥammad ibn ʿAbd al-Wahhāb.':'أولًا العقيدة: «ثلاثة الأصول» و«القواعد الأربع» و«كشف الشبهات» و«كتاب التوحيد»، وكلها لشيخ الإسلام محمد بن عبد الوهاب.',
+'The first of knowledge is memorizing the Book of Allah and understanding it.':'أول العلم حفظ كتاب الله وتفهّمه.','a day':'يوم'};
+const ARD={'Forward':'تقدّمًا','forward':'تقدّمًا','backward':'رجوعًا','Backward':'رجوعًا','juz by juz, backwards':'جزءًا جزءًا من الآخر'};
+const ARU={day:['يوم','يومان','أيام','يومًا'],line:['سطر','سطران','أسطر','سطرًا'],page:['صفحة','صفحتان','صفحات','صفحة'],week:['أسبوع','أسبوعان','أسابيع','أسبوعًا'],month:['شهر','شهران','أشهر','شهرًا'],year:['سنة','سنتان','سنوات','سنة'],verse:['بيت','بيتان','أبيات','بيتًا'],reader:['قارئ','قارئان','قرّاء','قارئًا'],text:['متن','متنان','متون','متنًا'],part:['قسم','قسمان','أقسام','قسمًا'],take:['تسجيل','تسجيلان','تسجيلات','تسجيلًا'],second:['ثانية','ثانيتان','ثوانٍ','ثانية'],mistake:['خطأ','خطآن','أخطاء','خطأً'],ayah:['آية','آيتان','آيات','آية']};
+const au=(n,u)=>{const w=ARU[u.replace(/s$/,'')];if(!w)return n+' '+u;const x=+n;return x===1?w[0]:x===2?w[1]:(x>=3&&x<=10&&x===Math.floor(x))?n+' '+w[2]:n+' '+w[3]};
+const auAll=t=>t.replace(/(\d+(?:\.\d+)?) (?:new )?(day|line|page|week|month|year|verse|reader|text|part|take|second|mistake)s?\b/g,(m,n,u)=>au(n,u)).replace(/\ba day\b/g,'يوم');
+const arPace=t=>t==='half a page'?'نصف صفحة':auAll(t);
+const sAr=n=>{const i=NAMES.findIndex(x=>x[0]===n);return i<0?null:NAMES[i][2].replace(/^سُوْرَةُ\s*/,'')};
+const mAr=n=>{if(typeof MI==='undefined'||!MI)return null;const x=MI.find(b=>b.en===n);if(x)return x.t;const y=MI.find(b=>b.ae===n);return y?y.a:null};
+const nar={'al-Bukhārī':'البخاري','Muslim':'مسلم','Abū Dāwūd and al-Tirmidhī':'أبو داود والترمذي','al-Tirmidhī and Ibn Mājah':'الترمذي وابن ماجه','al-Tirmidhī':'الترمذي','Abū Hurayrah':'أبي هريرة','ʿUmar ibn al-Khaṭṭāb':'عمر بن الخطاب','ʿĀʾishah':'عائشة','Abū Mūsā al-Ashʿarī':'أبي موسى الأشعري','Abū Mūsā':'أبي موسى','ʿAbdullāh ibn ʿAmr':'عبد الله بن عمرو','ʿUthmān ibn ʿAffān':'عثمان بن عفان','ʿAbdullāh ibn Masʿūd':'عبد الله بن مسعود'};
+const akh=x=>/^[Aa]khi$/.test(x)?'يا أخي':'يا أختي';
+const ARX=[
+ [/^(\d+(?:\.\d+)?) (?:new )?(day|line|page|week|month|year|verse|reader|text|part|take|second|mistake)s?$/,(n,u)=>au(n,u)],
+ [/^🎧 (\d+) readers?$/,n=>'🎧 '+au(n,'reader')],
+ [/^(.+?) (?:new )?a day, (\d+) days a week$/,(p,d)=>arPace(p)+' يوميًا، '+au(d,'day')+' في الأسبوع'],
+ [/^(\d+) days a week$/,d=>au(d,'day')+' في الأسبوع'],
+ [/^Qur’an (.+?) a day \+ mutūn (.+?) a day$/,(a,b)=>'القرآن '+arPace(a)+' يوميًا + المتون '+arPace(b)+' يوميًا'],
+ [/^(.+?) (?:new )?a day$/,p=>arPace(p)+' يوميًا'],
+ [/^At (.+?) a day you finish$/,p=>'بمعدل '+arPace(p)+' يوميًا تختم في'],
+ [/^(\d+) (lines|pages|verses) in this goal$/,(n,u)=>au(n,u)+' في هذا الهدف'],
+ [/^(\d+) of (\d+) (lines|pages|verses) memorized$/,(a,b,u)=>a+' من '+au(b,u)+' محفوظة'],
+ [/^(\d+) of (\d+) (lines|pages|verses|parts)$/,(a,b,u)=>a+' من '+au(b,u)],
+ [/^of (\d+) (lines|pages|verses)$/,(b,u)=>'من '+au(b,u)],
+ [/^(\d+) of (\d+)$/,(a,b)=>a+' من '+b],
+ [/^(?:Finish|finish) about (.+)$/,d=>'الختم نحو '+d],[/^about (.+)$/,d=>'نحو '+d],
+ [/^in about (.+)$/,t=>'بعد نحو '+auAll(t).replace(', ',' و')],
+ [/^(\d+) (year|month|week|day)s?, (\d+) (year|month|week|day)s?$/,(a,u,b,v)=>au(a,u)+' و'+au(b,v)],
+ [/^from page (\d+) \((.+)\), (.+)$/,(p,s,d)=>'من صفحة '+p+' ('+(sAr(s)||s)+')، '+(ARD[d]||d)],
+ [/^page (\d+)$/i,p=>'صفحة '+p],[/^Page (\d+) memorized$/,p=>'حُفظت صفحة '+p],[/^I memorized page (\d+)$/,p=>'حفظتُ صفحة '+p],[/^✓ Page (\d+)$/,p=>'✓ صفحة '+p],
+ [/^Pages (\d+)–(\d+)$/,(a,b)=>'الصفحات '+a+'–'+b],[/^Pages (\d+) & (\d+)$/,(a,b)=>'الصفحتان '+a+' و'+b],[/^Juz (\d+)$/,j=>'الجزء '+j],[/^Juz (\d+) & (\d+)$/,(a,b)=>'الجزآن '+a+' و'+b],[/^Juz ([\d, ]+…)$/,j=>'الأجزاء '+j.replace(/, /g,'، ')],
+ [/^Part (\d+) of (\d+)$/,(a,b)=>'القسم '+a+' من '+b],[/^(\d+) of (\d+) pages$/,(a,b)=>a+' من '+au(b,'page')],
+ [/^(.+) \(page (\d+)\)$/,(s,p)=>(sAr(s)||mAr(s)||s)+' (صفحة '+p+')'],
+ [/^(.+), (forward|backward)$/,(s,d)=>(sAr(s)||s)+'، '+ARD[d]],
+ [/^(.+) (\d+)–(\d+)$/,(s,a,b)=>sAr(s)?sAr(s)+' '+a+'–'+b:null],[/^(.+) (\d+) – (.+) (\d+)$/,(s,a,t,b)=>sAr(s)&&sAr(t)?sAr(s)+' '+a+' – '+sAr(t)+' '+b:null],[/^(.+) (\d+)$/,(s,a)=>sAr(s)?sAr(s)+' '+a:null],
+ [/^(\d+) pages in 5 parts$/,()=>null],[/^page (\d+) in (\d+) parts$/,(p,n)=>'صفحة '+p+' على '+au(n,'part')],
+ [/^Through (.+) \((\d+) texts\)$/,(m,n)=>'حتى «'+(mAr(m)||m)+'» ('+au(n,'text')+')'],[/^To the end of the ladder \((\d+) texts\)$/,n=>'حتى نهاية السلّم ('+au(n,'text')+')'],[/^To the end of Juz (\d+)$/,j=>'حتى نهاية الجزء '+j],[/^To the end of (.+)$/,s=>sAr(s)?'حتى نهاية سورة '+sAr(s):null],
+ [/^Only (.+)$/,m=>mAr(m)?'«'+mAr(m)+'» فقط':null],[/^(.+) → end of the ladder$/,m=>mAr(m)?'«'+mAr(m)+'» ← نهاية السلّم':null],
+ [/^(.+) \(d\. (\d+) AH\)$/,(a,d)=>(mAr(a)||a)+' (ت '+d+'هـ)'],[/^d\. (\d+) AH$/,d=>'ت '+d+'هـ'],
+ [/^lines (\d+)–(\d+) of (\d+)$/,(a,b,c)=>'الأسطر '+a+'–'+b+' من '+c],[/^lines (\d+)–(\d+)$/,(a,b)=>'الأسطر '+a+'–'+b],[/^(lines|verses) (\d+)$/,(u,a)=>(u==='lines'?'السطر ':'البيت ')+a],[/^(lines|verses) (\d+)–(\d+) of (\d+)$/,(u,a,b,c)=>(u==='lines'?'الأسطر ':'الأبيات ')+a+'–'+b+' من '+c],
+ [/^(.+), line (\d+) of (\d+)$/,(m,a,b)=>'«'+(mAr(m)||m)+'»، السطر '+a+' من '+b],
+ [/^Start at (line|verse) \((\d+)–(\d+)\)$/,(u,a,b)=>'ابدأ من '+(u==='line'?'السطر':'البيت')+' ('+a+'–'+b+')'],[/^or start on a page \((\d+)–(\d+)\)$/,(a,b)=>'أو ابدأ من صفحة ('+a+'–'+b+')'],
+ [/^Finish a juz, then the one before it: (.+)$/,j=>'أتمّ جزءًا ثم الذي قبله: '+j.replace(/, /g,'، ')],
+ [/^Downloading… (\d+)%$/,n=>'جارٍ التنزيل… '+n+'%'],[/^keep the app open$/,()=>'أبقِ التطبيق مفتوحًا'],
+ [/^Last (\d+) weeks$/,n=>'آخر '+au(n,'week')],[/^This week: (.+)$/,t=>'هذا الأسبوع: '+auAll(t)],[/^last (\d+) weeks: (.+)$/,(n,t)=>'آخر '+au(n,'week')+': '+auAll(t)],
+ [/^Your (\d+) pages$/,n=>'صفحاتك الـ'+n],[/^Today$/,()=>'اليوم'],
+ [/^Liqāʾ al-Bāb al-Maftūḥ \((\d+)\)$/,n=>'لقاء الباب المفتوح ('+n+')'],[/^Ibn ʿUthaymīn, Liqāʾ al-Bāb al-Maftūḥ \((\d+)\)$/,n=>'ابن عثيمين، لقاء الباب المفتوح ('+n+')'],
+ [/^Majmūʿ Fatāwā wa Rasāʾil (\d+)\/(\d+)$/,(a,b)=>'مجموع فتاوى ورسائل ابن عثيمين '+a+'/'+b],[/^Majmūʿ al-Fatāwā (\d+)\/(\d+)$/,(a,b)=>'مجموع الفتاوى '+a+'/'+b],
+ [/^narrated by (.+), from (.+)$/,(a,b)=>nar[a]&&nar[b]?'رواه '+nar[a]+' عن '+nar[b]:null],
+ [/^(.+)\. Recite it from memory, then listen back and check yourself against the text\.$/,l=>trK(l)+'. سمّعه من حفظك، ثم استمع وقارن بالنص.'],
+ [/^Plan saved ✓ (.+?) a day$/,p=>'حُفظت الخطة ✓ '+arPace(p)+' يوميًا'],[/^Pace set to (.+?) a day$/,p=>'ضُبطت الوتيرة على '+arPace(p)+' يوميًا'],[/^Needs (.+?) per study day \((\d+) study days left\)$/,(p,n)=>'يحتاج '+arPace(p)+' في كل يوم حفظ (بقي '+au(n,'day')+')'],
+ [/^To reach your goal, raise your pace to (.+?) a day\.$/,p=>'لتبلغ هدفك ارفع وتيرتك إلى '+arPace(p)+' يوميًا.'],[/^Use (.+?) a day$/,p=>'اعتمد '+arPace(p)+' يوميًا'],
+ [/^(\d+(?:\.\d+)?) (?:pages|lines) ahead$/,()=>null],[/^\+(.+) ahead$/,t=>'+'+auAll(t)+' متقدّم'],[/^(.+) ahead$/,t=>auAll(t)+' متقدّم'],[/^(.+) behind$/,t=>auAll(t)+' متأخر'],
+ [/^C’mon (\w+), yesterday’s portion is still waiting for you\.$/,a=>'هيّا '+akh(a)+'، ورد الأمس ما زال ينتظرك.'],[/^One day off the plan, (\w+)\? No need for a heroic five pages\.$/,a=>'يوم واحد خارج الخطة '+akh(a)+'؟ لا داعي لخمس صفحات بطولية.'],
+ [/^Yesterday slipped away\. Today doesn’t have to, (\w+)\.$/,a=>'فات الأمس، فلا يفُتك اليوم '+akh(a)+'.'],[/^(\w+)… your camels are wandering off\. 🐪$/,a=>akh(a)+'… إبلك تتفلّت! 🐪'],[/^Don’t be like so-and-so, (\w+)\.$/,a=>'لا تكن مثل فلان '+akh(a)+'.'],
+ [/^Finding it hard, (\w+)\? Good news: that pays double\.$/,a=>'تجده صعبًا '+akh(a)+'؟ أبشر، لك أجران.'],[/^(\w+), the plan misses you\. It said so\. \(It didn’t, but it would\.\)$/,a=>akh(a)+'، الخطة اشتاقت إليك. قالت ذلك. (لم تقل، لكنها كانت ستقول.)'],
+ [/^Welcome back, (\w+)! The mushaf kept your seat warm\.$/,a=>'أهلًا بعودتك '+akh(a)+'! المصحف حفظ لك مكانك.'],[/^(.+) away\? No lecture, (\w+)\. Just Bismillah\.$/,(n,a)=>'غبت '+auAll(n)+'؟ لا محاضرة '+akh(a)+'، فقط بسم الله.'],
+ [/^Missing a day happens\./,()=>'فوات يوم يحدث. وقد جعل النبي ﷺ لمن فاته حزبه من الليل وقتًا لقضائه: ما بين الفجر والظهر. فاقضِه وواصل.'],[/^Just do today’s portion\./,()=>'اكتفِ بورد اليوم. القليل الدائم أحبّ إلى الله.'],
+ [/^Skip the “if only I had…”\./,()=>'دع «لو أني فعلت…». استعن بالله وافتح مصحفك.'],[/^The Prophet ﷺ said the Qur’an slips away faster than camels from their ropes\. It’s been (.+)\. Time to round them up\.$/,n=>'أخبر النبي ﷺ أن القرآن أشد تفلّتًا من الإبل في عُقُلها. مضى '+auAll(n)+'، فحان وقت جمعها.'],
+ [/^The Prophet ﷺ told a Companion not to be like a man who kept up a good deed and then dropped it\. (.+) missed\./,n=>'قال النبي ﷺ لصحابي: لا تكن مثل فلان كان يقوم الليل فترك قيام الليل. فاتك '+auAll(n)+'، ولست «فلانًا» بعد، فلنُبقِها كذلك.'],
+ [/^Struggling through your portion still earns two rewards\./,()=>'من يتتعتع في ورده له أجران. التعثّر مقبول، والتوقف هو المشكلة.'],[/^Don’t let a few missed days turn into a habit\./,()=>'لا تجعل أيامًا فاتتك عادة. استعن بالله وابدأ بورد اليوم.'],
+ [/^Don’t try to make up everything at once\./,()=>'لا تحاول قضاء كل شيء دفعة واحدة، فهكذا تنهار الخطط. اقترب وواصل وابدأ باليوم.'],[/^Pick up from where you are\./,()=>'ابدأ من حيث أنت. القليل كل يوم أحبّ إلى الله، وإن كانت الوتيرة ثقيلة فخفّفها.']
+];
+function trK(k){if(AR[k]!==undefined)return AR[k];const s=sAr(k);if(s)return s;const m=mAr(k);if(m)return m;
+  if(k.includes(' · ')){const ps=k.split(' · '),o=ps.map(p=>trK(p)??(/[A-Za-z]/.test(p)?null:p));return o.every(v=>v!=null)?o.join(' · '):null}
+  for(const[re,f]of ARX){const x=k.match(re);if(x){const r=f(...x.slice(1));if(r!=null)return r}}
+  return null}
+const ARN=t=>t.replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+function trT(t){const k=t.replace(/\s+/g,' ').trim();if(!k)return null;if(!/[A-Za-z]/.test(k))return /\d/.test(k)?ARN(t):null;const r=trK(k);if(r==null)return null;const lead=t.match(/^\s*/)[0],tail=t.match(/\s*$/)[0];return lead+ARN(r)+tail}
+const arSkip=e=>!e||e.closest('script,style,svg,.ar,[lang=ar]:not(html),.noar');
+function arNode(n){if(n.nodeType===3){if(n.__en!==undefined&&n.nodeValue===n.__ar)return;if(arSkip(n.parentElement))return;const r=trT(n.nodeValue);if(r!=null&&r!==n.nodeValue){n.__en=n.nodeValue;n.__ar=r;n.nodeValue=r}return}
+  if(n.nodeType!==1||arSkip(n))return;const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT);let x;const L=[];while(x=w.nextNode())L.push(x);L.forEach(arNode);
+  if(n.placeholder&&/[A-Za-z]/.test(n.placeholder)){const r=trT(n.placeholder);if(r)n.placeholder=r}}
+function arUndo(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let x;while(x=w.nextNode())if(x.__en!==undefined){if(x.nodeValue===x.__ar)x.nodeValue=x.__en;delete x.__en;delete x.__ar}}
+const AROB=new MutationObserver(ms=>{if(LANG!=='ar')return;for(const m of ms){if(m.type==='characterData')arNode(m.target);else m.addedNodes.forEach(arNode)}});
+function applyLang(){const ar=LANG==='ar',h=document.documentElement;h.lang=ar?'ar':'en';h.dir=ar?'rtl':'ltr';const b=$('hdrLang');if(b){b.textContent=ar?'EN':'ع';b.setAttribute('aria-label',ar?'English':'العربية')}
+  if(ar){AROB.observe(document.body,{childList:true,subtree:true,characterData:true});arNode(document.body)}else{AROB.disconnect();arUndo()}}
+
 /* ---------- record yourself and listen back ---------- */
 var RC={mr:null,st:null,ch:[],t0:0,tm:null,key:'',lab:'',a:null,id:0,u:''};const RCC='hifdh-myrec',IC_REC='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg>';
 const rcK=(k,id)=>'myrec/'+encodeURIComponent(k)+'/'+id,mmss=x=>Math.floor(x/60)+':'+String(Math.floor(x%60)).padStart(2,'0');
@@ -784,7 +952,7 @@ function cardHTML(x,ix){
      +'<div class="dact"><button data-open="'+sel+'">'+IC_OPEN+'Open</button><button data-qlisten="'+sel+'">'+IC_PLAY+'Listen</button><button data-qtest="'+sel+'">'+IC_MIC+'Test</button><button data-rec="q:'+sel+'" data-rl="Page '+sel+' · '+esc(rangeLabel(sel))+'">'+IC_REC+'Record</button></div><button class="dmark" data-chk="'+sel+'" aria-pressed="'+sd+'">'+ICON_CHECK+(sd?'Page '+sel+' memorized':'I memorized page '+sel)+'</button></article>'}
   if(x.t==='m'){const bl=x.bl,si=bl[mSel]?mSel:Math.max(0,bl.findIndex(z=>!blkDone(z))),y=bl[si],yd=blkDone(y),b=mInfo(y.id),key=y.id+':'+y.a+':'+y.b,hid=dHide.has(key)&&!yd,u=b.poem?'verses':'lines',nd=bl.filter(blkDone).length;
     return '<article class="dcard m'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Mutūn · '+esc(b.cat)+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':bl.length>1?'<span class="dcount">'+nd+' of '+bl.length+' parts</span>':'')+'</div><div class="dt ar mt-ar" style="font-size:26px">'+esc(b.t)+'</div>'
-     +(bl.length>1?'<div class="ptabs">'+bl.map((z,k)=>'<button class="'+(k===si?'on':'')+(blkDone(z)?' ok':'')+'" data-msel="'+k+'" aria-pressed="'+(k===si)+'">'+(blkDone(z)?'✓ ':'')+esc(mInfo(z.id).en.split(' ').slice(0,2).join(' '))+' '+(z.a+1)+(z.b>z.a?'–'+(z.b+1):'')+'</button>').join('')+'</div>':'')
+     +(bl.length>1?'<div class="ptabs">'+bl.map((z,k)=>'<button class="'+(k===si?'on':'')+(blkDone(z)?' ok':'')+'" data-msel="'+k+'" aria-pressed="'+(k===si)+'">'+(blkDone(z)?'✓ ':'')+esc((LANG==='ar'?mInfo(z.id).t:mInfo(z.id).en).split(' ').slice(0,2).join(' '))+' '+(z.a+1)+(z.b>z.a?'–'+(z.b+1):'')+'</button>').join('')+'</div>':'')
      +'<div class="ds">'+esc(b.en)+' · '+u+' '+(y.a+1)+(y.b>y.a?'–'+(y.b+1):'')+' of '+b.n+'</div><div class="dtext ar'+(hid?' hid':'')+'" lang="ar">'+blockLines(y)+'</div>'
      +'<div class="dact">'+(MREC[y.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Play</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-rec="m:'+key+'" data-rl="'+esc(b.en+' · '+u+' '+(y.a+1)+(y.b>y.a?'–'+(y.b+1):''))+'">'+IC_REC+'Record</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+y.id+':'+y.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+yd+'">'+ICON_CHECK+(yd?'Memorized':'I memorized these '+u)+'</button></article>'}
   const I={qdone:['Qur’an · Alḥamdulillāh','Goal complete','Set your next Qur’an goal.','data-plan="1"','Set my next goal'],qoff:['Qur’an · revision day','No new pages today','Use today to revise what you have memorized.','id="anyway"','Memorize new pages anyway'],
@@ -1823,7 +1991,7 @@ $('v-mutun').addEventListener('input',e=>{if(e.target.id==='mpSeek'&&MP.id===mOp
 
 /* ---------- first-run plan page ---------- */
 let OB=null;
-const hij=d=>{try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch(e){return ''}};
+const hij=d=>{try{return new Intl.DateTimeFormat(LANG==='ar'?'ar-u-ca-islamic-umalqura-nu-arab':'en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch(e){return ''}};
 function howLong(d){const n=Math.round((d-parse(TODAY))/864e5)+1;if(n<=1)return 'a day';if(n<14)return pl(n,'day');if(n<63)return pl(Math.round(n/7),'week');
   const m=Math.round(n/30.44),y=Math.floor(m/12),r=m%12;return y?pl(y,'year')+(r?', '+pl(r,'month'):''):pl(m,'month')}
 function openOnb(first){OB={first:!!first,g:S.g||'b',tr:S.track||'both',off:S.off.slice(),
@@ -1839,7 +2007,7 @@ function projHTML(r,unit,per){if(!r.left)return '<div class="oproj"><p class="la
 function paceTable(k,opts,cur,fn,unit){const set=[...new Set(opts.concat(cur))].sort((a,b)=>a-b);
   return '<div class="ptab">'+set.map(p=>{const r=fn(p);return '<button class="'+(p===cur?'on':'')+'" data-op="'+k+':'+p+'" aria-pressed="'+(p===cur)+'"><b>'+(unit==='page'?qPace(p):pl(p,unit))+'</b><span>'+(r.left?fmt(r.fin):'—')+'</span><small>'+(r.left?howLong(r.fin):'')+'</small></button>'}).join('')+'</div>'}
 function onbPaint(){const el=$('onb'),y=el.scrollTop,O=OB,dq=O.tr!=='mutun',dm=O.tr!=='quran';let h='';
-  h+='<div class="onb-hero"><img src="icons/icon-192.png" alt="" width="58" height="58"><h1 id="onbT">Make your plan</h1><p>Choose your pace and see when you’ll finish, in shāʾ Allāh. You can change it any time.</p></div><div class="onb-in">';
+  h+='<div class="onb-hero"><button class="hlang onbl" data-olang="1">'+(LANG==='ar'?'EN':'ع')+'</button><img src="icons/icon-192.png" alt="" width="58" height="58"><h1 id="onbT">Make your plan</h1><p>Choose your pace and see when you’ll finish, in shāʾ Allāh. You can change it any time.</p></div><div class="onb-in">';
   h+='<section class="card"><h2>Who’s memorizing?</h2><div class="seg two">'+[['b','Brother'],['s','Sister']].map(x=>'<button data-og="'+x[0]+'" class="'+(O.g===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></section>';
   h+='<section class="card"><h2>What will you memorize?</h2><div class="seg three">'+[['both','Qur’an + mutūn'],['quran','Qur’an'],['mutun','Mutūn']].map(x=>'<button data-ot="'+x[0]+'" class="'+(O.tr===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><details class="adv"><summary>What the scholars say to memorize first</summary>'+qBlock(FIRST[2])+qBlock(FIRST[1])+'</details></section>';
   if(dq){const q=O.q,gop=goalOptsFor(q.sp,q.dir);if(!gop.some(x=>x[0]===q.kind&&x[1]===q.val)){q.kind='whole';q.val=0}const r=obQ(q.per),sa=surahAt(q.sp);
@@ -1868,6 +2036,7 @@ function onbSave(){const O=OB,dq=O.tr!=='mutun',dm=O.tr!=='quran';S.g=O.g;S.trac
   S.setup=1;if(dm&&MI){const m=O.m;S.mp={sm:m.sm,si:Math.max(0,m.si),gk:m.gk,gv:m.gv,per:m.per,goal:m.date>TODAY?m.date:'',start:TODAY,setup:1};S.mlesson=null}
   save();onbClose();go('today');renderAll();toast('Bismillah, your plan is set ✓')}
 $('onb').addEventListener('click',e=>{const t=e.target.closest('button');if(!t||!OB)return;const d=t.dataset,O=OB;
+   if(d.olang){LANG=LANG==='ar'?'en':'ar';S.lang=LANG;save();applyLang();try{header();renderAll()}catch(e){}onbPaint();return}
   if(t.id==='obStart'){onbSave();return}
   if(t.id==='obSkip'){S.g=O.g;S.track=O.tr;S.setup=1;save();onbClose();renderAll();return}
   if(t.id==='obX'){onbClose();return}
@@ -1931,7 +2100,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v30';
+const APPV='v31';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
