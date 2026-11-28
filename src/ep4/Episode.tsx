@@ -134,7 +134,7 @@ const BIG: [number, number][] = [
   [lf("N95"), lf("N96") - 2], [lf("N97"), lf("N99")], [lf("N101"), lf("N106") + 25], [lf("N133"), lf("N137") + 40],
   [lf("N142b") + 8, lf("N143") - 4], [lf("N147"), lf("N148") - 2], [lf("N158"), lf("N159")],
 ];
-const Captions: React.FC = () => {
+export const Captions: React.FC = () => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const v = height > width;
@@ -155,7 +155,7 @@ const Captions: React.FC = () => {
   );
 };
 /** the open question pinned at the top until the dead man answers it (keeps every part an open loop) */
-const Pinned: React.FC = () => {
+export const Pinned: React.FC = () => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const v = height > width;
@@ -167,12 +167,12 @@ const Pinned: React.FC = () => {
     </div>
   );
 };
-const Watermark: React.FC = () => {
+export const Watermark: React.FC = () => {
   const { width, height } = useVideoConfig();
   const v = height > width;
   return <Img src={staticFile("logo.png")} style={{ position: "absolute", top: v ? 330 : 28, right: 32, width: v ? 110 : 100, opacity: 0.9, filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.5))" }} />;
 };
-const MovingMark: React.FC = () => {
+export const MovingMark: React.FC = () => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const v = height > width;
