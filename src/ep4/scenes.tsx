@@ -151,7 +151,7 @@ export const MusaLight: React.FC<{ x: number; y: number; s?: number; flare?: num
       <circle cx={0} cy={0} r={260} fill="url(#glowO)" opacity={0.85} />
       <ellipse cx={0} cy={0} rx={120} ry={210} fill="#ffe39a" opacity={0.7} style={{ filter: "blur(26px)" }} />
       <ellipse cx={0} cy={0} rx={60} ry={130} fill="#fff8e0" opacity={0.95} style={{ filter: "blur(14px)" }} />
-      <text x={0} y={330} textAnchor="middle" fontFamily={`${elegant}, Amiri`} fontStyle="italic" fontWeight={800} fontSize={56} fill="#fff6dc" stroke="#3a2a10" strokeWidth={3} paintOrder="stroke" opacity={0.95}>Mūsā <tspan fontFamily="Amiri" fontStyle="normal" fontWeight={400} fontSize={40} dx={10}>عليه السلام</tspan></text>
+      <text x={0} y={330} textAnchor="middle" fontFamily={`${elegant}, Amiri`} fontStyle="italic" fontWeight={800} fontSize={56} fill="#f2c14e" stroke="#3a2a10" strokeWidth={3} paintOrder="stroke" opacity={0.95}>Mūsā</text>
       {new Array(18).fill(0).map((_, i) => {
         const t = ((f * 0.6 + i * 37) % 300) / 300;
         return <circle key={`p${i}`} cx={Math.sin(i * 2.3 + f * 0.02) * 160} cy={200 - t * 460} r={4 + (i % 3) * 2} fill="#fff4cc" opacity={(1 - t) * 0.8} />;

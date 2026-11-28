@@ -90,7 +90,9 @@ const ambFor = (c: Cue): string[] => {
   return ["wind", "murmur"];
 };
 const SFX: Sfx[] = [];
-for (const key of Object.keys(AMB)) {
+// Owner: the background beds hurt the ears, so they are off (foley one-shots stay).
+const USE_AMB = false;
+if (USE_AMB) for (const key of Object.keys(AMB)) {
   let run: [number, number] | null = null;
   const flush = () => { if (run) SFX.push({ src: amb(AMB[key].file), from: run[0], len: run[1] - run[0], vol: AMB[key].vol, fadeIn: 18, fadeOut: 18, loop: true }); run = null; };
   for (const c of SCENES) {
@@ -99,6 +101,8 @@ for (const key of Object.keys(AMB)) {
   }
   flush();
 }
+// Owner: keep the soft whoosh on every scene change (not at part starts).
+for (const c of SCENES) if (c.from > 0 && !P.some((p) => p.start === c.from)) SFX.push({ src: lib("short-video-whoosh-01"), from: c.from - 3, len: 30, vol: 0.14 });
 const fx = (n: string, from: number, v: number, len = 60, fadeOut = 12): Sfx => ({ src: amb(n), from, len, vol: v, fadeOut });
 for (const p of P) if (p.n < 7) SFX.push(fx("door-slam", V.lines[p.lastLine].f1 + 4, 0.7, 44, 8));
 const strike = Math.round(ps(7) + 0.7 * (lf("N142b") - ps(7)));
@@ -107,14 +111,14 @@ SFX.push(
   one("steel-spike-scrape-01", ps(2) + 2, 0.22, 40), { src: amb("steps"), from: lf("N33"), len: lf("N35") - lf("N33"), vol: 0.3, fadeIn: 8, fadeOut: 10, loop: true },
   one("horror-heartbeat-34", lf("N42"), 0.18, 80),
   one("sack-drop-01", lf("N57") - 14, 0.14, 24, 8), one("cow-moo-a", lf("N62") + 10, 0.22, 70),
-  one("cow-moo-b", lf("N68b") + 6, 0.16, 60), fx("amb-wind", lf("N87b"), 0.6, 80, 30),
+  one("cow-moo-b", lf("N68b") + 6, 0.16, 60),
   { src: amb("steps"), from: ps(5), len: lf("N90") - ps(5), vol: 0.3, fadeIn: 8, fadeOut: 10, loop: true }, ...["N92", "N93", "N94"].map((id) => one("sack-drop-01", lf(id) + 8, 0.26, 30, 8)),
   one("sack-drop-01", lf("N95"), 0.2, 24, 8), one("cow-moo-a", lf("N96") + 6, 0.26, 80),
   ...["N102", "N104", "N106"].map((id) => one("sack-drop-01", lf(id), 0.18, 26, 8)), { src: amb("steps"), from: lf("N108"), len: lf("N109") - lf("N108"), vol: 0.3, fadeIn: 6, fadeOut: 8, loop: true },
   one("cow-moo-b", lf("N131") + 14, 0.22, 70),
   fx("coins-pour", lf("N133"), 0.4, 150, 30), fx("coins-pour", lf("N135") + 10, 0.45, 150, 30),
   fx("cloth", strike - 10, 0.5, 70), one("sack-drop-01", strike, 0.16, 24, 8), fx("cloth", lf("N142b") + 10, 0.55, 70),
-  bed("horror-heartbeat-34", lf("N143a"), lf("OLD1"), 0.24), bed("daily-20260923-hushed-crowd-walla-short", lf("OLD1") + 40, lf("N144"), 0.05), one("sack-drop-01", lf("N147"), 0.26, 26, 8),
+  bed("horror-heartbeat-34", lf("N143a"), lf("OLD1"), 0.24), one("sack-drop-01", lf("N147"), 0.26, 26, 8),
   fx("cloth", lf("N148") + 4, 0.45, 70), fx("coins-drop", lf("N156"), 0.35, 110, 30),
 );
 const vol = (s: Sfx) => (f: number) => {
