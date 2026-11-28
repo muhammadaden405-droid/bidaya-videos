@@ -3,7 +3,9 @@ import { AbsoluteFill, Freeze, Html5Audio, Img, Sequence, interpolate, staticFil
 import { sans, amiri, serif, display } from "../fonts";
 import { Grain } from "../ep1/kit";
 import { Abs, V, lf, iv, ease, useShot } from "./kit";
-import { Doorstep, Accusation, Doubt, NoTrace, Split, Elder, ToMusa, Plead, Family, Silence, Answer, AnyCow, Questions, Search, Haggle, Ruling, Pearls, Reward, Gold, Slaughter, Revival, Suspects, Reveal, Inherit, Truth } from "./scenes";
+import { Doorstep, Accusation, Doubt, NoTrace, Split, Elder, ToMusa, Plead, Family, Silence, Answer, AnyCow, Questions, Search, Haggle, Ruling, Pearls, Reward, Gold, Slaughter, Revival, Suspects, Reveal, Inherit } from "./scenes";
+import { TopSplit, TopCrowd, TopStrike } from "./overhead";
+import { Land3D } from "./three";
 
 // Episode 4 — The Dead Man Who Named His Killer. One timeline, two films (16:9 and 9:16), cut to the locked voice
 // track (src/ep4/vo.json). Seven TikTok parts; each part ends on a door slam, then loops back into its own first frame.
@@ -23,14 +25,18 @@ const SCENES: Cue[] = [
   { C: Accusation, from: lf("N1_04"), to: lf("N1_06") },
   { C: Doubt, from: lf("N1_06"), to: lf("N1_15") },
   { C: NoTrace, from: lf("N1_15"), to: lf("N1_17") },
-  { C: Split, from: lf("N1_17"), to: pe(1), props: { reachAt: "N1_19" } },
+  { C: Split, from: lf("N1_17"), to: lf("N1_18") },
+  { C: TopSplit, from: lf("N1_18"), to: lf("N1_19") },
+  { C: Split, from: lf("N1_19"), to: pe(1), props: { reachAt: "N1_19", apart: true } },
   // Part 2
   { C: Split, from: ps(2), to: lf("N30"), props: { drawn: true, killerLine: "N27" } },
   { C: Elder, from: lf("N30"), to: lf("N31") },
   { C: ToMusa, from: lf("N31"), to: lf("N35") },
   { C: Plead, from: lf("N35"), to: lf("N36") },
   { C: Family, from: lf("N36"), to: lf("N37") },
-  { C: Silence, from: lf("N37"), to: pe(2), props: { flareAt: "N37", cuts: ["N39", "N40", "N41", "N42", "N43", "N44"] } },
+  { C: Silence, from: lf("N37"), to: lf("N39"), props: { flareAt: "N37" } },
+  { C: TopCrowd, from: lf("N39"), to: lf("N40") },
+  { C: Silence, from: lf("N40"), to: pe(2), props: { cuts: ["N41", "N42", "N43", "N44"] } },
   // Part 3
   { C: Silence, from: ps(3), to: lf("N52"), props: { flareAt: "N45b", cuts: ["N45b", "N47", "N48"] } },
   { C: Answer, from: lf("N52"), to: lf("N62") },
@@ -38,20 +44,24 @@ const SCENES: Cue[] = [
   // Part 4
   { C: Questions, from: ps(4), to: pe(4) },
   // Part 5
-  { C: Search, from: ps(5), to: lf("N99") },
+  { C: Search, from: ps(5), to: lf("N90") },
+  { C: Land3D, from: lf("N90"), to: lf("N92"), props: { shot: "farms" } },
+  { C: Search, from: lf("N92"), to: lf("N99") },
   { C: Haggle, from: lf("N99"), to: lf("N108") },
   { C: Ruling, from: lf("N108"), to: pe(5) },
   // Part 6
   { C: Pearls, from: ps(6), to: lf("N130") },
   { C: Reward, from: lf("N130"), to: lf("N131d") },
-  { C: Gold, from: lf("N131d"), to: lf("N138") },
+  { C: Land3D, from: lf("N131d"), to: lf("N132"), props: { shot: "present", fadeIn: 16 } },
+  { C: Gold, from: lf("N132"), to: lf("N138") },
   { C: Slaughter, from: lf("N138"), to: pe(6) },
   // Part 7
-  { C: Revival, from: ps(7), to: lf("N143a") },
+  { C: TopStrike, from: ps(7), to: lf("N142b") },
+  { C: Revival, from: lf("N142b"), to: lf("N143a") },
   { C: Suspects, from: lf("N143a"), to: lf("OLD1") },
   { C: Reveal, from: lf("OLD1"), to: lf("N154") },
   { C: Inherit, from: lf("N154"), to: lf("N159") },
-  { C: Truth, from: lf("N159"), to: VERSE_AT },
+  { C: Land3D, from: lf("N159"), to: VERSE_AT, props: { shot: "dawn" } },
 ];
 export const EP4_PARTS = P.map((p) => ({ n: p.n, start: p.start, end: p.n === 7 ? EP4_LEN : p.end }));
 
@@ -78,7 +88,7 @@ SFX.push(
   one("own-air-swell", lf("N132") - 6, 0.12, 70, 30), bed("sand-pour-01", lf("N135"), lf("N137"), 0.16),
   one("own-air-swell", lf("N142b") - 10, 0.24, 100, 40), one("sack-drop-01", lf("N142") + 28, 0.24, 26, 8), one("own-air-swell", lf("N142b"), 0.14, 90, 40),
   bed("horror-heartbeat-34", lf("N143a"), lf("OLD1"), 0.24), bed("daily-20260923-hushed-crowd-walla-short", lf("OLD1") + 40, lf("N144"), 0.05), one("sack-drop-01", lf("N147"), 0.28, 26, 8), one("body-fall-01", lf("N148") + 22, 0.3, 40),
-  bed("animal-bird-03", lf("N160"), VERSE_AT, 0.12),
+  bed("animal-bird-03", lf("N159"), VERSE_AT, 0.12), bed("animal-bird-03", lf("N90"), lf("N92"), 0.1), one("horror-wind-whisper-04", lf("N80") - 2, 0.08, 60),
   one("short-video-whoosh-01", lf("N1_15"), 0.08, 20), one("short-video-whoosh-01", lf("N55"), 0.08, 20), one("sack-drop-01", lf("N57") - 14, 0.2, 24, 8),
   one("horror-heartbeat-34", lf("N42"), 0.2, 80), one("sack-drop-01", lf("N95"), 0.22, 24, 8),
   one("own-air-swell", lf("N131d") - 14, 0.16, 80, 30), one("short-video-whoosh-01", lf("N131d") - 6, 0.12, 24),

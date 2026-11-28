@@ -7,6 +7,10 @@ export const amiri = "Amiri";
 export const serif = "Cormorant Garamond";
 export const sans = "Montserrat"; // bold captions
 export const display = "Cinzel"; // titles
+export const typewriter = "Special Elite"; // case-file / mystery beats (Episode 4)
+export const heavy = "Anton"; // shock words
+export const numbers = "Bebas Neue"; // prices, counts, offers
+export const elegant = "Playfair Display"; // lessons and turning points
 
 const LATIN = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD";
 const LATIN_EXT = "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF";
@@ -24,6 +28,13 @@ const faces: { family: string; file: string; range: string; style?: string; weig
   { family: sans, file: "montserrat-latin-ext-800-normal.woff2", range: LATIN_EXT, weight: "800" },
   { family: display, file: "cinzel-latin-700-normal.woff2", range: LATIN, weight: "700" },
   { family: display, file: "cinzel-latin-ext-700-normal.woff2", range: LATIN_EXT, weight: "700" },
+  { family: "Special Elite", file: "special-elite-latin-400-normal.woff2", range: LATIN },
+  { family: "Anton", file: "anton-latin-400-normal.woff2", range: LATIN },
+  { family: "Anton", file: "anton-latin-ext-400-normal.woff2", range: LATIN_EXT },
+  { family: "Bebas Neue", file: "bebas-neue-latin-400-normal.woff2", range: LATIN },
+  { family: "Bebas Neue", file: "bebas-neue-latin-ext-400-normal.woff2", range: LATIN_EXT },
+  { family: "Playfair Display", file: "playfair-display-latin-800-italic.woff2", range: LATIN, style: "italic", weight: "800" },
+  { family: "Playfair Display", file: "playfair-display-latin-ext-800-italic.woff2", range: LATIN_EXT, style: "italic", weight: "800" },
 ];
 
 for (const f of faces) {

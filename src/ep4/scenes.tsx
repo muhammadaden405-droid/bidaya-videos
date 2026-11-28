@@ -2,8 +2,9 @@ import React from "react";
 import { AbsoluteFill, random, useCurrentFrame } from "remotion";
 import { STAND, Pose, Outfit, Mood } from "../cartoon/Rig";
 import { FOLK } from "../cartoon/Trailer";
-import { sans } from "../fonts";
-import { Oasis as Meadow, MudHouse } from "./env";
+import { sans, typewriter, heavy, numbers, elegant } from "../fonts";
+import { Oasis as Meadow, MudHouse, Fore } from "./env";
+import { Land3D } from "./three";
 import { Herd, Animal } from "../ep3/animals";
 import {
   Actor, V, Cam, Layer, Defs, iv, ease, easeOut, useShot, useView, aim, Vignette, Grade, Flash, Dust,
@@ -20,6 +21,13 @@ const A = (vertical: boolean, x: number, y: number, z: number) => aim(vertical, 
 type Sky = "dawn" | "day" | "dusk" | "night";
 
 // ───────── helpers ─────────
+const KEYS: (keyof Pose)[] = ["bob", "lean", "head", "armLU", "armLL", "armRU", "armRL", "legLU", "legLL", "legRU", "legRL"];
+/** blend two poses (t 0..1) */
+export const mix = (a: Pose, b: Pose, t: number): Pose => { const o = { ...a }; for (const k of KEYS) (o as any)[k] = ((a as any)[k] ?? 0) + (((b as any)[k] ?? 0) - ((a as any)[k] ?? 0)) * t; return o; };
+/** pose A, easing into B over 7 frames from `at` (no snapping) */
+const sw = (f: number, at: number, a: Pose, b: Pose) => mix(a, b, ease(Math.max(0, Math.min(1, (f - at) / 7))));
+/** pose B only between `from` and `to`, eased in and out */
+const win = (f: number, from: number, to: number, a: Pose, b: Pose) => mix(a, b, ease(Math.max(0, Math.min(1, (f - from) / 7, (to - f) / 7))));
 /** id of the line spoken right after this one */
 const nextOf = (id: string) => {
   const f0 = V.lines[id].f0; let best = Infinity, bid = id;
@@ -47,9 +55,12 @@ export const Cast: React.FC<{ acts: Act[] }> = ({ acts }) => {
       {acts.map((a, i) => {
         let x = a.x, pose = a.pose ?? STAND;
         if (a.walk) {
-          const t = iv(frame, [a.walk.f0, a.walk.f1], [0, 1]);
+          const t = iv(frame, [a.walk.f0, a.walk.f1], [0, 1], ease);
           x = a.walk.x0 + (a.walk.x1 - a.walk.x0) * t;
-          if (t > 0 && t < 1) pose = walkBy(x * (a.walk.x1 > a.walk.x0 ? 1 : -1), a.s ?? S);
+          if (t > 0 && t < 1) {  // stride, easing back into the standing pose over the last steps
+            const settle = Math.min(1, (a.walk.f1 - frame) / 8, (frame - a.walk.f0) / 6);
+            pose = mix(pose, walkBy(x * (a.walk.x1 > a.walk.x0 ? 1 : -1), a.s ?? S), Math.max(0, settle));
+          }
         }
         return <Actor key={i} x={x} y={a.y ?? FLOOR} s={a.s ?? S} outfit={a.o} flip={a.flip} pose={pose} mood={a.mood} mouth={mouthAt(abs, a.say)} hold={a.hold} blur={a.blur} o={a.op} seat={a.seat} />;
       })}
@@ -65,17 +76,18 @@ export const crowd = (n: number, x0: number, x1: number, seed: string, o: { flip
     return { x, o: FOLK(i + Math.floor(random(`${seed}o`) * 4)), flip, mood: o.mood ?? "tight", s: (o.s ?? S * 0.94) * (0.96 + random(`${seed}s${i}`) * 0.08), y: (o.y ?? FLOOR) - (i % 2) * 18, pose: o.sword ? (up ? SWORD_UP : SWORD_READY) : STAND, hold: o.sword ? <Sword color="#2a2522" /> : undefined };
   });
 /** the town: green valley, a row of houses behind, optional big house (front) with a door that opens */
-export const Town: React.FC<{ cam: Cam; sky?: Sky; seed?: string; door?: number; houseX?: number; children?: React.ReactNode; back?: boolean }> = ({ cam, sky = "day", seed = "t", door, houseX, children, back = true }) => {
+export const Town: React.FC<{ cam: Cam; sky?: Sky; seed?: string; door?: number; houseX?: number; children?: React.ReactNode; back?: boolean; meadow?: boolean }> = ({ cam, sky = "day", seed = "t", door, houseX, children, back = true, meadow }) => {
   const night = sky === "night";
   const row = back ? <g>{[-420, 300, 1020, 1740, 2460].map((x, i) => <g key={i} transform={`translate(${x} 1290) scale(0.62) translate(0 ${-FLOOR})`}><MudHouse x={0} tone={i} night={night} /></g>)}</g> : null;
   return (
     <>
-      <Meadow cam={cam} sky={night ? "night" : sky} seed={seed} sunX={night ? 1500 : sky === "dawn" ? 420 : 1480} sunY={night ? 420 : sky === "dawn" ? 1000 : 760} river={!night} mid={row} />
+      <Meadow cam={cam} sky={night ? "night" : sky} seed={seed} sunX={night ? 1500 : sky === "dawn" ? 420 : 1480} sunY={night ? 420 : sky === "dawn" ? 1000 : 760} mid={meadow ? null : row} town={!meadow} meadow={meadow} />
       <Layer d={1} cam={cam}>
         <Defs />
         {houseX !== undefined ? <BigHouse x={houseX} open={door ?? 0} night={night} /> : null}
         {children}
       </Layer>
+      {night ? null : <Fore cam={cam} dusk={sky !== "day"} />}
       {night ? <Grade color="#0b1440" opacity={0.45} mode="multiply" /> : sky === "dawn" ? <Grade color="#ffb070" opacity={0.18} /> : null}
     </>
   );
@@ -139,6 +151,7 @@ export const MusaLight: React.FC<{ x: number; y: number; s?: number; flare?: num
       <circle cx={0} cy={0} r={260} fill="url(#glowO)" opacity={0.85} />
       <ellipse cx={0} cy={0} rx={120} ry={210} fill="#ffe39a" opacity={0.7} style={{ filter: "blur(26px)" }} />
       <ellipse cx={0} cy={0} rx={60} ry={130} fill="#fff8e0" opacity={0.95} style={{ filter: "blur(14px)" }} />
+      <text x={0} y={330} textAnchor="middle" fontFamily={`${elegant}, Amiri`} fontStyle="italic" fontWeight={800} fontSize={56} fill="#fff6dc" stroke="#3a2a10" strokeWidth={3} paintOrder="stroke" opacity={0.95}>Mūsā ﵇</text>
       {new Array(18).fill(0).map((_, i) => {
         const t = ((f * 0.6 + i * 37) % 300) / 300;
         return <circle key={`p${i}`} cx={Math.sin(i * 2.3 + f * 0.02) * 160} cy={200 - t * 460} r={4 + (i % 3) * 2} fill="#fff4cc" opacity={(1 - t) * 0.8} />;
@@ -174,14 +187,20 @@ export const YellowCow: React.FC<{ x: number; y?: number; s?: number; flip?: boo
   );
 };
 /** big on-screen words that punch in (viral style) */
-export const Punch: React.FC<{ at: number; text: string; color?: string; y?: number; size?: number; out?: number; sub?: string }> = ({ at, text, color = "#fff", y = 0.3, size = 1, out = 1e9, sub }) => {
+type Face = "sans" | "type" | "heavy" | "num" | "elegant";
+const FACE: Record<Face, { family: string; weight: number; style?: string; k: number; spacing: number }> = {
+  sans: { family: sans, weight: 900, k: 1, spacing: 2 }, type: { family: typewriter, weight: 400, k: 0.95, spacing: 4 },
+  heavy: { family: heavy, weight: 400, k: 1.15, spacing: 3 }, num: { family: numbers, weight: 400, k: 1.35, spacing: 4 },
+  elegant: { family: elegant, weight: 800, style: "italic", k: 1.0, spacing: 1 },
+};
+export const Punch: React.FC<{ at: number; text: string; color?: string; y?: number; size?: number; out?: number; sub?: string; face?: Face }> = ({ at, text, color = "#fff", y = 0.3, size = 1, out = 1e9, sub, face = "sans" }) => {
   const f = useCurrentFrame(); const { vertical } = useView();
   if (f < at || f > out) return null;
   const k = iv(f, [at, at + 6], [1.35, 1], easeOut), o = iv(f, [at, at + 3, out - 4, out], [0, 1, 1, 0]);
   return (
     <AbsoluteFill style={{ alignItems: "center", pointerEvents: "none" }}>
       <div style={{ position: "absolute", top: `${(vertical ? Math.max(y, 0.25) : y) * 100}%`, left: "5%", width: "90%", textAlign: "center", transform: `scale(${k})`, opacity: o }}>
-        <div style={{ fontFamily: sans, fontWeight: 900, fontSize: (vertical ? 96 : 84) * size, color, letterSpacing: 2, textShadow: "0 5px 0 #000, 0 0 22px rgba(0,0,0,0.9)" }}>{text}</div>
+        <div style={{ fontFamily: FACE[face].family, fontWeight: FACE[face].weight, fontStyle: FACE[face].style, fontSize: (vertical ? 96 : 84) * size * FACE[face].k, color, letterSpacing: FACE[face].spacing, lineHeight: 1.05, textShadow: "0 5px 0 #000, 0 0 22px rgba(0,0,0,0.9)" }}>{text}</div>
         {sub ? <div style={{ fontFamily: sans, fontWeight: 800, fontSize: (vertical ? 48 : 42) * size, color: "#ffd27a", marginTop: 8, textShadow: "0 3px 0 #000, 0 0 12px #000" }}>{sub}</div> : null}
       </div>
     </AbsoluteFill>
@@ -192,7 +211,7 @@ const Stamp: React.FC<{ at: number; text: string }> = ({ at, text }) => {
   const k = iv(f, [at, at + 5], [2.2, 1], easeOut);
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-      <div style={{ transform: `rotate(-12deg) scale(${k})`, border: "12px solid #e0262b", color: "#e0262b", fontFamily: sans, fontWeight: 900, fontSize: 110, padding: "4px 34px", borderRadius: 18, background: "rgba(0,0,0,0.25)", textShadow: "0 0 8px rgba(0,0,0,0.6)" }}>{text}</div>
+      <div style={{ transform: `rotate(-12deg) scale(${k})`, border: "12px solid #e0262b", color: "#e0262b", fontFamily: typewriter, fontWeight: 400, fontSize: 110, padding: "4px 34px", borderRadius: 18, background: "rgba(0,0,0,0.25)", textShadow: "0 0 8px rgba(0,0,0,0.6)" }}>{text}</div>
     </AbsoluteFill>
   );
 };
@@ -213,10 +232,10 @@ export const Doorstep: React.FC = () => {
     <AbsoluteFill>
       <Town cam={shook(cam, frame, [32], 10)} sky="dawn" seed="d1" houseX={960} door={open}>
         <Cast acts={[
-          { x: 960, y: FLOOR - 6 + (1 - step) * -20, o: ACCUSED, mood: frame > 30 ? "shock" : "neutral", pose: frame > 30 ? HANDS_HEAD : STAND, op: step },
-          ...(frame > b - 4 ? [{ x: 1180, o: ACCUSED_W, mood: "shock" as Mood, flip: true }, { x: 740, o: ACCUSED_SON, mood: "shock" as Mood, s: S * 0.8 }] : []),
-          ...(frame > b - 4 ? crowd(5, 1400, 2200, "d1c", { flip: true, mood: "frown" }) : []),
-          ...(frame > b - 4 ? crowd(4, -300, 420, "d1d", { mood: "frown" }) : []),
+          { x: 960, y: FLOOR - 6 + (1 - step) * -20, o: ACCUSED, mood: frame > 30 ? "shock" : "neutral", pose: sw(frame, 30, STAND, HANDS_HEAD), op: step },
+          ...(frame >= b - 2 ? [{ x: 1180, o: ACCUSED_W, mood: "shock" as Mood, flip: true }, { x: 740, o: ACCUSED_SON, mood: "shock" as Mood, s: S * 0.8 }] : []),
+          ...(frame >= b - 2 ? crowd(5, 1400, 2200, "d1c", { flip: true, mood: "frown" }) : []),
+          ...(frame >= b - 2 ? crowd(4, -300, 420, "d1d", { mood: "frown" }) : []),
         ]} />
         <Body x={900} />
       </Town>
@@ -280,13 +299,12 @@ export const NoTrace: React.FC = () => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL();
   const b = L("N1_16");
   if (frame < b - 2) {
-    const cam = cc(frame, [{ at: 0, a: A(vertical, 900, 1100, 1.1), b: A(vertical, 1100, 1100, 1.25) }], b);
     return (
       <AbsoluteFill>
-        <Town cam={cam} sky="night" seed="n1" houseX={960} door={0}><Dust n={30} color="#9fb0e0" y0={900} y1={1500} drift={1.6} seed="nd" size={2} opacity={0.4} /></Town>
-        <Punch at={2} out={Math.round(b * 0.33)} text="NO ONE SAW." y={0.3} size={0.9} />
-        <Punch at={Math.round(b * 0.33)} out={Math.round(b * 0.66)} text="NO ONE HEARD." y={0.3} size={0.9} />
-        <Punch at={Math.round(b * 0.66)} out={b} text="NO TRACE." y={0.3} size={1.1} color="#ff6a5a" />
+        <Land3D shot="night" span={[0, b]} />
+        <Punch at={2} out={Math.round(b * 0.33)} text="NO ONE SAW." y={0.3} size={0.9} face="type" />
+        <Punch at={Math.round(b * 0.33)} out={Math.round(b * 0.66)} text="NO ONE HEARD." y={0.3} size={0.9} face="type" />
+        <Punch at={Math.round(b * 0.66)} out={b} text="NO TRACE." y={0.3} size={1.1} color="#ff6a5a" face="type" />
         <Vignette s={0.7} />
       </AbsoluteFill>
     );
@@ -303,11 +321,11 @@ export const NoTrace: React.FC = () => {
   );
 };
 /** They blame each other; the crowd splits in two; hands reach for weapons (also opens Part 2) */
-export const Split: React.FC<{ drawn?: boolean; reachAt?: string; killerLine?: string }> = ({ drawn, reachAt, killerLine }) => {
+export const Split: React.FC<{ drawn?: boolean; reachAt?: string; killerLine?: string; apart?: boolean }> = ({ drawn, reachAt, killerLine, apart }) => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL();
   const r = reachAt ? L(reachAt) : 0;
   const armed = drawn || (reachAt ? frame > r + 6 : false);
-  const gap = iv(frame, [0, 40], [drawn ? 520 : 120, 520], ease);
+  const gap = iv(frame, [0, 40], [drawn || apart ? 520 : 120, 520], ease);
   const shots: Shot[] = [
     { at: 0, a: A(vertical, 960, 1000, 1.0), b: A(vertical, 960, 1000, 1.12) },
     { at: Math.round(dur * 0.35), a: A(vertical, 960 - gap / 2 - 120, 940, 1.9), b: A(vertical, 960 - gap / 2 - 60, 940, 2.1) },
@@ -389,7 +407,7 @@ export const Plead: React.FC = () => {
         <MusaLight x={1400} y={FLOOR - 300} />
         <Cast acts={[
           ...crowd(6, -300, 700, "pl", { mood: "tight" }),
-          { x: 1000, o: NEPHEW, pose: frame > L("NE3") ? KNEEL : PLEAD, mood: "frown", say: ["NE3", "NE4"], walk: { f0: 0, f1: 18, x0: 820, x1: 1000 } },
+          { x: 1000, o: NEPHEW, pose: sw(frame, L("NE3"), PLEAD, KNEEL), mood: "frown", say: ["NE3", "NE4"], walk: { f0: 0, f1: 18, x0: 820, x1: 1000 } },
         ]} />
       </Town>
       <Vignette s={0.35} />
@@ -433,7 +451,7 @@ export const Silence: React.FC<{ flareAt?: string; cuts?: string[] }> = ({ flare
           { x: 420, o: ELDER, mood: "tight" },
         ]} />
       </Town>
-      {V.lines["N42"] && L("N42") > 0 && L("N42") < dur ? <Punch at={L("N42")} out={L("N44") - 2} text="SOMEONE HERE KNOWS." color="#ff5a4a" y={0.26} size={0.85} /> : null}
+      {V.lines["N42"] && L("N42") > 0 && L("N42") < dur ? <Punch at={L("N42")} out={L("N44") - 2} text="SOMEONE HERE KNOWS." color="#ff5a4a" y={0.26} size={0.85} face="type" /> : null}
       <Vignette s={0.45} />
     </AbsoluteFill>
   );
@@ -450,24 +468,25 @@ export const Answer: React.FC = () => {
     { at: L("N57") - 2, a: A(vertical, 760, 940, 1.9), b: A(vertical, 820, 940, 2.1) },
     { at: L("P2") - 2, a: A(vertical, 520, 880, 2.1), b: A(vertical, 520, 870, 2.35) },
     { at: L("N59") - 2, a: A(vertical, 1450, 900, 1.5), b: A(vertical, 1450, 900, 1.7) },
+    { at: L("N61") - 2, a: A(vertical, 700, 940, 1.9), b: A(vertical, 740, 940, 2.1) },
   ], dur);
   const angry = frame > L("N57");
   return (
     <AbsoluteFill>
       <Town cam={shook(cam, frame, [L("P3")], 10)} sky="day" seed="an" back={false}>
         <MusaLight x={1450} y={FLOOR - 320} flare={fl} />
-        {frame > L("N55") && frame < L("N57") ? <g opacity={iv(frame, [L("N55"), L("N55") + 8], [0, 0.9])}><YellowCow x={1000} y={FLOOR - 40} s={0.9} tone="brown" /></g> : null}
+        {frame >= L("N55") - 2 && frame < L("N57") - 2 ? <g opacity={iv(frame, [L("N55"), L("N55") + 8], [0, 0.9])}><YellowCow x={1000} y={FLOOR - 40} s={0.9} tone="brown" /></g> : null}
         <Cast acts={[
           ...crowd(8, -300, 1200, "an", { mood: angry ? "frown" : "shock" }),
-          { x: 520, o: ELDER, mood: angry ? "frown" : "shock", pose: frame > L("P2") ? ARMS_UP : STAND, say: ["P2", "P3"] },
+          { x: 520, o: ELDER, mood: angry ? "frown" : "shock", pose: sw(frame, L("P2"), STAND, ARMS_UP), say: ["P2", "P3"] },
           { x: 820, o: NEPHEW, mood: angry ? "frown" : "shock" },
         ]} />
       </Town>
-      <Punch at={L("N54")} out={L("N55") - 2} text="SLAUGHTER A COW?" y={0.25} />
+      <Punch at={L("N54")} out={L("N55") - 2} text="SLAUGHTER A COW?" y={0.25} face="heavy" />
       {(() => { const d = L("N57") - L("N55"); return <>
-        <Punch at={L("N55")} out={L("N55") + Math.round(d * 0.33)} text="NOT A NAME." y={0.27} size={0.85} />
-        <Punch at={L("N55") + Math.round(d * 0.33)} out={L("N55") + Math.round(d * 0.62)} text="NOT A WITNESS." y={0.27} size={0.85} />
-        <Punch at={L("N55") + Math.round(d * 0.62)} out={L("N57") - 2} text="A COW." color="#ffcf3a" y={0.27} size={1.2} />
+        <Punch at={L("N55")} out={L("N55") + Math.round(d * 0.33)} text="NOT A NAME." y={0.27} size={0.85} face="heavy" />
+        <Punch at={L("N55") + Math.round(d * 0.33)} out={L("N55") + Math.round(d * 0.62)} text="NOT A WITNESS." y={0.27} size={0.85} face="heavy" />
+        <Punch at={L("N55") + Math.round(d * 0.62)} out={L("N57") - 2} text="A COW." color="#ffcf3a" y={0.27} size={1.2} face="heavy" />
       </>; })()}
       <Vignette s={0.4} />
     </AbsoluteFill>
@@ -483,7 +502,7 @@ export const AnyCow: React.FC = () => {
   ], dur);
   return (
     <AbsoluteFill>
-      <Town cam={cam} sky="day" seed="ac" back={false}>
+      <Town cam={cam} sky="day" seed="ac" back={false} meadow>
         {frame < L("N64") ? <Herd kind="cow" n={18} x0={-300} x1={2300} y0={1150} y1={1330} frame={frame} seed="any" s={0.42} /> : null}
         {frame >= L("N64") ? <><MusaLight x={1450} y={FLOOR - 320} /><Cast acts={[...crowd(7, -300, 1150, "ac", { mood: "tight" }), { x: 700, o: ELDER, mood: "tight" }]} /></> : null}
       </Town>
@@ -499,7 +518,8 @@ export const Questions: React.FC = () => {
   const ask = ["P4", "P5", "P6a", "P6b", "P6c", "P7"];
   const herdAt: [string, number][] = [["N68b", 40], ["N78", 5], ["N87b", 0]];
   const fieldShot = herdAt.find(([id]) => frame >= L(id) - 2 && frame < L(nextOf(id)) - 2);
-  const famShot = frame >= L("N80") - 2 && frame < L("N82") - 2;
+  const duskShot = frame >= L("N80") - 2 && frame < L("N81") - 2;
+  const famShot = frame >= L("N81") - 2 && frame < L("N82") - 2;
   const shots: Shot[] = [{ at: 0, a: A(vertical, 960, 1000, 1.05), b: A(vertical, 1000, 1000, 1.15) }];
   ask.forEach((id, i) => shots.push({ at: L(id) - 2, a: A(vertical, 640, 880, 2.0 + (i % 2) * 0.2), b: A(vertical, 640, 870, 2.2 + (i % 2) * 0.2) }));
   ["N67", "N74", "N83"].forEach((id) => shots.push({ at: L(id) - 2, a: A(vertical, 1420, 900, 1.6), b: A(vertical, 1420, 900, 1.85) }));
@@ -509,13 +529,14 @@ export const Questions: React.FC = () => {
     const fc = cc(frame - L(id) + 2, [{ at: 0, a: A(vertical, 960, 1150, 0.95), b: A(vertical, 960, 1150, 1.08) }], L(nextOf(id)) - L(id));
     return (
       <AbsoluteFill>
-        <Meadow cam={fc} sky="day" seed={`fd${id}`} trees={4} town={false} />
+        <Meadow cam={fc} sky="day" seed={`fd${id}`} trees={4} town={false} meadow />
         <Layer d={1} cam={fc}><Herd kind="cow" n={n} x0={-300} x1={2300} y0={1150} y1={1340} frame={frame} seed="cnt" s={0.4} /></Layer>
-        <Punch at={L(id)} text={n > 20 ? "THOUSANDS STILL FIT" : n > 0 ? "ONLY A HANDFUL" : "MAYBE NONE"} y={0.18} size={0.8} color={n > 0 ? "#fff" : "#ff6a5a"} />
+        <Punch at={L(id)} text={n > 20 ? "THOUSANDS STILL FIT" : n > 0 ? "ONLY A HANDFUL" : "MAYBE NONE"} y={0.18} size={0.8} color={n > 0 ? "#fff" : "#ff6a5a"} face="num" />
         <Vignette s={0.35} />
       </AbsoluteFill>
     );
   }
+  if (duskShot) return <Land3D shot="dusk" span={[L("N80") - 2, L("N81") - 2]} />;
   if (famShot) return <Family />;
   return (
     <AbsoluteFill>
@@ -559,7 +580,7 @@ export const Search: React.FC = () => {
     const cam = cc(frame - st, [{ at: 0, a: A(vertical, 960, 1080, 1.5), b: A(vertical, 960, 1070, 1.7) }], ends[bi] - st);
     return (
       <AbsoluteFill>
-        <Meadow cam={cam} sky="day" seed={`s${id}`} trees={5} town={false} />
+        <Meadow cam={cam} sky="day" seed={`s${id}`} trees={5} town={false} meadow />
         <Layer d={1} cam={cam}><Defs />
           {id === "N92" ? <g transform={`translate(960 ${FLOOR})`}><Animal kind="cow" s={1.1} /></g> : null}
           {id === "N93" ? <g><YellowCow x={960} s={1.1} tone="brown" /><path d="M 1180 1010 L 1420 1060 L 1440 1200 M 1300 1040 L 1280 1240" stroke="#5a3e28" strokeWidth={14} fill="none" strokeLinecap="round" /></g> : null}
@@ -577,12 +598,12 @@ export const Search: React.FC = () => {
   ], dur);
   return (
     <AbsoluteFill>
-      <Meadow cam={cam} sky={none ? "dusk" : "day"} seed="se" trees={6} town={false} />
+      <Meadow cam={cam} sky={none ? "dusk" : "day"} seed="se" trees={6} town={false} meadow />
       <Layer d={1} cam={cam}><Defs />
         {reveal ? <YellowCow x={960} glow={iv(frame, [L("N96"), L("N96") + 20], [0, 1])} /> : none ? null : <Cast acts={[...crowd(5, 200, 1700, "sw", { mood: "tight" }).map((a, i) => ({ ...a, walk: { f0: 0, f1: L("N92"), x0: a.x - 400, x1: a.x + 200 + i * 10 } })), { x: 800, o: ELDER, mood: "tight", walk: { f0: 0, f1: L("N92"), x0: 500, x1: 1000 } }]} />}
       </Layer>
-      {none ? <Punch at={L("N95")} text="NOT ONE COW FITS." color="#ff6a5a" y={0.25} size={0.8} /> : null}
-      {reveal ? <Punch at={L("N97")} text="ONE COW. IN THE WHOLE LAND." y={0.25} size={0.7} /> : null}
+      {none ? <Punch at={L("N95")} text="NOT ONE COW FITS." color="#ff6a5a" y={0.25} size={0.8} face="type" /> : null}
+      {reveal ? <Punch at={L("N97")} text="ONE COW. IN THE WHOLE LAND." y={0.25} size={0.75} face="elegant" color="#ffe39a" /> : null}
       <Vignette s={0.4} />
     </AbsoluteFill>
   );
@@ -604,16 +625,16 @@ export const Haggle: React.FC = () => {
   const no: string[] = ["N102", "N104", "N106"];
   return (
     <AbsoluteFill>
-      <Town cam={shook(cam, frame, [L("P8")], 10)} sky="day" seed="hg" back={false}>
+      <Town cam={shook(cam, frame, [L("P8")], 10)} sky="day" seed="hg" back={false} meadow>
         <YellowCow x={1380} glow={0.5} />
         <Cast acts={[
           ...crowd(5, -400, 500, "hg", { mood: frame > L("N107") ? "frown" : "tight" }),
           { x: 700, o: ELDER, pose: OFFER, mood: frame > L("N107") ? "frown" : "neutral", say: ["P8"] },
-          { x: 1050, o: SON, flip: true, pose: no.some((id) => frame >= L(id) && frame < L(id) + 30) ? REFUSE : STAND, mood: "tight" },
+          { x: 1050, o: SON, flip: true, pose: no.reduce((pp, id) => win(frame, L(id), L(id) + 30, pp, REFUSE), STAND as Pose), mood: "tight" },
         ]} />
       </Town>
-      {offers.map(([id, t], i) => <Punch key={id} at={L(id)} out={L(no[i]) + 25} text={t} y={0.2} size={0.9} />)}
-      {no.map((id) => <Punch key={id} at={L(id)} out={L(id) + 25} text="NO." color="#ff5a4a" y={0.34} size={1.1} />)}
+      {offers.map(([id, t], i) => <Punch key={id} at={L(id)} out={L(no[i]) + 25} text={t} y={0.2} size={0.9} face="num" />)}
+      {no.map((id) => <Punch key={id} at={L(id)} out={L(id) + 25} text="NO." color="#ff5a4a" y={0.34} size={1.1} face="heavy" />)}
       <Vignette s={0.4} />
     </AbsoluteFill>
   );
@@ -632,13 +653,13 @@ export const Ruling: React.FC = () => {
   const fl = ["N110", "N113"].some((id) => frame >= L(id) && frame < L(id) + 30) ? 0.6 : 0;
   return (
     <AbsoluteFill>
-      <Town cam={cam} sky="day" seed="ru" back={false}>
+      <Town cam={cam} sky="day" seed="ru" back={false} meadow>
         <MusaLight x={1450} y={FLOOR - 320} flare={fl} />
         <YellowCow x={1180} y={FLOOR + 40} s={0.8} glow={0.3} flip />
         <Cast acts={[
           ...crowd(5, -500, 450, "ru", { mood: "frown" }),
-          { x: 640, o: ELDER, pose: frame > L("P9") ? POINT : STAND, mood: "frown", say: ["P9"], walk: { f0: 0, f1: 40, x0: 300, x1: 640 } },
-          { x: 1020, o: SON, pose: frame > L("N111") && frame < L("N113") ? PLEAD : STAND, mood: "tight", walk: { f0: 0, f1: 40, x0: 700, x1: 1020 } },
+          { x: 640, o: ELDER, pose: sw(frame, L("P9"), STAND, POINT), mood: "frown", say: ["P9"], walk: { f0: 0, f1: 40, x0: 300, x1: 640 } },
+          { x: 1020, o: SON, pose: win(frame, L("N111"), L("N113"), STAND, PLEAD), mood: "tight", walk: { f0: 0, f1: 40, x0: 700, x1: 1020 } },
         ]} />
       </Town>
       <Vignette s={0.4} />
@@ -706,7 +727,7 @@ export const Pearls: React.FC = () => {
         <Sleeper />
         <Cast acts={[
           { x: 1500, o: MERCHANT, flip: true, pose: OFFER, mood: "smile", hold: <g transform="translate(10 0)"><rect x={-40} y={-8} width={80} height={14} rx={4} fill="#5a3a22" />{[-26, -12, 2, 16, 30].map((px) => <circle key={px} cx={px} cy={-16} r={8} fill="#f6f1e6" stroke="#bfb6a6" strokeWidth={2} />)}</g> },
-          { x: 1180, o: SON, pose: frame > L("N128") ? REFUSE : STAND, mood: frame > L("N128") ? "tight" : "neutral" },
+          { x: 1180, o: SON, pose: sw(frame, L("N128"), STAND, REFUSE), mood: frame > L("N128") ? "tight" : "neutral" },
         ]} />
       </Home>
       <Memory />
@@ -722,7 +743,7 @@ const Tag: React.FC<{ text: string; who: string; left?: boolean; at: number; str
   return (
     <div style={{ position: "absolute", top: vertical ? "24%" : "14%", [left ? "left" : "right"]: vertical ? 40 : 90, transform: `scale(${k})`, textAlign: "center", opacity: strike ? 0.45 : 1 }}>
       <div style={{ fontFamily: sans, fontWeight: 800, fontSize: vertical ? 28 : 26, color: "#ffd27a", textShadow: "0 2px 0 #000" }}>{who}</div>
-      <div style={{ fontFamily: sans, fontWeight: 900, fontSize: vertical ? 76 : 70, color: left ? "#ff6a5a" : "#8fe08a", textShadow: "0 4px 0 #000, 0 0 14px #000", textDecoration: strike ? "line-through" : "none" }}>{text}</div>
+      <div style={{ fontFamily: numbers, fontWeight: 400, fontSize: vertical ? 104 : 96, letterSpacing: 3, color: left ? "#ff6a5a" : "#8fe08a", textShadow: "0 4px 0 #000, 0 0 14px #000", textDecoration: strike ? "line-through" : "none" }}>{text}</div>
     </div>
   );
 };
@@ -761,14 +782,13 @@ export const Gold: React.FC = () => {
   const mult = frame < L("N133") ? 0 : frame < L("N135") ? 1 : Math.min(10, 1 + Math.floor((frame - L("N135")) / Math.max(4, (L("N137") - L("N135")) / 10)));
   return (
     <AbsoluteFill>
-      <Town cam={cam} sky="day" seed="go" back={false}>
+      <Town cam={cam} sky="day" seed="go" back={false} meadow>
         <MusaLight x={1600} y={FLOOR - 320} flare={frame >= L("N132") && frame < L("N132") + 30 ? 0.6 : 0} />
         <YellowCow x={760} glow={0.3} />
         {mult > 0 ? <g>{new Array(Math.min(40, mult * 4)).fill(0).map((_, i) => <rect key={i} x={1000 + (i % 8) * 46} y={FLOOR - 30 - Math.floor(i / 8) * 26} width={42} height={22} rx={3} fill="#e3b341" stroke="#8a6414" strokeWidth={3} />)}</g> : null}
-        <Cast acts={[...crowd(4, -400, 300, "go", { mood: "tight" }), { x: 520, o: SON, mood: frame > L("N137") ? "smile" : "tight", pose: frame > L("N134") && frame < L("N135") ? REFUSE : STAND }, { x: 1080, o: ELDER, flip: true, pose: OFFER, mood: "tight" }]} />
+        <Cast acts={[...crowd(4, -400, 300, "go", { mood: "tight" }), { x: 520, o: SON, mood: frame > L("N137") ? "smile" : "tight", pose: win(frame, L("N134"), L("N135"), STAND, REFUSE) }, { x: 1080, o: ELDER, flip: true, pose: OFFER, mood: "tight" }]} />
       </Town>
-      <AbsoluteFill style={{ backgroundColor: "#fff2d0", opacity: iv(frame, [0, 16], [0.9, 0]) }} />
-      {mult > 0 ? <Punch at={L("N133")} text={`×${mult} ITS WEIGHT IN GOLD`} y={0.18} size={0.75} color="#ffd34a" out={L("N137") + 40} /> : null}
+      {mult > 0 ? <Punch at={L("N133")} text={`×${mult} ITS WEIGHT IN GOLD`} y={0.18} size={0.75} color="#ffd34a" out={L("N137") + 40} face="num" /> : null}
       <Vignette s={0.4} />
     </AbsoluteFill>
   );
@@ -817,16 +837,16 @@ export const Revival: React.FC = () => {
   return (
     <AbsoluteFill>
       <Town cam={shook(cam, frame, [hit, L("N142b") + 8], 10)} sky="day" seed="rv" back={false}>
-        <MusaLight x={260} y={FLOOR - 320} flare={iv(frame, [L("N142b"), L("N142b") + 12, L("N142b") + 60], [0, 1, 0.3])} />
+        {frame >= L("N143") - 2 ? <MusaLight x={260} y={FLOOR - 320} /> : null}
         <Cast acts={P7Cast(sit > 0.3 ? "shock" : "tight", [
           { x: 1250, o: NEPHEW, mood: sit > 0.3 ? "shock" : "tight" },
-          ...(frame < L("N142b") + 30 ? [{ x: 700, y: FLOOR + 120, o: ELDER, pose: { ...KNEEL, armRU: swing, armRL: -10 }, mood: "tight" as Mood, hold: <Flesh /> }] : []),
+          ...(frame < L("N142b") + 10 ? [{ x: 700, y: FLOOR + 120, o: ELDER, pose: { ...KNEEL, armRU: swing, armRL: -10 }, mood: "tight" as Mood, hold: <Flesh /> }] : []),
         ])} />
         {sit < 0.5 ? <Body x={900} glow={iv(frame, [L("N142b"), L("N142b") + 10], [0, 1])} /> : <Seated x={820} mood="shock" mouth={0.2 * Math.abs(Math.sin(abs * 0.25)) * iv(frame, [L("N142b") + 30, L("N142b") + 60], [1, 0])} />}
       </Town>
       <Flash at={hit} len={6} color="#fff" max={0.25} />
       <Flash at={L("N142b") + 2} len={24} color="#fff6d8" max={1} />
-      <Punch at={L("N142b") + 8} out={L("N143") - 4} text="HE'S ALIVE" y={0.24} size={0.9} color="#ffe39a" />
+      <Punch at={L("N142b") + 8} out={L("N143") - 4} text="HE'S ALIVE" y={0.24} size={0.95} color="#ffe39a" face="elegant" />
       <Vignette s={0.4} />
     </AbsoluteFill>
   );
@@ -846,9 +866,9 @@ export const Suspects: React.FC = () => {
         </Town>
       </AbsoluteFill>
       <Grade color="#000" opacity={0.35} mode="multiply" />
-      <Punch at={0} out={q} text="STOP." color="#ff4a3a" y={0.3} size={1.6} />
+      <Punch at={0} out={q} text="STOP." color="#ff4a3a" y={0.3} size={1.6} face="heavy" />
       {frame >= q ? <SuspectCards at={q} /> : null}
-      <Punch at={q} text="WHO KILLED HIM?" y={vertical ? 0.24 : 0.08} size={0.95} sub="Comment your answer now 👇" />
+      <Punch at={q} text="WHO KILLED HIM?" y={vertical ? 0.24 : 0.08} size={0.95} sub="Comment your answer now 👇" face="heavy" />
     </AbsoluteFill>
   );
 };
@@ -900,13 +920,13 @@ export const Reveal: React.FC = () => {
     <AbsoluteFill>
       <Town cam={shook(cam, frame, [L("OLD1") + 26], 16)} sky="day" seed="rv" back={false}>
         <MusaLight x={260} y={FLOOR - 320} />
-        <Cast acts={P7Cast("shock", [{ x: 1250, o: NEPHEW, mood: "shock", pose: frame > L("OLD1") + 26 ? HANDS_HEAD : STAND, flip: true }])} />
+        <Cast acts={P7Cast("shock", [{ x: 1250, o: NEPHEW, mood: "shock", pose: sw(frame, L("OLD1") + 26, STAND, HANDS_HEAD), flip: true }])} />
         {sit > 0.5 ? <Seated x={820} mood={frame > L("OLD1") + 26 ? "frown" : "neutral"} mouth={mouth} point={iv(frame, [L("OLD1") + 14, L("OLD1") + 24, L("N148") - 4, L("N148") + 4], [0, 1, 1, 0])} /> : <Body x={900} />}
       </Town>
       <Flash at={L("OLD1") + 26} len={6} color="#ff2a1a" max={0.3} />
       <Flash at={L("N148") + 14} len={10} color="#000" max={0.6} />
-      <Punch at={L("N147")} out={L("N147a") - 2} text="THE KILLER." color="#ff4a3a" y={0.24} size={1.1} />
-      <Punch at={L("N147a")} text="HE WAS THERE THE WHOLE TIME" y={0.24} size={0.7} out={L("N148") - 2} />
+      <Punch at={L("N147")} out={L("N147a") - 2} text="THE KILLER." color="#ff4a3a" y={0.24} size={1.1} face="heavy" />
+      <Punch at={L("N147a")} text="HE WAS THERE THE WHOLE TIME" y={0.24} size={0.75} out={L("N148") - 2} face="type" />
       <Vignette s={0.45} />
     </AbsoluteFill>
   );
@@ -926,11 +946,11 @@ export const Inherit: React.FC = () => {
       <Town cam={cam} sky="dusk" seed="in" back>
         <g opacity={1 - gone}>{new Array(30).fill(0).map((_, i) => <ellipse key={i} cx={1000 + (i % 10) * 26 + (Math.floor(i / 10) % 2) * 12} cy={FLOOR - 10 - Math.floor(i / 10) * 14} rx={14} ry={7} fill="#e3b341" stroke="#8a6414" strokeWidth={2} />)}</g>
         <Cast acts={[
-          { x: 760, o: NEPHEW, mood: frame > L("N157") ? "frown" : "neutral", pose: frame > L("N156") && frame < L("N157") + 10 ? OFFER : STAND },
-          ...(frame < L("N156") ? [{ x: 520, o: { ...FOLK(1), robe: "#9a6a2a" }, mood: "tight" as Mood }, { x: 380, o: { ...FOLK(2), robe: "#7a5a2a" }, mood: "tight" as Mood }] : []),
+          { x: 760, o: NEPHEW, mood: frame > L("N157") ? "frown" : "neutral", pose: win(frame, L("N156"), L("N157") + 10, STAND, OFFER) },
+          ...(frame < L("N156") - 2 ? [{ x: 520, o: { ...FOLK(1), robe: "#9a6a2a" }, mood: "tight" as Mood }, { x: 380, o: { ...FOLK(2), robe: "#7a5a2a" }, mood: "tight" as Mood }] : []),
         ]} />
       </Town>
-      <Punch at={L("N158")} text="NO KILLER INHERITS" y={0.18} size={0.8} color="#ffd34a" />
+      <Punch at={L("N158")} text="NO KILLER INHERITS" y={0.18} size={0.85} color="#ffd34a" face="elegant" />
       <Vignette s={0.45} />
     </AbsoluteFill>
   );
