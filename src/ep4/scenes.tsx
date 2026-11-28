@@ -151,7 +151,7 @@ export const MusaLight: React.FC<{ x: number; y: number; s?: number; flare?: num
       <circle cx={0} cy={0} r={260} fill="url(#glowO)" opacity={0.85} />
       <ellipse cx={0} cy={0} rx={120} ry={210} fill="#ffe39a" opacity={0.7} style={{ filter: "blur(26px)" }} />
       <ellipse cx={0} cy={0} rx={60} ry={130} fill="#fff8e0" opacity={0.95} style={{ filter: "blur(14px)" }} />
-      <text x={0} y={330} textAnchor="middle" fontFamily={`${elegant}, Amiri`} fontStyle="italic" fontWeight={800} fontSize={56} fill="#fff6dc" stroke="#3a2a10" strokeWidth={3} paintOrder="stroke" opacity={0.95}>Mūsā <tspan fontFamily="Amiri" fontStyle="normal" fontWeight={400} fontSize={64}>﵇</tspan></text>
+      <text x={0} y={330} textAnchor="middle" fontFamily={`${elegant}, Amiri`} fontStyle="italic" fontWeight={800} fontSize={56} fill="#fff6dc" stroke="#3a2a10" strokeWidth={3} paintOrder="stroke" opacity={0.95}>Mūsā <tspan fontFamily="Amiri" fontStyle="normal" fontWeight={400} fontSize={40} dx={10}>عليه السلام</tspan></text>
       {new Array(18).fill(0).map((_, i) => {
         const t = ((f * 0.6 + i * 37) % 300) / 300;
         return <circle key={`p${i}`} cx={Math.sin(i * 2.3 + f * 0.02) * 160} cy={200 - t * 460} r={4 + (i % 3) * 2} fill="#fff4cc" opacity={(1 - t) * 0.8} />;
@@ -754,7 +754,7 @@ export const Reward: React.FC = () => {
   const cam = cc(frame, [
     { at: 0, a: A(vertical, 320, 1150, 1.9), b: A(vertical, 320, 1140, 2.1) },
     { at: L("N131") - 2, a: A(vertical, 1350, 1000, 1.2), b: A(vertical, 1350, 1000, 1.35) },
-    { at: L("N131b") - 2, a: A(vertical, 1350, 1040, 1.6), b: A(vertical, 1350, 1030, 1.85) },
+    { at: L("N131b") - 2, a: vertical ? aim(true, 1400, 1040, 1.5) : A(false, 1350, 1040, 1.6), b: vertical ? aim(true, 1400, 1030, 1.65) : A(false, 1350, 1030, 1.85) },
   ], dur);
   return (
     <AbsoluteFill>
@@ -774,7 +774,7 @@ export const Reward: React.FC = () => {
 export const Gold: React.FC = () => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL();
   const cam = cc(frame, [
-    { at: 0, a: A(vertical, 640, 960, 1.9), b: A(vertical, 640, 950, 2.1) },
+    { at: 0, a: vertical ? aim(true, 770, 960, 1.6) : A(false, 640, 960, 1.9), b: vertical ? aim(true, 770, 950, 1.72) : A(false, 640, 950, 2.1) },
     { at: L("N132") - 2, a: A(vertical, 1450, 920, 1.4), b: A(vertical, 1480, 920, 1.55) },
     { at: L("N133") - 2, a: A(vertical, 960, 1050, 1.2), b: A(vertical, 960, 1050, 1.35) },
     { at: L("N137") - 2, a: A(vertical, 1000, 950, 1.9), b: A(vertical, 1000, 950, 2.1) },
