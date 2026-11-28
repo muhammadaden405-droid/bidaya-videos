@@ -774,7 +774,7 @@ export const Reward: React.FC = () => {
 export const Gold: React.FC = () => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL();
   const cam = cc(frame, [
-    { at: 0, a: A(vertical, 1050, 1000, 1.25), b: A(vertical, 1050, 990, 1.4) },
+    { at: 0, a: A(vertical, 640, 960, 1.9), b: A(vertical, 640, 950, 2.1) },
     { at: L("N132") - 2, a: A(vertical, 1450, 920, 1.4), b: A(vertical, 1480, 920, 1.55) },
     { at: L("N133") - 2, a: A(vertical, 960, 1050, 1.2), b: A(vertical, 960, 1050, 1.35) },
     { at: L("N137") - 2, a: A(vertical, 1000, 950, 1.9), b: A(vertical, 1000, 950, 2.1) },
@@ -788,6 +788,7 @@ export const Gold: React.FC = () => {
         {mult > 0 ? <g>{new Array(Math.min(40, mult * 4)).fill(0).map((_, i) => <rect key={i} x={1000 + (i % 8) * 46} y={FLOOR - 30 - Math.floor(i / 8) * 26} width={42} height={22} rx={3} fill="#e3b341" stroke="#8a6414" strokeWidth={3} />)}</g> : null}
         <Cast acts={[...crowd(4, -400, 300, "go", { mood: "tight" }), { x: 520, o: SON, mood: frame > L("N137") ? "smile" : "tight", pose: win(frame, L("N134"), L("N135"), STAND, REFUSE) }, { x: 1080, o: ELDER, flip: true, pose: OFFER, mood: "tight" }]} />
       </Town>
+      <AbsoluteFill style={{ backgroundColor: "#fff2d0", opacity: iv(frame, [0, 16], [0.9, 0]) }} />
       {mult > 0 ? <Punch at={L("N133")} text={`×${mult} ITS WEIGHT IN GOLD`} y={0.18} size={0.75} color="#ffd34a" out={L("N137") + 40} face="num" /> : null}
       <Vignette s={0.4} />
     </AbsoluteFill>
@@ -822,31 +823,31 @@ const P7Cast = (mood: Mood, extra: Act[] = []): Act[] => [
   ...crowd(3, 1500, 2300, "rv2", { mood, flip: true }),
   ...extra,
 ];
-/** They strike the dead man with a piece of the cow; Allah brings him back to life: he sits up on the floor; Mūsā asks: who killed you? */
+/** Allah brings him back to life: the man who struck him gets up and steps back; the dead man rises from where he
+ * lay to sit on the floor (a dissolve at the same spot, rising, with a rustle of his cloth); Mūsā asks: who killed you?
+ * (The light only appears when Mūsā speaks: never on the line about what Allah does.) */
 export const Revival: React.FC = () => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL(); const abs = useAbs();
-  const hit = L("N142") + 28;
-  const swing = iv(frame, [hit - 14, hit, hit + 10], [-10, -42, -30], ease);
-  const sit = frame >= L("N142b") + 10 ? 1 : 0; // the swap happens under the flash
+  const r = L("N142b");
+  const rise = iv(frame, [r + 8, r + 30], [0, 1], ease);
   const cam = cc(frame, [
-    { at: 0, a: A(vertical, 900, 1330, 1.7), b: A(vertical, 900, 1320, 1.9) },
-    { at: hit - 2, a: A(vertical, 760, 1400, 2.6), b: A(vertical, 760, 1390, 2.8) },
-    { at: L("N142b") - 2, a: A(vertical, 820, 1180, 1.3), b: A(vertical, 820, 1170, 1.5) },
-    { at: L("N143") - 2, a: A(vertical, 760, 1220, 1.8), b: A(vertical, 760, 1210, 2.0) },
+    { at: 0, a: A(vertical, 860, 1240, 1.45), b: A(vertical, 860, 1200, 1.65) },
+    { at: L("N143") - 2, a: A(vertical, 820, 1180, 1.8), b: A(vertical, 820, 1170, 2.0) },
   ], dur);
+  const back = iv(frame, [r + 10, r + 40], [0, 1], ease);
   return (
     <AbsoluteFill>
-      <Town cam={shook(cam, frame, [hit, L("N142b") + 8], 10)} sky="day" seed="rv" back={false}>
+      <Town cam={shook(cam, frame, [r + 6], 8)} sky="day" seed="rv" back={false}>
         {frame >= L("N143") - 2 ? <MusaLight x={260} y={FLOOR - 320} /> : null}
-        <Cast acts={P7Cast(sit > 0.3 ? "shock" : "tight", [
-          { x: 1250, o: NEPHEW, mood: sit > 0.3 ? "shock" : "tight" },
-          ...(frame < L("N142b") + 10 ? [{ x: 700, y: FLOOR + 120, o: ELDER, pose: { ...KNEEL, armRU: swing, armRL: -10 }, mood: "tight" as Mood, hold: <Flesh /> }] : []),
+        <Cast acts={P7Cast(rise > 0.3 ? "shock" : "tight", [
+          { x: 1250, o: NEPHEW, mood: rise > 0.3 ? "shock" : "tight" },
+          { x: 700 - back * 230, y: FLOOR + 120 * (1 - back), o: ELDER, pose: mix({ ...KNEEL, armRU: -30, armRL: -10 }, STAND, back), mood: rise > 0.3 ? "shock" : "tight", hold: back < 0.5 ? <Flesh /> : undefined },
         ])} />
-        {sit < 0.5 ? <Body x={900} glow={iv(frame, [L("N142b"), L("N142b") + 10], [0, 1])} /> : <Seated x={820} mood="shock" mouth={0.2 * Math.abs(Math.sin(abs * 0.25)) * iv(frame, [L("N142b") + 30, L("N142b") + 60], [1, 0])} />}
+        {rise < 1 ? <g opacity={1 - rise}><Body x={900} glow={iv(frame, [r, r + 10, r + 30], [0, 1, 0])} /></g> : null}
+        {rise > 0 ? <g opacity={rise} transform={`translate(0 ${(1 - rise) * 60})`}><Seated x={900} mood="shock" mouth={0.2 * Math.abs(Math.sin(abs * 0.25)) * iv(frame, [r + 30, r + 60], [1, 0])} /></g> : null}
       </Town>
-      <Flash at={hit} len={6} color="#fff" max={0.25} />
-      <Flash at={L("N142b") + 2} len={24} color="#fff6d8" max={1} />
-      <Punch at={L("N142b") + 8} out={L("N143") - 4} text="HE'S ALIVE" y={0.24} size={0.95} color="#ffe39a" face="elegant" />
+      <Flash at={r + 2} len={22} color="#fff6d8" max={0.6} />
+      <Punch at={r + 10} out={L("N143") - 4} text="HE'S ALIVE" y={0.24} size={0.95} color="#ffe39a" face="elegant" />
       <Vignette s={0.4} />
     </AbsoluteFill>
   );
@@ -862,7 +863,7 @@ export const Suspects: React.FC = () => {
         <Town cam={cam} sky="day" seed="rv" back={false}>
           <MusaLight x={260} y={FLOOR - 320} />
           <Cast acts={P7Cast("shock", [{ x: 1250, o: NEPHEW, mood: "shock" }])} />
-          <Seated x={820} mood="shock" />
+          <Seated x={900} mood="shock" />
         </Town>
       </AbsoluteFill>
       <Grade color="#000" opacity={0.35} mode="multiply" />
@@ -913,7 +914,7 @@ export const Reveal: React.FC = () => {
     { at: L("N147") - 2, a: A(vertical, 1250, 960, 1.8), b: A(vertical, 1250, 950, 2.1) },
     { at: L("N148") - 2, a: A(vertical, 900, 1250, 1.5), b: A(vertical, 900, 1250, 1.7) },
   ], dur);
-  const sit = frame < L("N148") + 16 ? 1 : 0;
+  const down = iv(frame, [L("N148") + 4, L("N148") + 24], [0, 1], ease); const sit = 1 - down;
   const m = V.mouth["OLD1"]; const i = abs - (V.lines["OLD1"]?.f0 ?? 0);
   const mouth = m && i >= 0 && i < m.length ? Math.max(0, Math.min(1, (m[i] - 0.1) * 1.3)) : 0;
   return (
@@ -921,10 +922,10 @@ export const Reveal: React.FC = () => {
       <Town cam={shook(cam, frame, [L("OLD1") + 26], 16)} sky="day" seed="rv" back={false}>
         <MusaLight x={260} y={FLOOR - 320} />
         <Cast acts={P7Cast("shock", [{ x: 1250, o: NEPHEW, mood: "shock", pose: sw(frame, L("OLD1") + 26, STAND, HANDS_HEAD), flip: true }])} />
-        {sit > 0.5 ? <Seated x={820} mood={frame > L("OLD1") + 26 ? "frown" : "neutral"} mouth={mouth} point={iv(frame, [L("OLD1") + 14, L("OLD1") + 24, L("N148") - 4, L("N148") + 4], [0, 1, 1, 0])} /> : <Body x={900} />}
+        {sit > 0 ? <g opacity={sit} transform={`translate(0 ${down * 40})`}><Seated x={900} mood={frame > L("OLD1") + 26 ? "frown" : "neutral"} mouth={mouth} point={iv(frame, [L("OLD1") + 14, L("OLD1") + 24, L("N148") - 4, L("N148") + 4], [0, 1, 1, 0])} /></g> : null}
+        {down > 0 ? <g opacity={down}><Body x={900} /></g> : null}
       </Town>
       <Flash at={L("OLD1") + 26} len={6} color="#ff2a1a" max={0.3} />
-      <Flash at={L("N148") + 14} len={10} color="#000" max={0.6} />
       <Punch at={L("N147")} out={L("N147a") - 2} text="THE KILLER." color="#ff4a3a" y={0.24} size={1.1} face="heavy" />
       <Punch at={L("N147a")} text="HE WAS THERE THE WHOLE TIME" y={0.24} size={0.75} out={L("N148") - 2} face="type" />
       <Vignette s={0.45} />

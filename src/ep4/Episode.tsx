@@ -15,7 +15,9 @@ type Part = { n: number; start: number; end: number; lastLine: string };
 const P = (V as unknown as { parts: Part[] }).parts;
 const ps = (n: number) => P[n - 1].start, pe = (n: number) => P[n - 1].end;
 const VERSE_AT = V.lines["N162"].f1 + 6;
-const VERSE_LEN = 18 * 30; // the owner's own recitation of al-Baqarah 2:72–73 goes here
+const REC_LEN = 28.6, REC_SPLIT = 13.2; // the owner's recitation of al-Baqarah 2:72–73 (public/ep4/recitation.mp3); 73 begins at 13.2 s
+const REC_AT = 18;
+const VERSE_LEN = REC_AT + Math.ceil(REC_LEN * 30) + 30;
 const END_LEN = 150;
 const OUT = VERSE_AT + VERSE_LEN;
 export const EP4_LEN = OUT + END_LEN;
@@ -52,8 +54,7 @@ const SCENES: Cue[] = [
   // Part 6
   { C: Pearls, from: ps(6), to: lf("N130") },
   { C: Reward, from: lf("N130"), to: lf("N131d") },
-  { C: Land3D, from: lf("N131d"), to: lf("N132"), props: { shot: "present", fadeIn: 16 } },
-  { C: Gold, from: lf("N132"), to: lf("N138") },
+  { C: Gold, from: lf("N131d"), to: lf("N138") },
   { C: Slaughter, from: lf("N138"), to: pe(6) },
   // Part 7
   { C: TopStrike, from: ps(7), to: lf("N142b") },
@@ -70,28 +71,51 @@ type Sfx = { src: string; from: number; len?: number; vol: number; fadeIn?: numb
 const lib = (n: string) => `trailer/sfx/${n}.mp3`;
 const one = (n: string, from: number, v: number, len = 90, fadeOut = 20): Sfx => ({ src: lib(n), from, len, vol: v, fadeOut });
 const bed = (n: string, from: number, to: number, v: number): Sfx => ({ src: lib(n), from, len: to - from, vol: v, fadeIn: 12, fadeOut: 12, loop: true });
+// Ambience: real recorded beds (BigSoundBank CC0, processed into public/ep4/sfx), one continuous bed per run of
+// scenes that share it, so nothing restarts at a cut. Foley one-shots on top. No whooshes, swells or crowd "ooh"s.
+const amb = (n: string) => `ep4/sfx/${n}.mp3`;
+const AMB: Record<string, { file: string; vol: number }> = {
+  wind: { file: "amb-wind", vol: 0.32 }, murmur: { file: "amb-murmur", vol: 0.22 }, birds: { file: "amb-dawn", vol: 0.22 },
+  night: { file: "amb-night", vol: 0.45 }, room: { file: "amb-dawn", vol: 0.08 },
+};
+const ambFor = (c: Cue): string[] => {
+  const shot = (c.props as { shot?: string } | undefined)?.shot;
+  if (c.C === Land3D) return shot === "night" ? ["night", "wind"] : shot === "dusk" ? ["wind"] : ["wind", "birds"];
+  if (c.C === NoTrace) return ["night", "wind"];
+  if (c.C === Pearls || c.C === Reward) return ["room"];
+  if ([AnyCow, Search, Haggle, Ruling, Gold].includes(c.C)) return ["wind", "birds"];
+  if (c.C === Suspects) return [];
+  if (c.C === TopCrowd || c.C === Slaughter) return ["wind"];
+  if (c.C === Doorstep) return ["birds", "wind"];
+  return ["wind", "murmur"];
+};
 const SFX: Sfx[] = [];
-for (const c of SCENES) if (c.from > 0 && !P.some((p) => p.start === c.from)) SFX.push({ src: lib("short-video-whoosh-01"), from: c.from - 3, len: 30, vol: 0.14 });
-for (const p of P) if (p.n < 7) SFX.push(one("impact-slam-35", V.lines[p.lastLine].f1 + 4, 0.5, 40, 10));
+for (const key of Object.keys(AMB)) {
+  let run: [number, number] | null = null;
+  const flush = () => { if (run) SFX.push({ src: amb(AMB[key].file), from: run[0], len: run[1] - run[0], vol: AMB[key].vol, fadeIn: 18, fadeOut: 18, loop: true }); run = null; };
+  for (const c of SCENES) {
+    if (ambFor(c).includes(key)) run = run && run[1] >= c.from - 1 ? [run[0], c.to] : (flush(), [c.from, c.to]);
+    else flush();
+  }
+  flush();
+}
+const fx = (n: string, from: number, v: number, len = 60, fadeOut = 12): Sfx => ({ src: amb(n), from, len, vol: v, fadeOut });
+for (const p of P) if (p.n < 7) SFX.push(fx("door-slam", V.lines[p.lastLine].f1 + 4, 0.7, 44, 8));
+const strike = Math.round(ps(7) + 0.7 * (lf("N142b") - ps(7)));
 SFX.push(
-  one("door-creak-01", 2, 0.35, 40, 10), one("crowd-ooh-01", lf("N1_03"), 0.16, 60), bed("night-ambience-01", lf("N1_15"), lf("N1_16"), 0.14),
-  one("horror-wind-whisper-04", lf("N1_15"), 0.1, 70), one("horror-heartbeat-34", lf("N1_16"), 0.22, 70), one("steel-spike-scrape-01", lf("N1_19") + 4, 0.28, 40), one("chainmail-01", lf("N1_19") + 8, 0.2, 40), one("steel-spike-scrape-01", ps(2) + 2, 0.22, 40),
-  one("own-air-swell", lf("N31") - 10, 0.16, 90, 40), bed("footsteps-stone-01", lf("N33"), lf("N35"), 0.18),
-  one("own-air-swell", lf("N37") - 6, 0.16, 80, 40), bed("daily-20260923-hushed-crowd-walla-short", lf("N37"), lf("N39"), 0.06), one("horror-heartbeat-34", lf("N42"), 0.18, 80),
-  one("own-air-swell", lf("N52") - 8, 0.2, 90, 40), one("crowd-groan-01", lf("N57"), 0.18, 60), one("cow-moo-a", lf("N62") + 10, 0.22, 70),
-  ...["N67", "N74", "N83"].map((id) => one("own-air-swell", lf(id) - 8, 0.12, 70, 30)), one("cow-moo-b", lf("N68b") + 6, 0.16, 60), one("horror-wind-whisper-04", lf("N87b"), 0.12, 70),
-  bed("footsteps-sand-01", ps(5), lf("N92"), 0.2), ...["N92", "N93", "N94"].map((id) => one("sack-drop-01", lf(id) + 8, 0.3, 30, 8)),
-  one("cow-moo-a", lf("N96") + 6, 0.26, 80), one("own-air-swell", lf("N96") - 10, 0.16, 90, 40),
-  ...["N102", "N104", "N106"].map((id) => one("sack-drop-01", lf(id), 0.22, 26, 8)), one("crowd-groan-01", lf("P8"), 0.14, 50), bed("footsteps-stone-01", lf("N108"), lf("N109"), 0.18),
-  one("own-air-swell", lf("N110") - 6, 0.12, 70, 30), one("own-air-swell", lf("N113") - 6, 0.12, 70, 30),
-  bed("busy-market-crowd-murmur-walla-01", ps(6), lf("N119"), 0.06), one("cow-moo-b", lf("N131") + 14, 0.22, 70), one("own-air-swell", lf("N131") - 6, 0.18, 90, 40),
-  one("own-air-swell", lf("N132") - 6, 0.12, 70, 30), bed("sand-pour-01", lf("N135"), lf("N137"), 0.16),
-  one("own-air-swell", lf("N142b") - 10, 0.24, 100, 40), one("sack-drop-01", lf("N142") + 28, 0.24, 26, 8), one("own-air-swell", lf("N142b"), 0.14, 90, 40),
-  bed("horror-heartbeat-34", lf("N143a"), lf("OLD1"), 0.24), bed("daily-20260923-hushed-crowd-walla-short", lf("OLD1") + 40, lf("N144"), 0.05), one("sack-drop-01", lf("N147"), 0.28, 26, 8), one("body-fall-01", lf("N148") + 22, 0.3, 40),
-  bed("animal-bird-03", lf("N159"), VERSE_AT, 0.12), bed("animal-bird-03", lf("N90"), lf("N92"), 0.1), one("horror-wind-whisper-04", lf("N80") - 2, 0.08, 60),
-  one("short-video-whoosh-01", lf("N1_15"), 0.08, 20), one("short-video-whoosh-01", lf("N55"), 0.08, 20), one("sack-drop-01", lf("N57") - 14, 0.2, 24, 8),
-  one("horror-heartbeat-34", lf("N42"), 0.2, 80), one("sack-drop-01", lf("N95"), 0.22, 24, 8),
-  one("own-air-swell", lf("N131d") - 14, 0.16, 80, 30), one("short-video-whoosh-01", lf("N131d") - 6, 0.12, 24),
+  fx("door-open", 0, 0.45, 60), one("horror-heartbeat-34", lf("N1_16"), 0.22, 70), one("steel-spike-scrape-01", lf("N1_19") + 4, 0.28, 40), one("chainmail-01", lf("N1_19") + 8, 0.2, 40),
+  one("steel-spike-scrape-01", ps(2) + 2, 0.22, 40), { src: amb("steps"), from: lf("N33"), len: lf("N35") - lf("N33"), vol: 0.3, fadeIn: 8, fadeOut: 10, loop: true },
+  one("horror-heartbeat-34", lf("N42"), 0.18, 80),
+  one("sack-drop-01", lf("N57") - 14, 0.14, 24, 8), one("cow-moo-a", lf("N62") + 10, 0.22, 70),
+  one("cow-moo-b", lf("N68b") + 6, 0.16, 60), fx("amb-wind", lf("N87b"), 0.6, 80, 30),
+  { src: amb("steps"), from: ps(5), len: lf("N90") - ps(5), vol: 0.3, fadeIn: 8, fadeOut: 10, loop: true }, ...["N92", "N93", "N94"].map((id) => one("sack-drop-01", lf(id) + 8, 0.26, 30, 8)),
+  one("sack-drop-01", lf("N95"), 0.2, 24, 8), one("cow-moo-a", lf("N96") + 6, 0.26, 80),
+  ...["N102", "N104", "N106"].map((id) => one("sack-drop-01", lf(id), 0.18, 26, 8)), { src: amb("steps"), from: lf("N108"), len: lf("N109") - lf("N108"), vol: 0.3, fadeIn: 6, fadeOut: 8, loop: true },
+  one("cow-moo-b", lf("N131") + 14, 0.22, 70),
+  fx("coins-pour", lf("N133"), 0.4, 150, 30), fx("coins-pour", lf("N135") + 10, 0.45, 150, 30),
+  fx("cloth", strike - 10, 0.5, 70), one("sack-drop-01", strike, 0.16, 24, 8), fx("cloth", lf("N142b") + 10, 0.55, 70),
+  bed("horror-heartbeat-34", lf("N143a"), lf("OLD1"), 0.24), bed("daily-20260923-hushed-crowd-walla-short", lf("OLD1") + 40, lf("N144"), 0.05), one("sack-drop-01", lf("N147"), 0.26, 26, 8),
+  fx("cloth", lf("N148") + 4, 0.45, 70), fx("coins-drop", lf("N156"), 0.35, 110, 30),
 );
 const vol = (s: Sfx) => (f: number) => {
   const len = s.len ?? 99999;
@@ -160,8 +184,9 @@ const Verse: React.FC = () => {
   const o = iv(frame, [0, 16], [0, 1], ease);
   return (
     <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 40%, #1d1a2c 0%, #0b0a12 80%)", opacity: o, alignItems: "center", justifyContent: "center", padding: v ? 60 : 160 }}>
-      <div dir="rtl" style={{ fontFamily: amiri, fontSize: v ? 62 : 58, lineHeight: 1.9, color: "#f6e7c1", textAlign: "center" }}>
-        وَإِذۡ قَتَلۡتُمۡ نَفۡسࣰا فَٱدَّٰرَءۡتُمۡ فِیهَاۖ وَٱللَّهُ مُخۡرِجࣱ مَّا كُنتُمۡ تَكۡتُمُونَ ﴿٧٢﴾ فَقُلۡنَا ٱضۡرِبُوهُ بِبَعۡضِهَاۚ كَذَٰلِكَ یُحۡیِ ٱللَّهُ ٱلۡمَوۡتَىٰ وَیُرِیكُمۡ ءَایَٰتِهِۦ لَعَلَّكُمۡ تَعۡقِلُونَ ﴿٧٣﴾
+      <div dir="rtl" style={{ fontFamily: amiri, fontSize: v ? 62 : 58, lineHeight: 1.9, color: "#f6e7c1", textAlign: "center", transform: `scale(${1 + frame * 0.00012})` }}>
+        <span style={{ opacity: frame < REC_AT + REC_SPLIT * 30 ? 1 : 0.45, transition: "none" }}>وَإِذۡ قَتَلۡتُمۡ نَفۡسࣰا فَٱدَّٰرَءۡتُمۡ فِیهَاۖ وَٱللَّهُ مُخۡرِجࣱ مَّا كُنتُمۡ تَكۡتُمُونَ ﴿٧٢﴾ </span>
+        <span style={{ opacity: frame < REC_AT + REC_SPLIT * 30 ? 0.45 : 1 }}>فَقُلۡنَا ٱضۡرِبُوهُ بِبَعۡضِهَاۚ كَذَٰلِكَ یُحۡیِ ٱللَّهُ ٱلۡمَوۡتَىٰ وَیُرِیكُمۡ ءَایَٰتِهِۦ لَعَلَّكُمۡ تَعۡقِلُونَ ﴿٧٣﴾</span>
       </div>
       <div style={{ fontFamily: serif, fontSize: v ? 34 : 30, lineHeight: 1.45, color: "#e9dcc0", textAlign: "center", marginTop: 26, opacity: iv(frame, [30, 50], [0, 1]) }}>
         And (remember) when you killed a man and fell into dispute among yourselves as to the crime. But Allah brought forth that which you were hiding. So We said: "Strike him (the dead man) with a piece of it (the cow)." Thus Allah brings the dead to life and shows you His Ayat (proofs, evidences, verses, lessons, signs, revelations, etc.) so that you may understand.
@@ -229,6 +254,7 @@ export const Ep4: React.FC<{ muted?: boolean }> = ({ muted }) => (
     <Watermark />
     <MovingMark />
     {muted ? null : <Html5Audio src={staticFile("ep4/voice.mp3")} />}
+    {muted ? null : <Sequence from={VERSE_AT + REC_AT} durationInFrames={Math.ceil(REC_LEN * 30) + 10}><Html5Audio src={staticFile("ep4/recitation.mp3")} /></Sequence>}
     {muted ? null : SFX.filter((s) => (s.len ?? 1) > 0).map((s, i) => (
       <Sequence key={`s${i}`} from={Math.max(0, s.from)} durationInFrames={Math.max(1, s.len ?? 60)}>
         <Html5Audio src={staticFile(s.src)} volume={vol(s)} loop={s.loop} />

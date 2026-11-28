@@ -1,0 +1,3 @@
+Sound effects in this folder are from the SFXMint CC0 library (https://huggingface.co/datasets/flreey/sfxmint-cc0-sound-effects), released under CC0 1.0: free for any use, no attribution required. They are AI-generated (Stable Audio).
+
+Episode 4 additions from BigSoundBank (Joseph Sardin), CC0: 0907 wind in shrub, 2728 outdoor market, 0538 wooden barn door, 1117 footsteps on gravel, 0194/0193 coins, 1104 cloth, 1906 birds waking.
