@@ -438,6 +438,58 @@ body.onbon{overflow:hidden}
 .rec .w.fx{color:var(--gold)}
 .rec .w.cur{background:color-mix(in srgb,var(--gold2) 30%,transparent)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- v30: levels and a calmer, more polished look ---- */
+.seg.lv{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:10px}
+.seg.lv button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:54px;padding:6px 4px;line-height:1.2}
+.seg.lv b{font-size:14px;font-weight:800}
+.seg.lv small{font-size:11.5px;color:var(--mute);font-weight:600}
+.seg.lv button.on small{color:var(--gold)}
+.qparts{display:flex;gap:5px;margin:8px 0 2px}
+.qparts i{flex:1;height:5px;border-radius:9px;background:color-mix(in srgb,var(--ht) 16%,transparent)}
+.qparts i.ok{background:var(--gold2)}
+.qparts i.on{background:color-mix(in srgb,var(--gold2) 45%,transparent);box-shadow:0 0 0 1px var(--gold2) inset}
+:root{--sh:0 1px 2px rgba(40,28,4,.05),0 12px 28px -14px rgba(40,28,4,.18)}
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:420px;pointer-events:none;z-index:-1;background:radial-gradient(90% 70% at 85% -10%,color-mix(in srgb,var(--gold2) 13%,transparent),transparent 70%)}
+.top{background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2)}
+.brand h1{letter-spacing:-.02em}
+h2{letter-spacing:-.015em}
+.card{border-radius:22px;border-color:color-mix(in srgb,var(--line) 75%,transparent)}
+.btn,.chip,.seg button,.dact button,.dmark,.tabs button,.pill{transition:transform .14s ease,background-color .2s ease,color .2s ease,box-shadow .2s ease}
+.btn:active,.chip:active,.seg button:active,.dact button:active,.dmark:active{transform:scale(.97)}
+.btn{border-radius:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 18px -12px rgba(0,0,0,.55)}
+.btn.gold{background:linear-gradient(180deg,#efd585,#d9ae48);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 20px -12px rgba(150,110,10,.7)}
+.btn.ghost{box-shadow:none}
+.chip.on{box-shadow:0 6px 14px -10px rgba(0,0,0,.6)}
+.tabs{left:12px;right:12px;bottom:max(10px,env(safe-area-inset-bottom));max-width:536px;margin:0 auto;padding:0 4px;border:1px solid color-mix(in srgb,var(--line) 85%,transparent);border-radius:26px;background:color-mix(in srgb,var(--card) 86%,transparent);box-shadow:0 14px 34px -14px rgba(25,18,2,.38),0 2px 6px rgba(25,18,2,.06)}
+.tabs div{max-width:none}
+.tabs button{min-height:60px;font-size:11px;letter-spacing:.01em;gap:2px;position:relative;isolation:isolate}
+.tabs svg{width:22px;height:22px}
+.tabs button.on::before{content:"";position:absolute;z-index:-1;top:7px;left:50%;width:54px;height:30px;transform:translateX(-50%);border-radius:99px;background:color-mix(in srgb,var(--gold2) 24%,transparent)}
+.tabs button.on svg{stroke-width:2.3}
+.toast{border-radius:16px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5)}
+.dayhead .bar,.bar{border-radius:9px}
+.dtext.qpt{display:flex;align-items:center;justify-content:center;text-align:center;font-size:26px;line-height:2.1}
+.step b{white-space:nowrap}
+.step.big b{font-size:26px}
+
+/* record yourself */
+.rcbox{display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px 0 18px}
+.rcgo{width:84px;height:84px;border-radius:50%;border:3px solid color-mix(in srgb,var(--gold2) 70%,transparent);background:var(--card);display:grid;place-items:center;box-shadow:var(--sh);transition:transform .15s}
+.rcgo:active{transform:scale(.95)}
+.rcgo i{width:34px;height:34px;border-radius:50%;background:#c8412f;transition:border-radius .2s,width .2s,height .2s}
+.rcgo.on{border-color:#c8412f;animation:rcpulse 1.4s ease-in-out infinite}
+.rcgo.on i{width:28px;height:28px;border-radius:7px}
+@keyframes rcpulse{0%,100%{box-shadow:0 0 0 0 rgba(200,65,47,.35)}50%{box-shadow:0 0 0 12px rgba(200,65,47,0)}}
+.rcbox b{font-size:26px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.rcbox span{font-size:13px;color:var(--mute);font-weight:600}
+.rcrow{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:16px;margin:8px 0;background:var(--card)}
+.rcrow div{flex:1;display:flex;flex-direction:column}.rcrow small{color:var(--mute)}
+.rcp{width:44px;height:44px;border-radius:50%;border:0;background:var(--green);color:var(--onG);display:grid;place-items:center}
+.rcp svg{width:18px;height:18px;fill:currentColor}.rcp.on{background:var(--gold2);color:#2a1c00}
+.rcx{width:36px;height:36px;border-radius:50%;border:0;background:var(--soft);color:var(--mute);font-size:14px}
+.dact:has(>:nth-child(4)) button{flex-direction:column;gap:3px;font-size:12px;min-height:52px;padding:4px 2px}
+.dact:has(>:nth-child(4)) svg{width:18px;height:18px}
 </style>
 </head>
 <body>
@@ -462,6 +514,7 @@ body.onbon{overflow:hidden}
     <button class="chip" id="mBig" aria-label="Larger text">A+</button>
     <button class="chip" id="mPlay">▶ Listen</button>
     <button class="chip" id="mRec">🎙 Recite</button>
+    <button class="chip" id="mSelf">● Record</button>
   </div>
   <div class="recp" id="recp">
     <button class="mic" id="recMic" aria-label="Start listening"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-2.1A7 7 0 0019 12z"/></svg></button>
@@ -508,6 +561,9 @@ body.onbon{overflow:hidden}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
+const QPACE=[1/8,1/5,1/3,1/2,1,2,3,4,5,6,7,8,9,10,12,15,20];
+const qSnap=v=>{v=+v||2;let b=QPACE[0];for(const x of QPACE)if(Math.abs(Math.log(x/v))<Math.abs(Math.log(b/v)))b=x;return b};
+
 {
 const $=id=>document.getElementById(id);
 const NAMES=[["Al-Faatiha","The Opening","سُوْرَةُ الْفَاتِحَةِ",7],["Al-Baqara","The Cow","سُوْرَةُ البَقَرَةِ",286],["Aal-i-Imraan","The Family of Imraan","سُوْرَةُ اٰلِ عِمْرٰنَ",200],["An-Nisaa","The Women","سُوْرَةُ النِّسَآءِ",176],["Al-Maaida","The Table","سُوْرَةُ المَآئِدَةِ",120],["Al-An'aam","The Cattle","سُوْرَةُ الْاَنْعَامِ",165],["Al-A'raaf","The Heights","سُوْرَةُ الْاَعْرَافِ",206],["Al-Anfaal","The Spoils of War","سُوْرَةُ الْاَنْفَالِ",75],["At-Tawba","The Repentance","سُوْرَةُ التَّوْبَةِ",129],["Yunus","Jonas","سُوْرَةُ يُوْنُسَ",109],["Hud","Hud","سُوْرَةُ هُوْدٍ",123],["Yusuf","Joseph","سُوْرَةُ يُوسُفَ",111],["Ar-Ra'd","The Thunder","سُوْرَةُ الرَّعْدِ",43],["Ibrahim","Abraham","سُوْرَةُ اِبْرَاهِيْمَ",52],["Al-Hijr","The Rock","سُوْرَةُ الْحِجْرِ",99],["An-Nahl","The Bee","سُوْرَةُ النَّحْلِ",128],["Al-Israa","The Night Journey","سُوْرَةُ الإِسۡرَاءِ",111],["Al-Kahf","The Cave","سُوْرَةُ الْكَهْفِ",110],["Maryam","Mary","سُوْرَةُ مَرْيَمَ",98],["Taa-Haa","Taa-Haa","سُوْرَةُ طٰهٰ",135],["Al-Anbiyaa","The Prophets","سُوْرَةُ الْاَنْۣبِيَآءِ",112],["Al-Hajj","The Pilgrimage","سُوْرَةُ الْحَجِّ",78],["Al-Muminoon","The Believers","سُوْرَةُ الْمُؤْمِنُوْنَ",118],["An-Noor","The Light","سُوْرَةُ النُّوْرِ",64],["Al-Furqaan","The Criterion","سُوْرَةُ الْفُرْقَانِ",77],["Ash-Shu'araa","The Poets","سُوْرَةُ الشُّعَرَآءِ",227],["An-Naml","The Ant","سُوْرَةُ النَّمْلِ",93],["Al-Qasas","The Stories","سُوْرَةُ الْقَصَصِ",88],["Al-Ankaboot","The Spider","سُوْرَةُ الْعَنْكَبُوْتِ",69],["Ar-Room","The Romans","سُوْرَةُ الرُّوْمِ",60],["Luqman","Luqman","سُوْرَةُ لُقْمَانَ",34],["As-Sajda","The Prostration","سُوْرَةُ السَّجْدَةِ",30],["Al-Ahzaab","The Clans","سُوْرَةُ الْاَحْزَابِ",73],["Saba","Sheba","سُوْرَةُ سَبَاٍ",54],["Faatir","The Originator","سُوْرَةُ فَاطِرٍ",45],["Yaseen","Yaseen","سُوْرَةُ يٰسٓ",83],["As-Saaffaat","Those drawn up in Ranks","سُوْرَةُ الصَّافَّاتِ",182],["Saad","The letter Saad","سُوْرَةُ صٓ",88],["Az-Zumar","The Groups","سُوْرَةُ الزُّمَرِ",75],["Ghafir","The Forgiver","سُوْرَةُ الْمُؤْمِنِ",85],["Fussilat","Explained in detail","سُوْرَةُ فُصِّلَتۡ",54],["Ash-Shura","Consultation","سُوْرَةُ الشُّوْرٰي",53],["Az-Zukhruf","Ornaments of gold","سُوْرَةُ الزُّخْرُفِ",89],["Ad-Dukhaan","The Smoke","سُوْرَةُ الدُّخَانِ",59],["Al-Jaathiya","Crouching","سُوْرَةُ الْجَاثِيَةِ",37],["Al-Ahqaf","The Dunes","سُوْرَةُ الْاَحْقَافِ",35],["Muhammad","Muhammad","سُوْرَةُ مُحَمَّدٍ",38],["Al-Fath","The Victory","سُوْرَةُ الْفَتْحِ",29],["Al-Hujuraat","The Inner Apartments","سُوْرَةُ الْحُجُراتِ",18],["Qaaf","The letter Qaaf","سُوْرَةُ قٓ",45],["Adh-Dhaariyat","The Winnowing Winds","سُوْرَةُ الذَّارِياتِ",60],["At-Tur","The Mount","سُوْرَةُ الطُّوْرِ",49],["An-Najm","The Star","سُوْرَةُ النَّجْمِ",62],["Al-Qamar","The Moon","سُوْرَةُ الْقَمَرِ",55],["Ar-Rahmaan","The Beneficent","سُوْرَةُ الرَّحْمٰنِ",78],["Al-Waaqia","The Inevitable","سُوْرَةُ الْوَاقِعَةِ",96],["Al-Hadid","The Iron","سُوْرَةُ الْحَدِيْدِ",29],["Al-Mujaadila","The Pleading Woman","سُوْرَةُ الْمُجَادَلَةِ",22],["Al-Hashr","The Exile","سُوْرَةُ الْحَشْرِ",24],["Al-Mumtahana","She that is to be examined","سُوْرَةُ الْمُمْتَحِنَةِ",13],["As-Saff","The Ranks","سُوْرَةُ الصَّفِّ",14],["Al-Jumu'a","Friday","سُوْرَةُ الْجُمُعَةِ",11],["Al-Munaafiqoon","The Hypocrites","سُوْرَةُ الْمُنَافِقُوْنَ",11],["At-Taghaabun","Mutual Disillusion","سُوْرَةُ التَّغَابُنِ",18],["At-Talaaq","Divorce","سُوْرَةُ الطَّلَاقِ",12],["At-Tahrim","The Prohibition","سُوْرَةُ التَّحْرِيْمِ",12],["Al-Mulk","The Sovereignty","سُوْرَةُ الْمُلْكِ",30],["Al-Qalam","The Pen","سُوْرَةُ الْقَلَمِ",52],["Al-Haaqqa","The Reality","سُوْرَةُ الْحَآقَّةِ",52],["Al-Ma'aarij","The Ascending Stairways","سُوْرَةُ الْمَعَارِجِ",44],["Nooh","Noah","سُوْرَةُ نُوْحٍ",28],["Al-Jinn","The Jinn","سُوْرَةُ الْجِنِّ",28],["Al-Muzzammil","The Enshrouded One","سُوْرَةُ الْمُزَّمِّلِ",20],["Al-Muddaththir","The Cloaked One","سُوْرَةُ الْمُدَّثِّرِ",56],["Al-Qiyaama","The Resurrection","سُوْرَةُ الْقِيَامَةِ",40],["Al-Insaan","Man","سُوْرَةُ الدَّهْرِ",31],["Al-Mursalaat","The Emissaries","سُوْرَةُ الْمُرْسَلَاتِ",50],["An-Naba","The Announcement","سُوْرَةُ النَّبَاِ",40],["An-Naazi'aat","Those who drag forth","سُوْرَةُ النَّازِعَاتِ",46],["Abasa","He frowned","سُوْرَةُ عَبَسَ",42],["At-Takwir","The Overthrowing","سُوْرَةُ التَّكْوِيْرِ",29],["Al-Infitaar","The Cleaving","سُوْرَةُ الْاِنْفِطَارِ",19],["Al-Mutaffifin","Defrauding","سُوْرَةُ المُطَفِّفِيْنَ",36],["Al-Inshiqaaq","The Splitting Open","سُوْرَةُ الاِنْشِقَاقِ",25],["Al-Burooj","The Constellations","سُوْرَةُ الْبُرُوْجِ",22],["At-Taariq","The Morning Star","سُوْرَةُ الطَّارِقِ",17],["Al-A'laa","The Most High","سُوْرَةُ الْاَعْلٰي",19],["Al-Ghaashiya","The Overwhelming","سُوْرَةُ الْغَاشِيَةِ",26],["Al-Fajr","The Dawn","سُوْرَةُ الْفَجْرِ",30],["Al-Balad","The City","سُوْرَةُ الْبَلَدِ",20],["Ash-Shams","The Sun","سُوْرَةُ الشَّمْسِ",15],["Al-Lail","The Night","سُوْرَةُ الَّيْلِ",21],["Ad-Dhuhaa","The Morning Hours","سُوْرَةُ الضُّحٰي",11],["Ash-Sharh","The Consolation","سُوْرَةُ الشَّرْحِ",8],["At-Tin","The Fig","سُوْرَةُ التِّيْنِ",8],["Al-Alaq","The Clot","سُوْرَةُ الْعَلَقِ",19],["Al-Qadr","The Power, Fate","سُوْرَةُ الْقَدْرِ",5],["Al-Bayyina","The Evidence","سُوْرَةُ الْبَيِّنَةِ",8],["Az-Zalzala","The Earthquake","سُوْرَةُ الزِّلْزَالِ",8],["Al-Aadiyaat","The Chargers","سُوْرَةُ العٰدِيٰتِ",11],["Al-Qaari'a","The Calamity","سُوْرَةُ الْقَارِعَةِ",11],["At-Takaathur","Competition","سُوْرَةُ التَّكَاثُرِ",8],["Al-Asr","The Declining Day, Epoch","سُوْرَةُ الْعَصْرِ",3],["Al-Humaza","The Traducer","سُوْرَةُ الْهُمَزَةِ",9],["Al-Fil","The Elephant","سُوْرَةُ الْفِيْلِ",5],["Quraish","Quraysh","سُوْرَةُ قُرَيْشٍ",4],["Al-Maa'un","Almsgiving","سُوْرَةُ الْمَاعُوْنِ",7],["Al-Kawthar","Abundance","سُوْرَةُ الْكَوْثَرِ",3],["Al-Kaafiroon","The Disbelievers","سُوْرَةُ الْكَافِرُوْنَ",6],["An-Nasr","Divine Support","سُوْرَةُ النَّصْرِ",3],["Al-Masad","The Palm Fibre","سُوْرَةُ المَسَدِ",5],["Al-Ikhlaas","Sincerity","سُوْرَةُ الْاِخْلَاصِ",4],["Al-Falaq","The Dawn","سُوْرَةُ الْفَلَقِ",5],["An-Naas","Mankind","سُوْرَةُ النَّاسِ",6]];
@@ -567,7 +623,7 @@ const dayNo=()=>Math.floor(parse(TODAY).getTime()/864e5);
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 const DEF={v:1,start:TODAY,per:2,off:[5],order:'start',sp:1,dir:'fwd',gKind:'whole',gVal:0,setup:0,track:'',g:'b',asr:'',asrM:'',aiOk:0,aiAsk:0,nudged:'',mt:{},ml:{},mlen:5,mcur:'',mper:1,mfs:24,mpos:{},goal:'',pages:{},rev:{},lesson:null,reciter:RECITERS[0][0],rep:3,loop:false,theme:'auto',fs:28,cur:1,seen:'',tip:0,t:0};
 function fix(){S=Object.assign({},DEF,S&&typeof S==='object'?S:{});delete S.mpz;delete S.mlt;delete S.anch;
-  if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=Math.max(1,Math.min(20,Math.round(+S.per||2)));
+  if(!/^\d{4}-\d\d-\d\d$/.test(S.start))S.start=TODAY;S.per=qSnap(S.per);if(!S.qlog||typeof S.qlog!=='object')S.qlog={};if(!S.qpp||typeof S.qpp!=='object')S.qpp={};if(S.qp&&!(S.qp.p>=1&&S.qp.p<=604&&S.qp.n>=1))S.qp=null;
   S.off=Array.isArray(S.off)?S.off.filter(n=>n>=0&&n<7):[];if(S.off.length>6)S.off=[];
   if(S.order==='juz30'){S.dir='juzback';S.sp=582}S.order='start';if(!DIRS[S.dir])S.dir='fwd';S.sp=Math.max(1,Math.min(604,Math.round(+S.sp)||1));if(!['whole','juz','surah'].includes(S.gKind)){S.gKind='whole';S.gVal=0}if(!RECITERS.some(r=>r[0]===S.reciter))S.reciter=RECITERS[0][0];
   S.pages=S.pages&&typeof S.pages==='object'?S.pages:{};S.rev=S.rev&&typeof S.rev==='object'?S.rev:{};
@@ -585,6 +641,28 @@ const rangeLabel=p=>{const i=pageInfo(p);if(!i)return 'Juz '+juzOf(p);
 const firstWords=p=>{const i=pageInfo(p);return i?i.ay.map(x=>x[2]).join(' ').split(' ').slice(0,8).join(' '):''};
 
 /* ---------- plan maths ---------- */
+/* Qur'an pace: a few lines, half a page, or whole pages a day (a page is about 15 lines) */
+const qStep=(v,st)=>{const i=QPACE.indexOf(qSnap(v));return QPACE[Math.max(0,Math.min(QPACE.length-1,i+st))]};
+const qNeed=v=>QPACE.find(x=>x>=v-1e-9)||21;
+const qPace=v=>v>=1?pl(v,'page'):v===.5?'half a page':pl({8:2,5:3,3:5}[Math.round(1/v)],'line');
+const qAmt=x=>x>0&&x<1?pl(Math.round(x*15),'line'):pl(Math.round(x*10)/10,'page');
+const qLevel=v=>v<.5?'b':v<=1?'i':'a';
+const QLV={b:['Beginner','A few lines',1/5,[1/8,1/5,1/3]],i:['Intermediate','Half a page',1/2,[1/2,1]],a:['Advanced','Pages a day',2,[2,3,5]]};
+const lvSeg=(id,cur,attr)=>'<div class="seg lv" id="'+id+'">'+Object.entries(QLV).map(([k,v])=>'<button class="'+(qLevel(cur)===k?'on':'')+'" '+attr+'="'+k+'" aria-pressed="'+(qLevel(cur)===k)+'"><b>'+v[0]+'</b><small>'+v[1]+'</small></button>').join('')+'</div>';
+const qN=p=>{const n=Math.round(1/S.per),i=pageInfo(p);return Math.max(1,i?Math.min(n,i.ay.length):n)};
+/* split a page into n parts of about equal length, cut at verse ends */
+function qSplit(p,n){const i=pageInfo(p);if(!i)return null;const a=i.ay;n=Math.max(1,Math.min(n,a.length));const cum=[0];for(const x of a)cum.push(cum[cum.length-1]+x[2].length);const tot=cum[a.length],cuts=[0];
+  for(let j=1;j<n;j++){const t=tot*j/n;let b=-1;for(let k=cuts[j-1]+1;k<=a.length-(n-j);k++)if(b<0||Math.abs(cum[k]-t)<Math.abs(cum[b]-t))b=k;cuts.push(b)}cuts.push(a.length);
+  return cuts.slice(0,-1).map((b,k)=>a.slice(b,cuts[k+1]))}
+/* the page being memorized a part at a time */
+function qCur(){let P=S.qp;if(P&&S.pages[P.p]&&!(S.pages[P.p]===TODAY&&P.d===TODAY))P=null;
+  if(!P){const p=goalSeq().find(x=>!S.pages[x]);if(!p){S.qp=null;return null}P=S.qp={p,n:qN(p),k:0,d:''}}
+  if(Q&&!S.pages[P.p]){const n=qN(P.p);if(n!==P.n){P.k=Math.min(n-1,Math.round(P.k*n/P.n));P.n=n}}return P}
+const qPartDone=()=>{const L=S.lesson,P=S.qp;return !!(L&&L.part&&(S.pages[L.p[0]]||P&&P.p===L.p[0]&&P.k>L.part[0]))};
+function qMark(){const L=S.lesson,P=S.qp;if(!L||!L.part)return;const p=L.p[0],i=L.part[0],was=qPartDone();
+  if(was){if(S.pages[p]&&!S.qpp[p]){toggle(p);return}if(!P||P.p!==p)return;if(S.qpp[p]){delete S.pages[p];delete S.qpp[p]}P.k=i;P.d='';S.qlog[TODAY]=Math.max(0,(S.qlog[TODAY]||0)-1/P.n)}
+  else{if(!P||P.p!==p)return;P.k=i+1;P.d=TODAY;S.qlog[TODAY]=(S.qlog[TODAY]||0)+1/P.n;if(P.k>=P.n){S.pages[p]=TODAY;S.qpp[p]=1}}
+  save();buzz();const sn=S.seen===TODAY;renderAll();if(!was&&lessonDone()&&!sn){S.seen=TODAY;save();celebrate(true)}}
 const offSet=()=>new Set(S.off);
 function seqFor(sp,dir){const a=[];
   if(dir==='back'){for(let p=sp;p>=1;p--)a.push(p);for(let p=604;p>sp;p--)a.push(p);return a}
@@ -600,32 +678,36 @@ function labelFor(dir,kind,val){if(!endFor(dir,kind,val))return 'The whole Qur�
 const goalLabel=()=>labelFor(S.dir,S.gKind,S.gVal);
 const surahAt=p=>{let s=1;while(s<114&&SST[s]<=p)s++;return s};
 const total=()=>Object.keys(S.pages).length;
-function byDay(){const o={};for(const d of Object.values(S.pages))if(d!=='pre')o[d]=(o[d]||0)+1;return o}
+function byDay(){const o={};for(const[p,d]of Object.entries(S.pages))if(d!=='pre'&&!S.qpp[p])o[d]=(o[d]||0)+1;for(const[d,v]of Object.entries(S.qlog||{}))if(v>1e-6)o[d]=(o[d]||0)+v;return o}
 function finishFor(per,off,left,doneToday){if(left<=0)return null;const O=new Set(off);let d=parse(TODAY),first=true,g=0;
   while(left>0&&g++<40000){if(!O.has(d.getDay()))left-=first?Math.max(0,per-doneToday):per;first=false;if(left>0)d=add(d,1)}return d}
 function studyDays(off,until){const O=new Set(off);let n=0;for(let d=parse(TODAY);ymd(d)<=until;d=add(d,1))if(!O.has(d.getDay()))n++;return n}
 function calc(){const off=offSet(),o=byDay(),G=goalSeq(),gLen=G.length;let gDone=0,prior=0,doneToday=0;
-  for(const p of G){const d=S.pages[p];if(d){gDone++;if(d==='pre'||d<S.start)prior++;if(d===TODAY)doneToday++}}
-  const left=gLen-gDone,since=gDone-prior;
+  for(const p of G){const d=S.pages[p];if(d){gDone++;if(d==='pre'||d<S.start)prior++;if(d===TODAY&&!S.qpp[p])doneToday++}}
+  doneToday+=(S.qlog&&S.qlog[TODAY])||0;const QP=S.qp,fr=QP&&!S.pages[QP.p]&&QP.n&&G.includes(QP.p)?QP.k/QP.n:0;
+  const left=gLen-gDone-fr,since=gDone-prior+fr;
   let sched=0;for(let d=parse(S.start);ymd(d)<TODAY;d=add(d,1))if(!off.has(d.getDay()))sched++;
   const expected=Math.min(gLen-prior,sched*S.per+(off.has(parse(TODAY).getDay())?0:Math.min(S.per,doneToday)));
   let streak=0,d=parse(TODAY);if(!o[TODAY])d=add(d,-1);
   for(let g=0;g<4000;g++){const k=ymd(d);if(o[k]){streak++;d=add(d,-1)}else if(off.has(d.getDay())){d=add(d,-1)}else break}
   const win=Math.min(28,Math.round((parse(TODAY)-parse(S.start))/864e5)+1);let r28=0;for(let i=0;i<28;i++)r28+=o[ymd(add(parse(TODAY),-i))]||0;
-  return{tot:total(),gLen,gDone,left,diff:since-expected,streak,o,finish:finishFor(S.per,S.off,left,doneToday),r28,win,doneToday}}
+  return{tot:total(),gLen,gDone,left,diff:Math.round((since-expected)*15)/15,streak,o,finish:finishFor(S.per,S.off,left,doneToday),r28,win,doneToday}}
 const isOff=()=>offSet().has(parse(TODAY).getDay());
 function ensureLesson(force){
   if(!force&&S.lesson&&S.lesson.d===TODAY)return;
+  if(S.per<1){const P=qCur();if(isOff()&&!force&&!(P&&P.d===TODAY)){S.lesson={d:TODAY,p:[],off:true};save();return}
+    S.lesson=P?{d:TODAY,p:[P.p],part:[P.d===TODAY&&!force?Math.max(0,P.k-1):Math.min(P.k,P.n-1),P.n]}:{d:TODAY,p:[]};save();return}
   const today=Object.keys(S.pages).filter(p=>S.pages[p]===TODAY).map(Number);
   if(isOff()&&!force&&!today.length){S.lesson={d:TODAY,p:[],off:true};save();return}
   const nx=goalSeq().filter(p=>!S.pages[p]).slice(0,Math.max(0,S.per-today.length));
   S.lesson={d:TODAY,p:today.concat(nx).sort((a,b)=>a-b)};save()}
-const lessonDone=()=>S.lesson&&S.lesson.p.length>0&&S.lesson.p.every(p=>S.pages[p]);
+const lessonDone=()=>S.lesson&&S.lesson.p.length>0&&(S.lesson.part?qPartDone():S.lesson.p.every(p=>S.pages[p]));
 
 /* ---------- ui helpers ---------- */
 let tt;function toast(m,ms){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms||2600)}
 function sheet(html){$('panel').innerHTML='<div class="grab"></div>'+html;$('scrim').classList.add('on');$('panel').scrollTop=0;const f=$('panel').querySelector('button');if(f)f.focus({preventScroll:true})}
-const closeSheet=()=>{REC.hold=false;$('scrim').classList.remove('on');$('panel').onclick=null;if(REC.kind==='m'){if(REC.listening)recStop(false);REC.mode=false;REC.kind='q'}};
+const closeSheet=()=>{if(RC){if(RC.mr&&RC.mr.state==='recording')rcStop();if(RC.a)RC.a.pause()}REC.hold=false;$('scrim').classList.remove('on');$('panel').onclick=null;if(REC.kind==='m'){if(REC.listening)recStop(false);REC.mode=false;REC.kind='q'}};
+$('mSelf').addEventListener('click',()=>openRec('q:'+S.cur,'Page '+S.cur+' · '+rangeLabel(S.cur)));
 $('scrim').addEventListener('click',e=>{if(e.target.id==='scrim'||e.target.closest('[data-close]'))closeSheet()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 function ring(v,max,size,stroke,col){const r=(size-stroke)/2,c=2*Math.PI*r,f=max?Math.min(1,v/max):0;
@@ -654,36 +736,72 @@ function openWelcome(){sheet('<h2>What do you want to memorize?</h2><p class="no
   $('wTrack').onclick=e=>{const b=e.target.closest('[data-tr]');if(!b)return;S.track=b.dataset.tr;save();closeSheet();
     if(S.track==='mutun'){S.setup=1;save();setTimeout(()=>openMPlan(),250)}else{afterPlan=S.track==='both'?'mutun':'';setTimeout(()=>openPlan(true),250)}renderAll()}}
 function deckCards(){const cards=[];ensureLesson();const c=calc(),L=S.lesson;
-  if(doQ()){if(c.left===0)cards.push({t:'qinfo',k:'qdone'});else if(L.off&&!L.p.length)cards.push({t:'qinfo',k:'qoff'});else if(L.p.length)cards.push({t:'q',ps:L.p.slice(),d:L.p.every(p=>!!S.pages[p])})}
+  if(doQ()){if(c.left===0)cards.push({t:'qinfo',k:'qdone'});else if(L.off&&!L.p.length)cards.push({t:'qinfo',k:'qoff'});else if(L.p.length)cards.push({t:'q',ps:L.p.slice(),part:L.part,d:L.part?qPartDone():L.p.every(p=>!!S.pages[p])})}
   if(doM()&&MI){if(!S.mp.setup)cards.push({t:'minfo',k:'msetup'});else{const mc=mcalc();if(!mc.left)cards.push({t:'minfo',k:'mdone'});else{ensureMLesson();const ML=S.mlesson;if(!ML.items.length)cards.push({t:'minfo',k:'moff'});else{needMD([...new Set(ML.items.map(x=>x[0]))]);{const bl=mBlocks(ML.items);cards.push({t:'m',bl,d:bl.every(blkDone)})}}}}}
   return cards}
+/* ---------- record yourself and listen back ---------- */
+var RC={mr:null,st:null,ch:[],t0:0,tm:null,key:'',lab:'',a:null,id:0,u:''};const RCC='hifdh-myrec',IC_REC='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg>';
+const rcK=(k,id)=>'myrec/'+encodeURIComponent(k)+'/'+id,mmss=x=>Math.floor(x/60)+':'+String(Math.floor(x%60)).padStart(2,'0');
+function rcMime(){if(!window.MediaRecorder||!navigator.mediaDevices)return null;for(const m of['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg'])if(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(m))return m;return ''}
+function openRec(key,lab){RC.key=key;RC.lab=lab;
+  sheet('<h2>Record yourself</h2><p class="note">'+esc(lab)+'. Recite it from memory, then listen back and check yourself against the text.</p><div class="rcbox"><button class="rcgo" id="rcGo" aria-label="Start recording"><i></i></button><b id="rcT">0:00</b><span id="rcS">Tap to record</span></div><div id="rcList"></div><button class="btn ghost wide" data-close>Done</button>');
+  $('panel').onclick=e=>{const t=e.target.closest('button');if(!t)return;if(t.id==='rcGo'){RC.mr&&RC.mr.state==='recording'?rcStop():rcStart()}else if(t.dataset.rcp)rcPlay(+t.dataset.rcp);else if(t.dataset.rcx)rcDel(+t.dataset.rcx)};rcList()}
+async function rcStart(){if(rcMime()===null){toast('This browser can’t record. Try Safari or Chrome.',4000);return}
+  try{if(PL.on)stopPlay(true)}catch(e){}try{mppStop()}catch(e){}try{if(!MA.paused)MA.pause()}catch(e){}if(RC.a)RC.a.pause();
+  try{RC.st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){toast('Allow the microphone to record yourself',4000);return}
+  const m=rcMime();try{RC.mr=new MediaRecorder(RC.st,m?{mimeType:m}:undefined)}catch(e){RC.mr=new MediaRecorder(RC.st)}
+  RC.ch=[];RC.mr.ondataavailable=e=>{if(e.data&&e.data.size)RC.ch.push(e.data)};RC.mr.onstop=rcSave;RC.mr.start(1000);RC.t0=Date.now();rcPaint(true);buzz();
+  RC.tm=setInterval(()=>{const t=$('rcT');if(t)t.textContent=mmss((Date.now()-RC.t0)/1000);else rcStop()},250)}
+function rcStop(){clearInterval(RC.tm);RC.dur=(Date.now()-RC.t0)/1000;if(RC.mr&&RC.mr.state!=='inactive')RC.mr.stop();if(RC.st)RC.st.getTracks().forEach(t=>t.stop());RC.st=null;rcPaint(false)}
+function rcPaint(on){const g=$('rcGo'),x=$('rcS');if(!g)return;g.classList.toggle('on',on);g.setAttribute('aria-label',on?'Stop recording':'Start recording');x.textContent=on?'Recording… tap to stop':'Tap to record';if(!on&&$('rcT'))$('rcT').textContent='0:00'}
+async function rcSave(){const dur=RC.dur||0,key=RC.key;if(dur<1||!RC.ch.length){toast('That was too short to keep');return}
+  const type=(RC.mr&&RC.mr.mimeType)||RC.ch[0].type||'audio/mp4',b=new Blob(RC.ch,{type}),id=Date.now();
+  try{const c=await caches.open(RCC);await c.put(rcK(key,id),new Response(b,{headers:{'Content-Type':type}}))}catch(e){toast('Couldn’t save the recording');return}
+  S.myrec=S.myrec&&typeof S.myrec==='object'?S.myrec:{};const L=S.myrec[key]=(S.myrec[key]||[]);L.unshift({id,d:TODAY,s:Math.round(dur)});
+  while(L.length>5){const x=L.pop();caches.open(RCC).then(c=>c.delete(rcK(key,x.id))).catch(()=>{})}save();if(RC.key===key){rcList();rcPlay(id)}}
+function rcList(){const el=$('rcList');if(!el)return;const L=((S.myrec||{})[RC.key])||[];
+  el.innerHTML=L.length?'<p class="lab">Listen to yourself</p>'+L.map((x,k)=>'<div class="rcrow"><button class="rcp" data-rcp="'+x.id+'" aria-label="Play this recording">'+IC_PLAY+'</button><div><b>'+(k?'Take '+(L.length-k):'Latest take')+'</b><small>'+fmt(parse(x.d))+' · '+mmss(x.s)+'</small></div><button class="rcx" data-rcx="'+x.id+'" aria-label="Delete this recording">✕</button></div>').join('')+'<p class="note">The last 5 takes are kept on this phone only.</p>':'<p class="note">Your takes will appear here, ready to play back. They stay on this phone.</p>';rcMarks()}
+async function rcPlay(id){if(RC.a&&RC.id===id&&!RC.a.paused){RC.a.pause();return}if(RC.a)RC.a.pause();
+  let r=null;try{r=await(await caches.open(RCC)).match(rcK(RC.key,id))}catch(e){}if(!r){toast('That recording is no longer on this phone');return}
+  const b=await r.blob();if(RC.u)URL.revokeObjectURL(RC.u);RC.u=URL.createObjectURL(b);RC.a=new Audio(RC.u);RC.id=id;RC.a.onended=RC.a.onpause=RC.a.onplay=rcMarks;RC.a.play().catch(()=>toast('Tap play again to listen'))}
+function rcMarks(){document.querySelectorAll('[data-rcp]').forEach(b=>{const on=!!(RC.a&&!RC.a.paused&&+b.dataset.rcp===RC.id);b.classList.toggle('on',on);b.innerHTML=on?IC_PAUSE:IC_PLAY})}
+function rcDel(id){const L=((S.myrec||{})[RC.key])||[],i=L.findIndex(x=>x.id===id);if(i<0)return;if(RC.a&&RC.id===id)RC.a.pause();L.splice(i,1);if(!L.length)delete S.myrec[RC.key];save();caches.open(RCC).then(c=>c.delete(rcK(RC.key,id))).catch(()=>{});rcList()}
+const arN=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+function qPartCard(x,ix){const p=x.ps[0],i=x.part[0],n=x.part[1],ps=qSplit(p,n),v=ps?ps[Math.min(i,ps.length-1)]:null,P=S.qp,dn=S.pages[p]?n:P&&P.p===p?P.k:0;
+  const lab=v?(v[0][0]===v[v.length-1][0]?sname(v[0][0])+' '+v[0][1]+(v.length>1?'–'+v[v.length-1][1]:''):sname(v[0][0])+' '+v[0][1]+' – '+sname(v[v.length-1][0])+' '+v[v.length-1][1]):'Page '+p,
+    txt=v?v.map(a=>a[2]+' ﴿'+arN(a[1])+'﴾').join(' '):'';
+  return '<article class="dcard'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Qur’an · Juz '+juzOf(p)+' · Page '+p+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':'<span class="dcount">Part '+(i+1)+' of '+n+'</span>')+'</div>'
+   +'<div class="dt">'+esc(lab)+'</div><div class="qparts" aria-label="'+dn+' of '+n+' parts of page '+p+' memorized">'+Array.from({length:n},(_,k)=>'<i class="'+(k<dn?'ok':k===i?'on':'')+'"></i>').join('')+'</div>'
+   +'<div class="ds">'+esc(qPace(S.per))+' a day · page '+p+' in '+n+' parts</div><div class="dtext ar'+(txt.split(' ').length>60?' fade':' qpt')+'" lang="ar">'+esc(txt)+'</div>'
+   +'<div class="dact"><button data-open="'+p+'">'+IC_OPEN+'Open</button><button data-qlisten="'+p+'" data-qv="'+(v?v.map(a=>a[0]+':'+a[1]).join(','):'')+'">'+IC_PLAY+'Listen</button><button data-qtest="'+p+'">'+IC_MIC+'Test</button><button data-rec="q:'+p+':'+i+'" data-rl="'+esc(lab)+'">'+IC_REC+'Record</button></div><button class="dmark" data-qpart="1" aria-pressed="'+x.d+'">'+ICON_CHECK+(x.d?'These verses are memorized':'I memorized these verses')+'</button></article>'}
 function cardHTML(x,ix){
+  if(x.t==='q'&&x.part)return qPartCard(x,ix);
   if(x.t==='q'){const ps=x.ps,sel=ps.includes(qSel)?qSel:(ps.find(p=>!S.pages[p])||ps[0]),sd=!!S.pages[sel],i=pageInfo(sel),txt=i?i.ay.map(a=>a[2]).join(' ').split(' ').slice(0,40).join(' '):'',nd=ps.filter(p=>S.pages[p]).length,cons=ps.every((p,k)=>!k||Math.abs(p-ps[k-1])===1);
     return '<article class="dcard'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Qur’an · Juz '+[...new Set(ps.map(juzOf))].join(' & ')+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':ps.length>1?'<span class="dcount">'+nd+' of '+ps.length+' pages</span>':'')+'</div>'
      +'<div class="dt">'+(ps.length>1?'Pages '+(cons?Math.min(...ps)+'–'+Math.max(...ps):ps.join(' & ')):'Page '+ps[0])+'</div>'
      +(ps.length>1?'<div class="ptabs">'+ps.map(p=>'<button class="'+(p===sel?'on':'')+(S.pages[p]?' ok':'')+'" data-qsel="'+p+'" aria-pressed="'+(p===sel)+'">'+(S.pages[p]?'✓ ':'')+'Page '+p+'</button>').join('')+'</div>':'')
      +'<div class="ds">'+esc(rangeLabel(sel))+'</div><div class="dtext ar fade" lang="ar">'+esc(txt)+'</div>'
-     +'<div class="dact"><button data-open="'+sel+'">'+IC_OPEN+'Open</button><button data-qlisten="'+sel+'">'+IC_PLAY+'Listen</button><button data-qtest="'+sel+'">'+IC_MIC+'Test</button></div><button class="dmark" data-chk="'+sel+'" aria-pressed="'+sd+'">'+ICON_CHECK+(sd?'Page '+sel+' memorized':'I memorized page '+sel)+'</button></article>'}
+     +'<div class="dact"><button data-open="'+sel+'">'+IC_OPEN+'Open</button><button data-qlisten="'+sel+'">'+IC_PLAY+'Listen</button><button data-qtest="'+sel+'">'+IC_MIC+'Test</button><button data-rec="q:'+sel+'" data-rl="Page '+sel+' · '+esc(rangeLabel(sel))+'">'+IC_REC+'Record</button></div><button class="dmark" data-chk="'+sel+'" aria-pressed="'+sd+'">'+ICON_CHECK+(sd?'Page '+sel+' memorized':'I memorized page '+sel)+'</button></article>'}
   if(x.t==='m'){const bl=x.bl,si=bl[mSel]?mSel:Math.max(0,bl.findIndex(z=>!blkDone(z))),y=bl[si],yd=blkDone(y),b=mInfo(y.id),key=y.id+':'+y.a+':'+y.b,hid=dHide.has(key)&&!yd,u=b.poem?'verses':'lines',nd=bl.filter(blkDone).length;
     return '<article class="dcard m'+(x.d?' done':'')+'" data-ix="'+ix+'"><div class="dhead"><span class="dk">Mutūn · '+esc(b.cat)+'</span>'+(x.d?'<span class="dok">✓ Memorized</span>':bl.length>1?'<span class="dcount">'+nd+' of '+bl.length+' parts</span>':'')+'</div><div class="dt ar mt-ar" style="font-size:26px">'+esc(b.t)+'</div>'
      +(bl.length>1?'<div class="ptabs">'+bl.map((z,k)=>'<button class="'+(k===si?'on':'')+(blkDone(z)?' ok':'')+'" data-msel="'+k+'" aria-pressed="'+(k===si)+'">'+(blkDone(z)?'✓ ':'')+esc(mInfo(z.id).en.split(' ').slice(0,2).join(' '))+' '+(z.a+1)+(z.b>z.a?'–'+(z.b+1):'')+'</button>').join('')+'</div>':'')
      +'<div class="ds">'+esc(b.en)+' · '+u+' '+(y.a+1)+(y.b>y.a?'–'+(y.b+1):'')+' of '+b.n+'</div><div class="dtext ar'+(hid?' hid':'')+'" lang="ar">'+blockLines(y)+'</div>'
-     +'<div class="dact">'+(MREC[y.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Play</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+y.id+':'+y.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+yd+'">'+ICON_CHECK+(yd?'Memorized':'I memorized these '+u)+'</button></article>'}
+     +'<div class="dact">'+(MREC[y.id]?'<button data-mpart="'+key+'">'+IC_PLAY+'Play</button>':'')+'<button data-mtest="'+key+'">'+IC_MIC+'Test</button><button data-rec="m:'+key+'" data-rl="'+esc(b.en+' · '+u+' '+(y.a+1)+(y.b>y.a?'–'+(y.b+1):''))+'">'+IC_REC+'Record</button><button data-dhide="'+key+'">'+IC_EYE+(hid?'Show':'Hide')+'</button><button data-mopen="'+y.id+':'+y.a+'">'+IC_OPEN+'Open</button></div><button class="dmark" data-mmark="'+key+'" aria-pressed="'+yd+'">'+ICON_CHECK+(yd?'Memorized':'I memorized these '+u)+'</button></article>'}
   const I={qdone:['Qur’an · Alḥamdulillāh','Goal complete','Set your next Qur’an goal.','data-plan="1"','Set my next goal'],qoff:['Qur’an · revision day','No new pages today','Use today to revise what you have memorized.','id="anyway"','Memorize new pages anyway'],
    msetup:['Mutūn','Add the mutūn','Choose where to start, your goal and your pace.','data-mplan="1"','Set up my mutūn plan'],mdone:['Mutūn · Alḥamdulillāh','Goal complete','Set your next mutūn goal.','data-mplan="1"','Set my next goal'],moff:['Mutūn · revision day','No new portions today','Revise what you have memorized.','data-manyway="1"','Memorize anyway']}[x.k];
   return '<article class="dcard info" data-ix="'+ix+'"><div class="dhead"><span class="dk">'+I[0]+'</span></div><div class="dt">'+I[1]+'</div><div class="ds">'+I[2]+'</div><button class="dmark" '+I[3]+'>'+I[4]+'</button></article>'}
-function renderToday(){const cards=deckCards(),work=cards.flatMap(x=>x.t==='q'?x.ps.map(p=>({d:!!S.pages[p]})):x.t==='m'?x.bl.map(z=>({d:blkDone(z)})):[]),dn=work.filter(x=>x.d).length,c=calc();let h='';
+function renderToday(){const cards=deckCards(),work=cards.flatMap(x=>x.t==='q'?(x.part?[{d:x.d}]:x.ps.map(p=>({d:!!S.pages[p]}))):x.t==='m'?x.bl.map(z=>({d:blkDone(z)})):[]),dn=work.filter(x=>x.d).length,c=calc();let h='';
   const all=work.length&&dn===work.length;
   h+=nudgeHTML(all);
   h+='<div class="dayhead"><div class="row"><span class="lab" style="margin:0">'+(work.length?(all?'Everything memorized today ✓':'Today’s memorization'):'Today')+'</span><b>'+(work.length?dn+' / '+work.length:'')+'</b></div>'+(work.length?'<div class="bar"><i style="width:'+(dn/work.length*100)+'%"></i></div>':'')+'</div>';
   const deck=cards.map(cardHTML);
-  if(all)deck.push('<article class="dcard info fin" data-ix="'+cards.length+'"><div class="dhead"><span class="dk">Alḥamdulillāh</span></div><div class="dt">All done for today</div><div class="ds">May Allah make it firm in your heart.</div><div class="dact col"><button id="rem">Today’s reminder</button>'+(doQ()&&calc().left?'<button id="more">+ One more page</button>':'')+(doM()&&S.mp.setup&&mcalc().left?'<button id="mmore">+ More lines</button>':'')+'</div></article>');
+  if(all)deck.push('<article class="dcard info fin" data-ix="'+cards.length+'"><div class="dhead"><span class="dk">Alḥamdulillāh</span></div><div class="dt">All done for today</div><div class="ds">May Allah make it firm in your heart.</div><div class="dact col"><button id="rem">Today’s reminder</button>'+(doQ()&&calc().left?'<button id="more">'+(S.per<1?'+ The next part':'+ One more page')+'</button>':'')+(doM()&&S.mp.setup&&mcalc().left?'<button id="mmore">+ More lines</button>':'')+'</div></article>');
   h+='<div class="deck" id="deck">'+deck.join('')+'</div><div class="dots" id="dots">'+deck.map((_,k)=>'<i data-dot="'+k+'"></i>').join('')+'</div>';
   const mj=doQ()?juzList().filter(x=>x.m).sort((a,b)=>a.r<b.r?-1:a.r>b.r?1:a.j-b.j):[];
   if(mj.length){const d=mj[0],done=d.r===TODAY;h+='<div class="card"><div class="row"><div><p class="lab">Revision</p><h2>'+(done?'All memorized juz revised today ✓':'Revise Juz '+d.j)+'</h2><p class="note" style="margin:2px 0 0">'+(done?'Bārak Allāhu fīk.':'Last revised '+ago(d.r)+' · '+d.m+' of '+d.n+' pages memorized')+'</p></div>'+(done?'':'<button class="btn sm" data-rev="'+d.j+'">Done</button>')+'</div></div>'}
   const ti=(S.tip+dayNo())%TIPS.length,t=TIPS[ti];
   h+='<div class="card tip'+(tipOpen?' open':'')+'"><button class="tiph" id="tipTog" aria-expanded="'+tipOpen+'"><span><span class="lab" style="display:block">Before you start · '+esc(t.who)+'</span><b>'+esc(t.t)+'</b></span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><p class="quote ar" lang="ar">«'+esc(t.ar)+'»</p>'+(tipOpen?'<p class="mean">'+esc(t.en)+'</p><p class="src">'+esc(t.src)+'</p><div class="btns"><button class="btn sm ghost" id="tipNext">Next tip</button><button class="btn sm ghost" id="tipAll">All tips</button></div>':'')+'</div>';
-  if(doQ()){const st=c.diff===0?'On track':c.diff>0?'+'+c.diff+' ahead':(-c.diff)+' behind';
+  if(doQ()){const st=c.diff===0?'On track':c.diff>0?'+'+(c.diff>=1?Math.round(c.diff):qAmt(c.diff))+' ahead':(-c.diff>=1?Math.round(-c.diff):qAmt(-c.diff))+' behind';
     h+='<div class="card"><div class="row"><div><p class="lab">Qur’an goal</p><h2>'+esc(goalLabel())+'</h2></div><button class="btn sm ghost" data-plan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gDone/c.gLen*100)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'page')+(c.finish?' · finish about '+fmt(c.finish):'')+(S.goal?' · target '+fmt(parse(S.goal)):'')+'</p></div>';
     h+='<div class="stats"><div class="stat"><b>'+c.tot+'</b><span>of 604 pages</span></div><div class="stat"><b>'+pl(c.streak,'day')+'</b><span>streak</span></div><div class="stat"><b'+(c.diff<0?' class="warn"':'')+'>'+st+'</b><span>schedule</span></div></div>'}
   if(doM()&&MI&&S.mp.setup)h+=mGoalCard(false);
@@ -702,7 +820,9 @@ $('v-today').addEventListener('click',e=>{const dt=e.target.closest('[data-dot]'
   if(d.qsel||d.msel){if(d.qsel)qSel=+d.qsel;else mSel=+d.msel;const y=$('deck').scrollLeft;renderToday();$('deck').scrollLeft=y;return}
   if(d.chk){const was=!!S.pages[+d.chk];if(!was){const nx=S.lesson.p.find(p=>p!==+d.chk&&!S.pages[p]);qSel=nx||+d.chk}const y=$('deck').scrollLeft;toggle(+d.chk);$('deck').scrollLeft=y;if(!was)deckScroll();return}
   if(d.open){go('mushaf',+d.open);return}
-  if(d.qlisten){startPlay([+d.qlisten]);return}
+  if(d.rec){openRec(d.rec,d.rl||'');return}
+   if(d.qlisten){startPlay([+d.qlisten],d.qv?new Set(d.qv.split(',')):null);return}
+   if(d.qpart){const y=$('deck').scrollLeft;qMark();if($('deck'))$('deck').scrollLeft=y;return}
   if(d.qtest){go('mushaf',+d.qtest);if(recEnter())setTimeout(recStart,60);return}
   if(d.recite){go('mushaf',S.lesson.p[0]||S.cur);recEnter();return}
   if(d.dhide){if(dHide.has(d.dhide))dHide.delete(d.dhide);else dHide.add(d.dhide);const y=$('deck').scrollLeft;renderToday();$('deck').scrollLeft=y;return}
@@ -712,7 +832,7 @@ $('v-today').addEventListener('click',e=>{const dt=e.target.closest('[data-dot]'
   switch(t.id){
    case 'anyway':ensureLesson(true);renderToday();break;
    case 'rem':celebrate(false);break;
-   case 'more':{const nx=goalSeq().concat(seq()).find(p=>!S.pages[p]&&!S.lesson.p.includes(p));if(nx){S.lesson.p.push(nx);S.lesson.p.sort((a,b)=>a-b);save();renderToday();deckScroll()}break}
+   case 'more':{if(S.per<1){let P=qCur();if(P&&S.pages[P.p]){S.qp=null;P=qCur()}if(P){S.lesson={d:TODAY,p:[P.p],part:[Math.min(P.k,P.n-1),P.n]};save();renderToday();deckScroll()}break}const nx=goalSeq().concat(seq()).find(p=>!S.pages[p]&&!S.lesson.p.includes(p));if(nx){S.lesson.p.push(nx);S.lesson.p.sort((a,b)=>a-b);save();renderToday();deckScroll()}break}
    case 'mmore':{const nx=mSeq().filter(([id,i])=>!isMem(id,i)&&!S.mlesson.items.some(x=>x[0]===id&&x[1]===i)).slice(0,S.mp.per);if(nx.length){S.mlesson.items.push(...nx);save();renderToday();deckScroll()}break}
    case 'tipTog':tipOpen=!tipOpen;renderToday();break;
    case 'tipNext':S.tip=(S.tip+1)%TIPS.length;save();renderToday();break;
@@ -771,7 +891,7 @@ const AU=new Audio();AU.preload='auto';
 const PL={list:[],i:0,r:0,pages:[],on:false,obj:null};
 let unlocked=false;function unlock(){if(unlocked)return;unlocked=true;try{const n=800,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i)};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);
   let bin='';b.forEach(x=>bin+=String.fromCharCode(x));AU.src='data:audio/wav;base64,'+btoa(bin);AU.play().catch(()=>{})}catch(e){}}
-function startPlay(pages){unlock();if(!MA.paused)MA.pause();$('mbar').classList.remove('on');mppStop();if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
+function startPlay(pages,only){unlock();if(!MA.paused)MA.pause();$('mbar').classList.remove('on');mppStop();if(!Q){toast('The mushaf is still loading');return}PL.pages=pages;PL.list=tracks(pages);if(only){const f=PL.list.filter(t=>only.has(t.s+':'+t.a));if(f.length)PL.list=f}PL.i=0;PL.r=0;$('player').classList.add('on');playCur()}
 async function playCur(){const t=PL.list[PL.i];if(!t){stopPlay(true);return}
   PL.on=true;setPI();markPlaying();if(t.p&&t.p!==S.cur&&location.hash==='#mushaf'){S.cur=t.p;save();renderMushaf()}
   try{const u=url(t.s,t.a);let b=null;try{const c=await caches.open(AC),m=await c.match(u);if(m)b=await m.blob()}catch(x){}
@@ -804,7 +924,7 @@ async function downloadMp3(pages){if(!Q)return;const L=tracks(pages),parts=[];to
 /* ---------- progress ---------- */
 let openJuz=0;
 function renderProgress(){const c=calc(),pct=c.tot/604*100,J=juzList();let h='';
-  const st=S.start>TODAY?'Starts '+fmt(parse(S.start)):c.diff===0?'On track':c.diff>0?pl(c.diff,'page')+' ahead':pl(-c.diff,'page')+' behind';
+  const st=S.start>TODAY?'Starts '+fmt(parse(S.start)):c.diff===0?'On track':c.diff>0?qAmt(c.diff)+' ahead':qAmt(-c.diff)+' behind';
   h+='<div class="card"><div class="prog"><div class="bring" style="color:var(--ink)">'+ring(c.tot,604,118,10,'var(--done)')+'<div><b>'+(pct>0&&pct<10?pct.toFixed(1):Math.round(pct))+'%</b><span>'+c.tot+' / 604</span></div></div><dl class="kv"><div><dt>Juz complete</dt><dd>'+J.filter(x=>x.m===x.n).length+' of 30</dd></div><div><dt>Streak</dt><dd>'+pl(c.streak,'day')+'</dd></div><div><dt>Schedule</dt><dd'+(c.diff<0?' class="warn"':'')+'>'+st+'</dd></div></dl></div></div>';
   h+=goalCard(c);
   h+='<div class="card"><div class="row"><h2>Your 604 pages</h2><span class="pill">Tap a juz</span></div><div class="legend"><span style="--c:var(--done)">Memorized</span><span style="--c:color-mix(in srgb,var(--done) 30%,var(--card))">Known before plan</span><span style="--c:var(--gold)">Today</span></div>'
@@ -812,7 +932,7 @@ function renderProgress(){const c=calc(),pct=c.tot/604*100,J=juzList();let h='';
   h+=mutunProgressCard();
   const W=12,now=parse(TODAY),h0=add(now,-now.getDay()-7*(W-1));let hm='',wk=0;
   for(let i=0;i<W*7;i++){const d=add(h0,i),k=ymd(d),n=c.o[k]||0;if(i>=(W-1)*7&&k<=TODAY)wk+=n;hm+='<i class="h '+(k>TODAY?'x':'l'+Math.min(n,3))+'" title="'+fmt(d)+': '+pl(n,'page')+'"></i>'}
-  h+='<div class="card"><h2>Last 12 weeks</h2><div class="heat" style="grid-template-columns:repeat('+W+',minmax(0,1fr))">'+hm+'</div><p class="note">This week: '+pl(wk,'new page')+' · last 4 weeks: '+pl(c.r28,'new page')+'</p></div>';
+  h+='<div class="card"><h2>Last 12 weeks</h2><div class="heat" style="grid-template-columns:repeat('+W+',minmax(0,1fr))">'+hm+'</div><p class="note">This week: '+qAmt(wk)+' · last 4 weeks: '+qAmt(c.r28)+'</p></div>';
   const mj=J.filter(x=>x.m).sort((a,b)=>a.r<b.r?-1:a.r>b.r?1:a.j-b.j),age=r=>r?Math.round((now-parse(r))/864e5):1e9;
   h+='<div class="card"><h2>Revision</h2><p class="note">Oldest first. A juz turns orange after a week without review.</p>'+(mj.length?mj.map(x=>'<div class="rv'+(age(x.r)>=7?' due':'')+'"><div><b>Juz '+x.j+'</b><small>'+x.m+' of '+x.n+' pages · revised '+ago(x.r)+'</small></div><button class="btn sm '+(x.r===TODAY?'':'ghost')+'" data-rv="'+x.j+'">'+(x.r===TODAY?'Revised ✓':'Mark revised')+'</button></div>').join(''):'<p class="empty">Memorized juz appear here so you can keep them fresh.</p>')+'</div>';
   $('v-progress').innerHTML=h}
@@ -821,12 +941,12 @@ function juzBody(x){const L=new Set(S.lesson?S.lesson.p:[]);let g='<div class="p
   const all=x.m===x.n;return g+'</div><div class="btns"><button class="btn sm ghost" data-jo="'+x.s+'">Open in mushaf</button><button class="btn sm ghost" data-jk="'+x.j+'">'+(all?'Clear this juz':'I already know this juz')+'</button></div><p class="note">Tap a page to mark it memorized today. “I already know this juz” records pages you knew before starting, so they don’t count toward today.</p>'}
 function goalCard(c){let h='<div class="card"><div class="row"><div><p class="lab">Your goal</p><h2>'+esc(goalLabel())+'</h2></div><button class="btn sm ghost" data-plan="1">Change</button></div><div class="bar" style="margin-top:12px"><i style="width:'+(c.gDone/c.gLen*100)+'%"></i></div><p class="note">'+c.gDone+' of '+pl(c.gLen,'page')+' · from page '+S.sp+' ('+esc(NAMES[surahAt(S.sp)-1][0])+'), '+DIRS[S.dir][0].toLowerCase()+'</p><label class="field"><span>Finish by (optional)</span><input type="date" id="goal" value="'+esc(S.goal)+'" min="'+TODAY+'"></label>';
   const left=c.left;if(!left)return h+'<p class="note">Goal complete. Alḥamdulillāh.</p></div>';
-  const items=[];const planD=c.finish;items.push({l:'Your plan',s:pl(S.per,'page')+' a day, '+(7-S.off.length)+' days a week',d:planD,col:'var(--done)'});
+  const items=[];const planD=c.finish;items.push({l:'Your plan',s:qPace(S.per)+' a day, '+(7-S.off.length)+' days a week',d:planD,col:'var(--done)'});
   const rate=c.win>=7?c.r28/c.win:0;if(rate>0){const rd=add(parse(TODAY),Math.ceil(left/rate));items.push({l:'Your recent pace',s:(rate*7).toFixed(1).replace(/\.0$/,'')+' pages a week (last '+c.win+' days)',d:rd,col:'var(--gold)'})}
   let gl='';if(S.goal&&S.goal>=TODAY){const off=offSet(),done=c.doneToday;let sd=0;for(let d=parse(TODAY);ymd(d)<=S.goal;d=add(d,1))if(!off.has(d.getDay()))sd++;
-    const need=sd?Math.ceil((left+(off.has(parse(TODAY).getDay())?0:done))/sd):left,ok=planD&&ymd(planD)<=S.goal;
-    items.push({l:'Your goal',s:sd?'Needs '+pl(need,'page')+' per study day ('+sd+' study days left)':'Pick a later date',d:parse(S.goal),col:'var(--warn)',goal:1,ok,need});
-    gl='<p class="note">'+(ok?'At your plan you’ll finish before your goal, in shāʾ Allāh.':'To reach your goal, raise your daily pages to '+need+'.')+'</p>'+(!ok&&sd&&need<=20&&need!==S.per?'<div class="btns"><button class="btn sm" id="useGoal">Use '+pl(need,'page')+' a day</button></div>':'')}
+    const need=sd?qNeed((left+(off.has(parse(TODAY).getDay())?0:done))/sd):left,ok=planD&&ymd(planD)<=S.goal;
+    items.push({l:'Your goal',s:sd?'Needs '+qPace(need)+' per study day ('+sd+' study days left)':'Pick a later date',d:parse(S.goal),col:'var(--warn)',goal:1,ok,need});
+    gl='<p class="note">'+(ok?'At your plan you’ll finish before your goal, in shāʾ Allāh.':'To reach your goal, raise your pace to '+qPace(need)+' a day.')+'</p>'+(!ok&&sd&&need<=20&&need!==S.per?'<div class="btns"><button class="btn sm" id="useGoal" data-need="'+need+'">Use '+qPace(need)+' a day</button></div>':'')}
   h+='<div class="proj">'+items.map(x=>'<div class="pj'+(x.goal?' goal':'')+'"><div><b style="white-space:normal">'+x.l+'</b><small>'+esc(x.s)+'</small></div><b>'+(x.d?fmt(x.d):'—')+'</b></div>').join('')+'</div>';
   const ds=items.filter(x=>x.d).map(x=>x.d.getTime());if(ds.length){const t0=parse(TODAY).getTime(),t1=Math.max(...ds),sp=Math.max(1,t1-t0);
     h+='<div class="tl" aria-hidden="true"><i style="left:0;background:var(--ink)"></i><em style="left:0;transform:none">Today</em>'+items.filter(x=>x.d).map(x=>{const f=(x.d.getTime()-t0)/sp*100;return '<i style="left:'+f+'%;background:'+x.col+'"></i>'}).join('')+'</div><div class="legend">'+items.filter(x=>x.d).map(x=>'<span style="--c:'+x.col+'">'+x.l.replace('Your ','')+'</span>').join('')+'</div>'}
@@ -839,7 +959,7 @@ $('v-progress').addEventListener('click',e=>{const t=e.target.closest('button');
     if(all){sheet('<h2>Clear Juz '+j+'?</h2><p class="note">This removes the memorized mark from all '+(en-s+1)+' pages of this juz.</p><div class="btns"><button class="btn" id="cj" data-cj="'+j+'">Clear juz</button><button class="btn ghost" data-close>Cancel</button></div>');return}
     for(let p=s;p<=en;p++)if(!S.pages[p])S.pages[p]='pre';save();renderAll();toast('Juz '+j+' marked as already memorized');return}
   if(t.dataset.rv){const j=t.dataset.rv;if(S.rev[j]===TODAY)delete S.rev[j];else S.rev[j]=TODAY;save();renderAll();return}
-  if(t.id==='useGoal'){const n=+t.textContent.match(/\d+/)[0];S.per=n;if(S.lesson&&S.lesson.d===TODAY&&!S.lesson.p.some(p=>S.pages[p]))S.lesson=null;save();renderAll();toast('Daily pages set to '+n)}});
+  if(t.id==='useGoal'){const n=qSnap(+t.dataset.need);S.per=n;if(S.lesson&&S.lesson.d===TODAY&&!S.lesson.p.some(p=>S.pages[p]))S.lesson=null;save();renderAll();toast('Pace set to '+qPace(n)+' a day')}});
 $('v-progress').addEventListener('change',e=>{if(e.target.id==='goal'){S.goal=e.target.value||'';save();renderProgress()}});
 $('panel').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
   if(t.dataset.cj){const j=+t.dataset.cj,[s,en]=jr(j);for(let p=s;p<=en;p++)delete S.pages[p];save();closeSheet();renderAll();toast('Juz '+j+' cleared')}
@@ -853,7 +973,7 @@ async function audioStats(){try{const c=await caches.open(AC),k=await c.keys();l
   const el=$('aInfo');if(el)el.textContent=audioInfo}
 function renderSettings(){let h='';
   h+='<div class="card"><h2>What I memorize</h2><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px" id="sTrack">'+[['both','Both'],['quran','Qur’an'],['mutun','Mutūn']].map(x=>'<button data-trk="'+x[0]+'" class="'+(S.track===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div><div class="btns"><button class="btn sm" id="newPlan">Make a new plan</button><button class="btn sm ghost" id="whyFirst">What the scholars say to memorize first</button>'+(S.track!=='quran'?'<button class="btn sm ghost" data-mplan="1">Mutūn plan</button>':'')+'</div></div>';
-  h+='<div class="card"><h2>Qur’an plan</h2><dl class="kv plan" style="margin-top:10px"><div><dt>Start</dt><dd>Page '+S.sp+' · '+esc(NAMES[surahAt(S.sp)-1][0])+'</dd></div><div><dt>Direction</dt><dd>'+DIRS[S.dir][0]+'</dd></div><div><dt>Goal</dt><dd>'+esc(goalLabel())+'</dd></div><div><dt>Pace</dt><dd>'+pl(S.per,'page')+' a day · '+(7-S.off.length)+' days a week</dd></div>'+(S.goal?'<div><dt>Finish by</dt><dd>'+fmt(parse(S.goal))+'</dd></div>':'')+'</dl><div class="btns"><button class="btn sm" data-plan="1">Change plan</button></div></div>';
+  h+='<div class="card"><h2>Qur’an plan</h2><dl class="kv plan" style="margin-top:10px"><div><dt>Start</dt><dd>Page '+S.sp+' · '+esc(NAMES[surahAt(S.sp)-1][0])+'</dd></div><div><dt>Direction</dt><dd>'+DIRS[S.dir][0]+'</dd></div><div><dt>Goal</dt><dd>'+esc(goalLabel())+'</dd></div><div><dt>Pace</dt><dd>'+qPace(S.per)+' a day · '+(7-S.off.length)+' days a week</dd></div>'+(S.goal?'<div><dt>Finish by</dt><dd>'+fmt(parse(S.goal))+'</dd></div>':'')+'</dl><div class="btns"><button class="btn sm" data-plan="1">Change plan</button></div></div>';
   h+=aiCardHTML();
   h+='<div class="card"><h2>Reciter</h2><p class="note">Recitations come from EveryAyah.com, which offers them free to download. Save them once and they play without internet.</p><div class="rlist">'+RECITERS.map(r=>'<button class="rc'+(r[0]===S.reciter?' on':'')+'" data-r="'+r[0]+'"><span class="dot"></span><span><b>'+esc(r[1])+'</b><small>'+esc(r[2])+'</small></span></button>').join('')+'</div><p class="note" id="aInfo">'+esc(audioInfo||'Checking saved recitations…')+'</p><div class="btns"><button class="btn sm ghost" id="delAudio">Delete saved recitations</button></div></div>';
   h+='<div class="card"><h2>Appearance</h2><div class="field"><span>Theme</span><div class="seg" id="sTheme">'+[['auto','Auto'],['light','Light'],['dark','Dark'],['amber','No blue']].map(x=>'<button data-th="'+x[0]+'" class="'+(S.theme===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></div><p class="note">“No blue” uses only warm amber colours, for reading at night.</p></div>';
@@ -868,7 +988,7 @@ $('v-settings').addEventListener('click',e=>{const t=e.target.closest('button');
   if(t.dataset.trk){S.track=t.dataset.trk;save();renderSettings();renderAll();if(S.track!=='quran'&&!S.mp.setup)openMPlan();return}
   if(t.id==='whyFirst'){sheet('<h2>What to memorize first</h2>'+FIRST.map(qBlock).join('')+'<p class="lab">For the mutūn</p>'+qBlock(MFIRST)+'<button class="btn wide" data-close>Close</button>');return}
   switch(t.id){
-   case 'perM':case 'perP':S.per=Math.max(1,Math.min(20,S.per+(t.id==='perP'?1:-1)));if(S.lesson&&S.lesson.d===TODAY&&!S.lesson.p.some(p=>S.pages[p]))S.lesson=null;save();$('perV').textContent=S.per;break;
+   case 'perM':case 'perP':S.per=qStep(S.per,t.id==='perP'?1:-1);if(S.lesson&&S.lesson.d===TODAY&&!S.lesson.p.some(p=>S.pages[p]))S.lesson=null;save();$('perV').textContent=qPace(S.per);break;
    case 'delAudio':sheet('<h2>Delete saved recitations?</h2><p class="note">'+esc(audioInfo)+'. You can save them again any time you’re online.</p><div class="btns"><button class="btn" id="clearAudio">Delete</button><button class="btn ghost" data-close>Cancel</button></div>');break;
    case 'install':if(deferredInstall){deferredInstall.prompt();deferredInstall=null}break;
    case 'bCopy':{const l=backupLink();(navigator.clipboard?navigator.clipboard.writeText(l):Promise.reject()).then(()=>toast('Backup link copied ✓')).catch(()=>sheet('<h2>Your backup link</h2><p class="note">Copy this link and open it on your other device.</p><textarea readonly onclick="this.select()">'+esc(l)+'</textarea><button class="btn wide" data-close style="margin-top:12px">Done</button>'));break}
@@ -906,7 +1026,7 @@ function openPlan(welcome){PS={sp:S.sp,dir:S.dir,kind:S.gKind,val:+S.gVal||0,per
    +'<div class="field"><span>2 · Which way?</span><div class="rlist" id="plDir">'+Object.entries(DIRS).map(([k,v])=>'<button class="rc" data-dir="'+k+'"><span class="dot"></span><span><b>'+v[0]+'</b><small>'+esc(v[1])+'</small></span></button>').join('')+'</div></div>'
    +'<label class="field"><span>3 · Your goal</span><select id="plGoal"></select></label>'
    +'<div class="field"><span>4 · Your pace</span><div class="seg" id="plMode" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-m="per">Pages a day</button><button data-m="date">Finish by a date</button></div></div>'
-   +'<div class="field" id="plPerW"><div class="step"><button data-pp="-1" aria-label="Fewer pages">−</button><b id="plPerV"></b><button data-pp="1" aria-label="More pages">+</button><span class="note" style="margin:0">new pages a day</span></div></div>'
+   +'<div class="field" id="plPerW">'+lvSeg('plLv',PS.per,'data-lv')+'<div class="step"><button data-pp="-1" aria-label="Less a day">−</button><b id="plPerV"></b><button data-pp="1" aria-label="More a day">+</button><span class="note" style="margin:0">new a day</span></div></div>'
    +'<label class="field" id="plDateW"><span>Finish by</span><input type="date" id="plDate" min="'+ymd(add(parse(TODAY),1))+'"></label>'
    +'<div class="field"><span>Days off (revision only)</span><div class="days" id="plOff">'+DAYS.map((d,i)=>'<label><input type="checkbox" value="'+i+'"><span>'+d+'</span></label>').join('')+'</div></div>'
    +'<div class="vcard" id="plSum" aria-live="polite"></div>'
@@ -920,24 +1040,24 @@ function openPlan(welcome){PS={sp:S.sp,dir:S.dir,kind:S.gKind,val:+S.gVal||0,per
   $('plDir').onclick=e=>{const b=e.target.closest('[data-dir]');if(b){PS.dir=b.dataset.dir;updPlan(true)}};
   $('plGoal').onchange=e=>{const[k,v]=e.target.value.split(':');PS.kind=k;PS.val=+v;updPlan(false)};
   $('plMode').onclick=e=>{const b=e.target.closest('[data-m]');if(b){PS.mode=b.dataset.m;updPlan(false)}};
-  $('plPerW').onclick=e=>{const b=e.target.closest('[data-pp]');if(b){PS.per=Math.max(1,Math.min(20,PS.per+(+b.dataset.pp)));updPlan(false)}};
+  $('plPerW').onclick=e=>{const l=e.target.closest('[data-lv]');if(l){PS.per=QLV[l.dataset.lv][2];updPlan(false);return}const b=e.target.closest('[data-pp]');if(b){PS.per=qStep(PS.per,+b.dataset.pp);updPlan(false)}};
   $('plDate').onchange=e=>{PS.date=e.target.value;updPlan(false)};
   $('plOff').onchange=e=>{const v=[...P.querySelectorAll('#plOff input:checked')].map(i=>+i.value);if(v.length>6){e.target.checked=false;toast('Keep at least one study day');return}PS.off=v;updPlan(false)};
   $('plSave').onclick=savePlan;if($('plSkip'))$('plSkip').onclick=()=>{S.setup=1;save();closeSheet();if(afterPlan==='mutun'){afterPlan='';setTimeout(()=>openMPlan(),350)}};
   updPlan(true)}
 function planNums(){const G=goalSeqFor(PS.sp,PS.dir,PS.kind,PS.val),left=G.filter(p=>!S.pages[p]).length;let per=PS.per,sd=0,warn='';
-  if(PS.mode==='date'&&PS.date>TODAY){sd=studyDays(PS.off,PS.date);per=sd?Math.ceil(left/sd):left;if(per>20)warn='That needs '+per+' pages a day. Pick a later date.';per=Math.max(1,Math.min(20,per))}
+  if(PS.mode==='date'&&PS.date>TODAY){sd=studyDays(PS.off,PS.date);per=sd?qNeed(left/sd):left;if(per>20)warn='That needs more than 20 pages a day. Pick a later date.';per=qSnap(Math.min(20,per))}
   return{G,left,per,fin:finishFor(per,PS.off,left,0),sd,warn}}
 function updPlan(opts){const P=$('panel');
   P.querySelectorAll('#plDir .rc').forEach(b=>b.classList.toggle('on',b.dataset.dir===PS.dir));
   if(opts){const o=goalOptsFor(PS.sp,PS.dir),cur=PS.kind+':'+PS.val;$('plGoal').innerHTML=o.map(x=>'<option value="'+x[0]+':'+x[1]+'">'+esc(x[2])+'</option>').join('');
     if(o.some(x=>x[0]+':'+x[1]===cur))$('plGoal').value=cur;else{$('plGoal').value='whole:0';PS.kind='whole';PS.val=0}}
   P.querySelectorAll('#plMode button').forEach(b=>b.classList.toggle('on',b.dataset.m===PS.mode));
-  $('plPerW').hidden=PS.mode!=='per';$('plDateW').hidden=PS.mode!=='date';$('plPerV').textContent=PS.per;
+  $('plPerW').hidden=PS.mode!=='per';$('plDateW').hidden=PS.mode!=='date';$('plPerV').textContent=qPace(PS.per);P.querySelectorAll('#plLv [data-lv]').forEach(b=>{const on=b.dataset.lv===qLevel(PS.per);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
   const n=planNums(),done=n.G.length-n.left,needDate=PS.mode==='date'&&!(PS.date>TODAY);
-  $('plSum').innerHTML='<p class="lab">Your plan</p><p class="mean"><b>Start:</b> page '+PS.sp+' · '+esc(NAMES[surahAt(PS.sp)-1][0])+', '+DIRS[PS.dir][0].toLowerCase()+'<br><b>Goal:</b> '+esc(labelFor(PS.dir,PS.kind,PS.val))+' · '+pl(n.G.length,'page')+(done?' ('+done+' already memorized)':'')+'<br><b>Pace:</b> '+(needDate?'pick a date':pl(n.per,'new page')+' a day, '+(7-PS.off.length)+' days a week')+'<br><b>Finish:</b> '+(!n.left?'already complete':needDate?'—':'about '+fmt(n.fin))+'</p>'+(n.warn?'<p class="src" style="color:var(--warn)">'+esc(n.warn)+'</p>':'')}
+  $('plSum').innerHTML='<p class="lab">Your plan</p><p class="mean"><b>Start:</b> page '+PS.sp+' · '+esc(NAMES[surahAt(PS.sp)-1][0])+', '+DIRS[PS.dir][0].toLowerCase()+'<br><b>Goal:</b> '+esc(labelFor(PS.dir,PS.kind,PS.val))+' · '+pl(n.G.length,'page')+(done?' ('+done+' already memorized)':'')+'<br><b>Pace:</b> '+(needDate?'pick a date':qPace(n.per)+' a day, '+(7-PS.off.length)+' days a week')+'<br><b>Finish:</b> '+(!n.left?'already complete':needDate?'—':'about '+fmt(n.fin))+'</p>'+(n.warn?'<p class="src" style="color:var(--warn)">'+esc(n.warn)+'</p>':'')}
 function savePlan(){if(PS.mode==='date'&&!(PS.date>TODAY)){toast('Pick a finish date');return}const n=planNums();
-  S.sp=PS.sp;S.dir=PS.dir;S.gKind=PS.kind;S.gVal=PS.val;S.per=n.per;S.off=PS.off;S.goal=PS.mode==='date'?PS.date:'';S.start=TODAY;S.lesson=null;S.setup=1;if(!S.track)S.track='quran';save();closeSheet();renderAll();if(location.hash==='#settings')renderSettings();toast('Plan saved ✓ '+pl(n.per,'page')+' a day');if(afterPlan==='mutun'){afterPlan='';setTimeout(()=>openMPlan(),450)}}
+  S.sp=PS.sp;S.dir=PS.dir;S.gKind=PS.kind;S.gVal=PS.val;S.per=n.per;S.off=PS.off;S.goal=PS.mode==='date'?PS.date:'';S.start=TODAY;S.lesson=null;S.setup=1;if(!S.track)S.track='quran';save();closeSheet();renderAll();if(location.hash==='#settings')renderSettings();toast('Plan saved ✓ '+qPace(n.per)+' a day');if(afterPlan==='mutun'){afterPlan='';setTimeout(()=>openMPlan(),450)}}
 
 /* ---------- recite & check ---------- */
 /*ALIGN*/
@@ -1715,9 +1835,9 @@ function obQ(per){const P=OB.q,G=goalSeqFor(P.sp,P.dir,P.kind,P.val),left=G.filt
 function obM(per){const P=OB.m;if(!mInfo(P.sm))P.sm=MI[0].id;if(P.si<0)P.si=mFirstOpen(P.sm);
   const G=mSeqFor(P.sm,P.si,P.gk,P.gv),left=G.filter(([id,i])=>!isMem(id,i)).length;return{len:G.length,left,fin:finishFor(per,OB.off,left,0)}}
 function projHTML(r,unit,per){if(!r.left)return '<div class="oproj"><p class="lab">Finish</p><b>Already memorized, alḥamdulillāh</b></div>';const h=hij(r.fin);
-  return '<div class="oproj" aria-live="polite"><p class="lab">At '+pl(per,unit)+' a day you finish</p><b>'+fmt(r.fin,{weekday:'short',day:'numeric',month:'long',year:'numeric'})+'</b><span>'+(h?esc(h)+' · ':'')+'in about '+howLong(r.fin)+'</span></div>'}
+  return '<div class="oproj" aria-live="polite"><p class="lab">At '+(unit==='page'?qPace(per):pl(per,unit))+' a day you finish</p><b>'+fmt(r.fin,{weekday:'short',day:'numeric',month:'long',year:'numeric'})+'</b><span>'+(h?esc(h)+' · ':'')+'in about '+howLong(r.fin)+'</span></div>'}
 function paceTable(k,opts,cur,fn,unit){const set=[...new Set(opts.concat(cur))].sort((a,b)=>a-b);
-  return '<div class="ptab">'+set.map(p=>{const r=fn(p);return '<button class="'+(p===cur?'on':'')+'" data-op="'+k+':'+p+'" aria-pressed="'+(p===cur)+'"><b>'+pl(p,unit)+'</b><span>'+(r.left?fmt(r.fin):'—')+'</span><small>'+(r.left?howLong(r.fin):'')+'</small></button>'}).join('')+'</div>'}
+  return '<div class="ptab">'+set.map(p=>{const r=fn(p);return '<button class="'+(p===cur?'on':'')+'" data-op="'+k+':'+p+'" aria-pressed="'+(p===cur)+'"><b>'+(unit==='page'?qPace(p):pl(p,unit))+'</b><span>'+(r.left?fmt(r.fin):'—')+'</span><small>'+(r.left?howLong(r.fin):'')+'</small></button>'}).join('')+'</div>'}
 function onbPaint(){const el=$('onb'),y=el.scrollTop,O=OB,dq=O.tr!=='mutun',dm=O.tr!=='quran';let h='';
   h+='<div class="onb-hero"><img src="icons/icon-192.png" alt="" width="58" height="58"><h1 id="onbT">Make your plan</h1><p>Choose your pace and see when you’ll finish, in shāʾ Allāh. You can change it any time.</p></div><div class="onb-in">';
   h+='<section class="card"><h2>Who’s memorizing?</h2><div class="seg two">'+[['b','Brother'],['s','Sister']].map(x=>'<button data-og="'+x[0]+'" class="'+(O.g===x[0]?'on':'')+'">'+x[1]+'</button>').join('')+'</div></section>';
@@ -1727,8 +1847,8 @@ function onbPaint(){const el=$('onb'),y=el.scrollTop,O=OB,dq=O.tr!=='mutun',dm=O
      +'<div class="two-col"><label class="field"><span>Sūrah</span><select id="obS">'+NAMES.map((n,i)=>'<option value="'+(i+1)+'"'+(sa===i+1?' selected':'')+'>'+(i+1)+' · '+esc(n[0])+'</option>').join('')+'</select></label><label class="field"><span>or page</span><input type="number" id="obP" min="1" max="604" inputmode="numeric" value="'+q.sp+'"></label></div>'
      +'<div class="field"><span>Direction</span><div class="seg three">'+Object.entries(DIRS).map(([k,v])=>'<button data-od="'+k+'" class="'+(q.dir===k?'on':'')+'">'+v[0]+'</button>').join('')+'</div><p class="note">'+esc(DIRS[q.dir][1])+'</p></div>'
      +'<label class="field"><span>Goal</span><select id="obQG">'+gop.map(x=>'<option value="'+x[0]+':'+x[1]+'"'+(x[0]===q.kind&&x[1]===q.val?' selected':'')+'>'+esc(x[2])+'</option>').join('')+'</select></label>'
-     +'<div class="field"><span>New pages a day</span><div class="step big"><button data-ostep="q:-1" aria-label="Fewer pages">−</button><b>'+q.per+'</b><button data-ostep="q:1" aria-label="More pages">+</button><span class="note" style="margin:0">'+pl(r.len,'page')+' in this goal</span></div></div>'
-     +projHTML(r,'page',q.per)+'<p class="lab" style="margin-top:14px">Compare paces · tap one</p>'+paceTable('q',[1,2,3,5],q.per,obQ,'page')
+     +'<div class="field"><span>Your level</span>'+lvSeg('obLv',q.per,'data-olv')+'</div><div class="field"><span>New memorization a day</span><div class="step big"><button data-ostep="q:-1" aria-label="Less a day">−</button><b>'+esc(qPace(q.per))+'</b><button data-ostep="q:1" aria-label="More a day">+</button><span class="note" style="margin:0">'+pl(r.len,'page')+' in this goal</span></div></div>'
+     +projHTML(r,'page',q.per)+'<p class="lab" style="margin-top:14px">Compare paces · tap one</p>'+paceTable('q',QLV[qLevel(q.per)][3],q.per,obQ,'page')
      +'<label class="field"><span>Or pick the date you want to finish</span><input type="date" id="obQD" min="'+ymd(add(parse(TODAY),1))+'" value="'+q.date+'"></label>'+(q.warn?'<p class="note warn">'+esc(q.warn)+'</p>':'')+'</section>'}
   if(dm){if(!MI)h+='<section class="card"><p class="lab">Mutūn</p><p class="note">Loading the mutūn…</p></section>';
     else{const m=O.m,r=obM(m.per),b=mInfo(m.sm),u=b.poem?'verse':'line',mo=mGoalOpts(m.sm);if(!mo.some(x=>x[0]===m.gk&&String(x[1])===String(m.gv))){m.gk='matn';m.gv=''}const uu=m.gk==='matn'?u:'line';
@@ -1740,7 +1860,7 @@ function onbPaint(){const el=$('onb'),y=el.scrollTop,O=OB,dq=O.tr!=='mutun',dm=O
        +projHTML(r,uu,m.per)+'<p class="lab" style="margin-top:14px">Compare paces · tap one</p>'+paceTable('m',[3,5,10,20],m.per,obM,uu)
        +'<label class="field"><span>Or pick the date you want to finish</span><input type="date" id="obMD" min="'+ymd(add(parse(TODAY),1))+'" value="'+m.date+'"></label>'+(m.warn?'<p class="note warn">'+esc(m.warn)+'</p>':'')+'</section>'}}
   h+='<section class="card"><h2>Days off</h2><p class="note">Revision only on these days. The dates above already count them.</p><div class="days" id="obOff">'+DAYS.map((d,i)=>'<label><input type="checkbox" value="'+i+'"'+(O.off.includes(i)?' checked':'')+'><span>'+d+'</span></label>').join('')+'</div></section></div>';
-  const sum=[];if(dq)sum.push(pl(O.q.per,'page')+' a day');if(dm&&MI)sum.push(pl(O.m.per,'line')+' a day');
+  const sum=[];if(dq)sum.push((dm?'Qur’an ':'')+qPace(O.q.per)+' a day');if(dm&&MI)sum.push((dq?'mutūn ':'')+pl(O.m.per,'line')+' a day');
   h+='<div class="onb-foot"><p>'+esc(sum.join(' + '))+(sum.length?' · '+(7-O.off.length)+' days a week':'')+'</p><button class="btn wide" id="obStart">Bismillah, start my plan</button><button class="linkb" id="'+(O.first?'obSkip">Skip for now':'obX">Cancel')+'</button></div>';
   el.innerHTML=h;el.scrollTop=y}
 function onbSave(){const O=OB,dq=O.tr!=='mutun',dm=O.tr!=='quran';S.g=O.g;S.track=O.tr;S.off=O.off;
@@ -1755,7 +1875,8 @@ $('onb').addEventListener('click',e=>{const t=e.target.closest('button');if(!t||
   else if(d.opre){const v=PRESETS[d.opre];Object.assign(O.q,{sp:v[1],dir:v[2],kind:v[3],val:v[4]})}
   else if(d.od)O.q.dir=d.od;
   else if(d.ompre){const v=MPRESETS[+d.ompre];Object.assign(O.m,{sm:v[1],si:mFirstOpen(v[1]),gk:v[2],gv:v[3]})}
-  else if(d.ostep){const[k,s]=d.ostep.split(':'),P=O[k];P.per=Math.max(1,Math.min(k==='q'?20:40,P.per+(+s)));P.date='';P.warn=''}
+  else if(d.olv){O.q.per=QLV[d.olv][2];O.q.date='';O.q.warn=''}
+   else if(d.ostep){const[k,s]=d.ostep.split(':'),P=O[k];P.per=k==='q'?qStep(P.per,+s):Math.max(1,Math.min(40,P.per+(+s)));P.date='';P.warn=''}
   else if(d.op){const[k,p]=d.op.split(':');O[k].per=+p;O[k].date='';O[k].warn=''}
   else return;onbPaint()});
 $('onb').addEventListener('change',e=>{const t=e.target,O=OB;if(!O)return;
@@ -1766,7 +1887,7 @@ $('onb').addEventListener('change',e=>{const t=e.target,O=OB;if(!O)return;
   else if(t.id==='obMI'){const v=Math.round(+t.value);if(v>=1&&v<=mInfo(O.m.sm).n)O.m.si=v-1;else return}
   else if(t.id==='obMG'){const[k,v]=t.value.split(':');O.m.gk=k;O.m.gv=v||''}
   else if(t.id==='obQD'||t.id==='obMD'){const k=t.id==='obQD'?'q':'m',P=O[k],mx=k==='q'?20:40;P.date=t.value;P.warn='';
-    if(P.date>TODAY){const r=k==='q'?obQ(1):obM(1),sd=studyDays(O.off,P.date),need=sd?Math.ceil(r.left/sd):r.left;if(need>mx)P.warn='That date needs '+need+(k==='q'?' pages':' lines')+' a day. The most a plan allows is '+mx+', so pick a later date.';P.per=Math.max(1,Math.min(mx,need))}}
+    if(P.date>TODAY){const r=k==='q'?obQ(1):obM(1),sd=studyDays(O.off,P.date),need=sd?(k==='q'?qNeed(r.left/sd):Math.ceil(r.left/sd)):r.left;if(need>mx)P.warn='That date needs more than '+mx+(k==='q'?' pages':' lines')+' a day, so pick a later date.';P.per=k==='q'?qSnap(Math.min(mx,need)):Math.max(1,Math.min(mx,need))}}
   else if(t.closest('#obOff')){const v=[...$('onb').querySelectorAll('#obOff input:checked')].map(i=>+i.value);if(v.length>6){t.checked=false;toast('Keep at least one study day');return}O.off=v}
   else return;onbPaint()});
 document.addEventListener('click',e=>{if(e.target.closest('#newPlan'))openOnb(false)});
@@ -1810,7 +1931,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-nudge]');i
 
 /* ---------- Qur'an AI recitation checker (runs on the phone) ---------- */
 const AIV='6',AI={waiters:[],lastPct:-1,restarts:0,w:null,st:'off',dev:'',l:0,tot:0,cb:{},seq:0,busy:false,ms:0,QS:null,err:''};
-const APPV='v29';
+const APPV='v30';
 function dlog(m){try{const a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]');a.push(new Date().toISOString().slice(5,19).replace('T',' ')+' '+String(m).slice(0,400));while(a.length>250)a.shift();localStorage.setItem('hifz-dlog',JSON.stringify(a))}catch(e){}}
 function dlogText(){let a=[];try{a=JSON.parse(localStorage.getItem('hifz-dlog')||'[]')}catch(e){}return 'Hifdh diagnostics · '+APPV+' · '+navigator.userAgent+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+'\n'+a.join('\n')}
 function dlogCopy(){const t=dlogText();sheet('<h2>Details for Claude</h2><p class="note">Copy this and paste it into the chat.</p><textarea id="dlogT" readonly style="min-height:220px;font-size:12px;font-family:ui-monospace,monospace">'+esc(t)+'</textarea><button class="btn wide" id="dlogC" style="margin-top:10px">Copy</button>'+(navigator.share?'<button class="btn ghost wide" id="dlogS" style="margin-top:8px">Share</button>':'')+'<button class="btn ghost wide" data-close style="margin-top:8px">Close</button>');
@@ -1975,7 +2096,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){const t=y
 let deferredInstall=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(location.hash==='#settings')renderSettings()});
 
 const restoring=location.hash.startsWith('#restore=');
-if(MOVED&&location.hostname.endsWith('github.io')&&!restoring)setTimeout(()=>{sheet('<h2>Hifdh has a new address</h2><p class="mean">The app now lives at <b>hifdh-quran.netlify.app</b>. Tap below to open it. Your plan and progress come with you.</p><a class="btn wide" id="goNew" href="'+backupLink(NEWHOME)+'">Open the new app</a><p class="note" style="margin-top:12px">Then add it to your Home Screen (Share → Add to Home Screen) and delete this old one.</p><button class="btn ghost wide" data-close style="margin-top:8px">Not now</button>')},600);
+if(MOVED&&location.hostname.endsWith('github.io')&&!restoring)setTimeout(()=>{sheet('<h2>Hifdh has a new address</h2><p class="mean">The app now lives at <b>hifdhtalib.netlify.app</b>. Tap below to open it. Your plan and progress come with you.</p><a class="btn wide" id="goNew" href="'+backupLink(NEWHOME)+'">Open the new app</a><p class="note" style="margin-top:12px">Then add it to your Home Screen (Share → Add to Home Screen) and delete this old one.</p><button class="btn ghost wide" data-close style="margin-top:8px">Not now</button>')},600);
 {let live=0;try{live=+localStorage.getItem('hifz-ai-live')||0;localStorage.removeItem('hifz-ai-live')}catch(e){}
  dlog('app open · '+APPV+(live?' · the last session closed while the AI was working':''));
  if(live&&Date.now()-live<20*60e3){S.aiCrash=(S.aiCrash||0)+1;S.aiFast=0;if(S.aiFast){S.aiFast=0;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses standard mode.',4500),1500)}else if(!S.aiLite){S.aiLite=1;setTimeout(()=>toast('The app closed while the Qur’an AI was working, so it now uses a lighter setting.',4500),1500)}save()}}
