@@ -18,6 +18,8 @@ const S = 2;
 /** camera on a world point; 16:9 frames a little wider than 9:16 so heads and feet fit */
 const cc = (f: number, shots: Shot[], dur: number) => cutCam(f, [...shots].sort((a, b) => a.at - b.at), dur);
 const A = (vertical: boolean, x: number, y: number, z: number) => aim(vertical, x, y, vertical ? z : z * 0.82);
+/** a different framing per format: v for 9:16, w for 16:9 (same zoom scale as A) */
+const VW = (vertical: boolean, v: [number, number, number], w: [number, number, number]) => (vertical ? A(true, ...v) : A(false, ...w));
 type Sky = "dawn" | "day" | "dusk" | "night";
 
 // ───────── helpers ─────────
@@ -76,6 +78,8 @@ export const crowd = (n: number, x0: number, x1: number, seed: string, o: { flip
     return { x, o: FOLK(i + Math.floor(random(`${seed}o`) * 4)), flip, mood: o.mood ?? "tight", s: (o.s ?? S * 0.94) * (0.96 + random(`${seed}s${i}`) * 0.08), y: (o.y ?? FLOOR) - (i % 2) * 18, pose: o.sword ? (up ? SWORD_UP : SWORD_READY) : STAND, hold: o.sword ? <Sword color="#2a2522" /> : undefined };
   });
 /** the town: green valley, a row of houses behind, optional big house (front) with a door that opens */
+/** the current camera, so the light can tell when its name label would be cut by the frame edge */
+const CamCtx = React.createContext<Cam | null>(null);
 export const Town: React.FC<{ cam: Cam; sky?: Sky; seed?: string; door?: number; houseX?: number; children?: React.ReactNode; back?: boolean; meadow?: boolean }> = ({ cam, sky = "day", seed = "t", door, houseX, children, back = true, meadow }) => {
   const night = sky === "night";
   const row = back ? <g>{[-420, 300, 1020, 1740, 2460].map((x, i) => <g key={i} transform={`translate(${x} 1290) scale(0.62) translate(0 ${-FLOOR})`}><MudHouse x={0} tone={i} night={night} /></g>)}</g> : null;
@@ -85,7 +89,7 @@ export const Town: React.FC<{ cam: Cam; sky?: Sky; seed?: string; door?: number;
       <Layer d={1} cam={cam}>
         <Defs />
         {houseX !== undefined ? <BigHouse x={houseX} open={door ?? 0} night={night} /> : null}
-        {children}
+        <CamCtx.Provider value={cam}>{children}</CamCtx.Provider>
       </Layer>
       {night ? null : <Fore cam={cam} dusk={sky !== "day"} />}
       {night ? <Grade color="#0b1440" opacity={0.45} mode="multiply" /> : sky === "dawn" ? <Grade color="#ffb070" opacity={0.18} /> : null}
@@ -141,6 +145,15 @@ export const Flesh: React.FC = () => (
 export const MusaLight: React.FC<{ x: number; y: number; s?: number; flare?: number }> = ({ x, y, s = 1, flare = 0 }) => {
   const f = useCurrentFrame();
   const pulse = 1 + 0.04 * Math.sin(f * 0.12);
+  // the name fades out before the frame edge would cut it (never a half-word at the edge)
+  const cam = React.useContext(CamCtx); const { vertical, vw, vh } = useView();
+  let lo = 0.95;
+  if (cam) {
+    const lx = (x - 960) * cam.zoom - cam.x, ly = (y + 312 * s - (vertical ? 1056 : 1014)) * cam.zoom - cam.y;
+    const hw = 84 * s * cam.zoom, hh = 32 * s * cam.zoom;
+    const m = Math.min(vw / 2 - (Math.abs(lx) + hw), 0.45 * vh - (ly + hh), 0.55 * vh + (ly - hh));
+    lo = 0.95 * Math.max(0, Math.min(1, m / 40));
+  }
   return (
     <g transform={`translate(${x} ${y}) scale(${s * pulse})`}>
       <ellipse cx={0} cy={250} rx={300} ry={40} fill="#ffd36b" opacity={0.35 + flare * 0.3} style={{ filter: "blur(18px)" }} />
@@ -151,7 +164,7 @@ export const MusaLight: React.FC<{ x: number; y: number; s?: number; flare?: num
       <circle cx={0} cy={0} r={260} fill="url(#glowO)" opacity={0.85} />
       <ellipse cx={0} cy={0} rx={120} ry={210} fill="#ffe39a" opacity={0.7} style={{ filter: "blur(26px)" }} />
       <ellipse cx={0} cy={0} rx={60} ry={130} fill="#fff8e0" opacity={0.95} style={{ filter: "blur(14px)" }} />
-      <text x={0} y={330} textAnchor="middle" fontFamily={`${elegant}, Amiri`} fontStyle="italic" fontWeight={800} fontSize={56} fill="#f2c14e" stroke="#3a2a10" strokeWidth={3} paintOrder="stroke" opacity={0.95}>Mūsā</text>
+      <text x={0} y={330} textAnchor="middle" fontFamily={`${elegant}, Amiri`} fontStyle="italic" fontWeight={800} fontSize={56} fill="#f2c14e" stroke="#3a2a10" strokeWidth={3} paintOrder="stroke" opacity={lo}>Mūsā</text>
       {new Array(18).fill(0).map((_, i) => {
         const t = ((f * 0.6 + i * 37) % 300) / 300;
         return <circle key={`p${i}`} cx={Math.sin(i * 2.3 + f * 0.02) * 160} cy={200 - t * 460} r={4 + (i % 3) * 2} fill="#fff4cc" opacity={(1 - t) * 0.8} />;
@@ -611,22 +624,25 @@ export const Search: React.FC = () => {
 /** It belongs to a man devoted to his father. A cow for a cow? No. Two? No. Ten. Still no. Then the threat. */
 export const Haggle: React.FC = () => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL();
+  // cow at 1480 (tail 1258 … nose 1760): the elder's close-ups never show it, the young man's 16:9 close-ups show it whole
+  const el = (z: number): [number, number, number] => [700, 900, z], elw = (z: number): [number, number, number] => [640, 900, z];
+  const yv = (z: number): [number, number, number] => [1000, 880, z], yw = (z: number): [number, number, number] => [1330, 900, z];
   const cam = cc(frame, [
-    { at: 0, a: A(vertical, 1100, 1000, 1.25), b: A(vertical, 1100, 990, 1.4) },
-    { at: L("N101") - 2, a: A(vertical, 700, 900, 2.0), b: A(vertical, 700, 900, 2.2) },
-    { at: L("N102") - 2, a: A(vertical, 1050, 880, 2.2), b: A(vertical, 1050, 880, 2.4) },
-    { at: L("N103") - 2, a: A(vertical, 700, 900, 2.1), b: A(vertical, 720, 900, 2.3) },
-    { at: L("N104") - 2, a: A(vertical, 1050, 880, 2.3), b: A(vertical, 1050, 880, 2.5) },
-    { at: L("N105") - 2, a: A(vertical, 700, 900, 2.2), b: A(vertical, 740, 900, 2.4) },
-    { at: L("N106") - 2, a: A(vertical, 1050, 880, 2.4), b: A(vertical, 1050, 880, 2.6) },
-    { at: L("P8") - 2, a: A(vertical, 900, 960, 1.3), b: A(vertical, 900, 950, 1.5) },
+    { at: 0, a: VW(vertical, [1200, 1000, 0.92], [1100, 1000, 1.25]), b: VW(vertical, [1200, 990, 0.98], [1100, 990, 1.4]) },
+    { at: L("N101") - 2, a: VW(vertical, el(2.0), elw(2.0)), b: VW(vertical, el(2.2), elw(2.2)) },
+    { at: L("N102") - 2, a: VW(vertical, yv(2.2), yw(2.0)), b: VW(vertical, yv(2.4), yw(2.2)) },
+    { at: L("N103") - 2, a: VW(vertical, el(2.1), elw(2.1)), b: VW(vertical, [720, 900, 2.3], elw(2.3)) },
+    { at: L("N104") - 2, a: VW(vertical, yv(2.3), yw(2.05)), b: VW(vertical, yv(2.5), yw(2.25)) },
+    { at: L("N105") - 2, a: VW(vertical, el(2.2), elw(2.2)), b: VW(vertical, [740, 900, 2.4], [680, 900, 2.4]) },
+    { at: L("N106") - 2, a: VW(vertical, yv(2.4), yw(2.1)), b: VW(vertical, yv(2.6), yw(2.3)) },
+    { at: L("P8") - 2, a: VW(vertical, [860, 960, 1.4], [1000, 960, 1.3]), b: VW(vertical, [860, 950, 1.55], [1000, 950, 1.45]) },
   ], dur);
   const offers: [string, string][] = [["N101", "1 COW?"], ["N103", "2 COWS?"], ["N105", "10 COWS?"]];
   const no: string[] = ["N102", "N104", "N106"];
   return (
     <AbsoluteFill>
       <Town cam={shook(cam, frame, [L("P8")], 10)} sky="day" seed="hg" back={false} meadow>
-        <YellowCow x={1380} glow={0.5} />
+        <YellowCow x={1480} glow={0.5} />
         <Cast acts={[
           ...crowd(5, -400, 500, "hg", { mood: frame > L("N107") ? "frown" : "tight" }),
           { x: 700, o: ELDER, pose: OFFER, mood: frame > L("N107") ? "frown" : "neutral", say: ["P8"] },
@@ -644,18 +660,18 @@ export const Ruling: React.FC = () => {
   const { frame, dur } = useShot(); const { vertical } = useView(); const { L } = useL();
   const cam = cc(frame, [
     { at: 0, a: A(vertical, 900, 1000, 1.0), b: A(vertical, 1100, 1000, 1.1) },
-    { at: L("P9") - 2, a: A(vertical, 640, 880, 2.1), b: A(vertical, 640, 870, 2.3) },
-    { at: L("N110") - 2, a: A(vertical, 1450, 900, 1.6), b: A(vertical, 1450, 900, 1.8) },
-    { at: L("N111") - 2, a: A(vertical, 1020, 900, 2.0), b: A(vertical, 1020, 900, 2.2) },
-    { at: L("N113") - 2, a: A(vertical, 1450, 900, 1.6), b: A(vertical, 1430, 900, 1.8) },
+    { at: L("P9") - 2, a: VW(vertical, [640, 880, 2.1], [980, 880, 2.1]), b: VW(vertical, [640, 870, 2.3], [980, 870, 2.3]) },
+    { at: L("N110") - 2, a: A(vertical, 1520, 900, 1.6), b: A(vertical, 1520, 900, 1.8) },
+    { at: L("N111") - 2, a: VW(vertical, [1080, 900, 2.0], [1020, 900, 2.0]), b: VW(vertical, [1080, 900, 2.1], [1020, 900, 2.2]) },
+    { at: L("N113") - 2, a: A(vertical, 1520, 900, 1.6), b: A(vertical, 1500, 900, 1.8) },
     { at: L("N116") - 2, a: A(vertical, 1180, 1050, 1.5), b: A(vertical, 1180, 1040, 1.75) },
   ], dur);
   const fl = ["N110", "N113"].some((id) => frame >= L(id) && frame < L(id) + 30) ? 0.6 : 0;
   return (
     <AbsoluteFill>
       <Town cam={cam} sky="day" seed="ru" back={false} meadow>
-        <MusaLight x={1450} y={FLOOR - 320} flare={fl} />
-        <YellowCow x={1180} y={FLOOR + 40} s={0.8} glow={0.3} flip />
+        <MusaLight x={1520} y={FLOOR - 320} flare={fl} />
+        <YellowCow x={1120} y={FLOOR + 40} s={0.8} glow={0.3} />
         <Cast acts={[
           ...crowd(5, -500, 450, "ru", { mood: "frown" }),
           { x: 640, o: ELDER, pose: sw(frame, L("P9"), STAND, POINT), mood: "frown", say: ["P9"], walk: { f0: 0, f1: 40, x0: 300, x1: 640 } },

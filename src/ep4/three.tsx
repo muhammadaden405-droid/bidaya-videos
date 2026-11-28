@@ -108,7 +108,7 @@ const SKY: Record<ShotName, string> = {
   farms: "linear-gradient(#2f6fa8 0%, #7fb2d6 45%, #f3d6a4 75%)",
   dusk: "linear-gradient(#0f0b1e 0%, #3a1d3c 30%, #8f3a42 52%, #e0703e 66%, #ffb86a 78%)",
   present: "linear-gradient(#2f6fa8 0%, #7fb2d6 45%, #f3d6a4 75%)",
-  dawn: "linear-gradient(#120f2a 0%, #3b2a55 25%, #a0566a 45%, #f0965e 60%, #ffd08a 72%, #ffe6b0 85%)",
+  dawn: "linear-gradient(#2a2148 0%, #6a3a68 14%, #c0647a 28%, #f29a62 40%, #ffc489 54%, #ffe2b0 72%)",
 };
 const FOG: Record<ShotName, string> = { night: "#141c3c", farms: "#f0dcb4", dusk: "#d08a6a", present: "#f0dcb4", dawn: "#f1c8a4" };
 /** a drone shot over the land; each shot is one continuous eased camera move (no cuts inside) */
@@ -119,14 +119,14 @@ export const Land3D: React.FC<{ shot: ShotName; span?: [number, number]; fadeIn?
   const night = shot === "night", dusk = shot === "dusk", dawn = shot === "dawn";
   let pos: V3, look: V3;
   if (shot === "night") { pos = lerp3([TOWN[0] - 60, 34, TOWN[1] + 90], [TOWN[0] - 20, 18, TOWN[1] + 44], t); look = [TOWN[0], 2, TOWN[1]]; }
-  else if (shot === "farms") { const z = 80 - t * 230; pos = [-30 + Math.sin(t * 3) * 6, 38, z]; look = [-28, 0, z - 95]; }
+  else if (shot === "farms") { const z = 90 - t * 160; pos = [-30 + Math.sin(t * 3) * 6, 40, z]; look = [-28, 0, z - 80]; }
   else if (shot === "dusk") { const a = 0.6 + t * 0.7; pos = [TOWN[0] + Math.cos(a) * 70, 40, TOWN[1] + Math.sin(a) * 70]; look = [TOWN[0], 2, TOWN[1]]; }
   else if (shot === "present") { pos = lerp3([TOWN[0] - 80, 70, TOWN[1] + 120], [TOWN[0] - 14, 14, TOWN[1] + 30], t); look = lerp3([TOWN[0], 0, TOWN[1] - 20], [TOWN[0], 3, TOWN[1]], t); }
   else { pos = lerp3([-10, 22, 140], [-30, 60, 40], t); look = lerp3([-30, 10, -200], [-40, 0, -260], t); }
   const sun = iv(frame, [0, dur], [0, 1]);
   return (
     <AbsoluteFill style={{ background: SKY[shot] }}>
-      <Canvas3D fog={FOG[shot]} dawn={dawn || dusk}>
+      <Canvas3D fog={FOG[shot]} dawn={dawn || dusk} fogFar={dawn ? 900 : 430}>
         <CamRig pos={pos} look={look} />
         {night ? <Sun p={[120, 160, -500]} c="#f2efe0" r={12} /> : dawn ? <Sun p={[-40, -10 + sun * 70, -560]} c="#ffe8b0" r={22} /> : dusk ? <Sun p={[160, 20, -520]} c="#ffcf8a" r={20} /> : <Sun p={[140, 140, -520]} />}
         {night ? <ambientLight intensity={-0.15} /> : null}

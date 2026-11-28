@@ -159,13 +159,13 @@ export const CamRig: React.FC<{ pos: V3; look: V3 }> = ({ pos, look }) => {
   return null;
 };
 export const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-export const Canvas3D: React.FC<{ fog: string; children: React.ReactNode; style?: React.CSSProperties; dawn?: boolean }> = ({ fog, children, style, dawn }) => {
+export const Canvas3D: React.FC<{ fog: string; children: React.ReactNode; style?: React.CSSProperties; dawn?: boolean; fogFar?: number }> = ({ fog, children, style, dawn, fogFar = 430 }) => {
   const { width, height } = useVideoConfig();
   const { vertical } = useView();
   return (
     <AbsoluteFill style={style}>
       <ThreeCanvas width={width} height={height} camera={{ fov: vertical ? 62 : 40, near: 0.1, far: 900 }} gl={{ alpha: true, antialias: true }}>
-        <fog attach="fog" args={[fog, 110, 430]} />
+        <fog attach="fog" args={[fog, 110, fogFar]} />
         <hemisphereLight args={[dawn ? "#ffe0c0" : "#d8ecff", "#3e5a30", 1.0]} />
         <directionalLight position={dawn ? [-60, 40, -200] : [80, 120, -60]} intensity={dawn ? 2.0 : 2.4} color={dawn ? "#ffc890" : "#fff2d8"} />
         <ambientLight intensity={0.3} />
