@@ -119,7 +119,7 @@ export const Land3D: React.FC<{ shot: ShotName; span?: [number, number]; fadeIn?
   const night = shot === "night", dusk = shot === "dusk", dawn = shot === "dawn";
   let pos: V3, look: V3;
   if (shot === "night") { pos = lerp3([TOWN[0] - 60, 34, TOWN[1] + 90], [TOWN[0] - 20, 18, TOWN[1] + 44], t); look = [TOWN[0], 2, TOWN[1]]; }
-  else if (shot === "farms") { const z = 60 - t * 230; pos = [-30 + Math.sin(t * 3) * 8, 16, z]; look = [-24, 2, z - 60]; }
+  else if (shot === "farms") { const z = 80 - t * 230; pos = [-30 + Math.sin(t * 3) * 6, 38, z]; look = [-28, 0, z - 95]; }
   else if (shot === "dusk") { const a = 0.6 + t * 0.7; pos = [TOWN[0] + Math.cos(a) * 70, 40, TOWN[1] + Math.sin(a) * 70]; look = [TOWN[0], 2, TOWN[1]]; }
   else if (shot === "present") { pos = lerp3([TOWN[0] - 80, 70, TOWN[1] + 120], [TOWN[0] - 14, 14, TOWN[1] + 30], t); look = lerp3([TOWN[0], 0, TOWN[1] - 20], [TOWN[0], 3, TOWN[1]], t); }
   else { pos = lerp3([-10, 22, 140], [-30, 60, 40], t); look = lerp3([-30, 10, -200], [-40, 0, -260], t); }
