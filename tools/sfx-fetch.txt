@@ -1,3 +1,17 @@
 # name | url   (CC0 / public-domain sounds; fetched by .github/workflows/fetch-sfx.yml into public/trailer/sfx/<name>.mp3)
 cow-moo-01 | https://bigsoundbank.com/UPLOAD/mp3/0546.mp3
 sheep-baa-01 | https://opengameart.org/sites/default/files/sheep_baa.ogg
+bsb-wind-shrub | https://bigsoundbank.com/UPLOAD/mp3/0907.mp3
+bsb-countryside | https://bigsoundbank.com/UPLOAD/mp3/0097.mp3
+bsb-market | https://bigsoundbank.com/UPLOAD/mp3/2728.mp3
+bsb-door-slam | https://bigsoundbank.com/UPLOAD/mp3/0223.mp3
+bsb-barn-door | https://bigsoundbank.com/UPLOAD/mp3/0538.mp3
+bsb-steps-gravel | https://bigsoundbank.com/UPLOAD/mp3/3216.mp3
+bsb-steps-loop | https://bigsoundbank.com/UPLOAD/mp3/1117.mp3
+bsb-coins-pot | https://bigsoundbank.com/UPLOAD/mp3/0194.mp3
+bsb-coins-floor | https://bigsoundbank.com/UPLOAD/mp3/0193.mp3
+bsb-cloth | https://bigsoundbank.com/UPLOAD/mp3/1104.mp3
+bsb-birds-dawn | https://bigsoundbank.com/UPLOAD/mp3/1906.mp3
+bsb-evening-birds | https://bigsoundbank.com/UPLOAD/mp3/1859.mp3
+bsb-night-insects | https://bigsoundbank.com/UPLOAD/mp3/1470.mp3
+bsb-morning | https://bigsoundbank.com/UPLOAD/mp3/0912.mp3

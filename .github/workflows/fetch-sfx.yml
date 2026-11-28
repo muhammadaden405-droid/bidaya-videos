@@ -3,7 +3,7 @@ name: Fetch SFX
 # because the editing machine cannot reach sound libraries directly.
 on:
   push:
-    branches: [ep3]
+    branches: [ep4]
     paths: [tools/sfx-fetch.txt]
   workflow_dispatch:
 permissions:
